@@ -36,9 +36,9 @@ const BasicForm: React.FC<Props> = (props) => {
             label="角色"
             valueEnum={{
               SUPER_ADMIN: '超级管理员',
-              ADMIN: '管理员',
-              MEMBER: '普通会员',
-              MERCHANT: '供应商',
+              CUSTOMER: '客户',
+              ORDER_CLERK: '下单员',
+              FINANCIAL_STAFF: '财务人员',
             }}
           />
         )}
