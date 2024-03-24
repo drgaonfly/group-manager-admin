@@ -136,11 +136,6 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
     },
     {
-      title: '余额',
-      dataIndex: 'balance',
-      valueType: 'money',
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
@@ -172,17 +167,6 @@ const TableList: React.FC = () => {
             }}
           >
             删除
-          </a>
-        ),
-        access.canAdmin && (
-          <a
-            key="recharge"
-            onClick={() => {
-              setRechargeModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            充值
           </a>
         ),
       ],
