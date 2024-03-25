@@ -55,7 +55,7 @@ export default [
   {
     name: 'list.tasks',
     icon: 'table',
-    access: 'canAdmin',
+    access: 'canCustomer',
     path: '/tasks',
     component: './Tasks',
   },
