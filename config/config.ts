@@ -153,4 +153,8 @@ export default defineConfig({
   },
   esbuildMinifyIIFE: true,
   requestRecord: {},
+  keepalive: [/./],
+  tabsLayout: {
+    hasDropdown: true,
+  },
 });
