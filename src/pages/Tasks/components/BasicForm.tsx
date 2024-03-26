@@ -1,5 +1,5 @@
 import MyUpload from '@/components/MyUpload';
-import { ProForm, ProFormSelect } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormDateTimePicker } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import React from 'react';
 
@@ -29,17 +29,36 @@ const BasicForm: React.FC<Props> = (props) => {
         />
 
         {newRecord && (
-          <Form.Item label="上传文件" rules={[{ required: false }]} name="file">
+          <Form.Item label="上传文件" name="file">
             <MyUpload
               accept=".xls,.xlsx,.csv"
               onFileUpload={(url: string) => {
-                // 处理上传文件后的逻辑，例如将 URL 设置到表单的某个字段
                 console.log('Uploaded file URL:', url);
                 setFile!(url);
               }}
             />
           </Form.Item>
         )}
+
+        <ProFormDateTimePicker
+          rules={[{ required: true, message: '请选择下单时间' }]}
+          width="md"
+          name="orderTime"
+          label="下单时间"
+        />
+
+        <ProFormSelect
+          rules={[{ required: false, message: '请选择下单备注' }]}
+          width="md"
+          label="下单备注"
+          name="orderNote"
+          valueEnum={{
+            ContactForVolumeWeight: '下单前联系改体积/重量',
+            ContactForInventory: '下单前联系开库存',
+            ContactForPrice: '下单前联系改价格',
+          }}
+          placeholder="可选"
+        />
       </ProForm.Group>
     </>
   );
