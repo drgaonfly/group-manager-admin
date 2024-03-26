@@ -160,31 +160,22 @@ const TableList: React.FC = () => {
         return record.user && record.user.email ? record.user.email : '未知';
       },
     },
-    // {
-    //   title: '单量',
-    //   dataIndex: 'quantity',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '店铺',
-    //   dataIndex: 'store',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '订单号',
-    //   dataIndex: 'orderNumber',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '金额',
-    //   dataIndex: 'amount',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '买手账号',
-    //   dataIndex: 'buyerAccount',
-    //   hideInSearch: true,
-    // },
+    {
+      title: '下单时间类型',
+      dataIndex: 'orderTimeType',
+      valueEnum: {
+        NormalOrder: { text: '正常下单' },
+        SpecificTimeOrder: { text: '指定时间下单' },
+      },
+    },
+    {
+      title: '评价类型',
+      dataIndex: 'reviewType',
+      valueEnum: {
+        NormalReview: { text: '正常评价' },
+        ReviewAfterModification: { text: '评价后补' },
+      },
+    },
     {
       title: '操作',
       dataIndex: 'option',
