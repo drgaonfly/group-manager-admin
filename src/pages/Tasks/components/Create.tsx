@@ -15,7 +15,7 @@ const Create: React.FC<Props> = (props) => {
   return (
     <ModalForm
       title="新增"
-      width="440px"
+      width="50%"
       open={open}
       onOpenChange={onOpenChange}
       modalProps={{
