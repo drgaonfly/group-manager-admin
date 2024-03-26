@@ -126,7 +126,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   };
 };
 
-const DOMAIN = isDev ? 'http://localhost:5000' : 'https://task-backend.2024fc.xyz';
+const DOMAIN = isDev ? 'http://localhost:5001' : 'https://task-backend.2024fc.xyz';
 
 /**
  * @name request 配置，可以配置错误处理

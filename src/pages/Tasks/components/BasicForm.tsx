@@ -36,6 +36,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile }) => {
         placeholder="请选择国家"
       />
 
+      <ProFormSelect
+        name="platform"
+        label="平台"
+        width="md"
+        rules={[{ required: true, message: '请选择平台' }]}
+        valueEnum={{
+          Shopee: 'Shopee',
+          Lazada: 'Lazada',
+          TikTok: 'TikTok',
+        }}
+        placeholder="请选择平台"
+      />
+
       {newRecord && (
         <Form.Item label="上传文件" name="file">
           <MyUpload
