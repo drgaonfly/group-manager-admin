@@ -135,7 +135,7 @@ const TableList: React.FC = () => {
     //   },
     // },
     {
-      title: '文件',
+      title: '源文件',
       dataIndex: 'file',
       hideInSearch: true,
       render: (_, record) => {
@@ -145,6 +145,22 @@ const TableList: React.FC = () => {
         // 返回一个下载按钮或链接
         return (
           <a href={record.file} download target="_blank" rel="noopener noreferrer">
+            下载
+          </a>
+        );
+      },
+    },
+    {
+      title: '文件',
+      dataIndex: 'uploadedFile',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        // 确保文件URL存在
+        if (!record.uploadedFile) return '无文件';
+
+        // 返回一个下载按钮或链接
+        return (
+          <a href={record.uploadedFile} download target="_blank" rel="noopener noreferrer">
             下载
           </a>
         );
