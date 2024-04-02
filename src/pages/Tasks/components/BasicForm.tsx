@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ProForm,
   ProFormSelect,
@@ -15,11 +15,21 @@ interface Props {
   setFile?: (url: string) => void;
   reviewFile?: string | undefined;
   setReviewFile?: (url: string) => void;
+  initialValues?: any;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile }) => {
-  const [reviewType, setReviewType] = useState('');
-  const [orderTimeType, setOrderTimeType] = useState('');
+const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initialValues }) => {
+  const [reviewType, setReviewType] = useState(initialValues?.reviewType || '');
+  const [orderTimeType, setOrderTimeType] = useState(initialValues?.orderTimeType || '');
+
+  useEffect(() => {
+    if (initialValues?.reviewType) {
+      setReviewType(initialValues.reviewType);
+    }
+    if (initialValues?.orderTimeType) {
+      setOrderTimeType(initialValues.orderTimeType);
+    }
+  }, [initialValues]);
 
   return (
     <>

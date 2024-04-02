@@ -35,7 +35,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
       initialValues={{ ...values, roleIds: values.roles?.map((role) => role.id) }}
     >
-      <BasicForm reviewFile={reviewFile} setReviewFile={setReviewFile} />
+      <BasicForm initialValues={values} reviewFile={reviewFile} setReviewFile={setReviewFile} />
       <Form.Item name="_id" label={false}>
         <Input type="hidden" />
       </Form.Item>
