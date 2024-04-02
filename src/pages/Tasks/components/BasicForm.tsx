@@ -13,10 +13,12 @@ interface Props {
   newRecord?: boolean;
   file?: string | undefined;
   setFile?: (url: string) => void;
+  reviewFile?: string | undefined;
+  setReviewFile?: (url: string) => void;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, setFile }) => {
-  const [, setReviewType] = useState('');
+const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile }) => {
+  const [reviewType, setReviewType] = useState('');
   const [orderTimeType, setOrderTimeType] = useState('');
 
   return (
@@ -111,19 +113,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile }) => {
         />
       </ProForm.Item>
 
-      {/* {reviewType === 'ReviewAfterModification' && newRecord && (
-        <Form.Item
-          label="上传评论"
-          name="reviewFile"
-        >
+      {reviewType === 'ReviewAfterModification' && (
+        <Form.Item label="上传评论" name="uploadedFile">
           <MyUpload
-            accept=".zip,.rar"
             onFileUpload={(url: string) => {
               console.log('Uploaded review file URL:', url);
+              setReviewFile!(url);
             }}
           />
         </Form.Item>
-      )} */}
+      )}
 
       <ProFormSelect
         name="orderType"

@@ -11,7 +11,7 @@ interface MyUploadProps {
 
 const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept }) => {
   // 定义默认的accept值
-  const defaultAccept = '.png,.jpeg,.jpg,.gif';
+  const defaultAccept = '*';
 
   const customRequest = async (options: any) => {
     const { file, onSuccess, onError } = options;

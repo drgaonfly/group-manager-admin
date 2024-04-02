@@ -12,6 +12,7 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const { open, onOpenChange, onFinish } = props;
   const [file, setFile] = useState<string | undefined>('');
+  const [reviewFile, setReviewFile] = useState<string | undefined>('');
   return (
     <ModalForm
       title="新增"
@@ -30,10 +31,17 @@ const Create: React.FC<Props> = (props) => {
         await onFinish({
           ...values,
           file,
+          uploadedFile: reviewFile,
         });
       }}
     >
-      <BasicForm setFile={setFile} file={file} newRecord />
+      <BasicForm
+        reviewFile={reviewFile}
+        setReviewFile={setReviewFile}
+        setFile={setFile}
+        file={file}
+        newRecord
+      />
     </ModalForm>
   );
 };

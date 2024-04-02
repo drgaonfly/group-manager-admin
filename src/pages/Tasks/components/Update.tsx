@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BasicForm from './BasicForm';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
@@ -16,6 +16,7 @@ export type UpdateFormProps = {
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const { updateModalOpen, onCancel, onSubmit, values } = props;
+  const [reviewFile, setReviewFile] = useState<string | undefined>('');
   return (
     <ModalForm
       title="修改"
@@ -26,10 +27,15 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
       open={updateModalOpen}
       onOpenChange={onCancel}
-      onFinish={onSubmit}
+      onFinish={async (values) => {
+        await onSubmit({
+          ...values,
+          uploadedFile: reviewFile,
+        });
+      }}
       initialValues={{ ...values, roleIds: values.roles?.map((role) => role.id) }}
     >
-      <BasicForm />
+      <BasicForm reviewFile={reviewFile} setReviewFile={setReviewFile} />
       <Form.Item name="_id" label={false}>
         <Input type="hidden" />
       </Form.Item>

@@ -151,22 +151,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '文件',
-      dataIndex: 'uploadedFile',
-      hideInSearch: true,
-      render: (_, record: any) => {
-        // 确保文件URL存在
-        if (!record.uploadedFile) return '无文件';
-
-        // 返回一个下载按钮或链接
-        return (
-          <a href={record.uploadedFile} download target="_blank" rel="noopener noreferrer">
-            下载
-          </a>
-        );
-      },
-    },
-    {
       title: '上传用户',
       dataIndex: 'user',
       hideInSearch: true,
@@ -185,11 +169,32 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '下单时间类型',
+      dataIndex: 'orderTime',
+      valueType: 'dateTime',
+    },
+    {
       title: '评价类型',
       dataIndex: 'reviewType',
       valueEnum: {
         NormalReview: { text: '正常评价' },
         ReviewAfterModification: { text: '评价后补' },
+      },
+    },
+    {
+      title: '评论后补文件',
+      dataIndex: 'uploadedFile',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        // 确保文件URL存在
+        if (!record.uploadedFile) return '无文件';
+
+        // 返回一个下载按钮或链接
+        return (
+          <a href={record.uploadedFile} download target="_blank" rel="noopener noreferrer">
+            下载
+          </a>
+        );
       },
     },
     {
