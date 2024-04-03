@@ -9,6 +9,8 @@ import {
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import MyUpload from '@/components/MyUpload';
+import useQueryList from '@/hooks/useQueryList';
+import { useAccess } from '@umijs/max';
 
 interface Props {
   newRecord?: boolean;
@@ -22,6 +24,8 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initialValues }) => {
   const [reviewType, setReviewType] = useState(initialValues?.reviewType || '');
   const [orderTimeType, setOrderTimeType] = useState(initialValues?.orderTimeType || '');
+  const { items: users } = useQueryList('/users');
+  const access = useAccess();
 
   useEffect(() => {
     if (initialValues?.reviewType) {
@@ -35,6 +39,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
   return (
     <>
       <ProForm.Group>
+        {access.canAdmin && (
+          <ProFormSelect
+            rules={[{ required: true }]}
+            options={users.map((user: any) => ({
+              label: user.email,
+              value: user._id,
+            }))}
+            width="md"
+            name="user"
+            label="用户"
+            showSearch
+          />
+        )}
         <ProFormSelect
           name="country"
           label="国家"
