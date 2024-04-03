@@ -33,7 +33,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           uploadedFile: reviewFile,
         });
       }}
-      initialValues={{ ...values, roleIds: values.roles?.map((role) => role.id) }}
+      initialValues={{ ...values, user: values.user._id }}
     >
       <BasicForm initialValues={values} reviewFile={reviewFile} setReviewFile={setReviewFile} />
       <Form.Item name="_id" label={false}>

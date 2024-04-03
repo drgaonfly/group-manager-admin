@@ -243,6 +243,14 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '下单类型',
+      dataIndex: 'orderType',
+      valueEnum: {
+        NormalOrder: { text: '正常下单' },
+        AbnormalOrder: { text: '非正常下单' },
+      },
+    },
+    {
       title: '任务状态', // 更新字段描述
       dataIndex: 'status', // 指定数据索引为status
       valueEnum: {
