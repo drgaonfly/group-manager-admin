@@ -191,7 +191,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '下单时间类型',
+      title: '下单时间',
       dataIndex: 'orderTime',
       valueType: 'dateTime',
     },
