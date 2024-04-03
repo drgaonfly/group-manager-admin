@@ -118,6 +118,7 @@ const TableList: React.FC = () => {
     {
       title: '邮箱',
       dataIndex: 'email',
+      copyable: true,
       render: (dom, entity) => {
         return (
           <a
@@ -134,6 +135,17 @@ const TableList: React.FC = () => {
     {
       title: '姓名',
       dataIndex: 'name',
+    },
+    {
+      title: '角色',
+      dataIndex: 'role',
+      valueEnum: {
+        SUPER_ADMIN: '超级管理员',
+        CUSTOMER: '客户',
+        ORDER_CLERK: '下单员',
+        ADMIN: '客服',
+        FINANCIAL_STAFF: '财务人员',
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,

@@ -38,6 +38,7 @@ const BasicForm: React.FC<Props> = (props) => {
               SUPER_ADMIN: '超级管理员',
               CUSTOMER: '客户',
               ORDER_CLERK: '下单员',
+              ADMIN: '客服',
               FINANCIAL_STAFF: '财务人员',
             }}
           />
