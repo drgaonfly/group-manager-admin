@@ -242,7 +242,7 @@ const TableList: React.FC = () => {
         >
           编辑
         </a>,
-        access.canSuperAdmin && (
+        access.canCustomer && (
           <a
             key="cancel"
             onClick={() => {
