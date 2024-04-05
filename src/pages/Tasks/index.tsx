@@ -9,7 +9,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, Checkbox, message, Modal, Select } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -242,12 +242,37 @@ const TableList: React.FC = () => {
       dataIndex: 'quantity',
       hideInSearch: true,
     },
+    // {
+    //   title: '下单类型',
+    //   dataIndex: 'orderType',
+    //   valueEnum: {
+    //     NormalOrder: { text: '正常下单' },
+    //     AbnormalOrder: { text: '非正常下单' },
+    //   },
+    // },
     {
       title: '下单类型',
       dataIndex: 'orderType',
       valueEnum: {
         NormalOrder: { text: '正常下单' },
-        AbnormalOrder: { text: '非正常下单' },
+        ContactForVolumeWeight: { text: '下单前联系改体积/重量' },
+        ContactForInventory: { text: '下单前联系开库存' },
+        ContactForPrice: { text: '下单前联系改价格' },
+      },
+      renderFormItem: (item, { defaultRender }) => {
+        if (item && item.valueEnum) {
+          return (
+            <Select mode="multiple" placeholder="请选择">
+              {Object.entries(item.valueEnum).map(([value, { text }]) => (
+                <Select.Option key={value} value={value}>
+                  <Checkbox style={{ marginRight: 8 }} />
+                  {text}
+                </Select.Option>
+              ))}
+            </Select>
+          );
+        }
+        return defaultRender(item);
       },
     },
     {

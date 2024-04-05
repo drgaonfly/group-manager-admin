@@ -6,7 +6,6 @@ import {
   ProFormRadio,
   ProFormTextArea,
   ProFormDigit,
-  ProFormCheckbox,
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import MyUpload from '@/components/MyUpload';
@@ -22,16 +21,9 @@ interface Props {
   initialValues?: any;
 }
 
-const abnormalOrderOptions = [
-  { label: '下单前联系改体积/重量', value: 'ContactForVolumeWeight' },
-  { label: '下单前联系开库存', value: 'ContactForInventory' },
-  { label: '下单前联系改价格', value: 'ContactForPrice' },
-];
-
 const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initialValues }) => {
   const [reviewType, setReviewType] = useState(initialValues?.reviewType || '');
   const [orderTimeType, setOrderTimeType] = useState(initialValues?.orderTimeType || '');
-  const [orderType, setOrderType] = useState(initialValues?.orderType || '');
   const { items: users } = useQueryList('/users');
   const access = useAccess();
 
@@ -168,25 +160,20 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
         </Form.Item>
       )}
       <ProForm.Group>
-        <ProForm.Item name="orderType" label="下单类型">
-          <ProFormRadio.Group
-            options={[
-              { label: '正常下单', value: 'NormalOrder' },
-              { label: '非正常下单', value: 'AbnormalOrder' },
-            ]}
-            fieldProps={{
-              onChange: (e) => setOrderType(e.target.value),
-            }}
-          />
-        </ProForm.Item>
-
-        {orderType === 'AbnormalOrder' && (
-          <ProFormCheckbox.Group
-            name="abnormalReasons"
-            label="非正常下单原因"
-            options={abnormalOrderOptions}
-          />
-        )}
+        <ProFormSelect
+          name="orderType"
+          label="下单类型"
+          mode="multiple"
+          width="md"
+          options={[
+            { label: '正常下单', value: 'NormalOrder' },
+            { label: '下单前联系改体积/重量', value: 'ContactForVolumeWeight' },
+            { label: '下单前联系开库存', value: 'ContactForInventory' },
+            { label: '下单前联系改价格', value: 'ContactForPrice' },
+          ]}
+          placeholder="请选择"
+          rules={[{ required: true, message: '请选择' }]}
+        />
       </ProForm.Group>
 
       <ProFormTextArea
