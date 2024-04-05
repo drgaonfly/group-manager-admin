@@ -11,6 +11,12 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
   return {
     canSuperAdmin: currentUser && currentUser.role === ROLES.SuperAdmin,
+    canSeeTasks:
+      currentUser &&
+      (currentUser.role === ROLES.Customer ||
+        currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.OrderClerk ||
+        currentUser.role === ROLES.SuperAdmin),
     // Check if the user is either in the specific role or a SuperAdmin for broader access
     canCustomer:
       currentUser &&

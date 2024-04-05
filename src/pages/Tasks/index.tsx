@@ -140,6 +140,7 @@ const TableList: React.FC = () => {
     {
       title: '编号',
       dataIndex: '_id',
+      width: 120,
       copyable: true,
       render: (dom, entity) => {
         return (
@@ -156,6 +157,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '国家',
+      width: 100,
       dataIndex: 'country',
       valueEnum: {
         Vietnam: { text: '越南' },
@@ -353,6 +355,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle="列表"
         actionRef={actionRef}
+        scroll={{ x: 1200 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
