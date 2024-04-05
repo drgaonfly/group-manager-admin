@@ -276,13 +276,16 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '任务状态', // 更新字段描述
+      title: '状态', // 更新字段描述
       dataIndex: 'status', // 指定数据索引为status
       valueEnum: {
         Active: { text: '正常' }, // 对应Active状态
         Cancelled: { text: '已取消' }, // 对应Cancelled状态
+        Processing: { text: '处理中' }, // 对应Processing状态
+        Completed: { text: '已完成' }, // 对应Completed状态
+        Issue: { text: '有问题' }, // 对应Issue状态
       },
-      hideInSearch: true,
+      hideInSearch: true, // 在搜索中隐藏此字段
     },
     {
       title: '操作',
@@ -390,9 +393,22 @@ const TableList: React.FC = () => {
                 label: <span>正常</span>,
                 key: 'Active', // 对应Active状态
               },
+              // 下面添加新的状态
+              {
+                label: <span>处理中</span>,
+                key: 'Processing', // 对应Processing状态
+              },
               {
                 label: <span>已取消</span>,
                 key: 'Cancelled', // 对应Cancelled状态
+              },
+              {
+                label: <span>已完成</span>,
+                key: 'Completed', // 对应Completed状态
+              },
+              {
+                label: <span>有问题</span>,
+                key: 'Issue', // 对应Issue状态
               },
             ],
             onChange: (key: any) => {
