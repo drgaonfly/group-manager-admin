@@ -61,6 +61,13 @@ declare namespace API {
     msg?: string;
   };
 
+  type ResponseData = {
+    /** 列表的内容总数 */
+    data?: any;
+    success?: boolean;
+    message?: string;
+  };
+
   type DataList = {
     data?: ListItem[];
     /** 列表的内容总数 */

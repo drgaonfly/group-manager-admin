@@ -110,8 +110,8 @@ export async function updateItem(url: string, options?: { [key: string]: any }) 
   });
 }
 
-export async function handelItem(url: string, options?: { [key: string]: any }) {
-  return request<API.ListItem>(url, {
+export async function handleItem(url: string, options?: { [key: string]: any }) {
+  return request<API.ResponseData>(url, {
     method: 'PATCH',
     data: {
       ...(options || {}),

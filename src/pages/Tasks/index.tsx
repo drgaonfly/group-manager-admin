@@ -1,6 +1,6 @@
 import {
   addItem,
-  handelItem,
+  handleItem,
   queryList,
   removeItem,
   updateItem,
@@ -95,10 +95,33 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
+const handleDownload = async (id: string) => {
+  const hide = message.loading('正在准备下载');
+  try {
+    const response = await handleItem(`/tasks/download-task`, { taskId: id }); // Assuming handleItem can handle method and body
+    hide();
+
+    console.log('response', response);
+
+    if (response?.data) {
+      message.success('文件准备完成，下载即将开始');
+      // Optionally handle the download URL from the response
+      window.open(response.data.signedURL, '_blank');
+      return true;
+    } else {
+      throw new Error('No download URL returned');
+    }
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? '下载失败，请重试!');
+    return false;
+  }
+};
+
 const handleCancel = async (id: string) => {
   const hide = message.loading('正在取消');
   try {
-    await handelItem(`/tasks/${id}/cancel`);
+    await handleItem(`/tasks/${id}/cancel`);
     hide();
 
     message.success('取消成功');
@@ -183,11 +206,14 @@ const TableList: React.FC = () => {
         // 确保文件URL存在
         if (!record.file) return '无文件';
 
-        // 返回一个下载按钮或链接
+        // 返回一个按钮来触发下载
         return (
-          <a href={record.file} download target="_blank" rel="noopener noreferrer">
+          <Button
+            type="link"
+            onClick={() => handleDownload(record._id!)} // Assuming `record.id` is the identifier needed by handleDownload
+          >
             下载
-          </a>
+          </Button>
         );
       },
     },
