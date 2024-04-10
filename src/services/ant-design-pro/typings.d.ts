@@ -27,6 +27,7 @@ declare namespace API {
   };
 
   type ItemData = {
+    bills?: any[];
     uploadedFile?: string;
     file?: string;
     user?: any;
