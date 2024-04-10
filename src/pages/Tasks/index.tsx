@@ -162,7 +162,7 @@ const TableList: React.FC = () => {
     {
       title: '编号',
       dataIndex: '_id',
-      width: 120,
+      width: 250,
       copyable: true,
       render: (dom, entity) => {
         return (
@@ -269,14 +269,6 @@ const TableList: React.FC = () => {
       dataIndex: 'quantity',
       hideInSearch: true,
     },
-    // {
-    //   title: '下单类型',
-    //   dataIndex: 'orderType',
-    //   valueEnum: {
-    //     NormalOrder: { text: '正常下单' },
-    //     AbnormalOrder: { text: '非正常下单' },
-    //   },
-    // },
     {
       title: '下单类型',
       dataIndex: 'orderType',
