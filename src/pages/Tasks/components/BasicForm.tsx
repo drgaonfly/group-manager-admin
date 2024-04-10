@@ -172,7 +172,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
             { label: '下单前联系改价格', value: 'ContactForPrice' },
           ]}
           placeholder="请选择"
-          rules={[{ required: true, message: '请选择' }]}
+          rules={[{ required: false, message: '请选择' }]}
         />
       </ProForm.Group>
 
