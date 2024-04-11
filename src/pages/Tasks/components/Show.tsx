@@ -54,7 +54,6 @@ const Show: React.FC<Props> = (props) => {
     {
       title: '金额',
       dataIndex: 'amount',
-      valueType: 'money',
       formItemProps: () => {
         return {
           rules: [{ required: true, message: '金额是必填项' }],
