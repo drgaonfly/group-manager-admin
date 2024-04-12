@@ -60,6 +60,13 @@ export default [
     component: './Tasks',
   },
   {
+    name: 'list.bills',
+    icon: 'table',
+    access: 'canSeeTasks',
+    path: '/bills',
+    component: './Bills',
+  },
+  {
     path: '/',
     redirect: '/Welcome',
   },

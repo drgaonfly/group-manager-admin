@@ -27,6 +27,7 @@ declare namespace API {
   };
 
   type ItemData = {
+    orderNumber?: string;
     bills?: any[];
     uploadedFile?: string;
     file?: string;

@@ -200,6 +200,7 @@ const TableList: React.FC = () => {
     {
       title: '源文件',
       dataIndex: 'file',
+      width: 80,
       hideInSearch: true,
       render: (_, record) => {
         // 确保文件URL存在
@@ -219,6 +220,7 @@ const TableList: React.FC = () => {
     {
       title: '上传用户',
       dataIndex: 'user',
+      width: 100,
       hideInSearch: true,
       render: (_, record) => {
         // Assuming the user field is populated and includes an email field
@@ -228,6 +230,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '下单时间类型',
+      width: 180,
       dataIndex: 'orderTimeType',
       valueEnum: {
         NormalOrder: { text: '正常下单' },
@@ -236,12 +239,14 @@ const TableList: React.FC = () => {
     },
     {
       title: '下单时间',
+      width: 150,
       hideInSearch: true,
       dataIndex: 'orderTime',
       valueType: 'dateTime',
     },
     {
       title: '评价类型',
+      width: 120,
       dataIndex: 'reviewType',
       valueEnum: {
         NormalReview: { text: '正常评价' },
@@ -250,6 +255,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '评论后补文件',
+      width: 180,
       dataIndex: 'uploadedFile',
       hideInSearch: true,
       render: (_, record: any) => {
@@ -266,11 +272,13 @@ const TableList: React.FC = () => {
     },
     {
       title: '单量',
+      width: 80,
       dataIndex: 'quantity',
       hideInSearch: true,
     },
     {
       title: '下单类型',
+      width: 150,
       dataIndex: 'orderType',
       valueEnum: {
         NormalOrder: { text: '正常下单' },
@@ -296,6 +304,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '状态', // 更新字段描述
+      width: 100,
       dataIndex: 'status', // 指定数据索引为status
       valueEnum: {
         Active: { text: '正常' }, // 对应Active状态
@@ -308,6 +317,8 @@ const TableList: React.FC = () => {
     },
     {
       title: '操作',
+      width: 250,
+      fixed: 'right',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
