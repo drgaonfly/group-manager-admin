@@ -220,7 +220,7 @@ const TableList: React.FC = () => {
     {
       title: '上传用户',
       dataIndex: 'user',
-      width: 100,
+      width: 200,
       hideInSearch: true,
       render: (_, record) => {
         // Assuming the user field is populated and includes an email field
