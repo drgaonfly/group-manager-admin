@@ -102,7 +102,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
         )}
         <ProForm.Item
           name="uploadTime"
-          label="下单时间"
+          label="上传时间"
           rules={[{ required: true, message: '请选择下单时间' }]}
         >
           <ProFormDateTimePicker
