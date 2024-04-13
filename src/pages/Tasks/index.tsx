@@ -245,6 +245,12 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
     },
     {
+      title: '上传时间',
+      width: 150,
+      dataIndex: 'uploadTime',
+      valueType: 'date',
+    },
+    {
       title: '评价类型',
       width: 120,
       dataIndex: 'reviewType',

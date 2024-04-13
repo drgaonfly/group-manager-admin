@@ -2,7 +2,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, DatePicker, Form, message, Modal, Select } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -115,6 +115,54 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      title: '关联任务',
+      dataIndex: 'task',
+      copyable: true,
+      renderText: (_, record: any) => (record.task ? record.task._id : '无'), // Assuming task has a 'title' field
+    },
+    {
+      title: '国家',
+      dataIndex: 'country',
+      valueEnum: {
+        Vietnam: { text: '越南' },
+        Thailand: { text: '泰国' },
+        Malaysia: { text: '马来西亚' },
+        Philippines: { text: '菲律宾' },
+        Indonesia: { text: '印尼' },
+      },
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
+        if (type === 'form') {
+          // 当处于表单模式时，不渲染任何组件
+          return null;
+        }
+        return (
+          <Form.Item
+            name="country" // 设置Form.Item的name属性
+            {...formItemProps} // 传入formItemProps以支持外部传入的表单项属性
+          >
+            <Select
+              {...fieldProps} // 传入fieldProps以支持外部传入的字段属性
+              showSearch
+              placeholder="请选择国家"
+              allowClear
+              filterOption={(input, option: any) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              }
+              options={[
+                { label: '越南', value: 'Vietnam' },
+                { label: '泰国', value: 'Thailand' },
+                { label: '马来西亚', value: 'Malaysia' },
+                { label: '菲律宾', value: 'Philippines' },
+                { label: '印尼', value: 'Indonesia' },
+              ]}
+            />
+          </Form.Item>
+        );
+      },
+    },
+    {
       title: '订单号',
       dataIndex: 'orderNumber',
       tooltip: true, // Show tooltip on hover to display the full order number if truncated
@@ -132,6 +180,33 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '下单时间',
+      dataIndex: 'task',
+      renderText: (_, record: any) => (record.task ? record.task.uploadTime : ''), // Assuming task has a 'title' field
+      valueType: 'date',
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
+        if (type === 'form') {
+          // When in form mode, do not render any component
+          return null;
+        }
+        return (
+          <Form.Item
+            name="uploadTime" // Set the name for this form item
+            {...formItemProps} // Spread additional form item props
+          >
+            <DatePicker
+              width="100%"
+              {...fieldProps} // Spread field props for additional field configurations
+              format="YYYY-MM-DD" // Set the date format to year-month-day
+              picker="date" // Ensure that the date picker component is used
+            />
+          </Form.Item>
+        );
+      },
+    },
+    {
       title: '店铺名',
       dataIndex: 'storeName',
     },
@@ -144,12 +219,6 @@ const TableList: React.FC = () => {
     {
       title: '买手号',
       dataIndex: 'buyerId',
-    },
-    {
-      title: '关联任务',
-      dataIndex: 'task',
-      copyable: true,
-      renderText: (_, record: any) => (record.task ? record.task._id : '无'), // Assuming task has a 'title' field
     },
     {
       title: '创建时间',

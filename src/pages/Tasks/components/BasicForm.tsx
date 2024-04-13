@@ -100,6 +100,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
             />
           </Form.Item>
         )}
+        <ProForm.Item
+          name="uploadTime"
+          label="下单时间"
+          rules={[{ required: true, message: '请选择下单时间' }]}
+        >
+          <ProFormDateTimePicker
+            width="md"
+            fieldProps={{
+              format: 'YYYY-MM-DD', // 设置日期格式为年-月-日
+              picker: 'date', // 设置 picker 类型为日期选择器
+            }}
+          />
+        </ProForm.Item>
       </ProForm.Group>
 
       <ProForm.Group>
