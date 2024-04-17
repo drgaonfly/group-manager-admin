@@ -126,6 +126,18 @@ export default defineConfig({
   headScripts: [
     // 解决首次加载时白屏的问题
     { src: '/scripts/loading.js', async: true },
+    {
+      content: `
+      window.$crisp=[];
+      window.CRISP_WEBSITE_ID="4ca34f7b-27e3-41c1-aa47-c34aaac0dbe2";
+      (function(){ 
+        d=document; s=d.createElement("script"); 
+        s.src="https://client.crisp.chat/l.js"; 
+        s.async=1; 
+        d.getElementsByTagName("head")[0].appendChild(s); 
+      })();
+    `,
+    },
   ],
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],
