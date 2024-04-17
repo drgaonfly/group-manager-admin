@@ -9,7 +9,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, Checkbox, message, Modal, Select } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -25,7 +25,7 @@ import UploadForm from './components/UploadForm';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading('正在添加');
   try {
-    await addItem('/tasks', { ...fields });
+    await addItem('/empty-packages', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -45,7 +45,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('正在更新');
   try {
-    await updateItem(`/tasks/${fields._id}`, fields);
+    await updateItem(`/empty-packages/${fields._id}`, fields);
     hide();
 
     message.success('更新成功');
@@ -67,7 +67,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading('正在删除');
   if (!ids) return true;
   try {
-    await removeItem('/tasks', {
+    await removeItem('/empty-packages', {
       ids,
     });
     hide();
@@ -83,7 +83,7 @@ const handleRemove = async (ids: string[]) => {
 const handleUploadBill = async (fields: API.ItemData) => {
   const hide = message.loading('正在上传');
   try {
-    await addItem('/tasks/upload-bills', { ...fields });
+    await addItem('/empty-packages/upload-bills', { ...fields });
     hide();
     message.success('上传成功');
     return true;
@@ -94,33 +94,10 @@ const handleUploadBill = async (fields: API.ItemData) => {
   }
 };
 
-const handleDownload = async (id: string) => {
-  const hide = message.loading('正在准备下载');
-  try {
-    const response = await handleItem(`/tasks/download-task`, { taskId: id }); // Assuming handleItem can handle method and body
-    hide();
-
-    console.log('response', response);
-
-    if (response?.data) {
-      message.success('文件准备完成，下载即将开始');
-      // Optionally handle the download URL from the response
-      window.open(response.data.signedURL, '_blank');
-      return true;
-    } else {
-      throw new Error('No download URL returned');
-    }
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '下载失败，请重试!');
-    return false;
-  }
-};
-
 const handleCancel = async (id: string) => {
   const hide = message.loading('正在取消');
   try {
-    await handleItem(`/tasks/${id}/cancel`);
+    await handleItem(`/empty-packages/${id}/cancel`);
     hide();
 
     message.success('取消成功');
@@ -179,7 +156,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '国家',
-      width: 100,
+      width: 150,
       dataIndex: 'country',
       valueEnum: {
         Vietnam: { text: '越南' },
@@ -191,7 +168,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '平台',
-      width: 100,
+      width: 150,
       dataIndex: 'platform',
       valueEnum: {
         Shopee: { text: 'Shopee' },
@@ -199,31 +176,38 @@ const TableList: React.FC = () => {
         TikTok: { text: 'TikTok' },
       },
     },
-    // {
-    //   title: '平台',
-    //   dataIndex: 'platform',
-    //   valueEnum: {
-    //     TikTok: { text: 'TikTok' },
-    //     Shopify: { text: 'Shopify' },
-    //   },
-    // },
     {
-      title: '源文件',
-      dataIndex: 'file',
+      title: 'PDF 文件',
+      dataIndex: 'pdfFile',
       width: 80,
       hideInSearch: true,
-      render: (_, record) => {
+      render: (_, record: any) => {
         // 确保文件URL存在
-        if (!record.file) return '无文件';
+        // 确保文件URL存在
+        if (!record.pdfFile) return '无文件';
 
-        // 返回一个按钮来触发下载
+        // 返回一个下载按钮或链接
         return (
-          <Button
-            type="link"
-            onClick={() => handleDownload(record._id!)} // Assuming `record.id` is the identifier needed by handleDownload
-          >
+          <a href={record.pdfFile} download target="_blank" rel="noopener noreferrer">
             下载
-          </Button>
+          </a>
+        );
+      },
+    },
+    {
+      title: '压缩文件',
+      width: 100,
+      dataIndex: 'zipFile',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        // 确保文件URL存在
+        if (!record.zipFile) return '无文件';
+
+        // 返回一个下载按钮或链接
+        return (
+          <a href={record.zipFile} download target="_blank" rel="noopener noreferrer">
+            下载
+          </a>
         );
       },
     },
@@ -238,85 +222,12 @@ const TableList: React.FC = () => {
         return record.user && record.user.email ? record.user.email : '未知';
       },
     },
-    {
-      title: '下单时间类型',
-      width: 180,
-      dataIndex: 'orderTimeType',
-      valueEnum: {
-        NormalOrder: { text: '正常下单' },
-        SpecificTimeOrder: { text: '指定时间下单' },
-      },
-    },
-    {
-      title: '下单时间',
-      width: 150,
-      hideInSearch: true,
-      dataIndex: 'orderTime',
-      valueType: 'dateTime',
-    },
-    {
-      title: '上传时间',
-      width: 150,
-      dataIndex: 'uploadTime',
-      valueType: 'date',
-    },
-    {
-      title: '评价类型',
-      width: 120,
-      dataIndex: 'reviewType',
-      valueEnum: {
-        NormalReview: { text: '正常评价' },
-        ReviewAfterModification: { text: '评价后补' },
-      },
-    },
-    {
-      title: '评论后补文件',
-      width: 180,
-      dataIndex: 'uploadedFile',
-      hideInSearch: true,
-      render: (_, record: any) => {
-        // 确保文件URL存在
-        if (!record.uploadedFile) return '无文件';
 
-        // 返回一个下载按钮或链接
-        return (
-          <a href={record.uploadedFile} download target="_blank" rel="noopener noreferrer">
-            下载
-          </a>
-        );
-      },
-    },
     {
       title: '单量',
       width: 80,
       dataIndex: 'quantity',
       hideInSearch: true,
-    },
-    {
-      title: '下单类型',
-      width: 150,
-      dataIndex: 'orderType',
-      valueEnum: {
-        NormalOrder: { text: '正常下单' },
-        ContactForVolumeWeight: { text: '下单前联系改体积/重量' },
-        ContactForInventory: { text: '下单前联系开库存' },
-        ContactForPrice: { text: '下单前联系改价格' },
-      },
-      renderFormItem: (item, { defaultRender }) => {
-        if (item && item.valueEnum) {
-          return (
-            <Select mode="multiple" placeholder="请选择">
-              {Object.entries(item.valueEnum).map(([value, { text }]) => (
-                <Select.Option key={value} value={value}>
-                  <Checkbox style={{ marginRight: 8 }} />
-                  {text}
-                </Select.Option>
-              ))}
-            </Select>
-          );
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '状态', // 更新字段描述
@@ -348,17 +259,6 @@ const TableList: React.FC = () => {
             }}
           >
             编辑
-          </a>
-        ),
-        access.canOrderClerk && (
-          <a
-            key="upload"
-            onClick={() => {
-              setUploadModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            上传
           </a>
         ),
         access.canCustomer && (
@@ -432,7 +332,7 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/tasks', { ...params, status: activeKey }, sort, filter)
+          queryList('/empty-packages', { ...params, status: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={{

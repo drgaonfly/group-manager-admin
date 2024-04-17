@@ -67,6 +67,13 @@ export default [
     component: './Bills',
   },
   {
+    name: 'list.emptyPackages',
+    icon: 'table',
+    access: 'canCustomer',
+    path: '/empty-packages',
+    component: './EmptyPackages',
+  },
+  {
     path: '/',
     redirect: '/Welcome',
   },
