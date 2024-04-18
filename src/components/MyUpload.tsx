@@ -52,13 +52,13 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept }) => {
     multiple: false,
     customRequest,
     showUploadList: true,
-    beforeUpload: (file) => {
-      const isLessThan2M = file.size / 1024 / 1024 < 6; // 检查文件大小是否小于2MB
-      if (!isLessThan2M) {
-        message.error('文件大小不能超过6MB!');
-      }
-      return isLessThan2M; // 如果文件大于2MB，不上传文件
-    },
+    // beforeUpload: (file) => {
+    //   const isLessThan2M = file.size / 1024 / 1024 < 6; // 检查文件大小是否小于2MB
+    //   if (!isLessThan2M) {
+    //     message.error('文件大小不能超过6MB!');
+    //   }
+    //   return isLessThan2M; // 如果文件大于2MB，不上传文件
+    // },
     onChange(info) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
