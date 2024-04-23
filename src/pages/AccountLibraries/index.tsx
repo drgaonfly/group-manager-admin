@@ -173,6 +173,11 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '分配时间',
+      dataIndex: 'assignedTime',
+      valueType: 'date',
+    },
+    {
       title: '操作',
       width: 250,
       fixed: 'right',
