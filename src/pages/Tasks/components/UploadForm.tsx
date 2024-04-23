@@ -41,6 +41,11 @@ const UploadForm: React.FC<UpdateFormProps> = (props) => {
       initialValues={{ ...values }}
     >
       <Form.Item required label="账单文件" name="billFile">
+        <div style={{ marginBottom: '30px' }}>
+          <a href="https://ordersystem-new.2024fc.xyz/api/static/账单模板.xlsx" download>
+            下载模板
+          </a>
+        </div>
         <AliyunOSSUpload
           onFileUpload={(url: string) => {
             console.log('Uploaded file URL:', url);
