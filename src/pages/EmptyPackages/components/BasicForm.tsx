@@ -1,9 +1,9 @@
 import React from 'react';
 import { ProForm, ProFormSelect, ProFormDigit } from '@ant-design/pro-components';
 import { Form } from 'antd';
-import MyUpload from '@/components/MyUpload';
 import useQueryList from '@/hooks/useQueryList';
 import { useAccess } from '@umijs/max';
+import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 
 interface Props {
   newRecord?: boolean;
@@ -73,23 +73,23 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile }) => {
       <ProForm.Group>
         {newRecord && (
           <Form.Item required label="PDF 文件" name="pdfFile">
-            <MyUpload
-              accept=".pdf"
+            <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
                 setFile!(url);
               }}
+              accept=".pdf"
             />
           </Form.Item>
         )}
         {newRecord && (
           <Form.Item required label="压缩文件" name="zipFile">
-            <MyUpload
-              accept=".zip,.rar"
+            <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
                 setReviewFile!(url);
               }}
+              accept=".zip,.rar"
             />
           </Form.Item>
         )}

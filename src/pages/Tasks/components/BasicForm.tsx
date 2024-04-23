@@ -8,7 +8,6 @@ import {
   ProFormDigit,
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
-import MyUpload from '@/components/MyUpload';
 import useQueryList from '@/hooks/useQueryList';
 import { useAccess } from '@umijs/max';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
@@ -92,13 +91,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
       <ProForm.Group>
         {newRecord && (
           <Form.Item required label="上传文件" name="file">
-            {/* <MyUpload
-              accept=".xls,.xlsx"
-              onFileUpload={(url: string) => {
-                console.log('Uploaded file URL:', url);
-                setFile!(url);
-              }}
-            /> */}
             <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
@@ -172,9 +164,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
 
       {reviewType === 'ReviewAfterModification' && (
         <Form.Item required label="上传评论" name="uploadedFile">
-          <MyUpload
+          <AliyunOSSUpload
             onFileUpload={(url: string) => {
-              console.log('Uploaded review file URL:', url);
+              console.log('Uploaded file URL:', url);
               setReviewFile!(url);
             }}
           />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form, Input, message } from 'antd';
-import MyUpload from '@/components/MyUpload';
+import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -41,12 +41,12 @@ const UploadForm: React.FC<UpdateFormProps> = (props) => {
       initialValues={{ ...values }}
     >
       <Form.Item required label="账单文件" name="billFile">
-        <MyUpload
-          accept=".xls,.xlsx"
-          onFileUpload={(data: any) => {
-            console.log('Uploaded resource URL:', data);
-            setFile(data); // Assuming 'data' is an array of objects with a 'title' property
+        <AliyunOSSUpload
+          onFileUpload={(url: string) => {
+            console.log('Uploaded file URL:', url);
+            setFile!(url);
           }}
+          accept=".xls,.xlsx"
         />
       </Form.Item>
       <Form.Item name="_id" label={false}>
