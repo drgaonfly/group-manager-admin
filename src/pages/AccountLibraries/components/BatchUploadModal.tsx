@@ -14,7 +14,7 @@ const BatchUploadModal: React.FC<Props> = ({ open, onOpenChange, onFinish }) => 
 
   return (
     <ModalForm
-      title="批量上传"
+      title="批量上传账号库"
       open={open}
       onOpenChange={onOpenChange}
       modalProps={{
