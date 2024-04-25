@@ -153,7 +153,6 @@ const TableList: React.FC = () => {
       width: 150,
       dataIndex: 'country',
       valueEnum: {
-        Vietnam: { text: '越南' },
         'Vietnam Ho Chi Minh': { text: '越南胡志明' },
         'Vietnam Hanoi': { text: '越南河内' },
         Thailand: { text: '泰国' },
