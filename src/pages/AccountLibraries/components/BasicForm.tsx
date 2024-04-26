@@ -1,5 +1,6 @@
 import React from 'react';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { locationMapping, platformNames } from '@/utils/constants';
 // import useQueryList from '@/hooks/useQueryList';
 // import { useAccess } from '@umijs/max';
 
@@ -37,13 +38,7 @@ const BasicForm: React.FC<Props> = ({}) => {
           label="国家"
           width="md"
           rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={{
-            Vietnam: '越南',
-            Thailand: '泰国',
-            Malaysia: '马来西亚',
-            Philippines: '菲律宾',
-            Indonesia: '印尼',
-          }}
+          valueEnum={locationMapping}
           placeholder="请选择国家"
         />
 
@@ -52,11 +47,7 @@ const BasicForm: React.FC<Props> = ({}) => {
           label="平台"
           width="md"
           rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={{
-            Shopee: 'Shopee',
-            Lazada: 'Lazada',
-            TikTok: 'TikTok',
-          }}
+          valueEnum={platformNames}
           placeholder="请选择平台"
         />
 

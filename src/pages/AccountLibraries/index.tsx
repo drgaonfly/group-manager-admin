@@ -11,6 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import UploadForm from './components/UploadForm';
 import BatchUploadModal from './components/BatchUploadModal';
+import { convertToTextObject, locationTextMapping, platformNames } from '@/utils/constants';
 
 /**
  * @en-US Add node
@@ -134,24 +135,13 @@ const TableList: React.FC = () => {
       title: '国家',
       width: 150,
       dataIndex: 'country',
-      valueEnum: {
-        'Vietnam Ho Chi Minh': { text: '越南胡志明' },
-        'Vietnam Hanoi': { text: '越南河内' },
-        Thailand: { text: '泰国' },
-        Malaysia: { text: '马来西亚' },
-        Philippines: { text: '菲律宾' },
-        Indonesia: { text: '印尼' },
-      },
+      valueEnum: locationTextMapping,
     },
     {
       title: '平台',
       width: 150,
       dataIndex: 'platform',
-      valueEnum: {
-        Shopee: { text: 'Shopee' },
-        Lazada: { text: 'Lazada' },
-        TikTok: { text: 'TikTok' },
-      },
+      valueEnum: convertToTextObject(platformNames),
     },
     {
       title: '下单账号序号',

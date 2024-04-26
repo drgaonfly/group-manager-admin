@@ -11,6 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import UploadForm from './components/UploadForm';
 import BatchUploadModal from './components/BatchUploadModal';
+import { convertToTextObject, platformNames } from '@/utils/constants';
 
 /**
  * @en-US Add node
@@ -147,11 +148,7 @@ const TableList: React.FC = () => {
       title: '平台',
       width: 150,
       dataIndex: 'platform',
-      valueEnum: {
-        Shopee: { text: 'Shopee' },
-        Lazada: { text: 'Lazada' },
-        TikTok: { text: 'TikTok' },
-      },
+      valueEnum: convertToTextObject(platformNames),
     },
     {
       title: '店铺账号',

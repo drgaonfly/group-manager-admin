@@ -9,6 +9,7 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
+import { locationTextMapping } from '@/utils/constants';
 
 /**
  * @en-US Add node
@@ -123,13 +124,7 @@ const TableList: React.FC = () => {
     {
       title: '国家',
       dataIndex: 'country',
-      valueEnum: {
-        Vietnam: { text: '越南' },
-        Thailand: { text: '泰国' },
-        Malaysia: { text: '马来西亚' },
-        Philippines: { text: '菲律宾' },
-        Indonesia: { text: '印尼' },
-      },
+      valueEnum: locationTextMapping,
     },
     {
       title: '订单号',

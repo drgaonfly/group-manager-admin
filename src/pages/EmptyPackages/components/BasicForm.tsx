@@ -4,6 +4,7 @@ import { Form } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 import { useAccess } from '@umijs/max';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { locationMapping, platformNames } from '@/utils/constants';
 
 interface Props {
   newRecord?: boolean;
@@ -39,13 +40,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
           label="国家"
           width="md"
           rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={{
-            Vietnam: '越南',
-            Thailand: '泰国',
-            Malaysia: '马来西亚',
-            Philippines: '菲律宾',
-            Indonesia: '印尼',
-          }}
+          valueEnum={locationMapping}
           placeholder="请选择国家"
         />
 
@@ -54,11 +49,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
           label="平台"
           width="md"
           rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={{
-            Shopee: 'Shopee',
-            Lazada: 'Lazada',
-            TikTok: 'TikTok',
-          }}
+          valueEnum={platformNames}
           placeholder="请选择平台"
         />
         <ProFormDigit

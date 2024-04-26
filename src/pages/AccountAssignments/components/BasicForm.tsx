@@ -1,5 +1,6 @@
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { locationMapping, platformNames } from '@/utils/constants';
 // import useQueryList from '@/hooks/useQueryList';
 // import { useAccess } from '@umijs/max';
 
@@ -37,13 +38,7 @@ const BasicForm: React.FC<Props> = ({}) => {
           label="国家"
           width="md"
           rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={{
-            Vietnam: '越南',
-            Thailand: '泰国',
-            Malaysia: '马来西亚',
-            Philippines: '菲律宾',
-            Indonesia: '印尼',
-          }}
+          valueEnum={locationMapping}
           placeholder="请选择国家"
         />
 
@@ -52,36 +47,25 @@ const BasicForm: React.FC<Props> = ({}) => {
           label="平台"
           width="md"
           rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={{
-            Shopee: 'Shopee',
-            Lazada: 'Lazada',
-            TikTok: 'TikTok',
-          }}
+          valueEnum={platformNames}
           placeholder="请选择平台"
         />
 
-        <ProFormText
-          rules={[{ required: false }]}
+        <ProFormDigit
+          name="numberOfAccounts"
+          label="账号数量"
           width="md"
-          label="下单账号序号"
-          name="accountNumber"
-          placeholder="请输入账号"
+          min={1} // Minimum number of accounts must be at least 1
+          rules={[{ required: true, message: '请输入账号数量' }]}
+          placeholder="请输入账号数量"
         />
 
         <ProFormText
-          rules={[{ required: false }]}
+          name="storeAccount"
+          label="店铺账号"
           width="md"
-          label="登录账号"
-          name="loginAccount"
-          placeholder="请输入登录账号"
-        />
-
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label="登录密码"
-          name="loginPassword"
-          placeholder="请输入登录密码"
+          rules={[{ required: true, message: '请输入店铺账号' }]}
+          placeholder="请输入店铺账号"
         />
       </ProForm.Group>
     </>
