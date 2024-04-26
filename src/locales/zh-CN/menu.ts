@@ -36,6 +36,8 @@ export default {
   'menu.tasks': '任务',
   'menu.list.users': '用户列表',
   'menu.list.categories': '图片分类',
+  'menu.list.accountAssignment': '分配账号',
+  'menu.assignments': '分配账号',
   'menu.list.images': '图片管理',
   'menu.list.basic-list': '标准列表',
   'menu.list.card-list': '卡片列表',

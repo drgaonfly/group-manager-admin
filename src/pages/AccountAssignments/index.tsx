@@ -1,21 +1,16 @@
-import {
-  addItem,
-  handleItem,
-  queryList,
-  removeItem,
-  updateItem,
-} from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, Checkbox, message, Modal, Select } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import UploadForm from './components/UploadForm';
+import BatchUploadModal from './components/BatchUploadModal';
 
 /**
  * @en-US Add node
@@ -25,7 +20,7 @@ import UploadForm from './components/UploadForm';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading('正在添加');
   try {
-    await addItem('/tasks', { ...fields });
+    await addItem('/assignments', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -45,7 +40,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('正在更新');
   try {
-    await updateItem(`/tasks/${fields._id}`, fields);
+    await updateItem(`/assignments/${fields._id}`, fields);
     hide();
 
     message.success('更新成功');
@@ -67,7 +62,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading('正在删除');
   if (!ids) return true;
   try {
-    await removeItem('/tasks', {
+    await removeItem('/assignments', {
       ids,
     });
     hide();
@@ -83,7 +78,7 @@ const handleRemove = async (ids: string[]) => {
 const handleUploadBill = async (fields: API.ItemData) => {
   const hide = message.loading('正在上传');
   try {
-    await addItem('/tasks/upload-bills', { ...fields });
+    await addItem('/assignments/upload-bills', { ...fields });
     hide();
     message.success('上传成功');
     return true;
@@ -94,40 +89,16 @@ const handleUploadBill = async (fields: API.ItemData) => {
   }
 };
 
-const handleDownload = async (id: string) => {
-  const hide = message.loading('正在准备下载');
+const handleBatchAdd = async (fields: API.ItemData) => {
+  const hide = message.loading('正在批量上传');
   try {
-    const response = await handleItem(`/tasks/download-task`, { taskId: id }); // Assuming handleItem can handle method and body
+    await addItem('/assignments/upload', { ...fields });
     hide();
-
-    console.log('response', response);
-
-    if (response?.data) {
-      message.success('文件准备完成，下载即将开始');
-      // Optionally handle the download URL from the response
-      window.open(response.data.signedURL, '_blank');
-      return true;
-    } else {
-      throw new Error('No download URL returned');
-    }
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '下载失败，请重试!');
-    return false;
-  }
-};
-
-const handleCancel = async (id: string) => {
-  const hide = message.loading('正在取消');
-  try {
-    await handleItem(`/tasks/${id}/cancel`);
-    hide();
-
-    message.success('取消成功');
+    message.success('Added successfully');
     return true;
   } catch (error: any) {
     hide();
-    message.error(error?.response?.data?.message ?? '取消 失败，请重试!');
+    message.error(error?.response?.data?.message ?? 'Adding failed, please try again!');
     return false;
   }
 };
@@ -151,7 +122,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
-  const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
 
   /**
    * @en-US International configuration
@@ -160,10 +131,32 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '编号',
-      dataIndex: '_id',
-      width: 250,
-      copyable: true,
+      title: '国家',
+      width: 150,
+      dataIndex: 'country',
+      valueEnum: {
+        'Vietnam Ho Chi Minh': { text: '越南胡志明' },
+        'Vietnam Hanoi': { text: '越南河内' },
+        Thailand: { text: '泰国' },
+        Malaysia: { text: '马来西亚' },
+        Philippines: { text: '菲律宾' },
+        Indonesia: { text: '印尼' },
+      },
+    },
+    {
+      title: '平台',
+      width: 150,
+      dataIndex: 'platform',
+      valueEnum: {
+        Shopee: { text: 'Shopee' },
+        Lazada: { text: 'Lazada' },
+        TikTok: { text: 'TikTok' },
+      },
+    },
+    {
+      title: '店铺账号',
+      dataIndex: 'storeAccount',
+      width: 200,
       render: (dom, entity) => {
         return (
           <a
@@ -178,175 +171,16 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '国家',
-      width: 100,
-      dataIndex: 'country',
-      valueEnum: {
-        Vietnam: { text: '越南' },
-        Thailand: { text: '泰国' },
-        Malaysia: { text: '马来西亚' },
-        Philippines: { text: '菲律宾' },
-        Indonesia: { text: '印尼' },
-      },
-    },
-    {
-      title: '平台',
-      width: 100,
-      dataIndex: 'platform',
-      valueEnum: {
-        Shopee: { text: 'Shopee' },
-        Lazada: { text: 'Lazada' },
-        TikTok: { text: 'TikTok' },
-      },
-    },
-    // {
-    //   title: '平台',
-    //   dataIndex: 'platform',
-    //   valueEnum: {
-    //     TikTok: { text: 'TikTok' },
-    //     Shopify: { text: 'Shopify' },
-    //   },
-    // },
-    {
-      title: '源文件',
-      dataIndex: 'file',
-      width: 80,
+      title: '账号数量',
+      dataIndex: 'numberOfAccounts',
       hideInSearch: true,
-      render: (_, record) => {
-        // 确保文件URL存在
-        if (!record.file) return '无文件';
-
-        // 返回一个按钮来触发下载
-        return (
-          <Button
-            type="link"
-            onClick={() => handleDownload(record._id!)} // Assuming `record.id` is the identifier needed by handleDownload
-          >
-            下载
-          </Button>
-        );
-      },
-    },
-    {
-      title: '状态', // 更新字段描述
-      width: 100,
-      dataIndex: 'status', // 指定数据索引为status
-      valueEnum: {
-        Active: {
-          text: '正常',
-          status: 'Success', // 添加状态，用于UI框架以表示成功/绿色
-        },
-        Cancelled: {
-          text: '已取消',
-          status: 'Error', // 添加状态，用于UI框架以表示错误/红色
-        },
-        Processing: {
-          text: '处理中',
-          status: 'Processing', // 添加状态，用于UI框架以表示处理中/蓝色
-        },
-        Completed: {
-          text: '已完成',
-          status: 'Default', // 添加状态，通常表示默认状态/灰色
-        },
-        Issue: {
-          text: '有问题',
-          status: 'Warning', // 添加状态，用于UI框架以表示警告/黄色
-        },
-      },
-      hideInSearch: true, // 在搜索中隐藏此字段
-    },
-    {
-      title: '上传用户',
-      dataIndex: 'user',
       width: 200,
-      hideInSearch: true,
-      render: (_, record) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.email ? record.user.email : '未知';
-      },
     },
     {
-      title: '下单时间类型',
-      width: 180,
-      dataIndex: 'orderTimeType',
-      valueEnum: {
-        NormalOrder: { text: '正常下单' },
-        SpecificTimeOrder: { text: '指定时间下单' },
-      },
-    },
-    {
-      title: '下单时间',
-      width: 150,
-      hideInSearch: true,
-      dataIndex: 'orderTime',
-      valueType: 'dateTime',
-    },
-    {
-      title: '上传时间',
-      width: 150,
-      dataIndex: 'uploadTime',
+      title: '分配时间',
+      dataIndex: 'assignedTime',
       valueType: 'date',
     },
-    {
-      title: '评价类型',
-      width: 120,
-      dataIndex: 'reviewType',
-      valueEnum: {
-        NormalReview: { text: '正常评价' },
-        ReviewAfterModification: { text: '评价后补' },
-      },
-    },
-    {
-      title: '评论后补文件',
-      width: 180,
-      dataIndex: 'uploadedFile',
-      hideInSearch: true,
-      render: (_, record: any) => {
-        // 确保文件URL存在
-        if (!record.uploadedFile) return '无文件';
-
-        // 返回一个下载按钮或链接
-        return (
-          <a href={record.uploadedFile} download target="_blank" rel="noopener noreferrer">
-            下载
-          </a>
-        );
-      },
-    },
-    {
-      title: '单量',
-      width: 80,
-      dataIndex: 'quantity',
-      hideInSearch: true,
-    },
-    {
-      title: '下单类型',
-      width: 150,
-      dataIndex: 'orderType',
-      valueEnum: {
-        NormalOrder: { text: '正常下单' },
-        ContactForVolumeWeight: { text: '下单前联系改体积/重量' },
-        ContactForInventory: { text: '下单前联系开库存' },
-        ContactForPrice: { text: '下单前联系改价格' },
-      },
-      renderFormItem: (item, { defaultRender }) => {
-        if (item && item.valueEnum) {
-          return (
-            <Select mode="multiple" placeholder="请选择">
-              {Object.entries(item.valueEnum).map(([value, { text }]) => (
-                <Select.Option key={value} value={value}>
-                  <Checkbox style={{ marginRight: 8 }} />
-                  {text}
-                </Select.Option>
-              ))}
-            </Select>
-          );
-        }
-        return defaultRender(item);
-      },
-    },
-
     {
       title: '操作',
       width: 250,
@@ -364,38 +198,6 @@ const TableList: React.FC = () => {
             }}
           >
             编辑
-          </a>
-        ),
-        access.canOrderClerk && (
-          <a
-            key="upload"
-            onClick={() => {
-              setUploadModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            上传
-          </a>
-        ),
-        access.canCustomer && (
-          <a
-            key="cancel"
-            onClick={() => {
-              // Replace `handleRemove`, `setSelectedRows`, and `actionRef.current?.reloadAndRest?` as well
-              return Modal.confirm({
-                title: '确认取消?',
-                onOk: async () => {
-                  await handleCancel(record._id!);
-                  setSelectedRows([]);
-                  actionRef.current?.reloadAndRest?.();
-                },
-                content: '确定取消吗？',
-                okText: '确认',
-                cancelText: '取消',
-              });
-            }}
-          >
-            取消
           </a>
         ),
         access.canSuperAdmin && (
@@ -446,53 +248,25 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
+          access.canCustomer && (
+            <Button
+              danger
+              key="batchUpload"
+              onClick={() => {
+                setBatchUploadModalOpen(true);
+              }}
+            >
+              <UploadOutlined /> 批量上传
+            </Button>
+          ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/tasks', { ...params, status: activeKey }, sort, filter)
+          queryList('/assignments', { ...params }, sort, filter)
         }
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
-          },
-        }}
-        toolbar={{
-          menu: {
-            type: 'tab',
-            activeKey: activeKey,
-            items: [
-              {
-                label: <span>所有</span>,
-                key: '', // 不设置key或设置为空字符串，表示不过滤此项
-              },
-              {
-                label: <span>正常</span>,
-                key: 'Active', // 对应Active状态
-              },
-              // 下面添加新的状态
-              {
-                label: <span>处理中</span>,
-                key: 'Processing', // 对应Processing状态
-              },
-              {
-                label: <span>已取消</span>,
-                key: 'Cancelled', // 对应Cancelled状态
-              },
-              {
-                label: <span>已完成</span>,
-                key: 'Completed', // 对应Completed状态
-              },
-              {
-                label: <span>有问题</span>,
-                key: 'Issue', // 对应Issue状态
-              },
-            ],
-            onChange: (key: any) => {
-              setActiveKey(key);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            },
           },
         }}
       />
@@ -559,6 +333,19 @@ const TableList: React.FC = () => {
         onCancel={setUploadModalVisible} // 关闭模态窗口
         updateModalOpen={uploadModalVisible} // 控制上传模态窗口的开关
         values={currentRow || {}} // 当前行数据，用作表单的初始值或为新上传提供参考数据
+      />
+      <BatchUploadModal
+        open={batchUploadModalOpen}
+        onOpenChange={setBatchUploadModalOpen}
+        onFinish={async (values) => {
+          const success = await handleBatchAdd(values as API.ItemData);
+          if (success) {
+            setBatchUploadModalOpen(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
       />
 
       <Update

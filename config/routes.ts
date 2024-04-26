@@ -81,6 +81,13 @@ export default [
     component: './AccountLibraries',
   },
   {
+    name: 'list.accountAssignment',
+    icon: 'idcard',
+    access: 'canAdmin',
+    path: '/assignments',
+    component: './AccountAssignments',
+  },
+  {
     path: '/',
     redirect: '/Welcome',
   },
