@@ -9,7 +9,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -222,7 +222,6 @@ const TableList: React.FC = () => {
         return record.user && record.user.email ? record.user.email : '未知';
       },
     },
-
     {
       title: '单量',
       width: 80,
@@ -230,17 +229,21 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '状态', // 更新字段描述
+      title: '是否处理', // 更新字段描述
       width: 100,
-      dataIndex: 'status', // 指定数据索引为status
-      valueEnum: {
-        Active: { text: '正常' }, // 对应Active状态
-        Cancelled: { text: '已取消' }, // 对应Cancelled状态
-        Processing: { text: '处理中' }, // 对应Processing状态
-        Completed: { text: '已完成' }, // 对应Completed状态
-        Issue: { text: '有问题' }, // 对应Issue状态
-      },
-      hideInSearch: true, // 在搜索中隐藏此字段
+      dataIndex: 'isProcessed', // 指定数据索引为status
+      hideInSearch: true,
+      render: (_, record) => (
+        <Switch
+          checked={record.isProcessed}
+          onChange={() => {
+            handleUpdate({ ...record, isProcessed: !record.isProcessed });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: '操作',
@@ -332,7 +335,7 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/empty-packages', { ...params, status: activeKey }, sort, filter)
+          queryList('/empty-packages', { ...params, isProcessed: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={{
@@ -350,25 +353,12 @@ const TableList: React.FC = () => {
                 key: '', // 不设置key或设置为空字符串，表示不过滤此项
               },
               {
-                label: <span>正常</span>,
-                key: 'Active', // 对应Active状态
-              },
-              // 下面添加新的状态
-              {
-                label: <span>处理中</span>,
-                key: 'Processing', // 对应Processing状态
+                label: <span>未处理</span>,
+                key: 'false', // 对应Active状态
               },
               {
-                label: <span>已取消</span>,
-                key: 'Cancelled', // 对应Cancelled状态
-              },
-              {
-                label: <span>已完成</span>,
-                key: 'Completed', // 对应Completed状态
-              },
-              {
-                label: <span>有问题</span>,
-                key: 'Issue', // 对应Issue状态
+                label: <span>已处理</span>,
+                key: 'true', // 对应Completed状态
               },
             ],
             onChange: (key: any) => {
