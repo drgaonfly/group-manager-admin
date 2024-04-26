@@ -59,26 +59,29 @@ const BasicForm: React.FC<Props> = ({}) => {
           }}
           placeholder="请选择平台"
         />
+
+        <ProFormText
+          rules={[{ required: false }]}
+          width="md"
+          label="下单账号序号"
+          name="accountNumber"
+          placeholder="请输入账号"
+        />
+
+        <ProFormText
+          rules={[{ required: false }]}
+          width="md"
+          label="登录账号"
+          name="loginAccount"
+          placeholder="请输入登录账号"
+        />
+
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label="平台账号"
-          name="storeAccount"
-          placeholder="请输入平台账号"
-        />
-        <ProFormText
-          rules={[{ required: false }]}
-          width="md"
-          label="窗口序号"
-          name="serialNumber"
-          placeholder="请输入窗口序号"
-        />
-        <ProFormText
-          rules={[{ required: false }]}
-          width="md"
-          label="账号"
-          name="accountNumber"
-          placeholder="请输入账号"
+          label="登录密码"
+          name="loginPassword"
+          placeholder="请输入登录密码"
         />
       </ProForm.Group>
     </>

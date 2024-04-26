@@ -131,24 +131,6 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '编号',
-      dataIndex: '_id',
-      width: 250,
-      copyable: true,
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
-    {
       title: '国家',
       width: 150,
       dataIndex: 'country',
@@ -172,20 +154,30 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '账号',
+      title: '下单账号序号',
       dataIndex: 'accountNumber',
       width: 200,
-      hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
     {
-      title: '窗口序号',
-      dataIndex: 'serialNumber',
+      title: '登录账号',
+      dataIndex: 'loginAccount',
       width: 200,
-      hideInSearch: true,
     },
     {
-      title: '平台账号',
-      dataIndex: 'storeAccount',
+      title: '登录密码',
+      dataIndex: 'loginPassword',
       width: 200,
       hideInSearch: true,
     },
