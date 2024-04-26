@@ -9,7 +9,7 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
-import { locationTextMapping } from '@/utils/constants';
+import { convertToTextObject, locationMapping } from '@/utils/constants';
 
 /**
  * @en-US Add node
@@ -124,7 +124,7 @@ const TableList: React.FC = () => {
     {
       title: '国家',
       dataIndex: 'country',
-      valueEnum: locationTextMapping,
+      valueEnum: convertToTextObject(locationMapping),
     },
     {
       title: '订单号',

@@ -7,15 +7,6 @@ export const locationMapping = {
   Indonesia: '印尼',
 };
 
-export const locationTextMapping = {
-  'Vietnam Ho Chi Minh': { text: '越南胡志明' },
-  'Vietnam Hanoi': { text: '越南河内' },
-  Thailand: { text: '泰国' },
-  Malaysia: { text: '马来西亚' },
-  Philippines: { text: '菲律宾' },
-  Indonesia: { text: '印尼' },
-};
-
 export const platformNames = {
   Shopee: 'Shopee',
   Lazada: 'Lazada',

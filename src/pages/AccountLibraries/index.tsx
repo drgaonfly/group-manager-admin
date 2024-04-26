@@ -11,7 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import UploadForm from './components/UploadForm';
 import BatchUploadModal from './components/BatchUploadModal';
-import { convertToTextObject, locationTextMapping, platformNames } from '@/utils/constants';
+import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
 
 /**
  * @en-US Add node
@@ -135,7 +135,7 @@ const TableList: React.FC = () => {
       title: '国家',
       width: 150,
       dataIndex: 'country',
-      valueEnum: locationTextMapping,
+      valueEnum: convertToTextObject(locationMapping),
     },
     {
       title: '平台',
