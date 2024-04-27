@@ -10,18 +10,21 @@ import {
 import { useAccess } from '@umijs/max';
 import useForm from 'antd/lib/form/hooks/useForm';
 import { locationMapping, platformNames } from '@/utils/constants';
+import { Form, Input } from 'antd';
 
 interface Props {
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
+  values?: any;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const access = useAccess();
   const [form] = useForm();
 
   return (
     <ProForm
+      initialValues={{ ...values }}
       form={form}
       onFinish={async (values) => {
         await onFinish(values);
@@ -134,6 +137,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish }) => {
           </ProForm.Group>
         )}
       </ProFormList>
+      {!newRecord && (
+        <Form.Item name="_id" label={false}>
+          <Input type="hidden" />
+        </Form.Item>
+      )}
     </ProForm>
   );
 };

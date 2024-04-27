@@ -1,7 +1,6 @@
 import React from 'react';
 import BasicForm from './BasicForm';
-import { ModalForm } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
+import { Modal } from 'antd';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -17,23 +16,17 @@ export type UpdateFormProps = {
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   return (
-    <ModalForm
-      title="修改"
+    <Modal
+      maskClosable={false}
       width="50%"
-      modalProps={{
-        destroyOnClose: true,
-        maskClosable: false,
-      }}
+      destroyOnClose
+      title="审核报告号"
       open={updateModalOpen}
-      onOpenChange={onCancel}
-      onFinish={onSubmit}
-      initialValues={{ ...values, roleIds: values.roles?.map((role) => role.id) }}
+      footer={false}
+      onCancel={() => onCancel(false)}
     >
-      <BasicForm />
-      <Form.Item name="_id" label={false}>
-        <Input type="hidden" />
-      </Form.Item>
-    </ModalForm>
+      <BasicForm values={values} onFinish={onSubmit} />
+    </Modal>
   );
 };
 
