@@ -1,5 +1,5 @@
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -245,17 +245,17 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          access.canCustomer && (
-            <Button
-              danger
-              key="batchUpload"
-              onClick={() => {
-                setBatchUploadModalOpen(true);
-              }}
-            >
-              <UploadOutlined /> 批量上传
-            </Button>
-          ),
+          // access.canCustomer && (
+          //   <Button
+          //     danger
+          //     key="batchUpload"
+          //     onClick={() => {
+          //       setBatchUploadModalOpen(true);
+          //     }}
+          //   >
+          //     <UploadOutlined /> 批量上传
+          //   </Button>
+          // ),
         ]}
         request={async (params, sort, filter) =>
           queryList('/assignments', { ...params }, sort, filter)

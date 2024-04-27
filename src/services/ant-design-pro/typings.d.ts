@@ -27,6 +27,7 @@ declare namespace API {
   };
 
   type ItemData = {
+    data?: any;
     isProcessed?: boolean;
     orderNumber?: string;
     bills?: any[];
