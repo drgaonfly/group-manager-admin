@@ -11,7 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import UploadForm from './components/UploadForm';
 import BatchUploadModal from './components/BatchUploadModal';
-import { convertToTextObject, platformNames } from '@/utils/constants';
+import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
 
 /**
  * @en-US Add node
@@ -135,14 +135,7 @@ const TableList: React.FC = () => {
       title: '国家',
       width: 150,
       dataIndex: 'country',
-      valueEnum: {
-        'Vietnam Ho Chi Minh': { text: '越南胡志明' },
-        'Vietnam Hanoi': { text: '越南河内' },
-        Thailand: { text: '泰国' },
-        Malaysia: { text: '马来西亚' },
-        Philippines: { text: '菲律宾' },
-        Indonesia: { text: '印尼' },
-      },
+      valueEnum: convertToTextObject(locationMapping),
     },
     {
       title: '平台',
@@ -177,6 +170,17 @@ const TableList: React.FC = () => {
       title: '分配时间',
       dataIndex: 'assignedTime',
       valueType: 'date',
+    },
+    {
+      title: '操作人',
+      dataIndex: 'user',
+      width: 200,
+      hideInSearch: true,
+      render: (_, record) => {
+        // Assuming the user field is populated and includes an email field
+        // Check if the user object exists and has an email property
+        return record.user && record.user.email ? record.user.email : '未知';
+      },
     },
     {
       title: '操作',

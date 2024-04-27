@@ -1,5 +1,4 @@
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -19,9 +18,9 @@ import { convertToTextObject, locationMapping, platformNames } from '@/utils/con
  * @param fields
  */
 const handleAdd = async (fields: API.ItemData) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('正在搜索');
   try {
-    await addItem('/accounts', { ...fields });
+    await addItem('/assignment-records', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -41,7 +40,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('正在更新');
   try {
-    await updateItem(`/accounts/${fields._id}`, fields);
+    await updateItem(`/assignment-records/${fields._id}`, fields);
     hide();
 
     message.success('更新成功');
@@ -63,7 +62,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading('正在删除');
   if (!ids) return true;
   try {
-    await removeItem('/accounts', {
+    await removeItem('/assignment-records', {
       ids,
     });
     hide();
@@ -79,7 +78,7 @@ const handleRemove = async (ids: string[]) => {
 const handleUploadBill = async (fields: API.ItemData) => {
   const hide = message.loading('正在上传');
   try {
-    await addItem('/accounts/upload-bills', { ...fields });
+    await addItem('/assignment-records/upload-bills', { ...fields });
     hide();
     message.success('上传成功');
     return true;
@@ -93,7 +92,7 @@ const handleUploadBill = async (fields: API.ItemData) => {
 const handleBatchAdd = async (fields: API.ItemData) => {
   const hide = message.loading('正在批量上传');
   try {
-    await addItem('/accounts/upload', { ...fields });
+    await addItem('/assignment-records/upload', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -144,9 +143,9 @@ const TableList: React.FC = () => {
       valueEnum: convertToTextObject(platformNames),
     },
     {
-      title: '下单账号序号',
+      title: '店铺账号',
+      dataIndex: 'storeAccount',
       copyable: true,
-      dataIndex: 'accountNumber',
       width: 200,
       render: (dom, entity) => {
         return (
@@ -162,38 +161,32 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '登录账号',
-      copyable: true,
-      width: 200,
-      dataIndex: 'loginAccount',
-    },
-    {
-      title: '登录密码',
-      copyable: true,
-      dataIndex: 'loginPassword',
-      width: 150,
+      title: '账号库',
+      dataIndex: 'accountLibrary',
       hideInSearch: true,
+      width: 200,
+      copyable: true,
+      renderText: (accountLibrary: {
+        accountNumber: string;
+        loginAccount: string;
+        loginPassword: string;
+      }) => (
+        <>
+          <div>下单账号序号: {accountLibrary.accountNumber}</div>
+          <div>登录账号: {accountLibrary.loginAccount}</div>
+          <div>登录密码: {accountLibrary.loginPassword}</div>
+        </>
+      ),
     },
     {
-      title: '是否分配',
-      width: 150,
-      dataIndex: 'isAssigned',
-      key: 'isAssigned',
-      valueEnum: {
-        true: { text: '已分配', status: 'Success' },
-        false: { text: '未分配', status: 'Error' },
-      },
-    },
-    {
-      title: '最近分配时间',
-      width: 150,
+      title: '分配时间',
       dataIndex: 'assignedTime',
       valueType: 'date',
     },
     {
       title: '操作人',
       dataIndex: 'user',
-      width: 150,
+      width: 200,
       hideInSearch: true,
       render: (_, record) => {
         // Assuming the user field is populated and includes an email field
@@ -208,18 +201,18 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canCustomer && (
-          <a
-            key="edit"
-            onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            编辑
-          </a>
-        ),
+        // access.canCustomer && (
+        //   <a
+        //     key="edit"
+        //     onClick={() => {
+        //       // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+        //       handleUpdateModalOpen(true);
+        //       setCurrentRow(record);
+        //     }}
+        //   >
+        //     编辑
+        //   </a>
+        // ),
         access.canSuperAdmin && (
           <a
             key="delete"
@@ -257,31 +250,31 @@ const TableList: React.FC = () => {
           defaultCollapsed: false,
         }}
         toolBarRender={() => [
-          access.canCustomer && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-          access.canCustomer && (
-            <Button
-              danger
-              key="batchUpload"
-              onClick={() => {
-                setBatchUploadModalOpen(true);
-              }}
-            >
-              <UploadOutlined /> 批量上传
-            </Button>
-          ),
+          // access.canCustomer && (
+          //   <Button
+          //     type="primary"
+          //     key="primary"
+          //     onClick={() => {
+          //       handleModalOpen(true);
+          //     }}
+          //   >
+          //     <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+          //   </Button>
+          // ),
+          // access.canCustomer && (
+          //   <Button
+          //     danger
+          //     key="batchUpload"
+          //     onClick={() => {
+          //       setBatchUploadModalOpen(true);
+          //     }}
+          //   >
+          //     <UploadOutlined /> 批量上传
+          //   </Button>
+          // ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/accounts', { ...params }, sort, filter)
+          queryList('/assignment-records', { ...params }, sort, filter)
         }
         columns={columns}
         rowSelection={{

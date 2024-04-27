@@ -88,6 +88,13 @@ export default [
     component: './AccountAssignments',
   },
   {
+    name: 'list.accountAssignmentRecords',
+    icon: 'idcard',
+    access: 'canAdmin',
+    path: '/assignment-records',
+    component: './AccountAssignmentRecords',
+  },
+  {
     path: '/',
     redirect: '/Welcome',
   },
