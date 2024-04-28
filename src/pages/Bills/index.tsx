@@ -93,7 +93,7 @@ const handleRemove = async (ids: string[]) => {
 const handleAfterSale = async (fields: API.ItemData) => {
   const hide = message.loading('正在申请售后');
   try {
-    await addItem('/bills/after-sale', { ...fields });
+    await addItem('/bills/after-sales-order', { ...fields, id: fields._id });
     hide();
     message.success('申请售后成功');
     return true;

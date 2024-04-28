@@ -35,7 +35,7 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
 
         await onSubmit({
           ...values,
-          pictureFile: file,
+          image: file,
         });
       }}
       initialValues={{ ...values }}
@@ -44,7 +44,7 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
         <Alert message="您已经申请过售后了" type="warning" showIcon />
       ) : (
         <>
-          <Form.Item required label="图片" name="pictureFile">
+          <Form.Item required label="图片" name="image">
             <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
