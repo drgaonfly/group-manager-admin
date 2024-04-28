@@ -10,6 +10,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
 import { convertToTextObject, locationMapping } from '@/utils/constants';
+import AfterSaleForm from './components/AfterSaleForm';
 
 /**
  * @en-US Add node
@@ -89,6 +90,20 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
+const handleAfterSale = async (fields: API.ItemData) => {
+  const hide = message.loading('正在申请售后');
+  try {
+    await addItem('/bills/after-sale', { ...fields });
+    hide();
+    message.success('申请售后成功');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? '申请售后失败，请重试！');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -107,6 +122,8 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
+  const [afterSaleModalVisible, setAfterSaleModalVisible] = useState<boolean>(false);
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
 
   /**
@@ -184,6 +201,16 @@ const TableList: React.FC = () => {
       title: '买手号',
       dataIndex: 'buyerId',
     },
+    // {
+    //   title: '是否售后',
+    //   dataIndex: 'afterSales',
+    //   key: 'afterSales',
+    //   hideInSearch: true,
+    //   valueEnum: {
+    //     true: { text: '有', status: 'Error' },
+    //     false: { text: '无', status: 'Success' },
+    //   },
+    // },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
@@ -204,6 +231,15 @@ const TableList: React.FC = () => {
           }}
         >
           编辑
+        </a>,
+        <a
+          key="afterSale"
+          onClick={() => {
+            setAfterSaleModalVisible(true);
+            setCurrentRow(record);
+          }}
+        >
+          申请售后
         </a>,
         access.canSuperAdmin && (
           <a
@@ -286,7 +322,35 @@ const TableList: React.FC = () => {
           //   <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           // </Button>,
         ]}
-        request={async (params, sort, filter) => queryList('/bills', params, sort, filter)}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <span>所有</span>,
+                key: '', // 不设置key或设置为空字符串，表示不过滤此项
+              },
+              {
+                label: <span>正常</span>,
+                key: 'false', // 对应Active状态
+              },
+              {
+                label: <span>有售后</span>,
+                key: 'true', // 对应Completed状态
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
+        request={async (params, sort, filter) =>
+          queryList('/bills', { ...params, afterSales: activeKey }, sort, filter)
+        }
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -356,6 +420,22 @@ const TableList: React.FC = () => {
         onCancel={handleUpdateModalOpen}
         updateModalOpen={updateModalOpen}
         values={currentRow || {}}
+      />
+
+      <AfterSaleForm
+        onSubmit={async (value) => {
+          const success = await handleAfterSale(value); // 假设这是上传逻辑的函数
+          if (success) {
+            setAfterSaleModalVisible(false); // 控制上传模态窗口的可见性
+            setCurrentRow(undefined); // 清空当前选中的行数据
+            if (actionRef.current) {
+              actionRef.current.reload(); // 如果有表格引用，重新加载表格数据
+            }
+          }
+        }}
+        onCancel={setAfterSaleModalVisible} // 关闭模态窗口
+        updateModalOpen={afterSaleModalVisible} // 控制上传模态窗口的开关
+        values={currentRow || {}} // 当前行数据，用作表单的初始值或为新上传提供参考数据
       />
 
       <Recharge
