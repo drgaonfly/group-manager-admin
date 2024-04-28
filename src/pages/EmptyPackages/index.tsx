@@ -226,6 +226,8 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (_, record) => (
         <Switch
+          checkedChildren="是"
+          unCheckedChildren="否"
           checked={record.isProcessed}
           onChange={() => {
             handleUpdate({ ...record, isProcessed: !record.isProcessed });

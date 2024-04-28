@@ -27,6 +27,7 @@ declare namespace API {
   };
 
   type ItemData = {
+    isAbnormal?: boolean;
     priceList?: any;
     accountLibraries?: any;
     data?: any;

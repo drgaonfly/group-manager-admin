@@ -3,7 +3,7 @@ import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -124,6 +124,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
   const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
 
   /**
    * @en-US International configuration
@@ -179,9 +180,33 @@ const TableList: React.FC = () => {
       width: 150,
       dataIndex: 'isAssigned',
       key: 'isAssigned',
+      hideInSearch: true,
       valueEnum: {
         true: { text: '已分配', status: 'Success' },
         false: { text: '未分配', status: 'Error' },
+      },
+    },
+    {
+      title: '是否异常', // 更新字段描述
+      width: 100,
+      dataIndex: 'isAbnormal', // 指定数据索引为status
+      hideInSearch: true,
+      render: (_, record) => (
+        <Switch
+          checkedChildren="是"
+          unCheckedChildren="否"
+          checked={record.isAbnormal}
+          onChange={() => {
+            handleUpdate({ ...record, isAbnormal: !record.isAbnormal });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+      valueEnum: {
+        true: { text: '是', status: 'Error' },
+        false: { text: '否', status: 'Success' },
       },
     },
     {
@@ -196,6 +221,7 @@ const TableList: React.FC = () => {
       dataIndex: 'assignedTime',
       valueType: 'date',
     },
+
     {
       title: '操作人',
       dataIndex: 'user',
@@ -287,12 +313,50 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/accounts', { ...params }, sort, filter)
+          queryList(
+            '/accounts',
+            {
+              ...params,
+              ...(activeKey === 'Abnormal' ? { isAbnormal: true } : { isAssigned: activeKey }),
+            },
+            sort,
+            filter,
+          )
         }
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
+          },
+        }}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <span>所有</span>,
+                key: '', // 不设置key或设置为空字符串，表示不过滤此项
+              },
+              {
+                label: <span>未分配</span>,
+                key: 'false', // 对应Active状态
+              },
+              {
+                label: <span>已分配</span>,
+                key: 'true', // 对应Completed状态
+              },
+              {
+                label: <span>异常</span>,
+                key: 'Abnormal', // 对应Completed状态
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
           },
         }}
       />
