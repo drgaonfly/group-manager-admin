@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ProForm, ProFormText, ProFormSelect, EditableProTable } from '@ant-design/pro-components';
 import { useAccess } from '@umijs/max';
 import useForm from 'antd/lib/form/hooks/useForm';
-import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
+import { convertToTextObject, locationMapping } from '@/utils/constants';
 import { Form, Input } from 'antd';
 
 interface Props {
@@ -28,16 +28,6 @@ const columns = [
     valueEnum: convertToTextObject(locationMapping),
     formItemProps: {
       rules: [{ required: true, message: '请选择国家' }],
-    },
-    editable: true,
-  },
-  {
-    title: '平台',
-    dataIndex: 'platform',
-    valueType: 'select',
-    valueEnum: convertToTextObject(platformNames), // replace with your actual platform mapping
-    formItemProps: {
-      rules: [{ required: true, message: '请选择平台' }],
     },
     editable: true,
   },
