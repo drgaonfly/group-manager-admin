@@ -20,7 +20,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       maskClosable={false}
       width="50%"
       destroyOnClose
-      title="审核报告号"
+      title="编辑用户"
       open={updateModalOpen}
       footer={false}
       onCancel={() => onCancel(false)}

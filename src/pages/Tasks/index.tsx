@@ -247,7 +247,7 @@ const TableList: React.FC = () => {
       hideInSearch: true, // 在搜索中隐藏此字段
     },
     {
-      title: '上传用户',
+      title: '客户',
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,

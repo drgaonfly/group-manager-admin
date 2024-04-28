@@ -36,20 +36,20 @@ const columns: ProColumns<IPriceList>[] = [
     editable: () => true,
     valueEnum: convertToTextObject(platformNames),
   },
-  {
-    title: '是否本币',
-    dataIndex: 'isLocalCurrency',
-    key: 'isLocalCurrency',
-    valueType: 'select',
-    valueEnum: {
-      true: { text: '是', status: 'Success' },
-      false: { text: '否', status: 'Error' },
-    },
-    formItemProps: {
-      rules: [{ required: true, message: '是否本币是必填项' }],
-    },
-    editable: () => true,
-  },
+  // {
+  //   title: '是否本币',
+  //   dataIndex: 'isLocalCurrency',
+  //   key: 'isLocalCurrency',
+  //   valueType: 'select',
+  //   valueEnum: {
+  //     true: { text: '是', status: 'Success' },
+  //     false: { text: '否', status: 'Error' },
+  //   },
+  //   formItemProps: {
+  //     rules: [{ required: true, message: '是否本币是必填项' }],
+  //   },
+  //   editable: () => true,
+  // },
   {
     title: '汇率',
     dataIndex: 'exchangeRate',

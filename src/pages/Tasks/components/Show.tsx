@@ -62,6 +62,18 @@ const Show: React.FC<Props> = (props) => {
       editable: () => true,
     },
     {
+      title: '汇率',
+      dataIndex: 'exchangeRate',
+    },
+    {
+      title: '服务费',
+      dataIndex: 'serviceFee',
+    },
+    {
+      title: '支付金额',
+      dataIndex: 'paymentAmount',
+    },
+    {
       title: '买手号',
       dataIndex: 'buyerId',
       formItemProps: () => {

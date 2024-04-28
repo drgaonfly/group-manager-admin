@@ -122,6 +122,17 @@ const TableList: React.FC = () => {
       renderText: (_, record: any) => (record.task ? record.task._id : '无'), // Assuming task has a 'title' field
     },
     {
+      title: '客户',
+      dataIndex: 'customer',
+      width: 200,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        // Assuming the user field is populated and includes an email field
+        // Check if the user object exists and has an email property
+        return record.customer && record.customer.email ? record.customer.email : '未知';
+      },
+    },
+    {
       title: '国家',
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
@@ -156,6 +167,18 @@ const TableList: React.FC = () => {
       title: '金额',
       dataIndex: 'amount',
       hideInSearch: true,
+    },
+    {
+      title: '汇率',
+      dataIndex: 'exchangeRate',
+    },
+    {
+      title: '服务费',
+      dataIndex: 'serviceFee',
+    },
+    {
+      title: '支付金额',
+      dataIndex: 'paymentAmount',
     },
     {
       title: '买手号',
