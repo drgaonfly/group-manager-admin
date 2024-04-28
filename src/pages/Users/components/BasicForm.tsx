@@ -28,7 +28,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       form={form}
       onFinish={async (values) => {
         await onFinish(values);
-        form.resetFields();
+        // form.resetFields();
       }}
     >
       <ProForm.Group>
@@ -95,7 +95,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               />
             </ProForm.Group>
             <ProFormRadio.Group
-              name={[field.name, 'isLocalCurrency']}
+              name="isLocalCurrency"
               label="是否本币"
               width="lg"
               options={[
@@ -103,21 +103,23 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
                 { label: '否', value: false },
               ]}
               fieldProps={{
-                defaultValue: false,
-                onChange: () =>
-                  form.setFieldsValue({
-                    priceList: form
-                      .getFieldValue('priceList')
-                      .map((item: any, idx: number) =>
-                        idx === index ? { ...item, isLocalCurrency: !item.isLocalCurrency } : item,
-                      ),
-                  }),
+                onChange: (e) => {
+                  const updatedPriceList = form
+                    .getFieldValue('priceList')
+                    .map((item: any, idx: number) => {
+                      if (idx === index) {
+                        return { ...item, isLocalCurrency: e.target.value };
+                      }
+                      return item;
+                    });
+                  form.setFieldsValue({ priceList: updatedPriceList });
+                },
               }}
             />
             {!form.getFieldValue(['priceList', index, 'isLocalCurrency']) && (
               <ProForm.Group>
                 <ProFormDigit
-                  name={[field.name, 'exchangeRate']}
+                  name="exchangeRate"
                   label="汇率"
                   width="md"
                   min={0}
@@ -125,7 +127,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
                   rules={[{ required: true, message: '请输入汇率' }]}
                 />
                 <ProFormDigit
-                  name={[field.name, 'serviceFee']}
+                  name="serviceFee"
                   label="服务费"
                   width="md"
                   min={0}
