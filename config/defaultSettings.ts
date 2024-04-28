@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Admin',
+  title: '做一只东南亚的招财猫',
   pwa: true,
   logo: '/logo1.png',
   iconfontUrl: '',

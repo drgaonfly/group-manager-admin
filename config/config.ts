@@ -76,7 +76,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Admin',
+  title: '做一只东南亚的招财猫',
   layout: {
     locale: true,
     ...defaultSettings,
