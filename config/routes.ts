@@ -95,6 +95,13 @@ export default [
     component: './AccountAssignmentRecords',
   },
   {
+    name: 'list.createAfterSalesOrder',
+    icon: 'idcard',
+    access: 'canAdmin',
+    path: '/after-sales-orders',
+    component: './AfterSalesOrders',
+  },
+  {
     path: '/',
     redirect: '/Welcome',
   },

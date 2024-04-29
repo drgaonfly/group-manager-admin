@@ -38,6 +38,8 @@ export default {
   'menu.list.categories': '图片分类',
   'menu.list.accountAssignment': '分配账号',
   'menu.list.accountAssignmentRecords': '分配账号记录',
+  'menu.list.createAfterSalesOrder': '售后订单',
+  'menu.after-sales-orders': '售后订单',
   'menu.assignments': '分配账号',
   'menu.assignment-records': '分配账号记录',
   'menu.list.images': '图片管理',
