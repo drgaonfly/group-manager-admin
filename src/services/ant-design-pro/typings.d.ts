@@ -27,6 +27,7 @@ declare namespace API {
   };
 
   type ItemData = {
+    afterSales?: boolean;
     isAbnormal?: boolean;
     priceList?: any;
     accountLibraries?: any;
@@ -55,7 +56,7 @@ declare namespace API {
     owner?: string;
     desc?: string;
     callNo?: number;
-    status?: number;
+    status?: number | string;
     updatedAt?: string;
     createdAt?: string;
     progress?: number;

@@ -10,7 +10,7 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    afterSales?: true;
+    afterSales?: boolean;
   } & Partial<API.ItemData>;
 };
 

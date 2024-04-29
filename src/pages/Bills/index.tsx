@@ -232,15 +232,7 @@ const TableList: React.FC = () => {
         >
           编辑
         </a>,
-        <a
-          key="afterSale"
-          onClick={() => {
-            setAfterSaleModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          申请售后
-        </a>,
+
         access.canSuperAdmin && (
           <a
             key="delete"
@@ -259,6 +251,17 @@ const TableList: React.FC = () => {
             }}
           >
             删除
+          </a>
+        ),
+        record.afterSales ? null : (
+          <a
+            key="afterSale"
+            onClick={() => {
+              setAfterSaleModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            申请售后
           </a>
         ),
       ],
