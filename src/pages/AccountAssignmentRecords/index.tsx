@@ -180,6 +180,7 @@ const TableList: React.FC = () => {
     {
       title: '分配时间',
       dataIndex: 'assignedTime',
+      width: 170,
       valueType: 'date',
     },
     {

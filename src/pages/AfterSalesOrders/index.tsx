@@ -152,23 +152,27 @@ const TableList: React.FC = () => {
     {
       title: '原因',
       ellipsis: true,
+      width: 170,
       dataIndex: 'reason',
       hideInSearch: true,
     },
     {
       title: '退款金额',
+      width: 170,
       dataIndex: 'refundAmount',
       hideInSearch: true,
     },
     {
       title: '图片',
       dataIndex: 'image',
+      width: 170,
       hideInSearch: true,
       valueType: 'image',
     },
     {
       title: '拒绝原因',
       ellipsis: true,
+      width: 170,
       dataIndex: 'rejectionReason',
       hideInSearch: true,
     },
@@ -176,6 +180,7 @@ const TableList: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       hideInSearch: true,
+      width: 170,
       valueEnum: {
         Pending: { text: '待处理', status: 'Warning' },
         Processing: { text: '处理中', status: 'Processing' },
