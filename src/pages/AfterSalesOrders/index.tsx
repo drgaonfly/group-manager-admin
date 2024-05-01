@@ -139,6 +139,13 @@ const TableList: React.FC = () => {
       dataIndex: 'bill',
     },
     {
+      title: '订单号',
+      dataIndex: 'orderNumber',
+      width: 180,
+      copyable: true,
+      key: 'orderNumber',
+    },
+    {
       title: '申请人',
       dataIndex: 'user',
       width: 200,
@@ -265,45 +272,46 @@ const TableList: React.FC = () => {
         headerTitle="列表"
         actionRef={actionRef}
         rowKey="_id"
+        scroll={{ x: 1200 }}
         search={{
           labelWidth: 120,
           collapsed: false,
-          optionRender: (searchConfig, props, dom) => [
-            <Button
-              key="export"
-              type="dashed"
-              onClick={async () => {
-                // Show a loading message
-                const hide = message.loading('正在导出中...', 0);
+          // optionRender: (searchConfig, props, dom) => [
+          //   <Button
+          //     key="export"
+          //     type="dashed"
+          //     onClick={async () => {
+          //       // Show a loading message
+          //       const hide = message.loading('正在导出中...', 0);
 
-                try {
-                  // Perform the export operation
-                  console.log('Export button clicked', props.form?.getFieldsValue());
-                  const response = await queryList('/after-sales-orders/export', {
-                    ...props.form?.getFieldsValue(),
-                  });
+          //       try {
+          //         // Perform the export operation
+          //         console.log('Export button clicked', props.form?.getFieldsValue());
+          //         const response = await queryList('/after-sales-orders/export', {
+          //           ...props.form?.getFieldsValue(),
+          //         });
 
-                  hide();
+          //         hide();
 
-                  if (response?.data) {
-                    message.success('文件准备完成，下载即将开始');
-                    // Open the download URL in a new tab
-                    // @ts-ignore
-                    window.open(response.data.signedURL, '_blank');
-                  } else {
-                    throw new Error('No download URL returned');
-                  }
-                } catch (error) {
-                  // Update the message
-                  hide();
-                  message.error('导出失败');
-                }
-              }}
-            >
-              导出
-            </Button>,
-            ...dom,
-          ],
+          //         if (response?.data) {
+          //           message.success('文件准备完成，下载即将开始');
+          //           // Open the download URL in a new tab
+          //           // @ts-ignore
+          //           window.open(response.data.signedURL, '_blank');
+          //         } else {
+          //           throw new Error('No download URL returned');
+          //         }
+          //       } catch (error) {
+          //         // Update the message
+          //         hide();
+          //         message.error('导出失败');
+          //       }
+          //     }}
+          //   >
+          //     导出
+          //   </Button>,
+          //   ...dom,
+          // ],
         }}
         toolBarRender={() => [
           // <Button
