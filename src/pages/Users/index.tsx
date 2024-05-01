@@ -1,5 +1,5 @@
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -10,6 +10,7 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
+import BatchUploadModal from './components/BatchUploadModal';
 
 /**
  * @en-US Add node
@@ -89,6 +90,20 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
+const handleBatchAdd = async (fields: API.ItemData) => {
+  const hide = message.loading('正在批量上传');
+  try {
+    const res = (await addItem('/users/batch-upload', { ...fields })) as any;
+    hide();
+    message.success('已提交');
+    return { success: true, data: res.data };
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? 'Adding failed, please try again!');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -100,6 +115,7 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
@@ -204,6 +220,15 @@ const TableList: React.FC = () => {
           >
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
+          <Button
+            danger
+            key="batchUpload"
+            onClick={() => {
+              setBatchUploadModalOpen(true);
+            }}
+          >
+            <UploadOutlined /> 批量上传
+          </Button>,
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
         columns={columns}
@@ -275,6 +300,20 @@ const TableList: React.FC = () => {
         onCancel={handleUpdateModalOpen}
         updateModalOpen={updateModalOpen}
         values={currentRow || {}}
+      />
+
+      <BatchUploadModal
+        open={batchUploadModalOpen}
+        onOpenChange={setBatchUploadModalOpen}
+        onFinish={async (values: any) => {
+          const { success, data } = (await handleBatchAdd(values as API.ItemData)) as any;
+          if (success && data) {
+            // setBatchUploadModalOpen(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
       />
 
       <Recharge

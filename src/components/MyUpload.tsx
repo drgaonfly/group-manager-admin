@@ -7,9 +7,10 @@ import { UploadProps } from 'antd/lib/upload/interface';
 interface MyUploadProps {
   onFileUpload: (url: string) => void;
   accept?: string; // 使accept属性可选
+  url?: string;
 }
 
-const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept }) => {
+const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/upload' }) => {
   // 定义默认的accept值
   const defaultAccept = '*';
 
@@ -19,7 +20,7 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept }) => {
     formData.append('file', file as Blob);
 
     try {
-      const response = await request<{ success: boolean; data: any }>('/upload', {
+      const response = await request<{ success: boolean; data: any }>(url, {
         method: 'POST',
         data: formData,
         requestType: 'form',
