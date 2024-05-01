@@ -9,8 +9,115 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
-import { convertToTextObject, locationMapping } from '@/utils/constants';
+import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
 import AfterSaleForm from './components/AfterSaleForm';
+
+import ShowTask from '@/pages/Tasks/components/Show';
+
+const taskColumns: ProColumns<API.ItemData>[] = [
+  {
+    title: '编号',
+    dataIndex: '_id',
+    width: 250,
+    copyable: true,
+  },
+  {
+    title: '国家',
+    width: 100,
+    dataIndex: 'country',
+    valueEnum: convertToTextObject(locationMapping),
+  },
+  {
+    title: '平台',
+    width: 100,
+    dataIndex: 'platform',
+    valueEnum: convertToTextObject(platformNames),
+  },
+  {
+    title: '源文件',
+    dataIndex: 'file',
+    width: 80,
+    hideInSearch: true,
+  },
+  {
+    title: '状态',
+    width: 100,
+    dataIndex: 'status',
+    valueEnum: {
+      Active: { text: '正常', status: 'Success' },
+      Cancelled: { text: '已取消', status: 'Error' },
+      Processing: { text: '处理中', status: 'Processing' },
+      Completed: { text: '已完成', status: 'Default' },
+      Issue: { text: '有问题', status: 'Warning' },
+    },
+    hideInSearch: true,
+  },
+  {
+    title: '客户',
+    dataIndex: 'user',
+    width: 200,
+    hideInSearch: true,
+    render: (_, record: any) => {
+      // Assuming the user field is populated and includes an email field
+      // Check if the user object exists and has an email property
+      return record.user && record.user.email ? record.user.email : '未知';
+    },
+  },
+  {
+    title: '下单时间类型',
+    width: 180,
+    dataIndex: 'orderTimeType',
+    valueEnum: {
+      NormalOrder: { text: '正常下单' },
+      SpecificTimeOrder: { text: '指定时间下单' },
+    },
+  },
+  {
+    title: '下单时间',
+    width: 150,
+    hideInSearch: true,
+    dataIndex: 'orderTime',
+    valueType: 'dateTime',
+  },
+  {
+    title: '上传时间',
+    width: 150,
+    dataIndex: 'uploadTime',
+    valueType: 'date',
+  },
+  {
+    title: '评价类型',
+    width: 120,
+    dataIndex: 'reviewType',
+    valueEnum: {
+      NormalReview: { text: '正常评价' },
+      ReviewAfterModification: { text: '评价后补' },
+    },
+  },
+  {
+    title: '评论后补文件',
+    width: 180,
+    dataIndex: 'uploadedFile',
+    hideInSearch: true,
+  },
+  {
+    title: '单量',
+    width: 80,
+    dataIndex: 'quantity',
+    hideInSearch: true,
+  },
+  {
+    title: '下单类型',
+    width: 150,
+    dataIndex: 'orderType',
+    valueEnum: {
+      NormalOrder: { text: '正常下单' },
+      ContactForVolumeWeight: { text: '下单前联系改体积/重量' },
+      ContactForInventory: { text: '下单前联系开库存' },
+      ContactForPrice: { text: '下单前联系改价格' },
+    },
+  },
+];
 
 /**
  * @en-US Add node
@@ -117,6 +224,8 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [currentTask, setCurrentTask] = useState<API.ItemData>();
+  const [showTaskDetail, setShowTaskDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -136,7 +245,20 @@ const TableList: React.FC = () => {
       title: '关联任务',
       dataIndex: 'task',
       copyable: true,
-      renderText: (_, record: any) => (record.task ? record.task._id : '无'), // Assuming task has a 'title' field
+      render: (dom, record: any) => {
+        return record.task ? (
+          <a
+            onClick={() => {
+              setCurrentTask(record.task);
+              setShowTaskDetail(true);
+            }}
+          >
+            {record.task._id}
+          </a>
+        ) : (
+          '无'
+        );
+      },
     },
     {
       title: '客户',
@@ -467,6 +589,16 @@ const TableList: React.FC = () => {
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
+        }}
+      />
+
+      <ShowTask
+        open={showTaskDetail}
+        currentRow={currentTask as API.ItemData}
+        columns={taskColumns as ProDescriptionsItemProps<API.ItemData>[]}
+        onClose={() => {
+          setCurrentTask(undefined);
+          setShowTaskDetail(false);
         }}
       />
     </PageContainer>

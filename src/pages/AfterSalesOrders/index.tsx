@@ -10,6 +10,69 @@ import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
 import ReviewForm from './components/ReviewForm';
+import { convertToTextObject, locationMapping } from '@/utils/constants';
+import ShowBill from '@/pages/Bills/components/Show';
+
+const billColumns: ProColumns<API.ItemData>[] = [
+  {
+    title: '客户',
+    dataIndex: 'customer',
+    width: 200,
+    hideInSearch: true,
+    render: (_, record: any) => {
+      return record.customer && record.customer.email ? record.customer.email : '未知';
+    },
+  },
+  {
+    title: '国家',
+    dataIndex: 'country',
+    valueEnum: convertToTextObject(locationMapping),
+  },
+  {
+    title: '订单号',
+    dataIndex: 'orderNumber',
+  },
+  {
+    title: '下单时间',
+    dataIndex: 'uploadTime',
+    valueType: 'date',
+  },
+  {
+    title: '店铺名',
+    dataIndex: 'storeName',
+  },
+  {
+    title: '金额',
+    dataIndex: 'amount',
+    hideInSearch: true,
+  },
+  {
+    title: '汇率',
+    dataIndex: 'exchangeRate',
+    hideInSearch: true,
+  },
+  {
+    title: '服务费',
+    dataIndex: 'serviceFee',
+    hideInSearch: true,
+  },
+  {
+    title: '支付金额',
+    dataIndex: 'paymentAmount',
+    hideInSearch: true,
+  },
+  {
+    title: '买手号',
+    dataIndex: 'buyerId',
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'createdAt',
+    valueType: 'dateTime',
+    hideInSearch: true,
+    sorter: true,
+  },
+];
 
 /**
  * @en-US Add node
@@ -116,6 +179,9 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [currentBill, setCurrentBill] = useState<API.ItemData>();
+
+  const [showBillDetail, setShowBillDetail] = useState(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -135,7 +201,18 @@ const TableList: React.FC = () => {
       title: '关联账单',
       copyable: true,
       width: 250,
-      renderText: (_, record: any) => (record.bill ? record.bill._id : '无'), // Assuming task has a 'title' field
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentBill(entity.bill);
+              setShowBillDetail(true);
+            }}
+          >
+            {entity.bill ? entity.bill._id : '无'}
+          </a>
+        );
+      },
       dataIndex: 'bill',
     },
     {
@@ -144,6 +221,18 @@ const TableList: React.FC = () => {
       width: 180,
       copyable: true,
       key: 'orderNumber',
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
     {
       title: '申请人',
@@ -276,42 +365,6 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
           collapsed: false,
-          // optionRender: (searchConfig, props, dom) => [
-          //   <Button
-          //     key="export"
-          //     type="dashed"
-          //     onClick={async () => {
-          //       // Show a loading message
-          //       const hide = message.loading('正在导出中...', 0);
-
-          //       try {
-          //         // Perform the export operation
-          //         console.log('Export button clicked', props.form?.getFieldsValue());
-          //         const response = await queryList('/after-sales-orders/export', {
-          //           ...props.form?.getFieldsValue(),
-          //         });
-
-          //         hide();
-
-          //         if (response?.data) {
-          //           message.success('文件准备完成，下载即将开始');
-          //           // Open the download URL in a new tab
-          //           // @ts-ignore
-          //           window.open(response.data.signedURL, '_blank');
-          //         } else {
-          //           throw new Error('No download URL returned');
-          //         }
-          //       } catch (error) {
-          //         // Update the message
-          //         hide();
-          //         message.error('导出失败');
-          //       }
-          //     }}
-          //   >
-          //     导出
-          //   </Button>,
-          //   ...dom,
-          // ],
         }}
         toolBarRender={() => [
           // <Button
@@ -471,6 +524,16 @@ const TableList: React.FC = () => {
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
+        }}
+      />
+
+      <ShowBill
+        open={showBillDetail}
+        currentRow={currentBill as API.ItemData}
+        columns={billColumns as ProDescriptionsItemProps<API.ItemData>[]}
+        onClose={() => {
+          setCurrentBill(undefined);
+          setShowBillDetail(false);
         }}
       />
     </PageContainer>
