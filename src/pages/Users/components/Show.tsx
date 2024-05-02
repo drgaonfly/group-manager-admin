@@ -1,4 +1,4 @@
-import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
+import { convertToTextObject, locationMapping } from '@/utils/constants';
 import {
   EditableProTable,
   ProColumns,
@@ -25,16 +25,6 @@ const columns: ProColumns<IPriceList>[] = [
     },
     editable: () => true,
     valueEnum: convertToTextObject(locationMapping),
-  },
-  {
-    title: '平台',
-    dataIndex: 'platform',
-    key: 'platform',
-    formItemProps: {
-      rules: [{ required: true, message: '平台是必填项' }],
-    },
-    editable: () => true,
-    valueEnum: convertToTextObject(platformNames),
   },
   // {
   //   title: '是否本币',

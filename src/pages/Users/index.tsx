@@ -11,6 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
 import BatchUploadModal from './components/BatchUploadModal';
+import BatchUploadPriceModal from './components/BatchUploadPriceModal';
 
 /**
  * @en-US Add node
@@ -104,6 +105,20 @@ const handleBatchAdd = async (fields: API.ItemData) => {
   }
 };
 
+const handleBatchAddPrice = async (fields: API.ItemData) => {
+  const hide = message.loading('正在批量上传价格');
+  try {
+    const res = (await addItem('/users/upload-prices', { ...fields })) as any;
+    hide();
+    message.success('已提交');
+    return { success: true, data: res.data };
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? 'Adding failed, please try again!');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -116,6 +131,7 @@ const TableList: React.FC = () => {
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
+  const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
@@ -227,7 +243,16 @@ const TableList: React.FC = () => {
               setBatchUploadModalOpen(true);
             }}
           >
-            <UploadOutlined /> 批量上传
+            <UploadOutlined /> 批量上传用户
+          </Button>,
+          <Button
+            type="dashed"
+            key="batchUploadPrices"
+            onClick={() => {
+              setBatchUploadPriceModalOpen(true);
+            }}
+          >
+            <UploadOutlined /> 批量上传价格表
           </Button>,
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
@@ -309,6 +334,19 @@ const TableList: React.FC = () => {
           const { success, data } = (await handleBatchAdd(values as API.ItemData)) as any;
           if (success && data) {
             // setBatchUploadModalOpen(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+      />
+
+      <BatchUploadPriceModal
+        open={batchUploadPriceModalOpen}
+        onOpenChange={setBatchUploadPriceModalOpen}
+        onFinish={async (values: any) => {
+          const { success, data } = (await handleBatchAddPrice(values as API.ItemData)) as any;
+          if (success && data) {
             if (actionRef.current) {
               actionRef.current.reload();
             }
