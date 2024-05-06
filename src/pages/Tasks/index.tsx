@@ -17,6 +17,30 @@ import Create from './components/Create';
 import Show from './components/Show';
 import UploadForm from './components/UploadForm';
 import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
+import UserDetail from '@/pages/Users/components/Show';
+
+const userColumns: ProColumns<API.ItemData>[] = [
+  {
+    title: '邮箱',
+    dataIndex: 'email',
+    copyable: true,
+  },
+  {
+    title: '姓名',
+    dataIndex: 'name',
+  },
+  {
+    title: '角色',
+    dataIndex: 'role',
+    valueEnum: {
+      SUPER_ADMIN: '超级管理员',
+      CUSTOMER: '客户',
+      ORDER_CLERK: '下单员',
+      ADMIN: '客服',
+      FINANCIAL_STAFF: '财务人员',
+    },
+  },
+];
 
 /**
  * @en-US Add node
@@ -147,7 +171,8 @@ const TableList: React.FC = () => {
   const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
+  const [currentUser, setCurrentUser] = useState<API.ItemData>();
+  const [showUserDetail, setShowUserDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
@@ -257,10 +282,17 @@ const TableList: React.FC = () => {
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,
-      render: (_, record) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.name ? record.user.name : '未知';
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentUser(entity.user);
+              setShowUserDetail(true);
+            }}
+          >
+            {entity.user ? entity.user.name : '无'}
+          </a>
+        );
       },
     },
     {
@@ -581,6 +613,15 @@ const TableList: React.FC = () => {
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
+        }}
+      />
+      <UserDetail
+        open={showUserDetail}
+        currentRow={currentUser as API.ItemData}
+        columns={userColumns as ProDescriptionsItemProps<API.ItemData>[]}
+        onClose={() => {
+          setCurrentUser(undefined);
+          setShowUserDetail(false);
         }}
       />
     </PageContainer>
