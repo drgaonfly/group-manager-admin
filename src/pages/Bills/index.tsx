@@ -60,7 +60,7 @@ const taskColumns: ProColumns<API.ItemData>[] = [
     render: (_, record: any) => {
       // Assuming the user field is populated and includes an email field
       // Check if the user object exists and has an email property
-      return record.user && record.user.email ? record.user.email : '未知';
+      return record.user && record.user.name ? record.user.name : '未知';
     },
   },
   {
@@ -244,6 +244,7 @@ const TableList: React.FC = () => {
     {
       title: '关联任务',
       dataIndex: 'task',
+      width: 200,
       copyable: true,
       render: (dom, record: any) => {
         return record.task ? (
@@ -263,21 +264,23 @@ const TableList: React.FC = () => {
     {
       title: '客户',
       dataIndex: 'customer',
-      width: 200,
+      width: 100,
       hideInSearch: true,
       render: (_, record: any) => {
         // Assuming the user field is populated and includes an email field
         // Check if the user object exists and has an email property
-        return record.customer && record.customer.email ? record.customer.email : '未知';
+        return record.customer && record.customer.name ? record.customer.name : '未知';
       },
     },
     {
       title: '国家',
+      width: 100,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
     {
       title: '订单号',
+      width: 100,
       dataIndex: 'orderNumber',
       tooltip: true, // Show tooltip on hover to display the full order number if truncated
       render: (dom, entity) => {

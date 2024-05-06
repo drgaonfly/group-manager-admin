@@ -44,7 +44,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
           <ProFormSelect
             rules={[{ required: true }]}
             options={users.map((user: any) => ({
-              label: user.email,
+              label: user.name,
               value: user._id,
             }))}
             width="md"

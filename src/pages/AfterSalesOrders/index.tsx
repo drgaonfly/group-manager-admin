@@ -20,7 +20,7 @@ const billColumns: ProColumns<API.ItemData>[] = [
     width: 200,
     hideInSearch: true,
     render: (_, record: any) => {
-      return record.customer && record.customer.email ? record.customer.email : '未知';
+      return record.customer && record.customer.name ? record.customer.name : '未知';
     },
   },
   {
