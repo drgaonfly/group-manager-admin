@@ -254,7 +254,7 @@ const TableList: React.FC = () => {
               setShowTaskDetail(true);
             }}
           >
-            {record.task._id}
+            {record.task.code}
           </a>
         ) : (
           '无'
