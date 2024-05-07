@@ -313,6 +313,42 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
           defaultCollapsed: false,
+          optionRender: (searchConfig, props, dom) => [
+            <Button
+              key="export"
+              type="dashed"
+              onClick={async () => {
+                // Show a loading message
+                const hide = message.loading('正在导出中...', 0);
+
+                try {
+                  // Perform the export operation
+                  console.log('Export button clicked', props.form?.getFieldsValue());
+                  const response = await queryList('/empty-packages/export', {
+                    ...props.form?.getFieldsValue(),
+                  });
+
+                  hide();
+
+                  if (response?.data) {
+                    message.success('文件准备完成，下载即将开始');
+                    // Open the download URL in a new tab
+                    // @ts-ignore
+                    window.open(response.data.signedURL, '_blank');
+                  } else {
+                    throw new Error('No download URL returned');
+                  }
+                } catch (error) {
+                  // Update the message
+                  hide();
+                  message.error('导出失败');
+                }
+              }}
+            >
+              导出
+            </Button>,
+            ...dom,
+          ],
         }}
         toolBarRender={() => [
           access.canCustomer && (
