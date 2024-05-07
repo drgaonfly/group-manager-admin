@@ -5,7 +5,7 @@ import {
   removeItem,
   updateItem,
 } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { DownloadOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -342,6 +342,23 @@ const TableList: React.FC = () => {
               }}
             >
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            </Button>
+          ),
+          selectedRowsState?.length > 0 && (
+            <Button
+              key="download"
+              onClick={() => {
+                selectedRowsState.forEach((row) => {
+                  const link = document.createElement('a');
+                  link.href = row.file ?? '';
+                  link.download = '';
+                  link.target = '_blank';
+                  link.rel = 'noopener noreferrer';
+                  link.click();
+                });
+              }}
+            >
+              <DownloadOutlined /> 批量下载
             </Button>
           ),
         ]}
