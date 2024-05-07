@@ -210,7 +210,7 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         // Assuming the user field is populated and includes an email field
         // Check if the user object exists and has an email property
-        return record.user && record.user.email ? record.user.email : '未知';
+        return record.user && record.user.name ? record.user.name : '未知';
       },
     },
     {
