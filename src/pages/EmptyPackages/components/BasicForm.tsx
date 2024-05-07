@@ -15,7 +15,7 @@ interface Props {
   initialValues?: any;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initialValues }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, setFile, initialValues }) => {
   const access = useAccess();
   const { items: users } = useQueryList('/users', access.canAdmin);
 
@@ -63,24 +63,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, setReviewFile, initial
       </ProForm.Group>
       <ProForm.Group>
         {newRecord && (
-          <Form.Item required label="PDF 文件" name="pdfFile">
+          <Form.Item required label="文件" name="file">
             <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
                 setFile!(url);
               }}
-              accept=".pdf"
-            />
-          </Form.Item>
-        )}
-        {newRecord && (
-          <Form.Item required label="压缩文件" name="zipFile">
-            <AliyunOSSUpload
-              onFileUpload={(url: string) => {
-                console.log('Uploaded file URL:', url);
-                setReviewFile!(url);
-              }}
-              accept=".zip,.rar"
+              accept=".pdf,.rar,.zip"
             />
           </Form.Item>
         )}

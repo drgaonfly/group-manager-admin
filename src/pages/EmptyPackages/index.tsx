@@ -168,35 +168,17 @@ const TableList: React.FC = () => {
       valueEnum: convertToTextObject(platformNames),
     },
     {
-      title: 'PDF 文件',
-      dataIndex: 'pdfFile',
-      width: 80,
-      hideInSearch: true,
-      render: (_, record: any) => {
-        // 确保文件URL存在
-        // 确保文件URL存在
-        if (!record.pdfFile) return '无文件';
-
-        // 返回一个下载按钮或链接
-        return (
-          <a href={record.pdfFile} download target="_blank" rel="noopener noreferrer">
-            下载
-          </a>
-        );
-      },
-    },
-    {
-      title: '压缩文件',
+      title: '文件',
       width: 100,
-      dataIndex: 'zipFile',
+      dataIndex: 'file',
       hideInSearch: true,
       render: (_, record: any) => {
         // 确保文件URL存在
-        if (!record.zipFile) return '无文件';
+        if (!record.file) return '无文件';
 
         // 返回一个下载按钮或链接
         return (
-          <a href={record.zipFile} download target="_blank" rel="noopener noreferrer">
+          <a href={record.file} download target="_blank" rel="noopener noreferrer">
             下载
           </a>
         );

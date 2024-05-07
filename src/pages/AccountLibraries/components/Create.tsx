@@ -25,8 +25,7 @@ const Create: React.FC<Props> = (props) => {
       onFinish={async (values) => {
         await onFinish({
           ...values,
-          pdfFile: file,
-          zipFile: reviewFile,
+          file: file,
         });
       }}
     >

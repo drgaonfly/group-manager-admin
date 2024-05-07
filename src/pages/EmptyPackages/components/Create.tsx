@@ -12,7 +12,6 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const { open, onOpenChange, onFinish } = props;
   const [file, setFile] = useState<string | undefined>('');
-  const [reviewFile, setReviewFile] = useState<string | undefined>('');
   return (
     <ModalForm
       title="新增"
@@ -24,24 +23,17 @@ const Create: React.FC<Props> = (props) => {
         maskClosable: false,
       }}
       onFinish={async (values) => {
-        if (!file || !reviewFile) {
+        if (!file) {
           message.error('请上传文件');
           return;
         }
         await onFinish({
           ...values,
-          pdfFile: file,
-          zipFile: reviewFile,
+          file,
         });
       }}
     >
-      <BasicForm
-        reviewFile={reviewFile}
-        setReviewFile={setReviewFile}
-        setFile={setFile}
-        file={file}
-        newRecord
-      />
+      <BasicForm setFile={setFile} file={file} newRecord />
     </ModalForm>
   );
 };
