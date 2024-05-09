@@ -23,4 +23,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: /www/server/nodejs/v20.12.0/bin/pnpm run build --if-present
+    - run: npm run build --if-present
