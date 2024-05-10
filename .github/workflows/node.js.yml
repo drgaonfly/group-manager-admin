@@ -10,6 +10,8 @@ on:
 jobs:
   cache-and-install:
     runs-on: self-hosted
+    env:
+      UMI_APP_API_URL: ""
 
     steps:
       - name: Checkout
