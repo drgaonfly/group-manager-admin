@@ -1,4 +1,4 @@
-import { useIntl } from '@umijs/max';
+import { FormattedMessage, useIntl } from '@umijs/max';
 import React, { useState } from 'react';
 import { ProForm, ProFormText, ProFormSelect, EditableProTable } from '@ant-design/pro-components';
 import { useAccess } from '@umijs/max';
@@ -54,7 +54,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       editable: true,
     },
     {
-      title: intl.formatMessage({ id: 'operation' }),
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       valueType: 'option',
       render: (text: any, record: any, _: any, action: any) => [
         <a
@@ -63,7 +63,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             action?.startEditable?.(`${record._id}`);
           }}
         >
-          编辑
+          {intl.formatMessage({ id: 'edit' })}
         </a>,
       ],
     },

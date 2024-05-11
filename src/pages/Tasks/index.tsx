@@ -386,7 +386,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'operation' }),
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       width: 250,
       fixed: 'right',
       dataIndex: 'option',
