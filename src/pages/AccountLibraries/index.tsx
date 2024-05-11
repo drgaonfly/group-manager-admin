@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
@@ -105,6 +106,7 @@ const handleBatchAdd = async (fields: API.ItemData) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -133,19 +135,19 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '国家',
+      title: intl.formatMessage({ id: 'country' }),
       width: 150,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
     {
-      title: '平台',
+      title: intl.formatMessage({ id: 'platform' }),
       width: 150,
       dataIndex: 'platform',
       valueEnum: convertToTextObject(platformNames),
     },
     {
-      title: '下单账号序号',
+      title: intl.formatMessage({ id: 'order_account_number' }),
       copyable: true,
       dataIndex: 'accountNumber',
       width: 200,
@@ -163,38 +165,38 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '登录账号',
+      title: intl.formatMessage({ id: 'login_account' }),
       copyable: true,
       width: 200,
       dataIndex: 'loginAccount',
     },
     {
-      title: '登录密码',
+      title: intl.formatMessage({ id: 'login_password' }),
       copyable: true,
       dataIndex: 'loginPassword',
       width: 150,
       hideInSearch: true,
     },
     {
-      title: '是否分配',
+      title: intl.formatMessage({ id: 'is_assigned' }),
       width: 150,
       dataIndex: 'isAssigned',
       key: 'isAssigned',
       hideInSearch: true,
       valueEnum: {
-        true: { text: '已分配', status: 'Success' },
-        false: { text: '未分配', status: 'Error' },
+        true: { text: intl.formatMessage({ id: 'assigned' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'not_assigned' }), status: 'Error' },
       },
     },
     {
-      title: '是否异常', // 更新字段描述
+      title: intl.formatMessage({ id: 'is_abnormal' }),
       width: 100,
-      dataIndex: 'isAbnormal', // 指定数据索引为status
+      dataIndex: 'isAbnormal',
       hideInSearch: true,
       render: (_, record) => (
         <Switch
-          checkedChildren="是"
-          unCheckedChildren="否"
+          checkedChildren={intl.formatMessage({ id: 'yes' })}
+          unCheckedChildren={intl.formatMessage({ id: 'no' })}
           checked={record.isAbnormal}
           onChange={() => {
             handleUpdate({ _id: record._id, isAbnormal: !record.isAbnormal });
@@ -205,32 +207,31 @@ const TableList: React.FC = () => {
         />
       ),
       valueEnum: {
-        true: { text: '是', status: 'Error' },
-        false: { text: '否', status: 'Success' },
+        true: { text: intl.formatMessage({ id: 'yes' }), status: 'Error' },
+        false: { text: intl.formatMessage({ id: 'no' }), status: 'Success' },
       },
     },
     {
-      title: '店铺名字',
+      title: intl.formatMessage({ id: 'store_name' }),
       copyable: true,
       dataIndex: 'storeAccount',
       width: 150,
     },
     {
-      title: '最近分配时间',
+      title: intl.formatMessage({ id: 'recent_allocation_time' }),
       width: 150,
       dataIndex: 'assignedTime',
       valueType: 'date',
     },
-
     {
-      title: '操作人',
+      title: intl.formatMessage({ id: 'operator' }),
       dataIndex: 'user',
       width: 150,
       hideInSearch: true,
       render: (_, record) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.name ? record.user.name : '未知';
+        return record.user && record.user.name
+          ? record.user.name
+          : intl.formatMessage({ id: 'unknown' });
       },
     },
     {

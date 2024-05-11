@@ -1,6 +1,8 @@
+import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { locationMapping, platformNames } from '@/utils/constants';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
+import CountrySelect from '@/components/CountrySelect';
+import PlatformSelect from '@/components/PlatformSelect';
 // import useQueryList from '@/hooks/useQueryList';
 // import { useAccess } from '@umijs/max';
 
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const BasicForm: React.FC<Props> = ({}) => {
+  const intl = useIntl();
   // const access = useAccess();
   // const { items: users } = useQueryList('/users', access.canAdmin);
 
@@ -21,58 +24,34 @@ const BasicForm: React.FC<Props> = ({}) => {
     <>
       <ProForm.Group>
         {/* {access.canAdmin && (
-          <ProFormSelect
-            rules={[{ required: true }]}
-            options={users.map((user: any) => ({
-              label: user.name,
-              value: user._id,
-            }))}
-            width="md"
-            name="user"
-            label="用户"
-            showSearch
-          />
+          <UserSelect />
         )} */}
-        <ProFormSelect
-          name="country"
-          label="国家"
-          width="md"
-          rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={locationMapping}
-          placeholder="请选择国家"
-        />
+        <CountrySelect />
 
-        <ProFormSelect
-          name="platform"
-          label="平台"
-          width="md"
-          rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={platformNames}
-          placeholder="请选择平台"
-        />
+        <PlatformSelect />
 
         <ProFormText
           rules={[{ required: false }]}
           width="md"
-          label="下单账号序号"
+          label={intl.formatMessage({ id: 'order_account_number' })}
           name="accountNumber"
-          placeholder="请输入账号"
+          placeholder={intl.formatMessage({ id: 'enter_account' })}
         />
 
         <ProFormText
           rules={[{ required: false }]}
           width="md"
-          label="登录账号"
+          label={intl.formatMessage({ id: 'login_account' })}
           name="loginAccount"
-          placeholder="请输入登录账号"
+          placeholder={intl.formatMessage({ id: 'enter_login_account' })}
         />
 
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label="登录密码"
+          label={intl.formatMessage({ id: 'login_password' })}
           name="loginPassword"
-          placeholder="请输入登录密码"
+          placeholder={intl.formatMessage({ id: 'enter_login_password' })}
         />
       </ProForm.Group>
     </>

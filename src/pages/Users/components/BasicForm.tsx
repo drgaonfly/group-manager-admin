@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import React, { useState } from 'react';
 import { ProForm, ProFormText, ProFormSelect, EditableProTable } from '@ant-design/pro-components';
 import { useAccess } from '@umijs/max';
@@ -20,69 +21,53 @@ type PriceListItem = {
   _id: string;
 };
 
-const columns = [
-  {
-    title: '国家',
-    dataIndex: 'country',
-    valueType: 'select',
-    valueEnum: convertToTextObject(locationMapping),
-    formItemProps: {
-      rules: [{ required: true, message: '请选择国家' }],
-    },
-    editable: true,
-  },
-  // {
-  //   title: '是否本币',
-  //   dataIndex: 'isLocalCurrency',
-  //   valueType: 'select',
-  //   valueEnum: {
-  //     true: { text: '是', status: 'Success' },
-  //     false: { text: '否', status: 'Error' },
-  //   },
-  //   formItemProps: {
-  //     rules: [{ required: true, message: '是否本币是必填项' }],
-  //   },
-  //   editable: true,
-  // },
-  {
-    title: '汇率',
-    dataIndex: 'exchangeRate',
-    formItemProps: {
-      rules: [{ required: false, message: '汇率是必填项' }],
-    },
-    editable: true,
-  },
-  {
-    title: '服务费',
-    dataIndex: 'serviceFee',
-    formItemProps: {
-      rules: [{ required: false, message: '服务费是必填项' }],
-    },
-    editable: true,
-  },
-  {
-    title: '操作',
-    valueType: 'option',
-    render: (text: any, record: any, _: any, action: any) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(`${record._id}`);
-        }}
-      >
-        编辑
-      </a>,
-      // Add your logic for deleting a bill here
-      // You'll need to adapt this to fit your actual data handling
-    ],
-  },
-];
-
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
+  const intl = useIntl();
   const access = useAccess();
   const [form] = useForm();
   const [priceList, setPriceList] = useState<PriceListItem[]>(values?.priceList || []);
-
+  const columns = [
+    {
+      title: intl.formatMessage({ id: 'country' }),
+      dataIndex: 'country',
+      valueType: 'select',
+      valueEnum: convertToTextObject(locationMapping),
+      formItemProps: {
+        rules: [{ required: true, message: intl.formatMessage({ id: 'select_country' }) }],
+      },
+      editable: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'exchange_rate' }),
+      dataIndex: 'exchangeRate',
+      formItemProps: {
+        rules: [{ required: false, message: intl.formatMessage({ id: 'exchange_rate_required' }) }],
+      },
+      editable: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'service_fee' }),
+      dataIndex: 'serviceFee',
+      formItemProps: {
+        rules: [{ required: false, message: intl.formatMessage({ id: 'service_fee_required' }) }],
+      },
+      editable: true,
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      render: (text: any, record: any, _: any, action: any) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          编辑
+        </a>,
+      ],
+    },
+  ];
   return (
     <ProForm
       initialValues={{ ...values }}
@@ -98,34 +83,34 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     >
       <ProForm.Group>
         <ProFormText
-          rules={[{ required: true, message: '请输入姓名' }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_name' }) }]}
           width="md"
-          label="姓名"
+          label={intl.formatMessage({ id: 'name' })}
           name="name"
         />
         <ProFormText
-          rules={[{ required: true, message: '请输入电子邮箱' }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_email' }) }]}
           width="md"
-          label="电子邮箱"
+          label={intl.formatMessage({ id: 'email' })}
           name="email"
         />
         <ProFormText
-          rules={[{ required: newRecord, message: '请输入密码' }]}
+          rules={[{ required: newRecord, message: intl.formatMessage({ id: 'enter_password' }) }]}
           width="md"
-          label="密码"
+          label={intl.formatMessage({ id: 'password' })}
           name="password"
         />
         {access.canSuperAdmin && (
           <ProFormSelect
             name="role"
             width="md"
-            label="角色"
+            label={intl.formatMessage({ id: 'role' })}
             valueEnum={{
-              SUPER_ADMIN: '超级管理员',
-              CUSTOMER: '客户',
-              ORDER_CLERK: '下单员',
-              ADMIN: '客服',
-              FINANCIAL_STAFF: '财务人员',
+              SUPER_ADMIN: intl.formatMessage({ id: 'super_admin' }),
+              CUSTOMER: intl.formatMessage({ id: 'customer' }),
+              ORDER_CLERK: intl.formatMessage({ id: 'order_clerk' }),
+              ADMIN: intl.formatMessage({ id: 'admin' }),
+              FINANCIAL_STAFF: intl.formatMessage({ id: 'financial_staff' }),
             }}
           />
         )}
@@ -133,7 +118,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
       <EditableProTable<PriceListItem>
         rowKey="_id"
-        headerTitle="价格表"
+        headerTitle={intl.formatMessage({ id: 'price_list' })}
         // @ts-ignore
         columns={columns}
         value={priceList}

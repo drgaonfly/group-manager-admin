@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -104,6 +105,7 @@ const handleBatchAdd = async (fields: API.ItemData) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -131,19 +133,19 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '国家',
+      title: intl.formatMessage({ id: 'country' }),
       width: 150,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
     {
-      title: '平台',
+      title: intl.formatMessage({ id: 'platform' }),
       width: 150,
       dataIndex: 'platform',
       valueEnum: convertToTextObject(platformNames),
     },
     {
-      title: '店铺账号',
+      title: intl.formatMessage({ id: 'store_account' }),
       dataIndex: 'storeAccount',
       copyable: true,
       width: 200,
@@ -161,7 +163,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '账号库',
+      title: intl.formatMessage({ id: 'account_library' }),
       dataIndex: 'accountLibrary',
       hideInSearch: true,
       width: 200,
@@ -171,27 +173,33 @@ const TableList: React.FC = () => {
         loginPassword: string;
       }) => (
         <>
-          <div>下单账号序号: {accountLibrary?.accountNumber}</div>
-          <div>登录账号: {accountLibrary?.loginAccount}</div>
-          <div>登录密码: {accountLibrary?.loginPassword}</div>
+          <div>
+            {intl.formatMessage({ id: 'order_account_number' })}: {accountLibrary?.accountNumber}
+          </div>
+          <div>
+            {intl.formatMessage({ id: 'login_account' })}: {accountLibrary?.loginAccount}
+          </div>
+          <div>
+            {intl.formatMessage({ id: 'login_password' })}: {accountLibrary?.loginPassword}
+          </div>
         </>
       ),
     },
     {
-      title: '分配时间',
+      title: intl.formatMessage({ id: 'assigned_time' }),
       dataIndex: 'assignedTime',
       width: 170,
       valueType: 'date',
     },
     {
-      title: '操作人',
+      title: intl.formatMessage({ id: 'operator' }),
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,
       render: (_, record) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.name ? record.user.name : '未知';
+        return record.user && record.user.name
+          ? record.user.name
+          : intl.formatMessage({ id: 'unknown' });
       },
     },
     {

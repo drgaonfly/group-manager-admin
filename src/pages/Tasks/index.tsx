@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import {
   addItem,
   handleItem,
@@ -158,6 +159,7 @@ const handleCancel = async (id: string) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -186,7 +188,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '编号',
+      title: intl.formatMessage({ id: 'code' }),
       dataIndex: 'code',
       width: 250,
       copyable: true,
@@ -204,24 +206,24 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '账单文件',
+      title: intl.formatMessage({ id: 'bill_file' }),
       width: 100,
       dataIndex: 'billFile',
       hideInSearch: true,
       render: (_, record: any) => {
-        // 确保文件URL存在
-        if (!record.billFile) return '无文件';
+        // Ensure file URL exists
+        if (!record.billFile) return intl.formatMessage({ id: 'no_file' });
 
-        // 返回一个下载按钮或链接
+        // Return a download button or link
         return (
           <a href={record.billFile} download target="_blank" rel="noopener noreferrer">
-            下载
+            {intl.formatMessage({ id: 'download' })}
           </a>
         );
       },
     },
     {
-      title: '国家',
+      title: intl.formatMessage({ id: 'country' }),
       width: 150,
       // filters: true,
       // onFilter: true,
@@ -229,7 +231,7 @@ const TableList: React.FC = () => {
       valueEnum: convertToTextObject(locationMapping),
     },
     {
-      title: '平台',
+      title: intl.formatMessage({ id: 'platform' }),
       // filters: true,
       // onFilter: true,
       width: 100,
@@ -245,57 +247,50 @@ const TableList: React.FC = () => {
     //   },
     // },
     {
-      title: '源文件',
+      title: intl.formatMessage({ id: 'source_file' }),
       dataIndex: 'file',
-      width: 80,
+      width: 150,
       hideInSearch: true,
       render: (_, record) => {
-        // 确保文件URL存在
-        if (!record.file) return '无文件';
+        if (!record.file) return intl.formatMessage({ id: 'no_file' });
 
-        // 返回一个按钮来触发下载
         return (
-          <Button
-            type="link"
-            onClick={() => handleDownload(record._id!)} // Assuming `record.id` is the identifier needed by handleDownload
-          >
-            下载
+          <Button type="link" onClick={() => handleDownload(record._id!)}>
+            {intl.formatMessage({ id: 'download' })}
           </Button>
         );
       },
     },
     {
-      title: '状态', // 更新字段描述
+      title: intl.formatMessage({ id: 'status' }),
       width: 100,
-      // filters: true,
-      // onFilter: true,
-      dataIndex: 'status', // 指定数据索引为status
+      dataIndex: 'status',
       valueEnum: {
         Active: {
-          text: '正常',
-          status: 'Success', // 添加状态，用于UI框架以表示成功/绿色
+          text: intl.formatMessage({ id: 'active' }),
+          status: 'Success',
         },
         Cancelled: {
-          text: '已取消',
-          status: 'Error', // 添加状态，用于UI框架以表示错误/红色
+          text: intl.formatMessage({ id: 'cancelled' }),
+          status: 'Error',
         },
         Processing: {
-          text: '处理中',
-          status: 'Processing', // 添加状态，用于UI框架以表示处理中/蓝色
+          text: intl.formatMessage({ id: 'processing' }),
+          status: 'Processing',
         },
         Completed: {
-          text: '已完成',
-          status: 'Default', // 添加状态，通常表示默认状态/灰色
+          text: intl.formatMessage({ id: 'completed' }),
+          status: 'Default',
         },
         Issue: {
-          text: '有问题',
-          status: 'Warning', // 添加状态，用于UI框架以表示警告/黄色
+          text: intl.formatMessage({ id: 'issue' }),
+          status: 'Warning',
         },
       },
-      hideInSearch: true, // 在搜索中隐藏此字段
+      hideInSearch: true,
     },
     {
-      title: '客户',
+      title: intl.formatMessage({ id: 'customer' }),
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,
@@ -307,79 +302,77 @@ const TableList: React.FC = () => {
               setShowUserDetail(true);
             }}
           >
-            {entity.user ? entity.user.name : '无'}
+            {entity.user ? entity.user.name : intl.formatMessage({ id: 'none' })}
           </a>
         );
       },
     },
     {
-      title: '下单时间类型',
+      title: intl.formatMessage({ id: 'order_time_type' }),
       width: 180,
       dataIndex: 'orderTimeType',
       valueEnum: {
-        NormalOrder: { text: '正常下单' },
-        SpecificTimeOrder: { text: '指定时间下单' },
+        NormalOrder: { text: intl.formatMessage({ id: 'normal_order' }) },
+        SpecificTimeOrder: { text: intl.formatMessage({ id: 'specific_time_order' }) },
       },
     },
     {
-      title: '下单时间',
+      title: intl.formatMessage({ id: 'order_time' }),
       width: 150,
       hideInSearch: true,
       dataIndex: 'orderTime',
       valueType: 'dateTime',
     },
     {
-      title: '上传时间',
+      title: intl.formatMessage({ id: 'upload_time' }),
       width: 150,
       dataIndex: 'uploadTime',
       valueType: 'date',
     },
     {
-      title: '评价类型',
+      title: intl.formatMessage({ id: 'review_type' }),
       width: 120,
       dataIndex: 'reviewType',
       valueEnum: {
-        NormalReview: { text: '正常评价' },
-        ReviewAfterModification: { text: '评价后补' },
+        NormalReview: { text: intl.formatMessage({ id: 'normal_review' }) },
+        ReviewAfterModification: { text: intl.formatMessage({ id: 'review_after_modification' }) },
       },
     },
     {
-      title: '评论后补文件',
+      title: intl.formatMessage({ id: 'comment_after_file' }),
       width: 180,
       dataIndex: 'uploadedFile',
       hideInSearch: true,
       render: (_, record: any) => {
-        // 确保文件URL存在
-        if (!record.uploadedFile) return '无文件';
+        if (!record.uploadedFile) return intl.formatMessage({ id: 'no_file' });
 
-        // 返回一个下载按钮或链接
         return (
           <a href={record.uploadedFile} download target="_blank" rel="noopener noreferrer">
-            下载
+            {intl.formatMessage({ id: 'download' })}
           </a>
         );
       },
     },
     {
-      title: '单量',
+      title: intl.formatMessage({ id: 'quantity' }),
       width: 80,
       dataIndex: 'quantity',
       hideInSearch: true,
     },
     {
-      title: '下单类型',
+      title: intl.formatMessage({ id: 'order_type' }),
       width: 150,
       dataIndex: 'orderType',
       valueEnum: {
-        NormalOrder: { text: '正常下单' },
-        ContactForVolumeWeight: { text: '下单前联系改体积/重量' },
-        ContactForInventory: { text: '下单前联系开库存' },
-        ContactForPrice: { text: '下单前联系改价格' },
+        NormalOrder: { text: intl.formatMessage({ id: 'normal_order' }) },
+        ContactForVolumeWeight: { text: intl.formatMessage({ id: 'contact_for_volume_weight' }) },
+        ContactForInventory: { text: intl.formatMessage({ id: 'contact_for_inventory' }) },
+        ContactForPrice: { text: intl.formatMessage({ id: 'contact_for_price' }) },
       },
       renderFormItem: (item, { defaultRender }) => {
         if (item && item.valueEnum) {
           return (
-            <Select mode="multiple" placeholder="请选择">
+            <Select mode="multiple" placeholder={intl.formatMessage({ id: 'please_select' })}>
               {Object.entries(item.valueEnum).map(([value, { text }]) => (
                 <Select.Option key={value} value={value}>
                   <Checkbox style={{ marginRight: 8 }} />
@@ -392,7 +385,6 @@ const TableList: React.FC = () => {
         return defaultRender(item);
       },
     },
-
     {
       title: '操作',
       width: 250,

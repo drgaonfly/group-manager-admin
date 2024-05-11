@@ -1,10 +1,12 @@
+import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormDigit, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormSwitch } from '@ant-design/pro-components';
 import { Form } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
 import { useAccess } from '@umijs/max';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
-import { locationMapping, platformNames } from '@/utils/constants';
+import CountrySelect from '@/components/CountrySelect';
+import PlatformSelect from '@/components/PlatformSelect';
+import UserSelect from '@/components/UserSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -16,54 +18,28 @@ interface Props {
 }
 
 const BasicForm: React.FC<Props> = ({ newRecord, setFile, initialValues }) => {
+  const intl = useIntl();
   const access = useAccess();
-  const { items: users } = useQueryList('/users', access.canAdmin);
 
   return (
     <>
       <ProForm.Group>
-        {access.canAdmin && (
-          <ProFormSelect
-            rules={[{ required: true }]}
-            options={users.map((user: any) => ({
-              label: user.name,
-              value: user._id,
-            }))}
-            width="md"
-            name="user"
-            label="用户"
-            showSearch
-          />
-        )}
-        <ProFormSelect
-          name="country"
-          label="国家"
-          width="md"
-          rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={locationMapping}
-          placeholder="请选择国家"
-        />
+        {access.canAdmin && <UserSelect />}
+        <CountrySelect />
 
-        <ProFormSelect
-          name="platform"
-          label="平台"
-          width="md"
-          rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={platformNames}
-          placeholder="请选择平台"
-        />
+        <PlatformSelect />
         <ProFormDigit
           name="quantity"
-          label="单量"
+          label={intl.formatMessage({ id: 'quantity' })}
           width="md"
           min={1}
-          rules={[{ required: true, message: '请输入单量' }]}
-          placeholder="请输入单量"
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_quantity' }) }]}
+          placeholder={intl.formatMessage({ id: 'enter_quantity' })}
         />
       </ProForm.Group>
       <ProForm.Group>
         {newRecord && (
-          <Form.Item required label="文件" name="file">
+          <Form.Item required label={intl.formatMessage({ id: 'file' })} name="file">
             <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
@@ -76,8 +52,8 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, initialValues }) => {
         {!newRecord && (
           <ProFormSwitch
             name="isProcessed"
-            label="是否已处理"
-            tooltip="标记此记录是否已被处理"
+            label={intl.formatMessage({ id: 'is_processed' })}
+            tooltip={intl.formatMessage({ id: 'mark_processed' })}
             initialValue={initialValues?.isProcessed}
           />
         )}

@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -224,6 +225,7 @@ const handleAfterSale = async (fields: API.ItemData) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -254,7 +256,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '关联任务',
+      title: intl.formatMessage({ id: 'related_task' }),
       dataIndex: 'task',
       width: 200,
       copyable: true,
@@ -269,32 +271,32 @@ const TableList: React.FC = () => {
             {record.task.code}
           </a>
         ) : (
-          '无'
+          intl.formatMessage({ id: 'none' })
         );
       },
     },
     {
-      title: '客户',
+      title: intl.formatMessage({ id: 'customer' }),
       dataIndex: 'customer',
       width: 100,
       hideInSearch: true,
       render: (_, record: any) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.customer && record.customer.name ? record.customer.name : '未知';
+        return record.customer && record.customer.name
+          ? record.customer.name
+          : intl.formatMessage({ id: 'unknown' });
       },
     },
     {
-      title: '国家',
+      title: intl.formatMessage({ id: 'country' }),
       width: 100,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
     {
-      title: '订单号',
+      title: intl.formatMessage({ id: 'order_number' }),
       width: 100,
       dataIndex: 'orderNumber',
-      tooltip: true, // Show tooltip on hover to display the full order number if truncated
+      tooltip: true,
       render: (dom, entity) => {
         return (
           <a
@@ -309,70 +311,60 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '下单时间',
+      title: intl.formatMessage({ id: 'upload_time' }),
       dataIndex: 'uploadTime',
       valueType: 'date',
     },
     {
-      title: '店铺名',
+      title: intl.formatMessage({ id: 'store_name' }),
       dataIndex: 'storeName',
     },
     {
-      title: '金额',
+      title: intl.formatMessage({ id: 'amount' }),
       dataIndex: 'amount',
       hideInSearch: true,
     },
     {
-      title: '汇率',
+      title: intl.formatMessage({ id: 'exchange_rate' }),
       dataIndex: 'exchangeRate',
       hideInSearch: true,
     },
     {
-      title: '服务费',
+      title: intl.formatMessage({ id: 'service_fee' }),
       dataIndex: 'serviceFee',
       hideInSearch: true,
     },
     {
-      title: '支付金额',
+      title: intl.formatMessage({ id: 'payment_amount' }),
       dataIndex: 'paymentAmount',
       hideInSearch: true,
     },
     {
-      title: '买手号',
+      title: intl.formatMessage({ id: 'buyer_id' }),
       dataIndex: 'buyerId',
     },
     {
-      title: '是否签收',
+      title: intl.formatMessage({ id: 'is_signed' }),
       dataIndex: 'isSigned',
       key: 'isSigned',
       valueEnum: {
-        '': { text: '所有', status: 'Default' },
-        true: { text: '已签收', status: 'Success' },
-        false: { text: '未签收', status: 'Error' },
+        '': { text: intl.formatMessage({ id: 'all' }), status: 'Default' },
+        true: { text: intl.formatMessage({ id: 'signed' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'not_signed' }), status: 'Error' },
       },
     },
     {
-      title: '是否评价',
+      title: intl.formatMessage({ id: 'is_reviewed' }),
       dataIndex: 'isReviewed',
       key: 'isReviewed',
       valueEnum: {
-        '': { text: '所有', status: 'Default' },
-        true: { text: '已评价', status: 'Success' },
-        false: { text: '未评价', status: 'Error' },
+        '': { text: intl.formatMessage({ id: 'all' }), status: 'Default' },
+        true: { text: intl.formatMessage({ id: 'reviewed' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'not_reviewed' }), status: 'Error' },
       },
     },
-    // {
-    //   title: '是否售后',
-    //   dataIndex: 'afterSales',
-    //   key: 'afterSales',
-    //   hideInSearch: true,
-    //   valueEnum: {
-    //     true: { text: '有', status: 'Error' },
-    //     false: { text: '无', status: 'Success' },
-    //   },
-    // },
     {
-      title: '创建时间',
+      title: intl.formatMessage({ id: 'created_at' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       hideInSearch: true,

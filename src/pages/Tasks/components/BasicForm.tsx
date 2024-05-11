@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
 import {
   ProForm,
@@ -8,10 +9,11 @@ import {
   ProFormDigit,
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
 import { useAccess } from '@umijs/max';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
-import { locationMapping, platformNames } from '@/utils/constants';
+import CountrySelect from '@/components/CountrySelect';
+import PlatformSelect from '@/components/PlatformSelect';
+import UserSelect from '@/components/UserSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -23,10 +25,10 @@ interface Props {
 }
 
 const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initialValues }) => {
+  const intl = useIntl();
   const [reviewType, setReviewType] = useState(initialValues?.reviewType || '');
   const [orderTimeType, setOrderTimeType] = useState(initialValues?.orderTimeType || '');
   const access = useAccess();
-  const { items: users } = useQueryList('/users', access.canAdmin);
 
   useEffect(() => {
     if (initialValues?.reviewType) {
@@ -40,48 +42,22 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
   return (
     <>
       <ProForm.Group>
-        {access.canAdmin && (
-          <ProFormSelect
-            rules={[{ required: true }]}
-            options={users.map((user: any) => ({
-              label: user.name,
-              value: user._id,
-            }))}
-            width="md"
-            name="user"
-            label="用户"
-            showSearch
-          />
-        )}
-        <ProFormSelect
-          name="country"
-          label="国家"
-          width="md"
-          rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={locationMapping}
-          placeholder="请选择国家"
-        />
+        {access.canAdmin && <UserSelect />}
+        <CountrySelect />
 
-        <ProFormSelect
-          name="platform"
-          label="平台"
-          width="md"
-          rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={platformNames}
-          placeholder="请选择平台"
-        />
+        <PlatformSelect />
         <ProFormDigit
           name="quantity"
-          label="单量"
+          label={intl.formatMessage({ id: 'quantity' })}
           width="md"
           min={1}
-          rules={[{ required: true, message: '请输入单量' }]}
-          placeholder="请输入单量"
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_quantity' }) }]}
+          placeholder={intl.formatMessage({ id: 'enter_quantity' })}
         />
       </ProForm.Group>
       <ProForm.Group>
         {newRecord && (
-          <Form.Item required label="上传文件" name="file">
+          <Form.Item required label={intl.formatMessage({ id: 'upload_file' })} name="file">
             <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
@@ -93,8 +69,8 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
         )}
         <ProForm.Item
           name="uploadTime"
-          label="上传时间"
-          rules={[{ required: true, message: '请选择下单时间' }]}
+          label={intl.formatMessage({ id: 'upload_time' })}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
         >
           <ProFormDateTimePicker
             width="md"
@@ -107,11 +83,17 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProForm.Item name="orderTimeType" label="下单时间选择">
+        <ProForm.Item
+          name="orderTimeType"
+          label={intl.formatMessage({ id: 'order_time_selection' })}
+        >
           <ProFormRadio.Group
             options={[
-              { label: '正常下单', value: 'NormalOrder' },
-              { label: '指定时间下单', value: 'SpecificTimeOrder' },
+              { label: intl.formatMessage({ id: 'normal_order' }), value: 'NormalOrder' },
+              {
+                label: intl.formatMessage({ id: 'specific_time_order' }),
+                value: 'SpecificTimeOrder',
+              },
             ]}
             fieldProps={{
               defaultValue: 'NormalOrder',
@@ -123,11 +105,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
         {orderTimeType === 'SpecificTimeOrder' && (
           <ProForm.Item
             name="orderTime"
-            label="下单时间"
-            rules={[{ required: true, message: '请选择下单时间' }]}
+            label={intl.formatMessage({ id: 'order_time' })}
+            rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
             extra={
               <div style={{ color: '#ff4d4f' }}>
-                有时间要求请提前2小时上传，对接买手需要时间，谢谢理解和配合。
+                {intl.formatMessage({ id: 'order_time_notice' })}
               </div>
             }
           >
@@ -142,11 +124,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
         )}
       </ProForm.Group>
 
-      <ProForm.Item name="reviewType" label="评价类型">
+      <ProForm.Item name="reviewType" label={intl.formatMessage({ id: 'review_type' })}>
         <ProFormRadio.Group
           options={[
-            { label: '正常评价', value: 'NormalReview' },
-            { label: '评价后补', value: 'ReviewAfterModification' },
+            { label: intl.formatMessage({ id: 'normal_review' }), value: 'NormalReview' },
+            {
+              label: intl.formatMessage({ id: 'review_after_modification' }),
+              value: 'ReviewAfterModification',
+            },
           ]}
           fieldProps={{
             defaultValue: 'NormalReview',
@@ -156,7 +141,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
       </ProForm.Item>
 
       {reviewType === 'ReviewAfterModification' && (
-        <Form.Item required label="上传评论" name="uploadedFile">
+        <Form.Item required label={intl.formatMessage({ id: 'upload_review' })} name="uploadedFile">
           <AliyunOSSUpload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
@@ -168,27 +153,33 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
       <ProForm.Group>
         <ProFormSelect
           name="orderType"
-          label="下单类型"
+          label={intl.formatMessage({ id: 'order_type' })}
           mode="multiple"
           width="md"
           options={[
-            { label: '正常下单', value: 'NormalOrder' },
-            { label: '下单前联系改体积/重量', value: 'ContactForVolumeWeight' },
-            { label: '下单前联系开库存', value: 'ContactForInventory' },
-            { label: '下单前联系改价格', value: 'ContactForPrice' },
+            { label: intl.formatMessage({ id: 'normal_order' }), value: 'NormalOrder' },
+            {
+              label: intl.formatMessage({ id: 'contact_for_volume_weight' }),
+              value: 'ContactForVolumeWeight',
+            },
+            {
+              label: intl.formatMessage({ id: 'contact_for_inventory' }),
+              value: 'ContactForInventory',
+            },
+            { label: intl.formatMessage({ id: 'contact_for_price' }), value: 'ContactForPrice' },
           ]}
-          placeholder="请选择"
-          rules={[{ required: false, message: '请选择' }]}
+          placeholder={intl.formatMessage({ id: 'please_select' })}
+          rules={[{ required: false, message: intl.formatMessage({ id: 'please_select' }) }]}
           initialValue={['NormalOrder']}
         />
       </ProForm.Group>
 
       <ProFormTextArea
         name="orderNote"
-        label="下单备注"
+        label={intl.formatMessage({ id: 'order_note' })}
         width="md"
-        rules={[{ required: false, message: '请输入下单备注' }]}
-        placeholder="可选：请输入详细的下单备注信息"
+        rules={[{ required: false, message: intl.formatMessage({ id: 'enter_order_note' }) }]}
+        placeholder={intl.formatMessage({ id: 'enter_detailed_order_note' })}
       />
     </>
   );

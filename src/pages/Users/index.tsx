@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
@@ -120,6 +121,7 @@ const handleBatchAddPrice = async (fields: API.ItemData) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -148,7 +150,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '邮箱',
+      title: intl.formatMessage({ id: 'email' }),
       dataIndex: 'email',
       copyable: true,
       render: (dom, entity) => {
@@ -165,18 +167,18 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '姓名',
+      title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
     },
     {
-      title: '角色',
+      title: intl.formatMessage({ id: 'role' }),
       dataIndex: 'role',
       valueEnum: {
-        SUPER_ADMIN: '超级管理员',
-        CUSTOMER: '客户',
-        ORDER_CLERK: '下单员',
-        ADMIN: '客服',
-        FINANCIAL_STAFF: '财务人员',
+        SUPER_ADMIN: intl.formatMessage({ id: 'super_admin' }),
+        CUSTOMER: intl.formatMessage({ id: 'customer' }),
+        ORDER_CLERK: intl.formatMessage({ id: 'order_clerk' }),
+        ADMIN: intl.formatMessage({ id: 'admin' }),
+        FINANCIAL_STAFF: intl.formatMessage({ id: 'financial_staff' }),
       },
     },
     {

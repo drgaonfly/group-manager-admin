@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
@@ -105,6 +106,7 @@ const handleBatchAdd = async (fields: API.ItemData) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -132,21 +134,21 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '国家',
+      title: intl.formatMessage({ id: 'country' }),
       width: 150,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
     {
-      title: '平台',
+      title: intl.formatMessage({ id: 'platform' }),
       width: 150,
       dataIndex: 'platform',
       valueEnum: convertToTextObject(platformNames),
     },
     {
-      title: '店铺账号',
-      copyable: true,
+      title: intl.formatMessage({ id: 'store_account' }),
       dataIndex: 'storeAccount',
+      copyable: true,
       width: 200,
       render: (dom, entity) => {
         return (
@@ -162,13 +164,13 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '账号数量',
+      title: intl.formatMessage({ id: 'account_quantity' }),
       dataIndex: 'numberOfAccounts',
       hideInSearch: true,
       width: 200,
     },
     {
-      title: '分配时间',
+      title: intl.formatMessage({ id: 'assigned_time' }),
       dataIndex: 'assignedTime',
       width: 170,
       valueType: 'date',

@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -167,6 +168,7 @@ const handleReview = async (fields: API.ItemData) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -198,7 +200,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '关联账单',
+      title: intl.formatMessage({ id: 'associated_bill' }),
       copyable: true,
       width: 250,
       render: (dom, entity) => {
@@ -209,14 +211,14 @@ const TableList: React.FC = () => {
               setShowBillDetail(true);
             }}
           >
-            {entity.bill ? entity.bill._id : '无'}
+            {entity.bill ? entity.bill._id : intl.formatMessage({ id: 'none' })}
           </a>
         );
       },
       dataIndex: 'bill',
     },
     {
-      title: '订单号',
+      title: intl.formatMessage({ id: 'order_number' }),
       dataIndex: 'orderNumber',
       width: 180,
       copyable: true,
@@ -235,57 +237,57 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '申请人',
+      title: intl.formatMessage({ id: 'applicant' }),
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,
       render: (_, record: any) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.name ? record.user.name : '未知';
+        return record.user && record.user.name
+          ? record.user.name
+          : intl.formatMessage({ id: 'unknown' });
       },
     },
     {
-      title: '原因',
+      title: intl.formatMessage({ id: 'reason' }),
       ellipsis: true,
       width: 170,
       dataIndex: 'reason',
       hideInSearch: true,
     },
     {
-      title: '退款金额',
+      title: intl.formatMessage({ id: 'refund_amount' }),
       width: 170,
       dataIndex: 'refundAmount',
       hideInSearch: true,
     },
     {
-      title: '图片',
+      title: intl.formatMessage({ id: 'image' }),
       dataIndex: 'image',
       width: 170,
       hideInSearch: true,
       valueType: 'image',
     },
     {
-      title: '拒绝原因',
+      title: intl.formatMessage({ id: 'rejection_reason' }),
       ellipsis: true,
       width: 170,
       dataIndex: 'rejectionReason',
       hideInSearch: true,
     },
     {
-      title: '状态',
+      title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'status',
       hideInSearch: true,
       width: 170,
       valueEnum: {
-        Pending: { text: '待处理', status: 'Warning' },
-        Processing: { text: '处理中', status: 'Processing' },
-        Approved: { text: '已批准', status: 'Success' },
-        Rejected: { text: '已拒绝', status: 'Error' }, // 新增的状态
+        Pending: { text: intl.formatMessage({ id: 'pending' }), status: 'Warning' },
+        Processing: { text: intl.formatMessage({ id: 'processing' }), status: 'Processing' },
+        Approved: { text: intl.formatMessage({ id: 'approved' }), status: 'Success' },
+        Rejected: { text: intl.formatMessage({ id: 'rejected' }), status: 'Error' },
       },
     },
     {
-      title: '创建时间',
+      title: intl.formatMessage({ id: 'creation_time' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       width: 200,

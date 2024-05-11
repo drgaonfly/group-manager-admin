@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import {
   addItem,
   handleItem,
@@ -111,6 +112,7 @@ const handleCancel = async (id: string) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -138,7 +140,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '编号',
+      title: intl.formatMessage({ id: 'id' }),
       dataIndex: '_id',
       width: 250,
       copyable: true,
@@ -156,60 +158,58 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '国家',
+      title: intl.formatMessage({ id: 'country' }),
       width: 150,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
     {
-      title: '平台',
+      title: intl.formatMessage({ id: 'platform' }),
       width: 150,
       dataIndex: 'platform',
       valueEnum: convertToTextObject(platformNames),
     },
     {
-      title: '文件',
+      title: intl.formatMessage({ id: 'file' }),
       width: 100,
       dataIndex: 'file',
       hideInSearch: true,
       render: (_, record: any) => {
-        // 确保文件URL存在
-        if (!record.file) return '无文件';
+        if (!record.file) return intl.formatMessage({ id: 'no_file' });
 
-        // 返回一个下载按钮或链接
         return (
           <a href={record.file} download target="_blank" rel="noopener noreferrer">
-            下载
+            {intl.formatMessage({ id: 'download' })}
           </a>
         );
       },
     },
     {
-      title: '上传用户',
+      title: intl.formatMessage({ id: 'upload_user' }),
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,
       render: (_, record) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.name ? record.user.name : '未知';
+        return record.user && record.user.name
+          ? record.user.name
+          : intl.formatMessage({ id: 'unknown' });
       },
     },
     {
-      title: '单量',
+      title: intl.formatMessage({ id: 'quantity' }),
       width: 80,
       dataIndex: 'quantity',
       hideInSearch: true,
     },
     {
-      title: '是否处理', // 更新字段描述
+      title: intl.formatMessage({ id: 'is_processed' }),
       width: 100,
-      dataIndex: 'isProcessed', // 指定数据索引为status
+      dataIndex: 'isProcessed',
       hideInSearch: true,
       render: (_, record) => (
         <Switch
-          checkedChildren="是"
-          unCheckedChildren="否"
+          checkedChildren={intl.formatMessage({ id: 'yes' })}
+          unCheckedChildren={intl.formatMessage({ id: 'no' })}
           checked={record.isProcessed}
           onChange={() => {
             handleUpdate({ _id: record._id, isProcessed: !record.isProcessed });

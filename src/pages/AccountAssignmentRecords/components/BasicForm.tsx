@@ -1,6 +1,8 @@
+import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { locationMapping, platformNames } from '@/utils/constants';
+import { ProForm, ProFormDigit, ProFormText } from '@ant-design/pro-components';
+import CountrySelect from '@/components/CountrySelect';
+import PlatformSelect from '@/components/PlatformSelect';
 // import useQueryList from '@/hooks/useQueryList';
 // import { useAccess } from '@umijs/max';
 
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const BasicForm: React.FC<Props> = ({}) => {
+  const intl = useIntl();
   // const access = useAccess();
   // const { items: users } = useQueryList('/users', access.canAdmin);
 
@@ -21,51 +24,29 @@ const BasicForm: React.FC<Props> = ({}) => {
     <>
       <ProForm.Group>
         {/* {access.canAdmin && (
-          <ProFormSelect
-            rules={[{ required: true }]}
-            options={users.map((user: any) => ({
-              label: user.name,
-              value: user._id,
-            }))}
-            width="md"
-            name="user"
-            label="用户"
-            showSearch
-          />
+          <UserSelect />
         )} */}
-        <ProFormSelect
-          name="country"
-          label="国家"
-          width="md"
-          rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={locationMapping}
-          placeholder="请选择国家"
-        />
+        <CountrySelect />
 
-        <ProFormSelect
-          name="platform"
-          label="平台"
-          width="md"
-          rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={platformNames}
-          placeholder="请选择平台"
-        />
+        <PlatformSelect />
 
         <ProFormDigit
           name="numberOfAccounts"
-          label="账号数量"
+          label={intl.formatMessage({ id: 'account_quantity' })}
           width="md"
           min={1} // Minimum number of accounts must be at least 1
-          rules={[{ required: true, message: '请输入账号数量' }]}
-          placeholder="请输入账号数量"
+          rules={[
+            { required: true, message: intl.formatMessage({ id: 'enter_account_quantity' }) },
+          ]}
+          placeholder={intl.formatMessage({ id: 'enter_account_quantity' })}
         />
 
         <ProFormText
           name="storeAccount"
-          label="店铺账号"
+          label={intl.formatMessage({ id: 'store_account' })}
           width="md"
-          rules={[{ required: true, message: '请输入店铺账号' }]}
-          placeholder="请输入店铺账号"
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_store_account' }) }]}
+          placeholder={intl.formatMessage({ id: 'enter_store_account' })}
         />
       </ProForm.Group>
     </>

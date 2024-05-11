@@ -1,13 +1,8 @@
 import CopyToClipboard from '@/components/CopyToClipboard';
+import CountrySelect from '@/components/CountrySelect';
+import PlatformSelect from '@/components/PlatformSelect';
 import { addItem } from '@/services/ant-design-pro/api';
-import { locationMapping, platformNames } from '@/utils/constants';
-import {
-  ProFormDigit,
-  ProFormInstance,
-  ProFormSelect,
-  ProFormText,
-  StepsForm,
-} from '@ant-design/pro-components';
+import { ProFormDigit, ProFormInstance, ProFormText, StepsForm } from '@ant-design/pro-components';
 import { Empty, Modal, Table, message } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 
@@ -177,23 +172,9 @@ const Create: React.FC<Props> = (props) => {
       }}
     >
       <StepsForm.StepForm formRef={formRef} initialValues={{}} title="填写店铺账号和数量">
-        <ProFormSelect
-          name="country"
-          label="国家"
-          width="md"
-          rules={[{ required: true, message: '请选择国家' }]}
-          valueEnum={locationMapping}
-          placeholder="请选择国家"
-        />
+        <CountrySelect />
 
-        <ProFormSelect
-          name="platform"
-          label="平台"
-          width="md"
-          rules={[{ required: true, message: '请选择平台' }]}
-          valueEnum={platformNames}
-          placeholder="请选择平台"
-        />
+        <PlatformSelect />
 
         <ProFormText
           name="storeAccount"

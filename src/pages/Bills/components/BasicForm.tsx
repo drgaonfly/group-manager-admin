@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { ProForm, ProFormText, ProFormDigit } from '@ant-design/pro-components';
 import React from 'react';
 
@@ -7,38 +8,39 @@ interface Props {
 }
 
 const BasicForm: React.FC<Props> = ({ newRecord }) => {
+  const intl = useIntl();
   console.log(newRecord);
   return (
     <>
       <ProForm.Group>
         <ProFormText
-          rules={[{ required: true, message: '请输入店铺名字' }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_store_name' }) }]}
           width="md"
-          label="店铺名字"
+          label={intl.formatMessage({ id: 'store_name' })}
           name="storeName"
-          placeholder="请输入店铺名字"
+          placeholder={intl.formatMessage({ id: 'enter_store_name' })}
         />
         <ProFormText
-          rules={[{ required: true, message: '请输入订单号' }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_order_number' }) }]}
           width="md"
-          label="订单号"
+          label={intl.formatMessage({ id: 'order_number' })}
           name="orderNumber"
-          placeholder="请输入订单号"
+          placeholder={intl.formatMessage({ id: 'enter_order_number' })}
         />
         <ProFormDigit
-          label="金额"
+          label={intl.formatMessage({ id: 'amount' })}
           name="amount"
           width="md"
           min={0}
-          rules={[{ required: true, message: '请输入金额' }]}
-          placeholder="请输入金额"
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_amount' }) }]}
+          placeholder={intl.formatMessage({ id: 'enter_amount' })}
         />
         <ProFormText
-          rules={[{ required: true, message: '请输入买手号' }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_buyer_id' }) }]}
           width="md"
-          label="买手号"
+          label={intl.formatMessage({ id: 'buyer_id' })}
           name="buyerId"
-          placeholder="请输入买手号"
+          placeholder={intl.formatMessage({ id: 'enter_buyer_id' })}
         />
       </ProForm.Group>
     </>

@@ -1,8 +1,9 @@
+import { useIntl } from '@umijs/max';
 import { Footer } from '@/components';
 import { login } from '@/services/ant-design-pro/api';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
+import { FormattedMessage, history, SelectLang, useModel, Helmet } from '@umijs/max';
 import { message } from 'antd';
 import Settings from '../../../../config/defaultSettings';
 import React from 'react';
