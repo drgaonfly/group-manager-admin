@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { ModalForm } from '@ant-design/pro-components';
 import BasicForm from './BasicForm';
 
@@ -9,10 +10,11 @@ interface Props {
 }
 
 const Create: React.FC<Props> = (props) => {
+  const intl = useIntl();
   const { open, onOpenChange, onFinish } = props;
   return (
     <ModalForm
-      title="批量设置"
+      title={intl.formatMessage({ id: 'batch_setting' })}
       width="50%"
       open={open}
       onOpenChange={onOpenChange}

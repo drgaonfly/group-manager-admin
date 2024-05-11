@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import CountrySelect from '@/components/CountrySelect';
 import PlatformSelect from '@/components/PlatformSelect';
 import { addItem } from '@/services/ant-design-pro/api';
@@ -56,6 +57,7 @@ const AccountTable = ({ accounts }: { accounts: any[] }) => {
 };
 
 const Create: React.FC<Props> = (props) => {
+  const intl = useIntl();
   const formRef = useRef<ProFormInstance>();
   const { open, onOpenChange, onFinish } = props;
   const [current, setCurrent] = useState<number>(0);
@@ -118,7 +120,7 @@ const Create: React.FC<Props> = (props) => {
             width="50%"
             bodyStyle={{ padding: '32px 40px 48px' }}
             destroyOnClose
-            title="自动分配账号"
+            title={intl.formatMessage({ id: 'auto_assign_account' })}
             open={open}
             footer={submitter}
             onCancel={() => {

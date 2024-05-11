@@ -119,4 +119,6 @@ export default {
   edit: 'Edit',
   modify: 'Modify',
   add_new: 'Add New',
+  batch_setting: 'Batch Setting',
+  auto_assign_account: 'Auto Assign Account',
 };

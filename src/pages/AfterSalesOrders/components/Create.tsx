@@ -1,3 +1,4 @@
+import { useIntl } from '@umijs/max';
 import { ModalForm } from '@ant-design/pro-components';
 import BasicForm from './BasicForm';
 
@@ -8,10 +9,11 @@ interface Props {
 }
 
 const Create: React.FC<Props> = (props) => {
+  const intl = useIntl();
   const { open, onOpenChange, onFinish } = props;
   return (
     <ModalForm
-      title="新增新闻"
+      title={intl.formatMessage({ id: 'add_new' })}
       width="50%"
       open={open}
       onOpenChange={onOpenChange}
