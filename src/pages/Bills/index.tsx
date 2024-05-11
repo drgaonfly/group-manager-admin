@@ -376,13 +376,14 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="update"
+          key="edit"
           onClick={() => {
+            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
             handleUpdateModalOpen(true);
             setCurrentRow(record);
           }}
         >
-          编辑
+          {intl.formatMessage({ id: 'edit' })}
         </a>,
 
         access.canSuperAdmin && (
