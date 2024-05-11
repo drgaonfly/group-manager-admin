@@ -291,15 +291,15 @@ const TableList: React.FC = () => {
               danger
               onClick={() => {
                 return Modal.confirm({
-                  title: '确认删除?',
+                  title: intl.formatMessage({ id: 'confirm_delete' }),
                   onOk: async () => {
                     await handleRemove(selectedRowsState?.map((item) => item._id!));
                     setSelectedRows([]);
                     actionRef.current?.reloadAndRest?.();
                   },
-                  content: '确定删除吗？',
-                  okText: '确认',
-                  cancelText: '取消',
+                  content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                  okText: intl.formatMessage({ id: 'confirm' }),
+                  cancelText: intl.formatMessage({ id: 'cancel' }),
                 });
               }}
             >

@@ -487,16 +487,16 @@ const TableList: React.FC = () => {
             activeKey: activeKey,
             items: [
               {
-                label: <span>所有</span>,
-                key: '', // 不设置key或设置为空字符串，表示不过滤此项
+                label: <span>{intl.formatMessage({ id: 'all' })}</span>,
+                key: '',
               },
               {
-                label: <span>正常</span>,
-                key: 'false', // 对应Active状态
+                label: <span>{intl.formatMessage({ id: 'normal' })}</span>,
+                key: 'false',
               },
               {
-                label: <span>有售后</span>,
-                key: 'true', // 对应Completed状态
+                label: <span>{intl.formatMessage({ id: 'after_sales' })}</span>,
+                key: 'true',
               },
             ],
             onChange: (key: any) => {
@@ -532,15 +532,15 @@ const TableList: React.FC = () => {
               danger
               onClick={() => {
                 return Modal.confirm({
-                  title: '确认删除?',
+                  title: intl.formatMessage({ id: 'confirm_delete' }),
                   onOk: async () => {
                     await handleRemove(selectedRowsState?.map((item) => item._id!));
                     setSelectedRows([]);
                     actionRef.current?.reloadAndRest?.();
                   },
-                  content: '确定删除吗？',
-                  okText: '确认',
-                  cancelText: '取消',
+                  content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                  okText: intl.formatMessage({ id: 'confirm' }),
+                  cancelText: intl.formatMessage({ id: 'cancel' }),
                 });
               }}
             >

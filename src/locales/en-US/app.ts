@@ -108,4 +108,10 @@ export default {
   reviewed: 'Reviewed',
   not_reviewed: 'Not Reviewed',
   created_at: 'Created At',
+  normal: 'Normal',
+  after_sales: 'After Sales',
+  confirm_delete: 'Confirm Delete?',
+  confirm_delete_content: 'Are you sure you want to delete?',
+  confirm: 'Confirm',
+  cancel: 'Cancel',
 };
