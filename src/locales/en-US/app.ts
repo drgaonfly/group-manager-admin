@@ -151,4 +151,5 @@ export default {
   bulk_uploading: 'Bulk uploading...',
   confirm_cancel: 'Confirm Cancellation?',
   confirm_cancel_content: 'Are you sure you want to cancel?',
+  exchange_rate: 'Exchange Rate',
 };

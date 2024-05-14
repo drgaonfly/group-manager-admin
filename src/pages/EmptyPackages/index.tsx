@@ -264,21 +264,20 @@ const TableList: React.FC = () => {
           <a
             key="cancel"
             onClick={() => {
-              // Replace `handleRemove`, `setSelectedRows`, and `actionRef.current?.reloadAndRest?` as well
               return Modal.confirm({
-                title: '确认取消?',
+                title: intl.formatMessage({ id: 'confirm_cancel' }),
                 onOk: async () => {
                   await handleCancel(record._id!);
                   setSelectedRows([]);
                   actionRef.current?.reloadAndRest?.();
                 },
-                content: '确定取消吗？',
-                okText: '确认',
-                cancelText: '取消',
+                content: intl.formatMessage({ id: 'confirm_cancel_content' }),
+                okText: intl.formatMessage({ id: 'confirm' }),
+                cancelText: intl.formatMessage({ id: 'cancel' }),
               });
             }}
           >
-            取消
+            {intl.formatMessage({ id: 'cancel' })}
           </a>
         ),
         access.canSuperAdmin && (
