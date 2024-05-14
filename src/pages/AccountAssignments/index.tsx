@@ -209,21 +209,20 @@ const TableList: React.FC = () => {
           <a
             key="delete"
             onClick={() => {
-              // Replace `handleRemove`, `setSelectedRows`, and `actionRef.current?.reloadAndRest?` as well
               return Modal.confirm({
-                title: '确认删除?',
+                title: intl.formatMessage({ id: 'confirm_delete' }),
                 onOk: async () => {
                   await handleRemove([record._id!]);
                   setSelectedRows([]);
                   actionRef.current?.reloadAndRest?.();
                 },
-                content: '确定删除吗？',
-                okText: '确认',
-                cancelText: '取消',
+                content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                okText: intl.formatMessage({ id: 'confirm' }),
+                cancelText: intl.formatMessage({ id: 'cancel' }),
               });
             }}
           >
-            删除
+            {intl.formatMessage({ id: 'delete' })}
           </a>
         ),
       ],

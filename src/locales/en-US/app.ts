@@ -125,4 +125,5 @@ export default {
   ensure_upload_file: 'Please ensure the table file has been uploaded',
   table_file: 'Table File',
   download_template: 'Download Template',
+  delete: 'Delete',
 };
