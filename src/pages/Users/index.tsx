@@ -110,7 +110,9 @@ const handleRemove = async (ids: string[]) => {
 };
 
 const handleBatchAdd = async (fields: API.ItemData) => {
-  const hide = message.loading('正在批量上传');
+  const hide = message.loading(
+    <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
+  );
   try {
     const res = (await addItem('/users/batch-upload', { ...fields })) as any;
     hide();

@@ -113,7 +113,9 @@ const handleUploadBill = async (fields: API.ItemData) => {
 };
 
 const handleBatchAdd = async (fields: API.ItemData) => {
-  const hide = message.loading('正在批量上传');
+  const hide = message.loading(
+    <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
+  );
   try {
     await addItem('/assignments/upload', { ...fields });
     hide();

@@ -148,4 +148,5 @@ export default {
   adding: 'Adding...',
   add_successful: 'Added successfully',
   add_failed: 'Add failed, please try again!',
+  bulk_uploading: 'Bulk uploading...',
 };
