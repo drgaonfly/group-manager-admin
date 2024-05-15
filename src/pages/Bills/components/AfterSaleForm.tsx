@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ModalForm, ProFormDigit, ProFormTextArea } from '@ant-design/pro-components';
 import { Alert, Form, Input, message } from 'antd';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { useIntl } from '@umijs/max';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -15,11 +16,12 @@ export type UpdateFormProps = {
 };
 
 const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
+  const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const [file, setFile] = useState<string>('');
   return (
     <ModalForm
-      title="申请售后"
+      title={intl.formatMessage({ id: 'apply_after_sale', defaultMessage: 'Apply for After-sale' })}
       width="40%"
       modalProps={{
         destroyOnClose: true,
@@ -29,7 +31,12 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
       onOpenChange={onCancel}
       onFinish={async (values: any) => {
         if (!file) {
-          message.error('请上传图片');
+          message.error(
+            intl.formatMessage({
+              id: 'upload_image_prompt',
+              defaultMessage: 'Please upload an image',
+            }),
+          );
           return;
         }
 
@@ -41,10 +48,21 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
       initialValues={{ ...values }}
     >
       {values.afterSales ? (
-        <Alert message="您已经申请过售后了" type="warning" showIcon />
+        <Alert
+          message={intl.formatMessage({
+            id: 'after_sale_applied',
+            defaultMessage: 'You have already applied for after-sale',
+          })}
+          type="warning"
+          showIcon
+        />
       ) : (
         <>
-          <Form.Item required label="图片" name="image">
+          <Form.Item
+            required
+            label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}
+            name="image"
+          >
             <AliyunOSSUpload
               onFileUpload={(url: string) => {
                 console.log('Uploaded file URL:', url);
@@ -55,17 +73,42 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
           </Form.Item>
           <ProFormTextArea
             name="reason"
-            label="售后原因"
+            label={intl.formatMessage({
+              id: 'after_sale_reason',
+              defaultMessage: 'After-sale Reason',
+            })}
             width="md"
-            rules={[{ required: true, message: '请输入售后原因' }]}
-            placeholder="请输入售后原因"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'enter_after_sale_reason',
+                  defaultMessage: 'Please enter the reason for after-sale',
+                }),
+              },
+            ]}
+            placeholder={intl.formatMessage({
+              id: 'enter_after_sale_reason',
+              defaultMessage: 'Please enter the reason for after-sale',
+            })}
           />
           <ProFormDigit
             name="refundAmount"
-            label="退款金额"
+            label={intl.formatMessage({ id: 'refund_amount', defaultMessage: 'Refund Amount' })}
             width="md"
-            rules={[{ required: true, message: '请输入退款金额' }]}
-            placeholder="请输入退款金额"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'enter_refund_amount',
+                  defaultMessage: 'Please enter the refund amount',
+                }),
+              },
+            ]}
+            placeholder={intl.formatMessage({
+              id: 'enter_refund_amount',
+              defaultMessage: 'Please enter the refund amount',
+            })}
             min={0}
           />
           <Form.Item name="_id" label={false}>

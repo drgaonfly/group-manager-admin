@@ -9,7 +9,6 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
-import Recharge from './components/Recharge';
 import ReviewForm from './components/ReviewForm';
 import { convertToTextObject, locationMapping } from '@/utils/constants';
 import ShowBill from '@/pages/Bills/components/Show';
@@ -123,21 +122,6 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const handleRecharge = async (fields: FormValueType) => {
-  const hide = message.loading('正在充值');
-  try {
-    await addItem(`/after-sales-orders/${fields._id}/recharge`, fields);
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '更新充值，请重试!');
-    return false;
-  }
-};
-
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -205,7 +189,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const [reviewModalVisible, setReviewModalVisible] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
@@ -518,22 +501,6 @@ const TableList: React.FC = () => {
         onCancel={setReviewModalVisible} // 关闭模态窗口
         updateModalOpen={reviewModalVisible} // 控制上传模态窗口的开关
         values={currentRow || {}} // 当前行数据，用作表单的初始值或为新上传提供参考数据
-      />
-
-      <Recharge
-        onSubmit={async (value) => {
-          const success = await handleRecharge(value);
-          if (success) {
-            setRechargeModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={setRechargeModalVisible}
-        updateModalOpen={rechargeModalVisible}
-        values={currentRow || {}}
       />
 
       <Show
