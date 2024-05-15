@@ -230,4 +230,5 @@ export default {
   malaysia: 'Malaysia (MY)',
   philippines: 'Philippines (PH)',
   indonesia: 'Indonesia (ID)',
+  upload: 'Tải lên',
 };

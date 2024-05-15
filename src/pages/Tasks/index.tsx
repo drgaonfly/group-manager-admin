@@ -453,7 +453,7 @@ const TableList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            上传
+            <FormattedMessage id="upload" defaultMessage="上传" />
           </a>
         ),
         access.canCustomer && (

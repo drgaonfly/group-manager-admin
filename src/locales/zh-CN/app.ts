@@ -229,4 +229,5 @@ export default {
   malaysia: '马来西亚 (MY)',
   philippines: '菲律宾 (PH)',
   indonesia: '印尼 (ID)',
+  upload: '上传',
 };
