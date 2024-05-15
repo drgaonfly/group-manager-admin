@@ -219,26 +219,6 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        // access.canCustomer && (
-        //   <a
-        //     key="cancel"
-        //     onClick={() => {
-        //       return Modal.confirm({
-        //         title: intl.formatMessage({ id: 'confirm_cancel' }),
-        //         onOk: async () => {
-        //           await handleCancel(record._id!);
-        //           setSelectedRows([]);
-        //           actionRef.current?.reloadAndRest?.();
-        //         },
-        //         content: intl.formatMessage({ id: 'confirm_cancel_content' }),
-        //         okText: intl.formatMessage({ id: 'confirm' }),
-        //         cancelText: intl.formatMessage({ id: 'cancel' }),
-        //       });
-        //     }}
-        //   >
-        //     {intl.formatMessage({ id: 'cancel' })}
-        //   </a>
-        // ),
         access.canSuperAdmin && (
           <a
             key="delete"

@@ -1,4 +1,4 @@
-import { useIntl } from '@umijs/max';
+import { FormattedMessage, useIntl } from '@umijs/max';
 import { ModalForm } from '@ant-design/pro-components';
 import BasicForm from './BasicForm';
 import { useState } from 'react';
@@ -27,7 +27,9 @@ const Create: React.FC<Props> = (props) => {
       }}
       onFinish={async (values) => {
         if (!file) {
-          message.error('请上传文件');
+          message.error(
+            <FormattedMessage id="upload_file_error" defaultMessage="Please upload a file" />,
+          );
           return;
         }
         await onFinish({

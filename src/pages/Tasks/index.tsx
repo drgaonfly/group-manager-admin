@@ -22,23 +22,25 @@ import UserDetail from '@/pages/Users/components/Show';
 
 const userColumns: ProColumns<API.ItemData>[] = [
   {
-    title: '邮箱',
+    title: <FormattedMessage id="email" defaultMessage="Email" />,
     dataIndex: 'email',
     copyable: true,
   },
   {
-    title: '姓名',
+    title: <FormattedMessage id="name" defaultMessage="Name" />,
     dataIndex: 'name',
   },
   {
-    title: '角色',
+    title: <FormattedMessage id="role" defaultMessage="Role" />,
     dataIndex: 'role',
     valueEnum: {
-      SUPER_ADMIN: '超级管理员',
-      CUSTOMER: '客户',
-      ORDER_CLERK: '下单员',
-      ADMIN: '客服',
-      FINANCIAL_STAFF: '财务人员',
+      SUPER_ADMIN: { text: <FormattedMessage id="super_admin" defaultMessage="Super Admin" /> },
+      CUSTOMER: { text: <FormattedMessage id="customer" defaultMessage="Customer" /> },
+      ORDER_CLERK: { text: <FormattedMessage id="order_clerk" defaultMessage="Order Clerk" /> },
+      ADMIN: { text: <FormattedMessage id="admin" defaultMessage="Admin" /> },
+      FINANCIAL_STAFF: {
+        text: <FormattedMessage id="financial_staff" defaultMessage="Financial Staff" />,
+      },
     },
   },
 ];
@@ -142,7 +144,9 @@ const handleUploadBill = async (fields: API.ItemData) => {
 };
 
 const handleDownload = async (id: string) => {
-  const hide = message.loading('正在准备下载');
+  const hide = message.loading(
+    <FormattedMessage id="preparing_download" defaultMessage="Preparing download" />,
+  );
   try {
     const response = await handleItem(`/tasks/download-task`, { taskId: id }); // Assuming handleItem can handle method and body
     hide();
@@ -150,7 +154,12 @@ const handleDownload = async (id: string) => {
     console.log('response', response);
 
     if (response?.data) {
-      message.success('文件准备完成，下载即将开始');
+      message.success(
+        <FormattedMessage
+          id="file_ready"
+          defaultMessage="File is ready, download will start soon"
+        />,
+      );
       // Optionally handle the download URL from the response
       window.open(response.data.signedURL, '_blank');
       return true;
@@ -159,7 +168,14 @@ const handleDownload = async (id: string) => {
     }
   } catch (error: any) {
     hide();
-    message.error(error?.response?.data?.message ?? '下载失败，请重试!');
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage
+          id="download_failed"
+          defaultMessage="Download failed, please try again!"
+        />
+      ),
+    );
     return false;
   }
 };

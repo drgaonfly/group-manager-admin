@@ -4,6 +4,7 @@ import {
   ProDescriptions,
   ProDescriptionsItemProps,
 } from '@ant-design/pro-components';
+import { FormattedMessage } from '@umijs/max';
 import { Drawer } from 'antd';
 import React, { useState } from 'react';
 
@@ -16,12 +17,12 @@ interface Props {
 
 type DataSourceType = {
   _id: string;
-  storeName: string; // 店铺名字
-  orderNumber: string; // 订单号
-  amount: number; // 金额
-  buyerId: string; // 买手号
-  createdAt?: Date; // Time of document creation
-  updatedAt?: Date; // Time the document was last updated
+  storeName: string;
+  orderNumber: string;
+  amount: number;
+  buyerId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 const Show: React.FC<Props> = (props) => {
@@ -32,71 +33,112 @@ const Show: React.FC<Props> = (props) => {
 
   const columns: ProColumns<DataSourceType>[] = [
     {
-      title: '店铺名字',
+      title: <FormattedMessage id="store_name" defaultMessage="Store Name" />,
       dataIndex: 'storeName',
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '店铺名字是必填项' }],
+          rules: [
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="store_name_required"
+                  defaultMessage="Store Name is required"
+                />
+              ),
+            },
+          ],
         };
       },
       editable: () => true,
     },
     {
-      title: '订单号',
+      title: <FormattedMessage id="order_number" defaultMessage="Order Number" />,
       dataIndex: 'orderNumber',
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '订单号是必填项' }],
+          rules: [
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="order_number_required"
+                  defaultMessage="Order Number is required"
+                />
+              ),
+            },
+          ],
         };
       },
       editable: () => true,
     },
     {
-      title: '金额',
+      title: <FormattedMessage id="amount" defaultMessage="Amount" />,
       dataIndex: 'amount',
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '金额是必填项' }],
+          rules: [
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="amount_required" defaultMessage="Amount is required" />
+              ),
+            },
+          ],
         };
       },
       editable: () => true,
     },
     {
-      title: '汇率',
+      title: <FormattedMessage id="exchange_rate" defaultMessage="Exchange Rate" />,
       dataIndex: 'exchangeRate',
     },
     {
-      title: '服务费',
+      title: <FormattedMessage id="service_fee" defaultMessage="Service Fee" />,
       dataIndex: 'serviceFee',
     },
     {
-      title: '支付金额',
+      title: <FormattedMessage id="payment_amount" defaultMessage="Payment Amount" />,
       dataIndex: 'paymentAmount',
     },
     {
-      title: '买手号',
+      title: <FormattedMessage id="buyer_id" defaultMessage="Buyer ID" />,
       dataIndex: 'buyerId',
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '买手号是必填项' }],
+          rules: [
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="buyer_id_required" defaultMessage="Buyer ID is required" />
+              ),
+            },
+          ],
         };
       },
       editable: () => true,
     },
     {
-      title: '任务ID',
+      title: <FormattedMessage id="task_id" defaultMessage="Task ID" />,
       dataIndex: 'task',
       hidden: true,
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '任务ID是必填项' }],
+          rules: [
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="task_id_required" defaultMessage="Task ID is required" />
+              ),
+            },
+          ],
         };
       },
       editable: () => true,
       render: (text) => text?.toString(),
     },
     {
-      title: '创建时间',
+      title: <FormattedMessage id="created_at" defaultMessage="Created At" />,
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       editable: () => false,
@@ -137,7 +179,7 @@ const Show: React.FC<Props> = (props) => {
 
           <EditableProTable<DataSourceType>
             rowKey="_id"
-            headerTitle="账单"
+            headerTitle={<FormattedMessage id="bill" defaultMessage="Bill" />}
             maxLength={5}
             scroll={{
               x: 960,

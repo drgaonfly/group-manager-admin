@@ -204,4 +204,12 @@ export default {
   status_issue: 'Issue',
   order_time_type: 'Order Time Type',
   review_after_modification_file: 'Review After Modification File',
+  store_name_required: 'Store Name is required',
+  order_number_required: 'Order Number is required',
+  amount_required: 'Amount is required',
+  buyer_id_required: 'Buyer ID is required',
+  task_id: 'Task ID',
+  task_id_required: 'Task ID is required',
+  preparing_download: 'Preparing download',
+  download_failed: 'Download failed, please try again!',
 };
