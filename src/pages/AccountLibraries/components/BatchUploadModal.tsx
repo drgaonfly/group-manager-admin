@@ -2,6 +2,7 @@ import { Form, message } from 'antd';
 import { ModalForm } from '@ant-design/pro-components';
 import { useState } from 'react';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { useIntl } from '@umijs/max';
 
 interface Props {
   open: boolean;
@@ -11,10 +12,14 @@ interface Props {
 
 const BatchUploadModal: React.FC<Props> = ({ open, onOpenChange, onFinish }) => {
   const [file, setFile] = useState<string>('');
+  const intl = useIntl();
 
   return (
     <ModalForm
-      title="批量上传账号库"
+      title={intl.formatMessage({
+        id: 'batch_upload_title',
+        defaultMessage: 'Batch Upload Accounts',
+      })}
       open={open}
       onOpenChange={onOpenChange}
       modalProps={{
@@ -22,22 +27,31 @@ const BatchUploadModal: React.FC<Props> = ({ open, onOpenChange, onFinish }) => 
         maskClosable: false,
       }}
       onFinish={async (values: any) => {
-        // 确保在提交前已经上传了图片和资源
         if (!file) {
-          message.error('请确保已上传表格文件');
+          message.error(
+            intl.formatMessage({
+              id: 'ensure_file_uploaded',
+              defaultMessage: 'Please ensure a table file has been uploaded',
+            }),
+          );
           return;
         }
-        // 将图片和资源URL添加到表单数据中
         await onFinish({
           ...values,
           file,
         });
       }}
     >
-      <Form.Item label="表格文件" name="file">
+      <Form.Item
+        label={intl.formatMessage({ id: 'table_file', defaultMessage: 'Table File' })}
+        name="file"
+      >
         <div style={{ marginBottom: '30px' }}>
-          <a href="https://backend.maomaozhaocai.com/api/static/账号库模板.xlsx" download>
-            下载模板
+          <a
+            href="https://backend.maomaozhaocai.com/api/static/AccountRepositoryTemplate.xlsx"
+            download
+          >
+            {intl.formatMessage({ id: 'download_template', defaultMessage: 'Download Template' })}
           </a>
         </div>
         <AliyunOSSUpload
