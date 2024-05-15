@@ -18,10 +18,10 @@ export const platformNames = {
 };
 
 interface TextObject {
-  [key: string]: { text: string };
+  [key: string]: { text: any };
 }
 
-export const convertToTextObject = (obj: Record<string, string>): TextObject => {
+export const convertToTextObject = (obj: Record<string, any>): TextObject => {
   const newObj: TextObject = {};
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
