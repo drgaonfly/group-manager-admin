@@ -315,7 +315,8 @@ const TableList: React.FC = () => {
                 setBatchUploadModalOpen(true);
               }}
             >
-              <UploadOutlined /> 批量上传
+              <UploadOutlined />{' '}
+              <FormattedMessage id="batch_upload" defaultMessage="Batch Upload" />
             </Button>
           ),
         ]}

@@ -161,4 +161,5 @@ export default {
   cancel_failed: 'Cancel failed, please try again!',
   batch_upload_title: 'Batch Upload Accounts',
   ensure_file_uploaded: 'Please ensure a table file has been uploaded',
+  batch_upload: 'Batch Upload',
 };
