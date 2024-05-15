@@ -17,7 +17,7 @@ import { convertToTextObject, locationMapping, platformNames } from '@/utils/con
  * @param fields
  */
 const handleAdd = async (fields: API.ItemData) => {
-  const hide = message.loading('正在搜索');
+  const hide = message.loading(<FormattedMessage id="searching" defaultMessage="Searching..." />);
   try {
     await addItem('/assignment-records', { ...fields });
     hide();

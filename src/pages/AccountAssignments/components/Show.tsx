@@ -4,6 +4,7 @@ import {
   ProDescriptions,
   ProDescriptionsItemProps,
 } from '@ant-design/pro-components';
+import { FormattedMessage } from '@umijs/max';
 import { Drawer } from 'antd';
 import React, { useState } from 'react';
 
@@ -16,54 +17,99 @@ interface Props {
 
 const columns: ProColumns<DataSourceType>[] = [
   {
-    title: '下单账号序号',
+    title: <FormattedMessage id="account_number" defaultMessage="Account Number" />,
     dataIndex: 'accountNumber',
     key: 'accountNumber',
     formItemProps: {
-      rules: [{ required: true, message: '下单账号序号是必填项' }],
+      rules: [
+        {
+          required: true,
+          message: (
+            <FormattedMessage
+              id="account_number_required"
+              defaultMessage="Account number is required"
+            />
+          ),
+        },
+      ],
     },
     editable: () => true,
   },
   {
-    title: '登录账号',
+    title: <FormattedMessage id="login_account" defaultMessage="Login Account" />,
     dataIndex: 'loginAccount',
     key: 'loginAccount',
     formItemProps: {
-      rules: [{ required: true, message: '登录账号是必填项' }],
+      rules: [
+        {
+          required: true,
+          message: (
+            <FormattedMessage
+              id="login_account_required"
+              defaultMessage="Login account is required"
+            />
+          ),
+        },
+      ],
     },
     editable: () => true,
   },
   {
-    title: '登录密码',
+    title: <FormattedMessage id="login_password" defaultMessage="Login Password" />,
     dataIndex: 'loginPassword',
     key: 'loginPassword',
     formItemProps: {
-      rules: [{ required: true, message: '登录密码是必填项' }],
+      rules: [
+        {
+          required: true,
+          message: (
+            <FormattedMessage
+              id="login_password_required"
+              defaultMessage="Login password is required"
+            />
+          ),
+        },
+      ],
     },
     editable: () => true,
   },
   {
-    title: '是否分配',
+    title: <FormattedMessage id="is_assigned" defaultMessage="Is Assigned" />,
     dataIndex: 'isAssigned',
     key: 'isAssigned',
     valueType: 'select',
     valueEnum: {
-      true: { text: '已分配', status: 'Success' },
-      false: { text: '未分配', status: 'Error' },
+      true: {
+        text: <FormattedMessage id="assigned" defaultMessage="Assigned" />,
+        status: 'Success',
+      },
+      false: {
+        text: <FormattedMessage id="not_assigned" defaultMessage="Not Assigned" />,
+        status: 'Error',
+      },
     },
     formItemProps: () => ({
-      rules: [{ required: true, message: '分配状态必须指定' }],
+      rules: [
+        {
+          required: true,
+          message: (
+            <FormattedMessage
+              id="assignment_status_required"
+              defaultMessage="Assignment status is required"
+            />
+          ),
+        },
+      ],
     }),
     editable: () => false,
   },
   {
-    title: '最近分配时间',
+    title: <FormattedMessage id="last_assigned_time" defaultMessage="Last Assigned Time" />,
     dataIndex: 'assignedTime',
     key: 'assignedTime',
     editable: () => false,
   },
 ];
-
 interface DataSourceType {
   accountNumber: string;
   loginAccount: string;
@@ -95,7 +141,9 @@ const Show: React.FC<Props> = (props) => {
           />
           <EditableProTable<DataSourceType>
             rowKey="_id"
-            headerTitle="账号库列表"
+            hhheaderTitle={
+              <FormattedMessage id="account_library_list" defaultMessage="Account Library List" />
+            }
             maxLength={5}
             scroll={{
               x: 960,

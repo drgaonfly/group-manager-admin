@@ -18,7 +18,7 @@ import { convertToTextObject, locationMapping, platformNames } from '@/utils/con
  * @param fields
  */
 const handleAdd = async (fields: API.ItemData) => {
-  const hide = message.loading('正在搜索');
+  const hide = message.loading(<FormattedMessage id="searching" defaultMessage="Searching..." />);
   try {
     await addItem('/assignments', { ...fields });
     hide();
@@ -161,14 +161,16 @@ const TableList: React.FC = () => {
       valueType: 'date',
     },
     {
-      title: '操作人',
+      title: <FormattedMessage id="operator" defaultMessage="Operator" />,
       dataIndex: 'user',
       width: 200,
       hideInSearch: true,
       render: (_, record) => {
-        // Assuming the user field is populated and includes an email field
-        // Check if the user object exists and has an email property
-        return record.user && record.user.name ? record.user.name : '未知';
+        return record.user && record.user.name ? (
+          record.user.name
+        ) : (
+          <FormattedMessage id="unknown" defaultMessage="Unknown" />
+        );
       },
     },
     {

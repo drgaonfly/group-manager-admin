@@ -177,4 +177,12 @@ export default {
   file_ready: 'File is ready, download will start soon',
   export_failed: 'Export failed',
   export: 'Export',
+  searching: 'Searching...',
+  account_number: 'Account Number',
+  account_number_required: 'Account number is required',
+  login_account_required: 'Login account is required',
+  login_password_required: 'Login password is required',
+  assignment_status_required: 'Assignment status is required',
+  last_assigned_time: 'Last Assigned Time',
+  account_library_list: 'Account Library List',
 };
