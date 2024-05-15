@@ -273,7 +273,8 @@ const TableList: React.FC = () => {
               setBatchUploadModalOpen(true);
             }}
           >
-            <UploadOutlined /> 批量上传用户
+            <UploadOutlined />{' '}
+            <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
           </Button>,
           <Button
             type="dashed"
@@ -282,7 +283,8 @@ const TableList: React.FC = () => {
               setBatchUploadPriceModalOpen(true);
             }}
           >
-            <UploadOutlined /> 批量上传价格表
+            <UploadOutlined />{' '}
+            <FormattedMessage id="batch_upload_price" defaultMessage="批量上传价格表" />
           </Button>,
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
