@@ -173,4 +173,8 @@ export default {
   enter_refund_amount: 'Please enter the refund amount',
   upload_bill: 'Upload Bill',
   upload_bill_file_prompt: 'Please upload the bill file',
+  exporting: 'Exporting...',
+  file_ready: 'File is ready, download will start soon',
+  export_failed: 'Export failed',
+  export: 'Export',
 };

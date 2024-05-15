@@ -37,7 +37,10 @@ const BatchUploadPriceModal: React.FC<Props> = ({ open, onOpenChange, onFinish }
     >
       <Form.Item label="表格文件" name="file">
         <div style={{ marginBottom: '30px' }}>
-          <a href="https://backend.maomaozhaocai.com/api/static/用户价格表模板.xlsx" download>
+          <a
+            href="https://backend.maomaozhaocai.com/api/static/UserPriceListTemplate.xlsx"
+            download
+          >
             下载模板
           </a>
         </div>

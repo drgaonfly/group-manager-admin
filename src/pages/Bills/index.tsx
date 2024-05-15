@@ -463,7 +463,10 @@ const TableList: React.FC = () => {
               type="dashed"
               onClick={async () => {
                 // Show a loading message
-                const hide = message.loading('正在导出中...', 0);
+                const hide = message.loading(
+                  intl.formatMessage({ id: 'exporting', defaultMessage: 'Exporting...' }),
+                  0,
+                );
 
                 try {
                   // Perform the export operation
@@ -475,7 +478,12 @@ const TableList: React.FC = () => {
                   hide();
 
                   if (response?.data) {
-                    message.success('文件准备完成，下载即将开始');
+                    message.success(
+                      intl.formatMessage({
+                        id: 'file_ready',
+                        defaultMessage: 'File is ready, download will start soon',
+                      }),
+                    );
                     // Open the download URL in a new tab
                     // @ts-ignore
                     window.open(response.data.signedURL, '_blank');
@@ -485,11 +493,13 @@ const TableList: React.FC = () => {
                 } catch (error) {
                   // Update the message
                   hide();
-                  message.error('导出失败');
+                  message.error(
+                    intl.formatMessage({ id: 'export_failed', defaultMessage: 'Export failed' }),
+                  );
                 }
               }}
             >
-              导出
+              {intl.formatMessage({ id: 'export', defaultMessage: 'Export' })}
             </Button>,
             ...dom,
           ],

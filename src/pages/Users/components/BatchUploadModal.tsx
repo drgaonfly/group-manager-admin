@@ -37,7 +37,7 @@ const BatchUploadModal: React.FC<Props> = ({ open, onOpenChange, onFinish }) => 
     >
       <Form.Item label="表格文件" name="file">
         <div style={{ marginBottom: '30px' }}>
-          <a href="https://backend.maomaozhaocai.com/api/static/用户模板.xlsx" download>
+          <a href="https://backend.maomaozhaocai.com/api/static/UserTemplate.xlsx" download>
             下载模板
           </a>
         </div>
