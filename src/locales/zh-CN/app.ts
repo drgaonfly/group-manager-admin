@@ -219,4 +219,8 @@ export default {
   country_required: '国家不能为空',
   exchange_rate_required: '汇率不能为空',
   service_fee_required: '服务费不能为空',
+  unprocessed: '未处理',
+  processed: '已处理',
+  unassigned: '未分配',
+  abnormal: '异常',
 };

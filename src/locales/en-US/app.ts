@@ -220,4 +220,8 @@ export default {
   country_required: 'Country is required',
   exchange_rate_required: 'Exchange rate is required',
   service_fee_required: 'Service fee is required',
+  unprocessed: 'Unprocessed',
+  processed: 'Processed',
+  unassigned: 'Unassigned',
+  abnormal: 'Abnormal',
 };

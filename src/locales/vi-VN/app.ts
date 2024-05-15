@@ -220,4 +220,8 @@ export default {
   country_required: 'Quốc gia là bắt buộc',
   exchange_rate_required: 'Tỷ giá hối đoái là bắt buộc',
   service_fee_required: 'Phí dịch vụ là bắt buộc',
+  unprocessed: 'Chưa xử lý',
+  processed: 'Đã xử lý',
+  unassigned: 'Chưa được gán',
+  abnormal: 'Bất thường',
 };
