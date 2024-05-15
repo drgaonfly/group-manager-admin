@@ -224,4 +224,10 @@ export default {
   processed: 'Processed',
   unassigned: 'Unassigned',
   abnormal: 'Abnormal',
+  vietnam_ho_chi_minh: 'Vietnam Ho Chi Minh (VNH)',
+  vietnam_hanoi: 'Vietnam Hanoi (VN)',
+  thailand: 'Thailand (TH)',
+  malaysia: 'Malaysia (MY)',
+  philippines: 'Philippines (PH)',
+  indonesia: 'Indonesia (ID)',
 };

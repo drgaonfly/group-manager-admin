@@ -223,4 +223,10 @@ export default {
   processed: '已处理',
   unassigned: '未分配',
   abnormal: '异常',
+  vietnam_ho_chi_minh: '越南胡志明 (VNH)',
+  vietnam_hanoi: '越南河内 (VN)',
+  thailand: '泰国 (TH)',
+  malaysia: '马来西亚 (MY)',
+  philippines: '菲律宾 (PH)',
+  indonesia: '印尼 (ID)',
 };

@@ -224,4 +224,10 @@ export default {
   processed: 'Đã xử lý',
   unassigned: 'Chưa được gán',
   abnormal: 'Bất thường',
+  vietnam_ho_chi_minh: 'Việt Nam Hồ Chí Minh (VNH)',
+  vietnam_hanoi: 'Việt Nam Hà Nội (VN)',
+  thailand: 'Thái Lan (TH)',
+  malaysia: 'Malaysia (MY)',
+  philippines: 'Philippines (PH)',
+  indonesia: 'Indonesia (ID)',
 };
