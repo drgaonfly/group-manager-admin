@@ -1,6 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title':
-    'Ant Design là quy định thiết kế web ảnh hưởng nhất ở quận Xihu',
+  'pages.layouts.userLayout.title': ' ',
   'pages.login.accountLogin.tab': 'Đăng nhập tài khoản',
   'pages.login.accountLogin.errorMessage':
     'Tên đăng nhập/mật khẩu không chính xác (admin/ant.design)',
