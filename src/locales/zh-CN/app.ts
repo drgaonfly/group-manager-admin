@@ -230,4 +230,7 @@ export default {
   philippines: '菲律宾 (PH)',
   indonesia: '印尼 (ID)',
   upload: '上传',
+  batchAfterSale: '批量申请售后',
+  confirm_after_sale: '确认售后',
+  confirm_after_sale_content: '你确定要为选定的项目申请售后吗？',
 };

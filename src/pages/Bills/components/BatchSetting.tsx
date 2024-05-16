@@ -26,13 +26,13 @@ const BatchSetting: React.FC<UpdateFormProps> = (props) => {
       open={batchSettingModalOpen}
       onOpenChange={onCancel}
       onFinish={onSubmit}
-      initialValues={{ ...values }}
+      initialValues={{ ...values, ids: values.map((item: any) => item._id) }}
     >
       <ProForm.Group>
         <ProFormSwitch name="isSigned" label={intl.formatMessage({ id: 'is_signed' })} />
         <ProFormSwitch name="isReviewed" label={intl.formatMessage({ id: 'is_reviewed' })} />
       </ProForm.Group>
-      <Form.Item name="_id" label={false}>
+      <Form.Item name="ids" label={false}>
         <Input type="hidden" />
       </Form.Item>
     </ModalForm>

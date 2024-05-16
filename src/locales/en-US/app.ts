@@ -231,4 +231,7 @@ export default {
   philippines: 'Philippines (PH)',
   indonesia: 'Indonesia (ID)',
   upload: 'Upload',
+  batchAfterSale: 'Batch After-sale',
+  confirm_after_sale: 'Confirm After-sale',
+  confirm_after_sale_content: 'Are you sure you want to apply after-sale for the selected items?',
 };

@@ -1,9 +1,9 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -188,8 +188,7 @@ const handleUpdate = async (fields: FormValueType) => {
 const handleBatchSetting = async (fieldsArray: any) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    const promises = fieldsArray.map((fields: any) => updateItem(`/bills/${fields._id}`, fields));
-    await Promise.all(promises);
+    await updateItem(`/bills/bulk-setting`, { ...fieldsArray });
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -237,12 +236,12 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
-const handleAfterSale = async (fields: API.ItemData) => {
+const handleAfterSale = async (fieldsArray: any) => {
   const hide = message.loading(
     <FormattedMessage id="applying_after_sale" defaultMessage="Applying for after-sale" />,
   );
   try {
-    await addItem('/bills/after-sales-order', { ...fields, id: fields._id });
+    await addItem('/bills/after-sales-order', { ...fieldsArray, id: fieldsArray._id });
     hide();
     message.success(
       <FormattedMessage
@@ -329,7 +328,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'country' }),
-      width: 100,
+      width: 200,
       dataIndex: 'country',
       valueEnum: convertToTextObject(locationMapping),
     },
@@ -400,6 +399,19 @@ const TableList: React.FC = () => {
         true: { text: intl.formatMessage({ id: 'signed' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'not_signed' }), status: 'Error' },
       },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'yes' })}
+          unCheckedChildren={intl.formatMessage({ id: 'no' })}
+          checked={record.isSigned}
+          onChange={() => {
+            handleUpdate({ _id: record._id, isSigned: !record.isSigned });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'is_reviewed' }),
@@ -411,6 +423,19 @@ const TableList: React.FC = () => {
         true: { text: intl.formatMessage({ id: 'reviewed' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'not_reviewed' }), status: 'Error' },
       },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'yes' })}
+          unCheckedChildren={intl.formatMessage({ id: 'no' })}
+          checked={record.isReviewed}
+          onChange={() => {
+            handleUpdate({ _id: record._id, isReviewed: !record.isReviewed });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'created_at' }),
@@ -532,17 +557,42 @@ const TableList: React.FC = () => {
         }}
         toolBarRender={() => [
           selectedRowsState?.length > 0 && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                console.log('selectedRowsState', selectedRowsState);
-                setBatchSettingModalOpen(true);
-              }}
-            >
-              <EditOutlined />{' '}
-              <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
-            </Button>
+            <>
+              <Button
+                type="primary"
+                key="primary"
+                onClick={() => {
+                  console.log('selectedRowsState', selectedRowsState);
+                  setBatchSettingModalOpen(true);
+                }}
+              >
+                <EditOutlined />{' '}
+                <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
+              </Button>
+              {access.canSuperAdmin && (
+                <Button
+                  danger
+                  onClick={() => {
+                    return Modal.confirm({
+                      title: intl.formatMessage({ id: 'confirm_delete' }),
+                      onOk: async () => {
+                        await handleRemove(selectedRowsState?.map((item) => item._id!));
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      },
+                      content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                      okText: intl.formatMessage({ id: 'confirm' }),
+                      cancelText: intl.formatMessage({ id: 'cancel' }),
+                    });
+                  }}
+                >
+                  <FormattedMessage
+                    id="pages.searchTable.batchDeletion"
+                    defaultMessage="Batch deletion"
+                  />
+                </Button>
+              )}
+            </>
           ),
         ]}
         toolbar={{
@@ -581,7 +631,7 @@ const TableList: React.FC = () => {
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
+      {/* {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
@@ -591,31 +641,8 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canSuperAdmin && (
-            <Button
-              danger
-              onClick={() => {
-                return Modal.confirm({
-                  title: intl.formatMessage({ id: 'confirm_delete' }),
-                  onOk: async () => {
-                    await handleRemove(selectedRowsState?.map((item) => item._id!));
-                    setSelectedRows([]);
-                    actionRef.current?.reloadAndRest?.();
-                  },
-                  content: intl.formatMessage({ id: 'confirm_delete_content' }),
-                  okText: intl.formatMessage({ id: 'confirm' }),
-                  cancelText: intl.formatMessage({ id: 'cancel' }),
-                });
-              }}
-            >
-              <FormattedMessage
-                id="pages.searchTable.batchDeletion"
-                defaultMessage="Batch deletion"
-              />
-            </Button>
-          )}
         </FooterToolbar>
-      )}
+      )} */}
       <Create
         selectedRowsState={selectedRowsState}
         open={createModalOpen}
