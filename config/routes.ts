@@ -102,6 +102,13 @@ export default [
     component: './AfterSalesOrders',
   },
   {
+    name: 'list.courses',
+    icon: 'book',
+    access: 'canAdmin',
+    path: '/courses',
+    component: './Courses',
+  },
+  {
     path: '/',
     redirect: '/Welcome',
   },
