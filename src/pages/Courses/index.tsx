@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, Switch } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -244,45 +244,9 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'related_task' }),
-      dataIndex: 'task',
-      width: 200,
-      copyable: true,
-      render: (dom, record: any) => {
-        return record.task ? (
-          <a
-            onClick={() => {
-              setCurrentTask(record.task);
-              setShowTaskDetail(true);
-            }}
-          >
-            {record.task.code}
-          </a>
-        ) : (
-          intl.formatMessage({ id: 'none' })
-        );
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: 'customer',
-      width: 100,
-      hideInSearch: true,
-      render: (_, record: any) => {
-        return record.customer && record.customer.name
-          ? record.customer.name
-          : intl.formatMessage({ id: 'unknown' });
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'country' }),
-      width: 200,
-      dataIndex: 'country',
-      valueEnum: convertToTextObject(locationMapping),
-    },
-    {
-      title: intl.formatMessage({ id: 'order_number' }),
-      dataIndex: 'orderNumber',
+      title: intl.formatMessage({ id: 'title' }),
+      dataIndex: 'title',
+      ellipsis: true,
       width: 200,
       render: (dom, entity) => {
         return (
@@ -298,92 +262,19 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'upload_time' }),
-      dataIndex: 'uploadTime',
-      width: 100,
-      valueType: 'date',
+      title: intl.formatMessage({ id: 'video_url' }),
+      dataIndex: 'videoUrl',
+      width: 200,
     },
     {
-      title: intl.formatMessage({ id: 'store_name' }),
-      dataIndex: 'storeName',
-      width: 100,
+      title: intl.formatMessage({ id: 'duration' }),
+      dataIndex: 'duration',
+      width: 200,
     },
     {
-      title: intl.formatMessage({ id: 'amount' }),
-      dataIndex: 'amount',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'exchange_rate' }),
-      dataIndex: 'exchangeRate',
-      width: 150,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'service_fee' }),
-      dataIndex: 'serviceFee',
-      width: 150,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'payment_amount' }),
-      dataIndex: 'paymentAmount',
-      width: 150,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'buyer_id' }),
-      dataIndex: 'buyerId',
-      width: 150,
-    },
-    {
-      title: intl.formatMessage({ id: 'is_signed' }),
-      dataIndex: 'isSigned',
-      width: 150,
-      key: 'isSigned',
-      valueEnum: {
-        '': { text: intl.formatMessage({ id: 'all' }), status: 'Default' },
-        true: { text: intl.formatMessage({ id: 'signed' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'not_signed' }), status: 'Error' },
-      },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'yes' })}
-          unCheckedChildren={intl.formatMessage({ id: 'no' })}
-          checked={record.isSigned}
-          onChange={() => {
-            handleUpdate({ _id: record._id, isSigned: !record.isSigned });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'is_reviewed' }),
-      dataIndex: 'isReviewed',
-      width: 150,
-      key: 'isReviewed',
-      valueEnum: {
-        '': { text: intl.formatMessage({ id: 'all' }), status: 'Default' },
-        true: { text: intl.formatMessage({ id: 'reviewed' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'not_reviewed' }), status: 'Error' },
-      },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'yes' })}
-          unCheckedChildren={intl.formatMessage({ id: 'no' })}
-          checked={record.isReviewed}
-          onChange={() => {
-            handleUpdate({ _id: record._id, isReviewed: !record.isReviewed });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
+      title: intl.formatMessage({ id: 'weight' }),
+      dataIndex: 'weight',
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'created_at' }),
@@ -391,7 +282,6 @@ const TableList: React.FC = () => {
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       hideInSearch: true,
-      sorter: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,

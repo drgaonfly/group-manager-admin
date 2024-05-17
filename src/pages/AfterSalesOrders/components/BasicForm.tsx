@@ -6,7 +6,7 @@ import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 
 interface Props {
   newRecord?: boolean;
-  setImageUrl: (url: string) => void;
+  setImageUrl?: (url: string) => void;
   imageUrl?: string | undefined;
   values?: any;
 }
@@ -36,7 +36,7 @@ const BasicForm: React.FC<Props> = (props) => {
           <AliyunOSSUpload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
-              setImageUrl(url);
+              setImageUrl!(url);
             }}
             accept=".jpg,.jpeg,.png,.pdf"
             defaultFileList={defaultFileList}
