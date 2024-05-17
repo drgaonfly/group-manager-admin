@@ -35,7 +35,7 @@ const BasicForm: React.FC<Props> = (props) => {
           name="title"
           placeholder={intl.formatMessage({ id: 'enter_title' })}
         />
-        <Form.Item required label={intl.formatMessage({ id: 'video_url' })} name="videoUrl">
+        <Form.Item required label={intl.formatMessage({ id: 'video_url' })} name="video">
           <AliyunOSSUpload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
