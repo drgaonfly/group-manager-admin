@@ -308,28 +308,30 @@ const TableList: React.FC = () => {
       valueType: 'option',
       fixed: 'right',
       render: (_, record) => [
-        // <a
-        //   key="update"
-        //   onClick={() => {
-        //     handleUpdateModalOpen(true);
-        //     setCurrentRow(record);
-        //   }}
-        // >
-        //   编辑
-        // </a>,
         record.status === 'Pending' && (
           <a
             key="requestApprove"
-            onClick={async () => {
-              await handleUpdate({ _id: record._id, status: 'Processing' });
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
             }}
           >
-            <FormattedMessage id="process" defaultMessage="Process" />
+            {intl.formatMessage({ id: 'process' })}
           </a>
         ),
+        // record.status === 'Pending' && (
+        //   <a
+        //     key="requestApprove"
+        //     onClick={async () => {
+        //       await handleUpdate({ _id: record._id, status: 'Processing' });
+        //       if (actionRef.current) {
+        //         actionRef.current.reload();
+        //       }
+        //     }}
+        //   >
+        //     <FormattedMessage id="process" defaultMessage="Process" />
+        //   </a>
+        // ),
         record.status === 'Processing' && (
           <a
             key="review"

@@ -1,47 +1,47 @@
 import { useIntl } from '@umijs/max';
-import { ProForm, ProFormText, ProFormDigit } from '@ant-design/pro-components';
+import { ProForm } from '@ant-design/pro-components';
 import React from 'react';
+import { Form } from 'antd';
+import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 
 interface Props {
   newRecord?: boolean;
+  setImageUrl: (url: string) => void;
+  imageUrl?: string | undefined;
   values?: any;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord }) => {
+const BasicForm: React.FC<Props> = (props) => {
+  const { setImageUrl, imageUrl } = props;
   const intl = useIntl();
-  console.log(newRecord);
+
+  const defaultFileList = imageUrl
+    ? [
+        {
+          uid: '-1',
+          name: 'image.png',
+          status: 'done',
+          url: imageUrl,
+        },
+      ]
+    : [];
   return (
     <>
       <ProForm.Group>
-        <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_store_name' }) }]}
-          width="md"
-          label={intl.formatMessage({ id: 'store_name' })}
-          name="storeName"
-          placeholder={intl.formatMessage({ id: 'enter_store_name' })}
-        />
-        <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_order_number' }) }]}
-          width="md"
-          label={intl.formatMessage({ id: 'order_number' })}
-          name="orderNumber"
-          placeholder={intl.formatMessage({ id: 'enter_order_number' })}
-        />
-        <ProFormDigit
-          label={intl.formatMessage({ id: 'amount' })}
-          name="amount"
-          width="md"
-          min={0}
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_amount' }) }]}
-          placeholder={intl.formatMessage({ id: 'enter_amount' })}
-        />
-        <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_buyer_id' }) }]}
-          width="md"
-          label={intl.formatMessage({ id: 'buyer_id' })}
-          name="buyerId"
-          placeholder={intl.formatMessage({ id: 'enter_buyer_id' })}
-        />
+        <Form.Item
+          required
+          label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}
+          name="image"
+        >
+          <AliyunOSSUpload
+            onFileUpload={(url: string) => {
+              console.log('Uploaded file URL:', url);
+              setImageUrl(url);
+            }}
+            accept=".jpg,.jpeg,.png,.pdf"
+            defaultFileList={defaultFileList}
+          />
+        </Form.Item>
       </ProForm.Group>
     </>
   );

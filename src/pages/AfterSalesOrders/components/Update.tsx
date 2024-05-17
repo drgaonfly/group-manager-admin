@@ -1,5 +1,5 @@
 import { useIntl } from '@umijs/max';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BasicForm from './BasicForm';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
@@ -11,13 +11,17 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    roles?: { id: number }[];
+    image?: string;
   } & Partial<API.ItemData>;
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
+  const [imageUrl, setImageUrl] = useState<string | undefined>('');
+  useEffect(() => {
+    setImageUrl(values.image);
+  }, [values]);
   return (
     <ModalForm
       title={intl.formatMessage({ id: 'modify' })}
@@ -28,10 +32,15 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
       open={updateModalOpen}
       onOpenChange={onCancel}
-      onFinish={onSubmit}
-      initialValues={{ ...values, roleIds: values.roles?.map((role) => role.id) }}
+      onFinish={async (values: any) => {
+        onSubmit({
+          ...values,
+          image: imageUrl,
+        });
+      }}
+      initialValues={{ ...values }}
     >
-      <BasicForm values={values} />
+      <BasicForm setImageUrl={setImageUrl} imageUrl={imageUrl} values={values} />
       <Form.Item name="_id" label={false}>
         <Input type="hidden" />
       </Form.Item>

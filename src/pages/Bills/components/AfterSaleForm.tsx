@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ModalForm, ProFormDigit, ProFormTextArea } from '@ant-design/pro-components';
-import { Alert, Form, Input, message } from 'antd';
-import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { Alert, Form, Input } from 'antd';
 import { useIntl } from '@umijs/max';
 
 export type FormValueType = Partial<API.ItemData>;
@@ -18,7 +17,6 @@ export type UpdateFormProps = {
 const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
-  const [file, setFile] = useState<string>('');
   return (
     <ModalForm
       title={intl.formatMessage({ id: 'apply_after_sale', defaultMessage: 'Apply for After-sale' })}
@@ -30,19 +28,8 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
       open={updateModalOpen}
       onOpenChange={onCancel}
       onFinish={async (values: any) => {
-        if (!file) {
-          message.error(
-            intl.formatMessage({
-              id: 'upload_image_prompt',
-              defaultMessage: 'Please upload an image',
-            }),
-          );
-          return;
-        }
-
         await onSubmit({
           ...values,
-          image: file,
         });
       }}
       initialValues={{ ...values }}
@@ -58,19 +45,6 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
         />
       ) : (
         <>
-          <Form.Item
-            required
-            label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}
-            name="image"
-          >
-            <AliyunOSSUpload
-              onFileUpload={(url: string) => {
-                console.log('Uploaded file URL:', url);
-                setFile!(url);
-              }}
-              accept=".jpg,.jpeg,.png,.pdf"
-            />
-          </Form.Item>
           <ProFormTextArea
             name="reason"
             label={intl.formatMessage({

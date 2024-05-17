@@ -18,11 +18,18 @@ interface AliyunOSSUploadProps {
   onChange?: (fileList: UploadFile[]) => void;
   accept?: string;
   onFileUpload: (url: string) => void;
+  defaultFileList?: any;
 }
 
 const defaultAccept = '*';
 
-const AliyunOSSUpload = ({ value, onChange, accept, onFileUpload }: AliyunOSSUploadProps) => {
+const AliyunOSSUpload = ({
+  value,
+  onChange,
+  accept,
+  defaultFileList,
+  onFileUpload,
+}: AliyunOSSUploadProps) => {
   const [OSSData, setOSSData] = useState<OSSDataType>();
 
   // Fetch OSS Data from Backend API
@@ -94,6 +101,7 @@ const AliyunOSSUpload = ({ value, onChange, accept, onFileUpload }: AliyunOSSUpl
       showUploadList={{ showRemoveIcon: true }}
       maxCount={1}
       style={{ width: 328 }}
+      defaultFileList={defaultFileList}
     >
       <p className="ant-upload-drag-icon">
         <InboxOutlined />
