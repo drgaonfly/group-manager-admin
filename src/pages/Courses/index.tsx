@@ -265,6 +265,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'video_url' }),
       dataIndex: 'videoUrl',
+      hideInSearch: true,
       width: 200,
       // @ts-ignore
       render: (videoUrl: string, entity: any) => (
@@ -274,11 +275,13 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'duration' }),
       dataIndex: 'duration',
+      hideInSearch: true,
       width: 200,
     },
     {
       title: intl.formatMessage({ id: 'weight' }),
       dataIndex: 'weight',
+      hideInSearch: true,
       width: 200,
     },
     {
