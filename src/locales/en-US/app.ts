@@ -244,4 +244,6 @@ export default {
   enter_duration: 'Please enter the duration',
   enter_weight: 'Please enter the weight',
   weight: 'Weight',
+  play_video: 'Play Video',
+  video_player: 'Video Player',
 };

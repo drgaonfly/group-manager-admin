@@ -13,6 +13,7 @@ import { convertToTextObject, locationMapping, platformNames } from '@/utils/con
 
 import ShowTask from '@/pages/Tasks/components/Show';
 import { PlusOutlined } from '@ant-design/icons';
+import VideoPlayer from '@/components/VideoPlayer';
 
 const taskColumns: ProColumns<API.ItemData>[] = [
   {
@@ -265,6 +266,10 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'video_url' }),
       dataIndex: 'videoUrl',
       width: 200,
+      // @ts-ignore
+      render: (videoUrl: string, entity: any) => (
+        <VideoPlayer entity={entity} videoUrl={videoUrl} />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'duration' }),

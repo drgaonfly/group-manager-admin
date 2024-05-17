@@ -243,4 +243,6 @@ export default {
   enter_duration: '请输入视频时间',
   enter_weight: '请输入权重',
   weight: '权重',
+  play_video: '播放视频',
+  video_player: '视频播放器',
 };

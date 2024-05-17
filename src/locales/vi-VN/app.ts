@@ -244,4 +244,6 @@ export default {
   enter_duration: 'Vui lòng nhập thời lượng',
   enter_weight: 'Vui lòng nhập trọng lượng',
   weight: 'Trọng lượng',
+  play_video: 'Phát video',
+  video_player: 'Trình phát video',
 };
