@@ -10,6 +10,7 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
+import ExportButton from '@/components/Export';
 
 /**
  * @en-US Add node
@@ -240,6 +241,10 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 180,
           defaultCollapsed: false,
+          optionRender: (searchConfig, props, dom) => [
+            <ExportButton key="export" form={props.form!} exportUrl="/assignment-records/export" />,
+            ...dom,
+          ],
         }}
         toolBarRender={() => [
           // access.canCustomer && (

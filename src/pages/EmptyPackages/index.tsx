@@ -11,6 +11,7 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
+import ExportButton from '@/components/Export';
 
 /**
  * @en-US Add node
@@ -254,49 +255,7 @@ const TableList: React.FC = () => {
           labelWidth: 180,
           defaultCollapsed: false,
           optionRender: (searchConfig, props, dom) => [
-            <Button
-              key="export"
-              type="dashed"
-              onClick={async () => {
-                // Show a loading message
-                const hide = message.loading(
-                  intl.formatMessage({ id: 'exporting', defaultMessage: 'Exporting...' }),
-                  0,
-                );
-
-                try {
-                  // Perform the export operation
-                  console.log('Export button clicked', props.form?.getFieldsValue());
-                  const response = await queryList('/empty-packages/export', {
-                    ...props.form?.getFieldsValue(),
-                  });
-
-                  hide();
-
-                  if (response?.data) {
-                    message.success(
-                      intl.formatMessage({
-                        id: 'file_ready',
-                        defaultMessage: 'File is ready, download will start soon',
-                      }),
-                    );
-                    // Open the download URL in a new tab
-                    // @ts-ignore
-                    window.open(response.data.signedURL, '_blank');
-                  } else {
-                    throw new Error('No download URL returned');
-                  }
-                } catch (error) {
-                  // Update the message
-                  hide();
-                  message.error(
-                    intl.formatMessage({ id: 'export_failed', defaultMessage: 'Export failed' }),
-                  );
-                }
-              }}
-            >
-              {intl.formatMessage({ id: 'export', defaultMessage: 'Export' })}
-            </Button>,
+            <ExportButton key="export" form={props.form!} exportUrl="/empty-packages/export" />,
             ...dom,
           ],
         }}
