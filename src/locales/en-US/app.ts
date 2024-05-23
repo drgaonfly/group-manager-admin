@@ -246,4 +246,5 @@ export default {
   weight: 'Weight',
   play_video: 'Play Video',
   video_player: 'Video Player',
+  bill: 'bills',
 };

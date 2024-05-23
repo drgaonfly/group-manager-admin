@@ -245,4 +245,5 @@ export default {
   weight: '权重',
   play_video: '播放视频',
   video_player: '视频播放器',
+  bill: '账单',
 };
