@@ -1,5 +1,11 @@
 import React from 'react';
-import { ModalForm, ProFormDigit, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ModalForm,
+  ProForm,
+  ProFormDateTimePicker,
+  ProFormDigit,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
 import { Alert, Form, Input } from 'antd';
 import { useIntl } from '@umijs/max';
 
@@ -85,6 +91,21 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
             })}
             min={0}
           />
+
+          <ProForm.Item
+            name="applicationTime"
+            label={intl.formatMessage({ id: 'applicationTime' })}
+            rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
+          >
+            <ProFormDateTimePicker
+              width="md"
+              fieldProps={{
+                format: 'YYYY-MM-DD', // 设置日期格式为年-月-日
+                picker: 'date', // 设置 picker 类型为日期选择器
+              }}
+            />
+          </ProForm.Item>
+
           <Form.Item name="_id" label={false}>
             <Input type="hidden" />
           </Form.Item>

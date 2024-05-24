@@ -246,4 +246,6 @@ export default {
   weight: 'Trọng lượng',
   play_video: 'Phát video',
   video_player: 'Trình phát video',
+  bill: 'Hóa đơn',
+  applicationTime: 'Thời gian ứng dụng',
 };

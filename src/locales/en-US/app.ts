@@ -247,4 +247,5 @@ export default {
   play_video: 'Play Video',
   video_player: 'Video Player',
   bill: 'bills',
+  applicationTime: 'Appliction Time',
 };

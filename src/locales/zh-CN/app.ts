@@ -246,4 +246,5 @@ export default {
   play_video: '播放视频',
   video_player: '视频播放器',
   bill: '账单',
+  applicationTime: '申请时间',
 };

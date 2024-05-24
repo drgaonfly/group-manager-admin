@@ -245,6 +245,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'applicationTime' }),
+      width: 150,
+      dataIndex: 'applicationTime',
+      valueType: 'date',
+    },
+    {
       title: intl.formatMessage({ id: 'applicant' }),
       dataIndex: 'user',
       width: 200,
