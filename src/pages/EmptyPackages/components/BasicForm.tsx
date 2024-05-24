@@ -1,6 +1,11 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormDigit, ProFormSwitch } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDateTimePicker,
+  ProFormDigit,
+  ProFormSwitch,
+} from '@ant-design/pro-components';
 import { Form } from 'antd';
 import { useAccess } from '@umijs/max';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
@@ -57,6 +62,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, initialValues }) => {
             initialValue={initialValues?.isProcessed}
           />
         )}
+        <ProForm.Item
+          name="uploadTime"
+          label={intl.formatMessage({ id: 'upload_time' })}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
+        >
+          <ProFormDateTimePicker
+            width="md"
+            fieldProps={{
+              format: 'YYYY-MM-DD', // 设置日期格式为年-月-日
+              picker: 'date', // 设置 picker 类型为日期选择器
+            }}
+          />
+        </ProForm.Item>
       </ProForm.Group>
     </>
   );

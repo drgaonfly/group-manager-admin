@@ -6,7 +6,7 @@ import useQueryList from '@/hooks/useQueryList';
 const UserSelect: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
-  const { items: users } = useQueryList('/users', access.canAdmin);
+  const { items: users, loading } = useQueryList('/users', access.canAdmin);
   return (
     <ProFormSelect
       rules={[{ required: true }]}
@@ -18,6 +18,7 @@ const UserSelect: React.FC = () => {
       name="user"
       label={intl.formatMessage({ id: 'user' })}
       showSearch
+      fieldProps={{ loading }}
     />
   );
 };

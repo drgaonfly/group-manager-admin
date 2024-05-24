@@ -177,6 +177,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'upload_time' }),
+      width: 150,
+      dataIndex: 'uploadTime',
+      valueType: 'date',
+    },
+    {
       title: intl.formatMessage({ id: 'quantity' }),
       width: 80,
       dataIndex: 'quantity',
