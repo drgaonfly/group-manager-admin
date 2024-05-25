@@ -350,6 +350,17 @@ const TableList: React.FC = () => {
       valueEnum: convertToTextObject(locationMapping),
     },
     {
+      title: intl.formatMessage({ id: 'operator' }),
+      dataIndex: 'user',
+      width: 200,
+      hideInSearch: true,
+      render: (_, record) => {
+        return record.user && record.user.name
+          ? record.user.name
+          : intl.formatMessage({ id: 'unknown' });
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'order_number' }),
       dataIndex: 'orderNumber',
       width: 200,
