@@ -247,4 +247,7 @@ export default {
   video_player: '视频播放器',
   bill: '账单',
   applicationTime: '申请时间',
+  operation_time: '操作时间',
+  'operation.uploadBills': '上传账单',
+  operation_record: '操作记录',
 };

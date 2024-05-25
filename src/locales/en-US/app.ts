@@ -248,4 +248,7 @@ export default {
   video_player: 'Video Player',
   bill: 'bills',
   applicationTime: 'Appliction Time',
+  operation_time: 'Operation Time',
+  'operation.uploadBills': 'Upload Bills',
+  operation_record: 'Operation Record',
 };

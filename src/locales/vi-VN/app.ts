@@ -248,4 +248,7 @@ export default {
   video_player: 'Trình phát video',
   bill: 'Hóa đơn',
   applicationTime: 'Thời gian ứng dụng',
+  operation_time: 'Thời gian hoạt động',
+  'operation.uploadBills': 'Tải lên hóa đơn',
+  operation_record: 'Hồ sơ hoạt động',
 };

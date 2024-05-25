@@ -27,6 +27,7 @@ declare namespace API {
   };
 
   type ItemData = {
+    operations?: any;
     isReviewed?: boolean;
     isSigned?: boolean;
     bill?: any;
