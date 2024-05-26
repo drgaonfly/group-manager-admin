@@ -169,8 +169,8 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'upload_user' }),
       dataIndex: 'user',
       width: 200,
-      hideInSearch: true,
-      render: (_, record) => {
+      copyable: true,
+      renderText: (_, record) => {
         return record.user && record.user.name
           ? record.user.name
           : intl.formatMessage({ id: 'unknown' });
