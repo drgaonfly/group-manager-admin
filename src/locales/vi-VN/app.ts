@@ -256,4 +256,5 @@ export default {
   'copy.success': 'Văn bản đã được sao chép vào bảng tạm',
   'copy.error': 'Sao chép thất bại',
   'copy.tooltip': 'Sao chép dữ liệu vào bảng tạm',
+  orderNote: 'Ghi chú đơn hàng',
 };

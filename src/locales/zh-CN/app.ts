@@ -255,4 +255,5 @@ export default {
   'copy.success': '文本已复制到剪贴板',
   'copy.error': '复制失败',
   'copy.tooltip': '复制数据到剪贴板',
+  orderNote: '订单备注',
 };

@@ -256,4 +256,5 @@ export default {
   'copy.success': 'Text copied to clipboard',
   'copy.error': 'Copy failed',
   'copy.tooltip': 'Copy data to clipboard',
+  orderNote: 'Order Note',
 };

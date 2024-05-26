@@ -287,14 +287,12 @@ const TableList: React.FC = () => {
       dataIndex: 'platform',
       valueEnum: convertToTextObject(platformNames),
     },
-    // {
-    //   title: '平台',
-    //   dataIndex: 'platform',
-    //   valueEnum: {
-    //     TikTok: { text: 'TikTok' },
-    //     Shopify: { text: 'Shopify' },
-    //   },
-    // },
+    {
+      title: intl.formatMessage({ id: 'orderNote' }),
+      width: 150,
+      dataIndex: 'orderNote',
+      ellipsis: true,
+    },
     {
       title: intl.formatMessage({ id: 'source_file' }),
       dataIndex: 'file',
