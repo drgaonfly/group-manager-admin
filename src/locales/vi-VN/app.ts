@@ -258,4 +258,5 @@ export default {
   'copy.tooltip': 'Sao chép dữ liệu vào bảng tạm',
   orderNote: 'Ghi chú đơn hàng',
   lastBillUploadTime: 'Thời gian tải lên hóa đơn cuối cùng',
+  billUploader: 'Người tải lên hóa đơn',
 };

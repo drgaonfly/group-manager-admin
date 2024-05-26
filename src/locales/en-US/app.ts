@@ -258,4 +258,5 @@ export default {
   'copy.tooltip': 'Copy data to clipboard',
   orderNote: 'Order Note',
   lastBillUploadTime: 'Last Bill Upload Time',
+  billUploader: 'Bill Uploader',
 };

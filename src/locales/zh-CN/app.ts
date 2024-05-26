@@ -257,4 +257,5 @@ export default {
   'copy.tooltip': '复制数据到剪贴板',
   orderNote: '订单备注',
   lastBillUploadTime: '最后账单上传时间',
+  billUploader: '账单上传者',
 };
