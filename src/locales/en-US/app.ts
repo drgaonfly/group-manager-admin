@@ -251,4 +251,6 @@ export default {
   operation_time: 'Operation Time',
   'operation.uploadBills': 'Upload Bills',
   operation_record: 'Operation Record',
+  'operation.applyAfterSales': 'Apply After Sales',
+  'operation.updateBill': 'Update Bill',
 };

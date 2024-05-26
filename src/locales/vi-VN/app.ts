@@ -251,4 +251,6 @@ export default {
   operation_time: 'Thời gian hoạt động',
   'operation.uploadBills': 'Tải lên hóa đơn',
   operation_record: 'Hồ sơ hoạt động',
+  'operation.applyAfterSales': 'Áp dụng sau bán hàng',
+  'operation.updateBill': 'Cập nhật hóa đơn',
 };

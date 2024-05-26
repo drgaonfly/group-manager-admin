@@ -250,4 +250,6 @@ export default {
   operation_time: '操作时间',
   'operation.uploadBills': '上传账单',
   operation_record: '操作记录',
+  'operation.applyAfterSales': '申请售后',
+  'operation.updateBill': '更新账单',
 };
