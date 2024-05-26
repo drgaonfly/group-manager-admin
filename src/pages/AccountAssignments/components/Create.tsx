@@ -5,6 +5,7 @@ import { addItem } from '@/services/ant-design-pro/api';
 import { ProFormDigit, ProFormInstance, ProFormText, StepsForm } from '@ant-design/pro-components';
 import { Empty, Modal, Table, message } from 'antd';
 import { useState, useRef, useEffect } from 'react';
+import CopyToClipboardDataSource from './CopyToClipboardDataSource';
 
 interface Props {
   open: boolean;
@@ -68,7 +69,15 @@ const AccountTable = ({ accounts }: { accounts: any[] }) => {
   }
 
   return (
-    <Table columns={columns} pagination={false} dataSource={accounts} rowKey="accountNumber" />
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'right', marginBottom: '10px' }}>
+        <span>
+          <FormattedMessage id="copy.tooltip" defaultMessage="Copy data" />
+        </span>
+        <CopyToClipboardDataSource dataSource={accounts} />
+      </div>
+      <Table columns={columns} pagination={false} dataSource={accounts} rowKey="accountNumber" />
+    </div>
   );
 };
 
