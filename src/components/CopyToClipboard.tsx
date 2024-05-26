@@ -1,5 +1,5 @@
 import React from 'react';
-import { message } from 'antd';
+import { Tooltip, message } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 
@@ -20,7 +20,13 @@ const CopyToClipboard: React.FC<Props> = (props) => {
     }
   };
 
-  return <CopyOutlined style={{ color: '#1890ff' }} onClick={copyText} />;
+  return (
+    <Tooltip
+      title={intl.formatMessage({ id: 'copy.tooltip', defaultMessage: 'Copy data to clipboard' })}
+    >
+      <CopyOutlined style={{ color: '#1890ff' }} onClick={copyText} />
+    </Tooltip>
+  );
 };
 
 export default CopyToClipboard;

@@ -7,7 +7,7 @@ import {
 import { FormattedMessage } from '@umijs/max';
 import { Drawer } from 'antd';
 import React, { useState } from 'react';
-import CopyToClipboardDataSource from './CopyToClipboardDataSource';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 interface Props {
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -162,6 +162,13 @@ const Show: React.FC<Props> = (props) => {
     // },
   ];
 
+  const data = dataSource.map((item: DataSourceType) => [
+    item.storeName,
+    item.orderNumber,
+    item.amount,
+  ]);
+  const text = [...data].map((row) => row.join('\t')).join('\n');
+
   return (
     <Drawer width="70%" open={open} onClose={onClose} closable={false}>
       {currentRow?._id && (
@@ -190,7 +197,7 @@ const Show: React.FC<Props> = (props) => {
                 <span key="text">
                   <FormattedMessage id="copy.tooltip" defaultMessage="Copy data" />
                 </span>,
-                <CopyToClipboardDataSource dataSource={dataSource} key="copy" />,
+                <CopyToClipboard text={text} key="copy" />,
               ];
             }}
             // @ts-ignore

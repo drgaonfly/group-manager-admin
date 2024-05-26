@@ -5,12 +5,16 @@ import { addItem } from '@/services/ant-design-pro/api';
 import { ProFormDigit, ProFormInstance, ProFormText, StepsForm } from '@ant-design/pro-components';
 import { Empty, Modal, Table, message } from 'antd';
 import { useState, useRef, useEffect } from 'react';
-import CopyToClipboardDataSource from './CopyToClipboardDataSource';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 interface Props {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   onFinish: (formData: any) => Promise<void>;
+}
+
+interface DataSourceType {
+  accountNumber: string;
 }
 
 const AccountTable = ({ accounts }: { accounts: any[] }) => {
@@ -68,13 +72,17 @@ const AccountTable = ({ accounts }: { accounts: any[] }) => {
     );
   }
 
+  const headers = ['订单账号'];
+  const data = accounts.map((item: DataSourceType) => [item.accountNumber]);
+  const text = [headers, ...data].map((row) => row.join('\t')).join('\n');
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'right', marginBottom: '10px' }}>
         <span>
           <FormattedMessage id="copy.tooltip" defaultMessage="Copy data" />
         </span>
-        <CopyToClipboardDataSource dataSource={accounts} />
+        <CopyToClipboard text={text} />
       </div>
       <Table columns={columns} pagination={false} dataSource={accounts} rowKey="accountNumber" />
     </div>
