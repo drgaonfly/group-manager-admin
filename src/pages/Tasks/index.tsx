@@ -247,6 +247,14 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: '_id',
+      width: 250,
+      copyable: true,
+      hideInTable: true,
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'bill_file' }),
       width: 100,
       dataIndex: 'billFile',

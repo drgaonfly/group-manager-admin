@@ -253,4 +253,7 @@ export default {
   operation_record: 'Operation Record',
   'operation.applyAfterSales': 'Apply After Sales',
   'operation.updateBill': 'Update Bill',
+  'copy.success': 'Text copied to clipboard',
+  'copy.error': 'Copy failed',
+  'copy.tooltip': 'Copy data to clipboard',
 };

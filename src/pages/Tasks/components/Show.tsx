@@ -7,6 +7,7 @@ import {
 import { FormattedMessage } from '@umijs/max';
 import { Drawer } from 'antd';
 import React, { useState } from 'react';
+import CopyToClipboardDataSource from './CopyToClipboardDataSource';
 
 interface Props {
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -167,7 +168,7 @@ const Show: React.FC<Props> = (props) => {
         <>
           <ProDescriptions<API.ItemData>
             column={2}
-            title={currentRow?._id}
+            title={currentRow?.code}
             request={async () => ({
               data: currentRow || {},
             })}
@@ -183,6 +184,14 @@ const Show: React.FC<Props> = (props) => {
             maxLength={5}
             scroll={{
               x: 960,
+            }}
+            toolBarRender={() => {
+              return [
+                <span key="text">
+                  <FormattedMessage id="copy.tooltip" defaultMessage="Copy data" />
+                </span>,
+                <CopyToClipboardDataSource dataSource={dataSource} key="copy" />,
+              ];
             }}
             // @ts-ignore
             recordCreatorProps={

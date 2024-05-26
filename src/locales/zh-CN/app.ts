@@ -252,4 +252,7 @@ export default {
   operation_record: '操作记录',
   'operation.applyAfterSales': '申请售后',
   'operation.updateBill': '更新账单',
+  'copy.success': '文本已复制到剪贴板',
+  'copy.error': '复制失败',
+  'copy.tooltip': '复制数据到剪贴板',
 };
