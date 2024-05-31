@@ -11,6 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
 import ExportButton from '@/components/Export';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 /**
  * @en-US Add node
@@ -161,12 +162,15 @@ const TableList: React.FC = () => {
         <>
           <div>
             {intl.formatMessage({ id: 'order_account_number' })}: {accountLibrary?.accountNumber}
+            <CopyToClipboard text={accountLibrary?.accountNumber} />
           </div>
           <div>
             {intl.formatMessage({ id: 'login_account' })}: {accountLibrary?.loginAccount}
+            <CopyToClipboard text={accountLibrary?.loginAccount} />
           </div>
           <div>
             {intl.formatMessage({ id: 'login_password' })}: {accountLibrary?.loginPassword}
+            <CopyToClipboard text={accountLibrary?.loginAccount} />
           </div>
         </>
       ),
@@ -187,6 +191,34 @@ const TableList: React.FC = () => {
           ? record.user.name
           : intl.formatMessage({ id: 'unknown' });
       },
+    },
+    {
+      title: intl.formatMessage({ id: 'order_account_number' }),
+      copyable: true,
+      dataIndex: 'accountNumber',
+      width: 200,
+      hideInTable: true,
+      hideInDescriptions: true,
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'login_account' }),
+      copyable: true,
+      hideInTable: true,
+      hideInDescriptions: true,
+      width: 200,
+      dataIndex: 'loginAccount',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
