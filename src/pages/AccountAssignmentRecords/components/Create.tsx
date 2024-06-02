@@ -31,21 +31,6 @@ const AccountTable = ({ accounts }: { accounts: any[] }) => {
       key: 'loginPassword',
     },
     {
-      title: <FormattedMessage id="is_assigned" defaultMessage="Is Assigned" />,
-      dataIndex: 'isAssigned',
-      key: 'isAssigned',
-      valueEnum: {
-        true: {
-          text: <FormattedMessage id="assigned" defaultMessage="Assigned" />,
-          status: 'Success',
-        },
-        false: {
-          text: <FormattedMessage id="not_assigned" defaultMessage="Not Assigned" />,
-          status: 'Error',
-        },
-      },
-    },
-    {
       title: <FormattedMessage id="recent_assigned_time" defaultMessage="Recent Assigned Time" />,
       dataIndex: 'assignedTime',
       key: 'assignedTime',

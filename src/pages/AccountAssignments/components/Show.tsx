@@ -74,36 +74,6 @@ const columns: ProColumns<DataSourceType>[] = [
     editable: () => true,
   },
   {
-    title: <FormattedMessage id="is_assigned" defaultMessage="Is Assigned" />,
-    dataIndex: 'isAssigned',
-    key: 'isAssigned',
-    valueType: 'select',
-    valueEnum: {
-      true: {
-        text: <FormattedMessage id="assigned" defaultMessage="Assigned" />,
-        status: 'Success',
-      },
-      false: {
-        text: <FormattedMessage id="not_assigned" defaultMessage="Not Assigned" />,
-        status: 'Error',
-      },
-    },
-    formItemProps: () => ({
-      rules: [
-        {
-          required: true,
-          message: (
-            <FormattedMessage
-              id="assignment_status_required"
-              defaultMessage="Assignment status is required"
-            />
-          ),
-        },
-      ],
-    }),
-    editable: () => false,
-  },
-  {
     title: <FormattedMessage id="last_assigned_time" defaultMessage="Last Assigned Time" />,
     dataIndex: 'assignedTime',
     key: 'assignedTime',
@@ -114,7 +84,6 @@ interface DataSourceType {
   accountNumber: string;
   loginAccount: string;
   loginPassword: string;
-  isAssigned: boolean;
   assignedTime: string;
 }
 

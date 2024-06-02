@@ -185,17 +185,6 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'is_assigned' }),
-      width: 150,
-      dataIndex: 'isAssigned',
-      key: 'isAssigned',
-      hideInSearch: true,
-      valueEnum: {
-        true: { text: intl.formatMessage({ id: 'assigned' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'not_assigned' }), status: 'Error' },
-      },
-    },
-    {
       title: intl.formatMessage({ id: 'is_abnormal' }),
       width: 100,
       dataIndex: 'isAbnormal',
