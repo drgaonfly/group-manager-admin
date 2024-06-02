@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, DatePicker, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -14,6 +14,8 @@ import ExportButton from '@/components/Export';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import { UploadOutlined } from '@ant-design/icons';
 import BatchUploadModal from './components/BatchUploadModal';
+
+const { RangePicker } = DatePicker;
 
 /**
  * @en-US Add node
@@ -203,6 +205,12 @@ const TableList: React.FC = () => {
       dataIndex: 'assignedTime',
       width: 170,
       valueType: 'date',
+      renderFormItem: (item, { defaultRender }) => {
+        if (item.dataIndex === 'assignedTime') {
+          return <RangePicker name="assignedTime" />;
+        }
+        return defaultRender(item);
+      },
     },
     {
       title: intl.formatMessage({ id: 'operator' }),
@@ -294,7 +302,6 @@ const TableList: React.FC = () => {
         scroll={{ x: 1200 }}
         rowKey="_id"
         search={{
-          labelWidth: 180,
           defaultCollapsed: false,
           optionRender: (searchConfig, props, dom) => [
             <ExportButton key="export" form={props.form!} exportUrl="/assignment-records/export" />,
