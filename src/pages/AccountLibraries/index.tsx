@@ -325,7 +325,7 @@ const TableList: React.FC = () => {
             '/accounts',
             {
               ...params,
-              ...(activeKey === 'Abnormal' ? { isAbnormal: true } : { isAssigned: activeKey }),
+              isAbnormal: activeKey === 'Abnormal',
             },
             sort,
             filter,
@@ -345,14 +345,6 @@ const TableList: React.FC = () => {
               {
                 label: <FormattedMessage id="all" defaultMessage="All" />,
                 key: '',
-              },
-              {
-                label: <FormattedMessage id="unassigned" defaultMessage="Unassigned" />,
-                key: 'false',
-              },
-              {
-                label: <FormattedMessage id="assigned" defaultMessage="Assigned" />,
-                key: 'true',
               },
               {
                 label: <FormattedMessage id="abnormal" defaultMessage="Abnormal" />,
