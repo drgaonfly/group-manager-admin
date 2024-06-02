@@ -218,6 +218,7 @@ const TableList: React.FC = () => {
       width: 150,
       dataIndex: 'assignedTime',
       valueType: 'date',
+      sorter: true,
     },
     {
       title: intl.formatMessage({ id: 'operator' }),
