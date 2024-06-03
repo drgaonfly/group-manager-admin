@@ -12,7 +12,7 @@ import Show from './components/Show';
 import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
 import ExportButton from '@/components/Export';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import { UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import BatchUploadModal from './components/BatchUploadModal';
 
 const { RangePicker } = DatePicker;
@@ -25,7 +25,7 @@ const { RangePicker } = DatePicker;
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="searching" defaultMessage="Searching..." />);
   try {
-    await addItem('/assignment-records', { ...fields });
+    await addItem('/assignments', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -156,24 +156,7 @@ const TableList: React.FC = () => {
       dataIndex: 'platform',
       valueEnum: convertToTextObject(platformNames),
     },
-    {
-      title: intl.formatMessage({ id: 'store_account' }),
-      dataIndex: 'storeAccount',
-      copyable: true,
-      width: 200,
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
+
     {
       title: intl.formatMessage({ id: 'account_library' }),
       dataIndex: 'accountLibrary',
@@ -199,6 +182,24 @@ const TableList: React.FC = () => {
           </div>
         </>
       ),
+    },
+    {
+      title: intl.formatMessage({ id: 'store_account' }),
+      dataIndex: 'storeAccount',
+      copyable: true,
+      width: 200,
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'assigned_time' }),
@@ -309,17 +310,17 @@ const TableList: React.FC = () => {
           ],
         }}
         toolBarRender={() => [
-          // access.canCustomer && (
-          //   <Button
-          //     type="primary"
-          //     key="primary"
-          //     onClick={() => {
-          //       handleModalOpen(true);
-          //     }}
-          //   >
-          //     <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          //   </Button>
-          // ),
+          access.canCustomer && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            </Button>
+          ),
           access.canCustomer && (
             <Button
               danger

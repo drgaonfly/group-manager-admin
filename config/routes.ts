@@ -80,13 +80,13 @@ export default [
     path: '/account-library',
     component: './AccountLibraries',
   },
-  {
-    name: 'list.accountAssignment',
-    icon: 'solution',
-    access: 'canAdmin',
-    path: '/assignments',
-    component: './AccountAssignments',
-  },
+  // {
+  //   name: 'list.accountAssignment',
+  //   icon: 'solution',
+  //   access: 'canAdmin',
+  //   path: '/assignments',
+  //   component: './AccountAssignments',
+  // },
   {
     name: 'list.accountAssignmentRecords',
     icon: 'fileText',

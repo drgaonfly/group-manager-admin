@@ -5,11 +5,16 @@ import { addItem } from '@/services/ant-design-pro/api';
 import { ProFormDigit, ProFormInstance, ProFormText, StepsForm } from '@ant-design/pro-components';
 import { Empty, Modal, Table, message } from 'antd';
 import { useState, useRef, useEffect } from 'react';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 interface Props {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   onFinish: (formData: any) => Promise<void>;
+}
+
+interface DataSourceType {
+  accountNumber: string;
 }
 
 const AccountTable = ({ accounts }: { accounts: any[] }) => {
@@ -52,8 +57,20 @@ const AccountTable = ({ accounts }: { accounts: any[] }) => {
     );
   }
 
+  const headers = ['订单账号'];
+  const data = accounts.map((item: DataSourceType) => [item.accountNumber]);
+  const text = [headers, ...data].map((row) => row.join('\t')).join('\n');
+
   return (
-    <Table columns={columns} pagination={false} dataSource={accounts} rowKey="accountNumber" />
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'right', marginBottom: '10px' }}>
+        <span>
+          <FormattedMessage id="copy.tooltip" defaultMessage="Copy data" />
+        </span>
+        <CopyToClipboard text={text} />
+      </div>
+      <Table columns={columns} pagination={false} dataSource={accounts} rowKey="accountNumber" />
+    </div>
   );
 };
 
@@ -69,9 +86,16 @@ const Create: React.FC<Props> = (props) => {
   useEffect(() => {
     const requestedAccounts = formRef.current?.getFieldsValue().numberOfAccounts;
     if (accounts.length !== Number(requestedAccounts)) {
-      setAccountFeedback(`请求了 ${requestedAccounts} 个账号，但只找到 ${accounts.length} 个。`);
+      setAccountFeedback(
+        intl.formatMessage(
+          { id: 'requested_accounts_not_found' },
+          { requestedAccounts, accountsLength: accounts.length },
+        ),
+      );
     } else {
-      setAccountFeedback(`请求的 ${requestedAccounts} 个账号已成功找到。`);
+      setAccountFeedback(
+        intl.formatMessage({ id: 'requested_accounts_found' }, { requestedAccounts }),
+      );
     }
   }, [accounts, formRef]);
 

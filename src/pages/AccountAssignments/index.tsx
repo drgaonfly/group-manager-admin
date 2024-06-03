@@ -159,6 +159,7 @@ const TableList: React.FC = () => {
       dataIndex: 'assignedTime',
       width: 170,
       valueType: 'date',
+      sorter: true,
     },
     {
       title: <FormattedMessage id="operator" defaultMessage="Operator" />,
