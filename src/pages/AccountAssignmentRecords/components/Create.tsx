@@ -2,10 +2,18 @@ import { FormattedMessage, useIntl } from '@umijs/max';
 import CountrySelect from '@/components/CountrySelect';
 import PlatformSelect from '@/components/PlatformSelect';
 import { addItem } from '@/services/ant-design-pro/api';
-import { ProFormDigit, ProFormInstance, ProFormText, StepsForm } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDateTimePicker,
+  ProFormDigit,
+  ProFormInstance,
+  ProFormText,
+  StepsForm,
+} from '@ant-design/pro-components';
 import { Empty, Modal, Table, message } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import CopyToClipboard from '@/components/CopyToClipboard';
+import moment from 'moment';
 
 interface Props {
   open: boolean;
@@ -200,6 +208,21 @@ const Create: React.FC<Props> = (props) => {
         <CountrySelect />
 
         <PlatformSelect />
+
+        <ProForm.Item
+          name="assignedTime"
+          label={intl.formatMessage({ id: 'assigned_time' })}
+          rules={[{ required: false }]}
+          initialValue={moment()} // 设置默认值为当前日期
+        >
+          <ProFormDateTimePicker
+            width="md"
+            fieldProps={{
+              format: 'YYYY-MM-DD', // 设置日期格式为年-月-日
+              picker: 'date', // 设置 picker 类型为日期选择器
+            }}
+          />
+        </ProForm.Item>
 
         <ProFormText
           name="storeAccount"
