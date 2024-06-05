@@ -143,7 +143,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
       </ProForm.Item>
 
       {reviewType === 'ReviewAfterModification' && (
-        <Form.Item required label={intl.formatMessage({ id: 'upload_review' })} name="uploadedFile">
+        <Form.Item label={intl.formatMessage({ id: 'upload_review' })} name="uploadedFile">
           <AliyunOSSUpload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
