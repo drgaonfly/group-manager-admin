@@ -14,6 +14,7 @@ import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import CountrySelect from '@/components/CountrySelect';
 import PlatformSelect from '@/components/PlatformSelect';
 import UserSelect from '@/components/UserSelect';
+import moment from 'moment';
 
 interface Props {
   newRecord?: boolean;
@@ -71,6 +72,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
           name="uploadTime"
           label={intl.formatMessage({ id: 'upload_time' })}
           rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
+          initialValue={moment()}
         >
           <ProFormDateTimePicker
             width="md"
