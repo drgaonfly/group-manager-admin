@@ -259,4 +259,5 @@ export default {
   lastBillUploadTime: '最后账单上传时间',
   billUploader: '账单上传者',
   import: '导入',
+  claim: '领取',
 };

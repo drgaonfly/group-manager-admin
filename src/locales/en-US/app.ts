@@ -260,4 +260,5 @@ export default {
   lastBillUploadTime: 'Last Bill Upload Time',
   billUploader: 'Bill Uploader',
   import: 'Import',
+  claim: 'Claim',
 };

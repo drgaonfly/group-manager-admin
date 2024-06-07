@@ -260,4 +260,5 @@ export default {
   lastBillUploadTime: 'Thời gian tải lên hóa đơn cuối cùng',
   billUploader: 'Người tải lên hóa đơn',
   import: 'Impor',
+  claim: 'Yêu cầu',
 };

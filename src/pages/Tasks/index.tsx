@@ -481,6 +481,11 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
+        access.canCustomer && (
+          <a key="claim" href={record.file} download target="_blank" rel="noopener noreferrer">
+            {intl.formatMessage({ id: 'claim' })}
+          </a>
+        ),
         access.canOrderClerk && (
           <a
             key="upload"
