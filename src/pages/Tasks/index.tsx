@@ -481,8 +481,22 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canCustomer && (
-          <a key="claim" href={record.file} download target="_blank" rel="noopener noreferrer">
+        access.canCustomer && record.status !== 'Processing' && (
+          <a
+            key="claim"
+            onClick={async (e) => {
+              e.preventDefault(); // 阻止默认的链接点击行为
+              const response: any = await handleItem(`tasks/${record._id}/claim`);
+              if (response.success) {
+                // Use the downloadUrl here
+                window.open(response.downloadUrl);
+                actionRef.current?.reloadAndRest?.();
+              } else {
+                // Handle the error here
+                console.error('Claim failed');
+              }
+            }}
+          >
             {intl.formatMessage({ id: 'claim' })}
           </a>
         ),
