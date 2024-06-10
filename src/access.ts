@@ -17,20 +17,57 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.role === ROLES.Customer ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.OrderPlacer ||
+        currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.SuperAdmin),
+    canSeeBills:
+      currentUser &&
+      (currentUser.role === ROLES.Customer ||
+        currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.OrderPlacer ||
+        currentUser.role === ROLES.Reviewer ||
+        currentUser.role === ROLES.CustomerService ||
+        currentUser.role === ROLES.SuperAdmin),
+    canSeeEmptyPackages:
+      currentUser &&
+      (currentUser.role === ROLES.Customer ||
+        currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.CustomerService ||
+        currentUser.role === ROLES.CustomerService ||
+        currentUser.role === ROLES.SuperAdmin),
+
+    canSeeAccountLibrary:
+      currentUser &&
+      (currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.OrderPlacer ||
+        currentUser.role === ROLES.CustomerService ||
+        currentUser.role === ROLES.SuperAdmin),
+
+    canSeeAssignmentRecords:
+      currentUser &&
+      (currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.CustomerService ||
+        currentUser.role === ROLES.SuperAdmin),
+
+    canSeeAfterSalesOrders:
+      currentUser &&
+      (currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.CustomerService ||
+        currentUser.role === ROLES.OrderPlacer ||
+        currentUser.role === ROLES.SuperAdmin),
+
+    canSeeCourses:
+      currentUser && (currentUser.role === ROLES.Admin || currentUser.role === ROLES.SuperAdmin),
     // Check if the user is either in the specific role or a SuperAdmin for broader access
     canCustomer:
       currentUser &&
       (currentUser.role === ROLES.Customer ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.SuperAdmin),
-    canOrderClerk:
+    canOrderPlacer:
       currentUser &&
       (currentUser.role === ROLES.OrderPlacer ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.SuperAdmin),
-    canFinancialStaff:
-      currentUser && (currentUser.role === ROLES.Admin || currentUser.role === ROLES.SuperAdmin),
     canAdmin:
       currentUser && (currentUser.role === ROLES.Admin || currentUser.role === ROLES.SuperAdmin),
   };

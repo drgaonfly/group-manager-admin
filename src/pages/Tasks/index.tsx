@@ -500,7 +500,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'claim' })}
           </a>
         ),
-        access.canOrderClerk && (
+        access.canOrderPlacer && (
           <a
             key="upload"
             onClick={() => {
