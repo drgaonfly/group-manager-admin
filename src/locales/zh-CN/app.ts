@@ -266,4 +266,5 @@ export default {
   ORDER_PLACER: '下单员',
   REVIEWER: '评价人员',
   CUSTOMER_SERVICE: '客服',
+  videoType: '视频类型',
 };

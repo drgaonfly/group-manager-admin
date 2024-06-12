@@ -267,4 +267,5 @@ export default {
   ORDER_PLACER: 'Order Placer',
   REVIEWER: 'Reviewer',
   CUSTOMER_SERVICE: 'Customer Service',
+  videoType: 'Video Type',
 };

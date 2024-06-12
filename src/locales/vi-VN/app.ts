@@ -267,4 +267,5 @@ export default {
   ORDER_PLACER: 'Người đặt hàng',
   REVIEWER: 'Người xem xét',
   CUSTOMER_SERVICE: 'Dịch vụ khách hàng',
+  videoType: 'Loại video',
 };
