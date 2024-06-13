@@ -17,6 +17,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.role === ROLES.Customer ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.OrderPlacer ||
+        currentUser.role === ROLES.Reviewer ||
         currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.SuperAdmin),
     canSeeBills:

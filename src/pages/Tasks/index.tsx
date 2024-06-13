@@ -469,7 +469,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canCustomer && (
+        (access.canCustomer || access.canAdmin || access.canCustomerService) && (
           <a
             key="edit"
             onClick={() => {
@@ -481,7 +481,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canCustomer && record.status !== 'Processing' && (
+        (access.canCustomer || access.canAdmin) && record.status !== 'Processing' && (
           <a
             key="claim"
             onClick={async (e) => {
@@ -500,7 +500,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'claim' })}
           </a>
         ),
-        access.canOrderPlacer && (
+        (access.canOrderPlacer || access.canAdmin || access.canCustomerService) && (
           <a
             key="upload"
             onClick={() => {
@@ -511,7 +511,7 @@ const TableList: React.FC = () => {
             <FormattedMessage id="upload" defaultMessage="上传" />
           </a>
         ),
-        access.canCustomer && (
+        (access.canAdmin || access.canCustomerService) && (
           <a
             key="cancel"
             onClick={() => {
@@ -531,7 +531,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'cancel' })}
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="delete"
             onClick={() => {
@@ -567,7 +567,7 @@ const TableList: React.FC = () => {
           defaultCollapsed: false,
         }}
         toolBarRender={() => [
-          access.canCustomer && (
+          (access.canOrderPlacer || access.canAdmin) && (
             <Button
               type="primary"
               key="primary"
@@ -639,7 +639,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canSuperAdmin && (
+          {(access.canOrderPlacer || access.canAdmin) && (
             <Button
               danger
               onClick={() => {
