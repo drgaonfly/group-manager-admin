@@ -306,17 +306,18 @@ const TableList: React.FC = () => {
       fixed: 'right',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-            handleUpdateModalOpen(true);
-            setCurrentRow(record);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
-
+        access.canSuperAdmin && (
+          <a
+            key="edit"
+            onClick={() => {
+              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            {intl.formatMessage({ id: 'edit' })}
+          </a>
+        ),
         access.canSuperAdmin && (
           <a
             key="delete"
@@ -365,7 +366,7 @@ const TableList: React.FC = () => {
           ),
           selectedRowsState?.length > 0 && (
             <>
-              {/* {access.canSuperAdmin && (
+              {access.canSuperAdmin && (
                 <Button
                   danger
                   onClick={() => {
@@ -387,7 +388,7 @@ const TableList: React.FC = () => {
                     defaultMessage="Batch deletion"
                   />
                 </Button>
-              )} */}
+              )}
             </>
           ),
         ]}
