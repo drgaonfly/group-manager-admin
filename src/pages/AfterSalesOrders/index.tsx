@@ -349,7 +349,7 @@ const TableList: React.FC = () => {
             <FormattedMessage id="review" defaultMessage="Review" />
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="delete"
             onClick={() => {
