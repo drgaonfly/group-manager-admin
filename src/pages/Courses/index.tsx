@@ -352,18 +352,20 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          </Button>,
+          access.canSuperAdmin && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            </Button>
+          ),
           selectedRowsState?.length > 0 && (
             <>
-              {access.canSuperAdmin && (
+              {/* {access.canSuperAdmin && (
                 <Button
                   danger
                   onClick={() => {
@@ -385,7 +387,7 @@ const TableList: React.FC = () => {
                     defaultMessage="Batch deletion"
                   />
                 </Button>
-              )}
+              )} */}
             </>
           ),
         ]}
@@ -409,35 +411,40 @@ const TableList: React.FC = () => {
         >
         </FooterToolbar>
       )} */}
-      <Create
-        selectedRowsState={selectedRowsState}
-        open={createModalOpen}
-        onOpenChange={handleModalOpen}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.ItemData);
-          if (success) {
-            handleModalOpen(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
+      {access.canSuperAdmin && (
+        <Create
+          selectedRowsState={selectedRowsState}
+          open={createModalOpen}
+          onOpenChange={handleModalOpen}
+          onFinish={async (value) => {
+            const success = await handleAdd(value as API.ItemData);
+            if (success) {
+              handleModalOpen(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }
-          }
-        }}
-      />
-      <Update
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalOpen(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
+          }}
+        />
+      )}
+
+      {access.canSuperAdmin && (
+        <Update
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalOpen(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }
-          }
-        }}
-        onCancel={handleUpdateModalOpen}
-        updateModalOpen={updateModalOpen}
-        values={currentRow || {}}
-      />
+          }}
+          onCancel={handleUpdateModalOpen}
+          updateModalOpen={updateModalOpen}
+          values={currentRow || {}}
+        />
+      )}
 
       <Show
         open={showDetail}
