@@ -271,7 +271,7 @@ const TableList: React.FC = () => {
         //     编辑
         //   </a>
         // ),
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="delete"
             onClick={() => {
@@ -354,7 +354,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canSuperAdmin && (
+          {access.canAdmin && (
             <Button
               danger
               onClick={() => {

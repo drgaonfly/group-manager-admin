@@ -226,7 +226,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="delete"
             onClick={() => {
@@ -337,7 +337,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canSuperAdmin && (
+          {access.canAdmin && (
             <Button
               danger
               onClick={() => {

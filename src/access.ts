@@ -46,8 +46,8 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser &&
       (currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.CustomerService ||
-        currentUser.role === ROLES.SuperAdmin),
-
+        currentUser.role === ROLES.SuperAdmin ||
+        currentUser.role === ROLES.OrderPlacer),
     canSeeAfterSalesOrders:
       currentUser &&
       (currentUser.role === ROLES.Admin ||
@@ -56,7 +56,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
         currentUser.role === ROLES.SuperAdmin ||
         currentUser.role === ROLES.Customer ||
         currentUser.role === ROLES.Reviewer),
-
     canSeeCourses:
       currentUser &&
       (currentUser.role === ROLES.Admin ||
