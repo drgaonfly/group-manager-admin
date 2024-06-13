@@ -480,18 +480,20 @@ const TableList: React.FC = () => {
       fixed: 'right',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-            handleUpdateModalOpen(true);
-            setCurrentRow(record);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
+        (access.canAdmin || access.canCustomerService) && (
+          <a
+            key="edit"
+            onClick={() => {
+              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            {intl.formatMessage({ id: 'edit' })}
+          </a>
+        ),
 
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="delete"
             onClick={() => {
@@ -511,17 +513,22 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'delete' })}
           </a>
         ),
-        record.afterSales ? null : (
-          <a
-            key="afterSale"
-            onClick={() => {
-              setAfterSaleModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'apply_after_sale', defaultMessage: 'Apply for After-sale' })}
-          </a>
-        ),
+        record.afterSales
+          ? null
+          : (access.canAdmin || access.canCustomer || access.canCustomerService) && (
+              <a
+                key="afterSale"
+                onClick={() => {
+                  setAfterSaleModalVisible(true);
+                  setCurrentRow(record);
+                }}
+              >
+                {intl.formatMessage({
+                  id: 'apply_after_sale',
+                  defaultMessage: 'Apply for After-sale',
+                })}
+              </a>
+            ),
       ],
     },
   ];
@@ -597,7 +604,7 @@ const TableList: React.FC = () => {
                 <EditOutlined />{' '}
                 <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
               </Button>
-              {access.canSuperAdmin && (
+              {access.canAdmin && (
                 <Button
                   danger
                   onClick={() => {
