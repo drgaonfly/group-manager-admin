@@ -100,7 +100,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'password' })}
           name="password"
         />
-        {access.canSuperAdmin && (
+        {access.canAdmin && (
           <ProFormSelect
             name="role"
             width="md"

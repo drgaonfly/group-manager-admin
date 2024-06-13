@@ -214,7 +214,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="edit"
             onClick={() => {
@@ -226,7 +226,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canAdmin && (
           <a
             key="delete"
             onClick={() => {
@@ -260,7 +260,7 @@ const TableList: React.FC = () => {
           labelWidth: 180,
         }}
         toolBarRender={() => [
-          access.canSuperAdmin && (
+          (access.canAdmin || access.canCustomerService) && (
             <Button
               type="primary"
               key="primary"
@@ -271,7 +271,7 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          access.canSuperAdmin && (
+          (access.canAdmin || access.canCustomerService) && (
             <Button
               danger
               key="batchUpload"
@@ -283,7 +283,7 @@ const TableList: React.FC = () => {
               <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
             </Button>
           ),
-          access.canSuperAdmin && (
+          access.canAdmin && (
             <Button
               type="dashed"
               key="batchUploadPrices"
@@ -316,7 +316,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canSuperAdmin && (
+          {access.canAdmin && (
             <Button
               danger
               onClick={() => {

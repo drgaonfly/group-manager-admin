@@ -259,18 +259,18 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        // access.canCustomer && (
-        //   <a
-        //     key="edit"
-        //     onClick={() => {
-        //       // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-        //       handleUpdateModalOpen(true);
-        //       setCurrentRow(record);
-        //     }}
-        //   >
-        //     编辑
-        //   </a>
-        // ),
+        access.canAdmin && (
+          <a
+            key="edit"
+            onClick={() => {
+              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            编辑
+          </a>
+        ),
         access.canAdmin && (
           <a
             key="delete"

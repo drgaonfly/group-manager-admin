@@ -12,6 +12,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
   return {
     canSuperAdmin: currentUser && currentUser.role === ROLES.SuperAdmin,
+
     canSeeTasks:
       currentUser &&
       (currentUser.role === ROLES.Customer ||
@@ -20,6 +21,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
         currentUser.role === ROLES.Reviewer ||
         currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.SuperAdmin),
+
     canSeeBills:
       currentUser &&
       (currentUser.role === ROLES.Customer ||
@@ -28,6 +30,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
         currentUser.role === ROLES.Reviewer ||
         currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.SuperAdmin),
+
     canSeeEmptyPackages:
       currentUser &&
       (currentUser.role === ROLES.Customer ||
@@ -49,6 +52,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
         currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.SuperAdmin ||
         currentUser.role === ROLES.OrderPlacer),
+
     canSeeAfterSalesOrders:
       currentUser &&
       (currentUser.role === ROLES.Admin ||
@@ -57,6 +61,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
         currentUser.role === ROLES.SuperAdmin ||
         currentUser.role === ROLES.Customer ||
         currentUser.role === ROLES.Reviewer),
+
     canSeeCourses:
       currentUser &&
       (currentUser.role === ROLES.Admin ||
@@ -65,17 +70,20 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
         currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.OrderPlacer ||
         currentUser.role === ROLES.Reviewer),
+
     // Check if the user is either in the specific role or a SuperAdmin for broader access
     canCustomer:
       currentUser &&
       (currentUser.role === ROLES.Customer ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.SuperAdmin),
+
     canOrderPlacer:
       currentUser &&
       (currentUser.role === ROLES.OrderPlacer ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.SuperAdmin),
+
     canReviewer:
       currentUser &&
       (currentUser.role === ROLES.Reviewer ||
@@ -87,7 +95,11 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.Admin ||
         currentUser.role === ROLES.SuperAdmin),
+
     canAdmin:
-      currentUser && (currentUser.role === ROLES.Admin || currentUser.role === ROLES.SuperAdmin),
+      currentUser &&
+      (currentUser.role === ROLES.Admin ||
+        currentUser.role === ROLES.SuperAdmin ||
+        currentUser.role === ROLES.CustomerService),
   };
 }

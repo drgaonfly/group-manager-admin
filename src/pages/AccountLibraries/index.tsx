@@ -214,7 +214,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canCustomer && (
+        access.canAdmin && (
           <a
             key="edit"
             onClick={() => {
