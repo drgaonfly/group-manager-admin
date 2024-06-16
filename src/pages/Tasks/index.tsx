@@ -481,7 +481,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        (access.canCustomer || access.canCustomerService) && record.status !== 'Processing' && (
+        access.canCustomerService && record.status !== 'Processing' && (
           <a
             key="claim"
             onClick={async (e) => {
@@ -567,7 +567,7 @@ const TableList: React.FC = () => {
           defaultCollapsed: false,
         }}
         toolBarRender={() => [
-          (access.canOrderPlacer || access.canCustomer || access.canCustomerService) && (
+          (access.canCustomer || access.canCustomerService) && (
             <Button
               type="primary"
               key="primary"
