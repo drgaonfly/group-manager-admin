@@ -268,7 +268,7 @@ const TableList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            编辑
+            {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
         access.canAdmin && (
@@ -310,7 +310,7 @@ const TableList: React.FC = () => {
           ],
         }}
         toolBarRender={() => [
-          access.canCustomer && (
+          access.canSeeAssignmentRecords && (
             <Button
               type="primary"
               key="primary"
@@ -321,7 +321,7 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          access.canCustomer && (
+          access.canSeeAssignmentRecords && (
             <Button
               danger
               key="batchUpload"
