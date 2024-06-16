@@ -567,7 +567,7 @@ const TableList: React.FC = () => {
           defaultCollapsed: false,
         }}
         toolBarRender={() => [
-          (access.canOrderPlacer || access.canCustomerService) && (
+          (access.canOrderPlacer || access.canCustomer || access.canCustomerService) && (
             <Button
               type="primary"
               key="primary"
