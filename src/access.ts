@@ -102,5 +102,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.role === ROLES.SuperAdmin || currentUser.role === ROLES.Admin),
     isCustomerService: currentUser && currentUser.role === ROLES.CustomerService,
     isSuperAdmin: currentUser && currentUser.role === ROLES.SuperAdmin,
+    isOrderPlacer: currentUser && currentUser.role === ROLES.OrderPlacer,
+    isReviewer: currentUser && currentUser.role === ROLES.Reviewer,
   };
 }

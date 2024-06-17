@@ -398,17 +398,20 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'exchange_rate' }),
       dataIndex: 'exchangeRate',
       width: 150,
+      hideInTable: access.isOrderPlacer || access.isReviewer,
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'service_fee' }),
       dataIndex: 'serviceFee',
+      hideInTable: access.isOrderPlacer || access.isReviewer,
       width: 150,
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'payment_amount' }),
       dataIndex: 'paymentAmount',
+      hideInTable: access.isOrderPlacer || access.isReviewer,
       width: 150,
       hideInSearch: true,
     },
@@ -480,7 +483,7 @@ const TableList: React.FC = () => {
       fixed: 'right',
       valueType: 'option',
       render: (_, record) => [
-        (access.canAdmin || access.canCustomerService) && (
+        (access.canCustomerService || access.canCustomer) && (
           <a
             key="edit"
             onClick={() => {
