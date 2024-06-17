@@ -214,7 +214,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canAdmin && (
+        access.canCustomerService && (
           <a
             key="edit"
             onClick={() => {
@@ -262,18 +262,16 @@ const TableList: React.FC = () => {
           defaultCollapsed: false,
         }}
         toolBarRender={() => [
-          access.canCustomer && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-          access.canCustomer && (
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              handleModalOpen(true);
+            }}
+          >
+            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+          </Button>,
+          access.canCustomerService && (
             <Button
               danger
               key="batchUpload"

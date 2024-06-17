@@ -41,7 +41,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canSeeAccountLibrary:
       currentUser &&
       (currentUser.role === ROLES.Admin ||
-        currentUser.role === ROLES.OrderPlacer ||
         currentUser.role === ROLES.CustomerService ||
         currentUser.role === ROLES.SuperAdmin),
 
