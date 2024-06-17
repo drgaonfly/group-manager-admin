@@ -300,7 +300,7 @@ const TableList: React.FC = () => {
               <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
             </Button>
           ),
-          access.canCustomer && (
+          access.canCustomerService && (
             <Button
               type="primary"
               key="primary"
