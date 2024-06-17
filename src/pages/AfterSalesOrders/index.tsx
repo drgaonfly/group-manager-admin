@@ -338,7 +338,7 @@ const TableList: React.FC = () => {
         //     <FormattedMessage id="process" defaultMessage="Process" />
         //   </a>
         // ),
-        access.canSeeAfterSalesOrders && record.status === 'Processing' && (
+        access.canCustomerService && record.status === 'Processing' && (
           <a
             key="review"
             onClick={() => {
