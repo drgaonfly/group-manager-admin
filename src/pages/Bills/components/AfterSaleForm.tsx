@@ -8,6 +8,7 @@ import {
 } from '@ant-design/pro-components';
 import { Alert, Form, Input } from 'antd';
 import { useIntl } from '@umijs/max';
+import moment from 'moment';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -96,6 +97,7 @@ const AfterSaleForm: React.FC<UpdateFormProps> = (props) => {
             name="applicationTime"
             label={intl.formatMessage({ id: 'applicationTime' })}
             rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
+            initialValue={moment()}
           >
             <ProFormDateTimePicker
               width="md"

@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { ModalForm, ProFormTextArea, ProFormRadio } from '@ant-design/pro-components';
+import {
+  ModalForm,
+  ProFormTextArea,
+  ProFormRadio,
+  ProForm,
+  ProFormDateTimePicker,
+} from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { useIntl } from '@umijs/max';
+import moment from 'moment';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -51,6 +58,20 @@ const ReviewForm: React.FC<UpdateFormProps> = (props) => {
             onChange: (e) => setStatus(e.target.value),
           }}
         />
+        <ProForm.Item
+          name="applicationTime"
+          label={intl.formatMessage({ id: 'applicationTime' })}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
+          initialValue={moment()}
+        >
+          <ProFormDateTimePicker
+            width="md"
+            fieldProps={{
+              format: 'YYYY-MM-DD', // 设置日期格式为年-月-日
+              picker: 'date', // 设置 picker 类型为日期选择器
+            }}
+          />
+        </ProForm.Item>
         {status === 'Rejected' && (
           <ProFormTextArea
             name="rejectionReason"
