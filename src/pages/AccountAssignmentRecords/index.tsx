@@ -259,7 +259,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canAdmin && (
+        access.canSeeAssignmentRecords && (
           <a
             key="edit"
             onClick={() => {
