@@ -518,7 +518,7 @@ const TableList: React.FC = () => {
         ),
         record.afterSales
           ? null
-          : (access.canAdmin || access.canCustomer || access.canCustomerService) && (
+          : (access.canCustomer || access.canCustomerService) && (
               <a
                 key="afterSale"
                 onClick={() => {
@@ -547,49 +547,51 @@ const TableList: React.FC = () => {
           labelWidth: 180,
           collapsed: false,
           optionRender: (searchConfig, props, dom) => [
-            <Button
-              key="export"
-              type="dashed"
-              onClick={async () => {
-                // Show a loading message
-                const hide = message.loading(
-                  intl.formatMessage({ id: 'exporting', defaultMessage: 'Exporting...' }),
-                  0,
-                );
-
-                try {
-                  // Perform the export operation
-                  console.log('Export button clicked', props.form?.getFieldsValue());
-                  const response = await queryList('/bills/export', {
-                    ...props.form?.getFieldsValue(),
-                  });
-
-                  hide();
-
-                  if (response?.data) {
-                    message.success(
-                      intl.formatMessage({
-                        id: 'file_ready',
-                        defaultMessage: 'File is ready, download will start soon',
-                      }),
-                    );
-                    // Open the download URL in a new tab
-                    // @ts-ignore
-                    window.open(response.data.signedURL, '_blank');
-                  } else {
-                    throw new Error('No download URL returned');
-                  }
-                } catch (error) {
-                  // Update the message
-                  hide();
-                  message.error(
-                    intl.formatMessage({ id: 'export_failed', defaultMessage: 'Export failed' }),
+            access.canCustomer && (
+              <Button
+                key="export"
+                type="dashed"
+                onClick={async () => {
+                  // Show a loading message
+                  const hide = message.loading(
+                    intl.formatMessage({ id: 'exporting', defaultMessage: 'Exporting...' }),
+                    0,
                   );
-                }
-              }}
-            >
-              {intl.formatMessage({ id: 'export', defaultMessage: 'Export' })}
-            </Button>,
+
+                  try {
+                    // Perform the export operation
+                    console.log('Export button clicked', props.form?.getFieldsValue());
+                    const response = await queryList('/bills/export', {
+                      ...props.form?.getFieldsValue(),
+                    });
+
+                    hide();
+
+                    if (response?.data) {
+                      message.success(
+                        intl.formatMessage({
+                          id: 'file_ready',
+                          defaultMessage: 'File is ready, download will start soon',
+                        }),
+                      );
+                      // Open the download URL in a new tab
+                      // @ts-ignore
+                      window.open(response.data.signedURL, '_blank');
+                    } else {
+                      throw new Error('No download URL returned');
+                    }
+                  } catch (error) {
+                    // Update the message
+                    hide();
+                    message.error(
+                      intl.formatMessage({ id: 'export_failed', defaultMessage: 'Export failed' }),
+                    );
+                  }
+                }}
+              >
+                {intl.formatMessage({ id: 'export', defaultMessage: 'Export' })}
+              </Button>
+            ),
             ...dom,
           ],
         }}
