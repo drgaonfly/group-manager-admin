@@ -59,7 +59,7 @@ const ReviewForm: React.FC<UpdateFormProps> = (props) => {
           }}
         />
         <ProForm.Item
-          name="applicationTime"
+          name="reviewTime"
           label={intl.formatMessage({ id: 'applicationTime' })}
           rules={[{ required: true, message: intl.formatMessage({ id: 'select_order_time' }) }]}
           initialValue={moment()}
