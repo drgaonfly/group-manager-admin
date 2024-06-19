@@ -267,4 +267,5 @@ export default {
   REVIEWER: '评价人员',
   CUSTOMER_SERVICE: '客服',
   videoType: '视频类型',
+  billNote: '账单备注',
 };

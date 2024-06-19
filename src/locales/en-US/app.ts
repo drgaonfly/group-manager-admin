@@ -268,4 +268,5 @@ export default {
   REVIEWER: 'Reviewer',
   CUSTOMER_SERVICE: 'Customer Service',
   videoType: 'Video Type',
+  billNote: 'Bill Note',
 };

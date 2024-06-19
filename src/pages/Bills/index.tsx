@@ -469,6 +469,13 @@ const TableList: React.FC = () => {
       ),
     },
     {
+      title: intl.formatMessage({ id: 'billNote' }),
+      dataIndex: 'billNote',
+      width: 150,
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'created_at' }),
       width: 150,
       dataIndex: 'createdAt',
