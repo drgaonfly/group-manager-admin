@@ -5,6 +5,7 @@ import {
   ProFormDateTimePicker,
   ProFormDigit,
   ProFormSwitch,
+  ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import { useAccess } from '@umijs/max';
@@ -75,6 +76,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, setFile, initialValues }) => {
             }}
           />
         </ProForm.Item>
+        <ProFormTextArea
+          name="note"
+          label={intl.formatMessage({ id: 'note' })}
+          width="md"
+          rules={[{ required: false }]}
+        />
       </ProForm.Group>
     </>
   );

@@ -269,4 +269,5 @@ export default {
   CUSTOMER_SERVICE: 'Customer Service',
   videoType: 'Video Type',
   billNote: 'Bill Note',
+  note: 'Note',
 };

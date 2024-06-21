@@ -269,4 +269,5 @@ export default {
   CUSTOMER_SERVICE: 'Dịch vụ khách hàng',
   videoType: 'Loại video',
   billNote: 'Ghi chú hóa đơn',
+  note: 'Ghi chú',
 };
