@@ -270,4 +270,5 @@ export default {
   videoType: 'Video Type',
   billNote: 'Bill Note',
   note: 'Note',
+  customer_code: 'Customer Code',
 };

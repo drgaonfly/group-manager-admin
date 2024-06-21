@@ -269,4 +269,5 @@ export default {
   videoType: '视频类型',
   billNote: '账单备注',
   note: '备注',
+  customer_code: '客户编码',
 };

@@ -187,7 +187,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'upload_user' }),
+      title: intl.formatMessage({ id: 'customer_code' }),
       dataIndex: 'user',
       width: 200,
       copyable: true,
@@ -202,6 +202,23 @@ const TableList: React.FC = () => {
       width: 150,
       dataIndex: 'uploadTime',
       valueType: 'date',
+    },
+    {
+      title: intl.formatMessage({ id: 'operator' }),
+      dataIndex: 'operator',
+      width: 200,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        return record.operator && record.operator.name
+          ? record.operator.name
+          : intl.formatMessage({ id: 'unknown' });
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'note' }),
+      width: 150,
+      dataIndex: 'note',
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'quantity' }),

@@ -270,4 +270,5 @@ export default {
   videoType: 'Loại video',
   billNote: 'Ghi chú hóa đơn',
   note: 'Ghi chú',
+  customer_code: 'Mã khách hàng',
 };
