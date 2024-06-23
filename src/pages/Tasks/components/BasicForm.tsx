@@ -43,7 +43,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, setReviewFile, setFile, initial
   return (
     <>
       <ProForm.Group>
-        {access.canAdmin && <UserSelect />}
+        {(access.canAdmin || access.canCustomerService) && <UserSelect />}
         <CountrySelect />
 
         <PlatformSelect />
