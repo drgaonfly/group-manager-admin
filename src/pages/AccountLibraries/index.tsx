@@ -185,6 +185,13 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'note' }),
+      dataIndex: 'remark',
+      ellipsis: true,
+      width: 150,
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'is_abnormal' }),
       width: 100,
       dataIndex: 'isAbnormal',
