@@ -336,7 +336,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'customer' }),
       dataIndex: 'customer',
       width: 100,
-      hideInSearch: true,
       render: (_, record: any) => {
         return record.customer && record.customer.name
           ? record.customer.name
