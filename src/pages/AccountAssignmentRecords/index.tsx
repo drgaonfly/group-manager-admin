@@ -301,6 +301,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         scroll={{ x: 1200 }}
+        pagination={{ pageSize: 1000 }}
         rowKey="_id"
         search={{
           defaultCollapsed: false,
