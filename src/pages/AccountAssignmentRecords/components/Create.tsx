@@ -116,18 +116,7 @@ const Create: React.FC<Props> = (props) => {
             const res = await addItem('/assignments/available', { ...info.values });
             console.log(res);
             setAccounts(res?.data);
-            // const res = await AddPayment({
-            //   ...info.values
-            // });
             hide();
-            // if (res.code === 0) {
-            //   message.error(`操作失败, ${res.msg}`);
-            //   return false
-            // } else {
-            //   setPaymentId(res.data.id);
-            //   message.success(res.msg);
-            //   return true;
-            // }
           } catch (error: any) {
             console.log(error);
             setAccounts([]);
