@@ -275,4 +275,6 @@ export default {
   empty_package_fee_required: 'Empty package fee is required',
   upload_bill_file: 'Upload Bill File',
   confirm_bill_content: 'Confirm Bill Content',
+  found_bills: 'Found {billsLength} bills',
+  no_bill_data: 'No bill data',
 };

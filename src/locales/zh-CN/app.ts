@@ -274,4 +274,6 @@ export default {
   empty_package_fee_required: '空包费是必填项',
   upload_bill_file: '上传账单文件',
   confirm_bill_content: '确定账单内容',
+  found_bills: '找到了 {billsLength} 条账单',
+  no_bill_data: '没有账单数据',
 };

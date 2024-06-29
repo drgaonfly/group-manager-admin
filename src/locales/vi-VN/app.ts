@@ -275,4 +275,6 @@ export default {
   empty_package_fee_required: 'Phí gói trống là bắt buộc',
   upload_bill_file: 'Tải lên tệp hóa đơn',
   confirm_bill_content: 'Xác nhận nội dung hóa đơn',
+  found_bills: 'Tìm thấy {billsLength} hóa đơn',
+  no_bill_data: 'Không có dữ liệu hóa đơn',
 };
