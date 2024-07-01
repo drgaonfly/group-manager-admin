@@ -549,7 +549,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="_id"
         scroll={{ x: 1200 }}
-        pagination={{ pageSize: 1000 }}
+        pagination={{ pageSize: 100 }}
         search={{
           labelWidth: 180,
           collapsed: false,
