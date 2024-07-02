@@ -445,7 +445,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canCustomerService && record.status !== 'Processing' && (
+        (access.canCustomerService || access.canOrderPlacer) && record.status !== 'Processing' && (
           <a
             key="claim"
             onClick={async (e) => {
