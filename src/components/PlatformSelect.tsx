@@ -13,6 +13,7 @@ const PlatformSelect: React.FC = () => {
       rules={[{ required: true, message: intl.formatMessage({ id: 'select_platform' }) }]}
       valueEnum={platformNames}
       placeholder={intl.formatMessage({ id: 'select_platform' })}
+      initialValue="Shopee"
     />
   );
 };
