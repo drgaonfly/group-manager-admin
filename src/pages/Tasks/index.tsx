@@ -185,7 +185,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
-  const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const [activeKey, setActiveKey] = useState<string | undefined>('Active');
 
   /**
    * @en-US International configuration
