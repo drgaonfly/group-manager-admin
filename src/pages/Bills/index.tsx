@@ -15,6 +15,7 @@ import AfterSaleForm from './components/AfterSaleForm';
 import ShowTask from '@/pages/Tasks/components/Show';
 import { EditOutlined } from '@ant-design/icons';
 import BatchSetting from './components/BatchSetting';
+import BatchDeleteButton from '@/components/BatchDelete';
 
 const taskColumns: ProColumns<API.ItemData>[] = [
   {
@@ -598,6 +599,14 @@ const TableList: React.FC = () => {
               >
                 {intl.formatMessage({ id: 'export', defaultMessage: 'Export' })}
               </Button>
+            ),
+            access.canSuperAdmin && (
+              <BatchDeleteButton
+                key="delete"
+                form={props.form!}
+                deleteUrl="/bills/delete-records"
+                actionRef={actionRef}
+              />
             ),
             ...dom,
           ],

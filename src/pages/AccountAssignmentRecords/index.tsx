@@ -308,12 +308,14 @@ const TableList: React.FC = () => {
           defaultCollapsed: false,
           optionRender: (searchConfig, props, dom) => [
             <ExportButton key="export" form={props.form!} exportUrl="/assignment-records/export" />,
-            <BatchDeleteButton
-              key="delete"
-              form={props.form!}
-              deleteUrl="/assignment-records/delete-records"
-              actionRef={actionRef}
-            />,
+            access.canSuperAdmin && (
+              <BatchDeleteButton
+                key="delete"
+                form={props.form!}
+                deleteUrl="/assignment-records/delete-records"
+                actionRef={actionRef}
+              />
+            ),
             ...dom,
           ],
         }}
