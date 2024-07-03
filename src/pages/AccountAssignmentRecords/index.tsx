@@ -322,7 +322,7 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          selectedRowsState?.length > 0 && access.canAdmin && (
+          selectedRowsState?.length > 0 && access.canSuperAdmin && (
             <Button
               danger
               onClick={() => {

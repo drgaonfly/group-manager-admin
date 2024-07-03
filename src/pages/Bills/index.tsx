@@ -616,7 +616,7 @@ const TableList: React.FC = () => {
                 <EditOutlined />{' '}
                 <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
               </Button>
-              {access.canAdmin && (
+              {access.canSuperAdmin && (
                 <Button
                   danger
                   onClick={() => {

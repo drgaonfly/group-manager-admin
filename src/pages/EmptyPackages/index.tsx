@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { DownloadOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -340,6 +340,29 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
+          selectedRowsState?.length > 0 && access.canSuperAdmin && (
+            <Button
+              danger
+              onClick={() => {
+                return Modal.confirm({
+                  title: intl.formatMessage({ id: 'confirm_delete' }),
+                  onOk: async () => {
+                    await handleRemove(selectedRowsState?.map((item) => item._id!));
+                    setSelectedRows([]);
+                    actionRef.current?.reloadAndRest?.();
+                  },
+                  content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                  okText: intl.formatMessage({ id: 'confirm' }),
+                  cancelText: intl.formatMessage({ id: 'cancel' }),
+                });
+              }}
+            >
+              <FormattedMessage
+                id="pages.searchTable.batchDeletion"
+                defaultMessage="Batch deletion"
+              />
+            </Button>
+          ),
           selectedRowsState?.length > 0 && (
             <Button
               key="download"
@@ -396,41 +419,7 @@ const TableList: React.FC = () => {
         }}
       />
 
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-            </div>
-          }
-        >
-          {access.canAdmin && (
-            <Button
-              danger
-              onClick={() => {
-                return Modal.confirm({
-                  title: intl.formatMessage({ id: 'confirm_delete' }),
-                  onOk: async () => {
-                    await handleRemove(selectedRowsState?.map((item) => item._id!));
-                    setSelectedRows([]);
-                    actionRef.current?.reloadAndRest?.();
-                  },
-                  content: intl.formatMessage({ id: 'confirm_delete_content' }),
-                  okText: intl.formatMessage({ id: 'confirm' }),
-                  cancelText: intl.formatMessage({ id: 'cancel' }),
-                });
-              }}
-            >
-              <FormattedMessage
-                id="pages.searchTable.batchDeletion"
-                defaultMessage="Batch deletion"
-              />
-            </Button>
-          )}
-        </FooterToolbar>
-      )}
+      {}
       <Create
         open={createModalOpen}
         onOpenChange={handleModalOpen}
