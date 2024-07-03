@@ -159,6 +159,7 @@ const TableList: React.FC = () => {
       copyable: true,
       dataIndex: 'accountNumber',
       width: 200,
+      sorter: true,
       render: (dom, entity) => {
         return (
           <a
