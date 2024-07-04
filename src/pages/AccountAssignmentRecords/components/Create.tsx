@@ -10,7 +10,7 @@ import {
   ProFormText,
   StepsForm,
 } from '@ant-design/pro-components';
-import { Empty, Modal, Table, message } from 'antd';
+import { Empty, Modal, Spin, Table, message } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import moment from 'moment';
@@ -83,6 +83,7 @@ const Create: React.FC<Props> = (props) => {
   const [accounts, setAccounts] = useState<any[]>([]);
 
   const [accountFeedback, setAccountFeedback] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const requestedAccounts = formRef.current?.getFieldsValue().numberOfAccounts;
@@ -110,19 +111,18 @@ const Create: React.FC<Props> = (props) => {
         console.log(formName);
         console.log(info);
         if (formName === '0') {
-          const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
-
           try {
+            setLoading(true);
             const res = await addItem('/assignments/available', { ...info.values });
             console.log(res);
             setAccounts(res?.data);
-            hide();
           } catch (error: any) {
             console.log(error);
             setAccounts([]);
-            hide();
             message.error(error?.response?.data?.message || 'Adding failed, please try again!');
             return false;
+          } finally {
+            setLoading(false);
           }
         }
       }}
@@ -232,20 +232,26 @@ const Create: React.FC<Props> = (props) => {
         }}
         title={intl.formatMessage({ id: 'auto_select_account_and_submit' })}
       >
-        {accountFeedback && (
-          <div
-            style={{
-              color:
-                accounts.length === formRef.current?.getFieldsValue().numberOfAccounts
-                  ? 'green'
-                  : 'red',
-              marginBottom: '10px',
-            }}
-          >
-            {accountFeedback}
-          </div>
+        {loading ? (
+          <Spin />
+        ) : (
+          <>
+            {accountFeedback && (
+              <div
+                style={{
+                  color:
+                    accounts.length === formRef.current?.getFieldsValue().numberOfAccounts
+                      ? 'green'
+                      : 'red',
+                  marginBottom: '10px',
+                }}
+              >
+                {accountFeedback}
+              </div>
+            )}
+            <AccountTable accounts={accounts} />
+          </>
         )}
-        <AccountTable accounts={accounts} />
       </StepsForm.StepForm>
     </StepsForm>
   );
