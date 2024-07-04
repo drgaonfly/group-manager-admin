@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ProFormInstance, StepsForm } from '@ant-design/pro-components';
-import { Empty, Form, Input, Modal, Table, message } from 'antd';
+import { Empty, Form, Input, Modal, Spin, Table, message } from 'antd';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { addItem } from '@/services/ant-design-pro/api';
@@ -80,6 +80,7 @@ const UploadForm: React.FC<UpdateFormProps> = (props) => {
   const { _id } = values;
 
   const [billFeedback, setBillFeedback] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setBillFeedback(intl.formatMessage({ id: 'found_bills' }, { billsLength: bills.length }));
@@ -102,17 +103,17 @@ const UploadForm: React.FC<UpdateFormProps> = (props) => {
             );
             return;
           }
-          const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
           try {
+            setLoading(true);
             const res = await addItem('/tasks/get-bills-data', { _id: values._id, billFile: file });
             setBills(res?.data);
-            hide();
           } catch (error: any) {
             console.log(error);
             setBills([]);
-            hide();
             message.error(error?.response?.data?.message || 'Adding failed, please try again!');
             return false;
+          } finally {
+            setLoading(false);
           }
         }
       }}
@@ -193,17 +194,23 @@ const UploadForm: React.FC<UpdateFormProps> = (props) => {
         }}
         title={intl.formatMessage({ id: 'confirm_bill_content' })}
       >
-        {billFeedback && (
-          <div
-            style={{
-              color: bills.length > 0 ? 'green' : 'red',
-              marginBottom: '10px',
-            }}
-          >
-            {billFeedback}
-          </div>
+        {loading ? (
+          <Spin />
+        ) : (
+          <>
+            {billFeedback && (
+              <div
+                style={{
+                  color: bills.length > 0 ? 'green' : 'red',
+                  marginBottom: '10px',
+                }}
+              >
+                {billFeedback}
+              </div>
+            )}
+            <BillTable bills={bills} />
+          </>
         )}
-        <BillTable bills={bills} />
       </StepsForm.StepForm>
     </StepsForm>
   );
