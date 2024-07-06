@@ -254,6 +254,13 @@ const TableList: React.FC = () => {
       dataIndex: 'loginAccount',
     },
     {
+      title: intl.formatMessage({ id: 'created_at' }),
+      width: 200,
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       width: 250,
       fixed: 'right',
