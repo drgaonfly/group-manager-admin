@@ -277,4 +277,5 @@ export default {
   confirm_bill_content: 'Confirm Bill Content',
   found_bills: 'Found {billsLength} bills',
   no_bill_data: 'No bill data',
+  sequenceNumber: 'Sequence Number',
 };

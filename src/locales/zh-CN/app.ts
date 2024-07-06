@@ -276,4 +276,5 @@ export default {
   confirm_bill_content: '确定账单内容',
   found_bills: '找到了 {billsLength} 条账单',
   no_bill_data: '没有账单数据',
+  sequenceNumber: '序号',
 };
