@@ -278,4 +278,5 @@ export default {
   found_bills: 'Tìm thấy {billsLength} hóa đơn',
   no_bill_data: 'Không có dữ liệu hóa đơn',
   sequenceNumber: 'Số thứ tự',
+  creator: 'Người tạo',
 };

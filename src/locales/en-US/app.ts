@@ -278,4 +278,5 @@ export default {
   found_bills: 'Found {billsLength} bills',
   no_bill_data: 'No bill data',
   sequenceNumber: 'Sequence Number',
+  creator: 'Creator',
 };

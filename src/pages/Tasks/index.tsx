@@ -300,6 +300,17 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'creator' }),
+      dataIndex: 'creator',
+      width: 200,
+      copyable: true,
+      renderText: (_, record: any) => {
+        return record.creator && record.creator.name
+          ? record.creator.name
+          : intl.formatMessage({ id: 'unknown' });
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'created_at' }),
       width: 200,
       dataIndex: 'createdAt',
