@@ -31,12 +31,23 @@ const handleAdd = async (fields: API.ItemData) => {
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
   } catch (error: any) {
+    if (
+      error?.response?.data?.message.startsWith(
+        'E11000 duplicate key error collection: test.accountassignmentrecords index',
+      )
+    ) {
+      Modal.error({
+        title: 'Error',
+        content: 'Account library already exists. Please try again.',
+      });
+    } else {
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
+        ),
+      );
+    }
     hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
-      ),
-    );
     return false;
   }
 };
