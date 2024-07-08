@@ -31,11 +31,7 @@ const handleAdd = async (fields: API.ItemData) => {
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
   } catch (error: any) {
-    if (
-      error?.response?.data?.message.startsWith(
-        'E11000 duplicate key error collection: test.accountassignmentrecords index',
-      )
-    ) {
+    if (error?.response?.data?.message.startsWith('E11000 duplicate key error collection:')) {
       Modal.error({
         title: 'Error',
         content: 'Account library already exists. Please try again.',
