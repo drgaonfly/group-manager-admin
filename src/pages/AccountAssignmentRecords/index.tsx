@@ -34,7 +34,7 @@ const handleAdd = async (fields: API.ItemData) => {
     if (error?.response?.data?.message.startsWith('E11000 duplicate key error collection:')) {
       Modal.error({
         title: 'Error',
-        content: 'Account library already exists. Please try again.',
+        content: 'Cảnh cáo!!! Tài khoản đã sử dụng trùng lặp. Vui lòng phân bổ tài khoản mới',
       });
     } else {
       message.error(
