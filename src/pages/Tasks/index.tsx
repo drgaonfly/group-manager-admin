@@ -280,7 +280,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'orderNote' }),
-      width: 150,
+      width: 450,
       dataIndex: 'orderNote',
       ellipsis: true,
     },
