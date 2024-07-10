@@ -281,4 +281,5 @@ export default {
   no_bill_data: 'No bill data',
   sequenceNumber: 'Sequence Number',
   creator: 'Creator',
+  claimer: 'Claimer',
 };

@@ -346,6 +346,28 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'claimer' }),
+      dataIndex: 'claimer',
+      width: 200,
+      render: (dom, entity: any) => {
+        const name = entity.claimer ? entity.claimer.name : intl.formatMessage({ id: 'none' });
+        return (
+          <>
+            <a
+              onClick={() => {
+                setCurrentUser(entity.claimer);
+                setShowUserDetail(true);
+              }}
+            >
+              {name}
+            </a>
+            <span> </span>
+            <CopyToClipboard text={name} />
+          </>
+        );
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'customer' }),
       dataIndex: 'user',
       width: 200,

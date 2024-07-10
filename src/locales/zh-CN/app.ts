@@ -280,4 +280,5 @@ export default {
   no_bill_data: '没有账单数据',
   sequenceNumber: '序号',
   creator: '创建者',
+  claimer: '领取人',
 };

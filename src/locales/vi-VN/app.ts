@@ -281,4 +281,5 @@ export default {
   no_bill_data: 'Không có dữ liệu hóa đơn',
   sequenceNumber: 'Số thứ tự',
   creator: 'Người tạo',
+  claimer: 'Người yêu cầu',
 };
