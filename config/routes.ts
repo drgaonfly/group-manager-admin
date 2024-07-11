@@ -52,13 +52,13 @@ export default [
     path: '/users',
     component: './Users',
   },
-  // {
-  //   name: 'list.tasks',
-  //   icon: 'checkCircle',
-  //   access: 'canSeeTasks',
-  //   path: '/tasks',
-  //   component: './Tasks',
-  // },
+  {
+    name: 'list.tasks',
+    icon: 'checkCircle',
+    access: 'canSeeTasks',
+    path: '/tasks',
+    component: './Tasks',
+  },
   {
     name: 'list.bills',
     icon: 'dollar',
@@ -66,13 +66,13 @@ export default [
     path: '/bills',
     component: './Bills',
   },
-  // {
-  //   name: 'list.emptyPackages',
-  //   icon: 'Inbox',
-  //   access: 'canSeeEmptyPackages',
-  //   path: '/empty-packages',
-  //   component: './EmptyPackages',
-  // },
+  {
+    name: 'list.emptyPackages',
+    icon: 'Inbox',
+    access: 'canSeeEmptyPackages',
+    path: '/empty-packages',
+    component: './EmptyPackages',
+  },
   {
     name: 'list.accountLibrary',
     icon: 'book',
