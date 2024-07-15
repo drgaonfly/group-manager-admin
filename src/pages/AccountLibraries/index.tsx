@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -13,6 +13,7 @@ import Show from './components/Show';
 import BatchUploadModal from './components/BatchUploadModal';
 import { convertToTextObject, locationMapping, platformNames } from '@/utils/constants';
 import ExportButton from '@/components/Export';
+import BatchSetting from './components/BatchSetting';
 
 /**
  * @en-US Add node
@@ -114,6 +115,25 @@ const handleBatchAdd = async (fields: API.ItemData) => {
   }
 };
 
+const handleBatchSetting = async (fieldsArray: any) => {
+  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  try {
+    await updateItem(`/accounts/bulk-setting`, { ...fieldsArray });
+    hide();
+
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
+      ),
+    );
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -135,6 +155,7 @@ const TableList: React.FC = () => {
   const access = useAccess();
   const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const [batchSettingModalOpen, setBatchSettingModalOpen] = useState<boolean>(false);
 
   /**
    * @en-US International configuration
@@ -288,6 +309,19 @@ const TableList: React.FC = () => {
           ],
         }}
         toolBarRender={() => [
+          selectedRowsState?.length > 0 && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                console.log('selectedRowsState', selectedRowsState);
+                setBatchSettingModalOpen(true);
+              }}
+            >
+              <EditOutlined />{' '}
+              <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
+            </Button>
+          ),
           <Button
             type="primary"
             key="primary"
@@ -411,6 +445,21 @@ const TableList: React.FC = () => {
             }
           }
         }}
+      />
+
+      <BatchSetting
+        onSubmit={async (values) => {
+          const success = await handleBatchSetting(values);
+          if (success) {
+            setBatchSettingModalOpen(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={setBatchSettingModalOpen}
+        batchSettingModalOpen={batchSettingModalOpen}
+        values={selectedRowsState || []}
       />
 
       <Update
