@@ -16,6 +16,7 @@ import ShowTask from '@/pages/Tasks/components/Show';
 import { EditOutlined } from '@ant-design/icons';
 import BatchSetting from './components/BatchSetting';
 import BatchDeleteButton from '@/components/BatchDelete';
+import UploadForm from './components/UploadForm';
 
 const taskColumns: ProColumns<API.ItemData>[] = [
   {
@@ -282,6 +283,25 @@ const handleAfterSale = async (fieldsArray: any) => {
   }
 };
 
+const handleUploadBill = async (fields: API.ItemData) => {
+  const hide = message.loading(<FormattedMessage id="uploading" defaultMessage="Uploading..." />);
+  try {
+    const res = await addItem('/tasks/upload-bills', { ...fields });
+    console.log('Res', res);
+    hide();
+    message.success(<FormattedMessage id="upload_successful" defaultMessage="Upload successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
+      ),
+    );
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -299,6 +319,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentTask, setCurrentTask] = useState<API.ItemData>();
   const [showTaskDetail, setShowTaskDetail] = useState<boolean>(false);
+  const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -612,6 +633,17 @@ const TableList: React.FC = () => {
           ],
         }}
         toolBarRender={() => [
+          (access.canOrderPlacer || access.canCustomerService) && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                setUploadModalVisible(true);
+              }}
+            >
+              <EditOutlined /> <FormattedMessage id="upload" defaultMessage="上传" />
+            </Button>
+          ),
           selectedRowsState?.length > 0 && (
             <>
               <Button
@@ -625,6 +657,7 @@ const TableList: React.FC = () => {
                 <EditOutlined />{' '}
                 <FormattedMessage id="batch_setting" defaultMessage="Batch Setting" />
               </Button>
+
               {access.canSuperAdmin && (
                 <Button
                   danger
@@ -742,6 +775,22 @@ const TableList: React.FC = () => {
         onCancel={setBatchSettingModalOpen}
         batchSettingModalOpen={batchSettingModalOpen}
         values={selectedRowsState || []}
+      />
+
+      <UploadForm
+        onFinish={async (value) => {
+          const success = await handleUploadBill(value); // 假设这是上传逻辑的函数
+          if (success) {
+            setUploadModalVisible(false); // 控制上传模态窗口的可见性
+            setCurrentRow(undefined); // 清空当前选中的行数据
+            if (actionRef.current) {
+              actionRef.current.reload(); // 如果有表格引用，重新加载表格数据
+            }
+          }
+        }}
+        onOpenChange={setUploadModalVisible} // 关闭模态窗口
+        open={uploadModalVisible} // 控制上传模态窗口的开关
+        values={currentRow || {}} // 当前行数据，用作表单的初始值或为新上传提供参考数据
       />
 
       <AfterSaleForm

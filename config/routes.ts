@@ -52,13 +52,13 @@ export default [
     path: '/users',
     component: './Users',
   },
-  {
-    name: 'list.tasks',
-    icon: 'checkCircle',
-    access: 'canSeeTasks',
-    path: '/tasks',
-    component: './Tasks',
-  },
+  // {
+  //   name: 'list.tasks',
+  //   icon: 'checkCircle',
+  //   access: 'canSeeTasks',
+  //   path: '/tasks',
+  //   component: './Tasks',
+  // },
   {
     name: 'list.bills',
     icon: 'dollar',
