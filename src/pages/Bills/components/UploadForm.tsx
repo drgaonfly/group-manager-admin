@@ -22,6 +22,12 @@ interface DataSourceType {
 const BillTable = ({ bills }: { bills: any[] }) => {
   const columns = [
     {
+      title: <FormattedMessage id="country" defaultMessage="Country" />,
+      dataIndex: 'country',
+      key: 'country',
+      width: 200,
+    },
+    {
       title: <FormattedMessage id="order_number" defaultMessage="Order Number" />,
       dataIndex: 'orderNumber',
       key: 'orderNumber',
@@ -45,6 +51,12 @@ const BillTable = ({ bills }: { bills: any[] }) => {
       key: 'buyerId',
       width: 200,
     },
+    {
+      title: <FormattedMessage id="customer_code" defaultMessage="Customer Code" />,
+      dataIndex: 'customerCode',
+      key: 'customerCode',
+      width: 200,
+    },
   ];
 
   if (bills.length === 0) {
@@ -65,7 +77,18 @@ const BillTable = ({ bills }: { bills: any[] }) => {
         </span>
         <CopyToClipboard text={text} />
       </div>
-      <Table columns={columns} pagination={false} dataSource={bills} rowKey="accountNumber" />
+      <Table
+        pagination={{
+          pageSize: 20, // 每页显示的记录数
+          showSizeChanger: true, // 是否显示可以改变 pageSize 的选项
+          pageSizeOptions: ['10', '20', '30', '40'], // 设置每页可以显示多少条
+          showQuickJumper: true, // 是否可以快速跳转至某页
+          showTotal: (total) => `Total ${total} items`, // 显示总数
+        }}
+        columns={columns}
+        dataSource={bills}
+        rowKey="accountNumber"
+      />
     </div>
   );
 };
