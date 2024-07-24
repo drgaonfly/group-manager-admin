@@ -215,7 +215,7 @@ const UploadForm: React.FC<UpdateFormProps> = (props) => {
           name="billFile"
         >
           <div style={{ marginBottom: '30px' }}>
-            <a href="http://backend.maomaozhaocai.com/api/static/BillTemplate.xlsx" download>
+            <a href="/api/static/BillTemplate.xlsx" download>
               {intl.formatMessage({ id: 'download_template', defaultMessage: 'Download Template' })}
             </a>
           </div>
