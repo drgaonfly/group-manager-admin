@@ -91,7 +91,7 @@ export default [
     name: '账号分配记录-测试',
     icon: 'fileText',
     access: 'canSeeAssignmentRecords',
-    path: '/assignment-records',
+    path: '/assignment-records-test',
     component: './AccountAssignmentRecordsTest',
   },
   {
