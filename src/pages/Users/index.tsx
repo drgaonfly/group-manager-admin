@@ -12,7 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
 import BatchUploadModal from './components/BatchUploadModal';
-import BatchUploadPriceModal from './components/BatchUploadPriceModal';
+// import BatchUploadPriceModal from './components/BatchUploadPriceModal';
 
 /**
  * @en-US Add node
@@ -129,23 +129,23 @@ const handleBatchAdd = async (fields: API.ItemData) => {
   }
 };
 
-const handleBatchAddPrice = async (fields: API.ItemData) => {
-  const hide = message.loading('正在批量上传价格');
-  try {
-    const res = (await addItem('/users/upload-prices', { ...fields })) as any;
-    hide();
-    message.success('已提交');
-    return { success: true, data: res.data };
-  } catch (error: any) {
-    hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
-      ),
-    );
-    return false;
-  }
-};
+// const handleBatchAddPrice = async (fields: API.ItemData) => {
+//   const hide = message.loading('正在批量上传价格');
+//   try {
+//     const res = (await addItem('/users/upload-prices', { ...fields })) as any;
+//     hide();
+//     message.success('已提交');
+//     return { success: true, data: res.data };
+//   } catch (error: any) {
+//     hide();
+//     message.error(
+//       error?.response?.data?.message ?? (
+//         <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
+//       ),
+//     );
+//     return false;
+//   }
+// };
 
 const TableList: React.FC = () => {
   const intl = useIntl();
@@ -160,7 +160,7 @@ const TableList: React.FC = () => {
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
-  const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
+  // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
@@ -283,18 +283,18 @@ const TableList: React.FC = () => {
               <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
             </Button>
           ),
-          access.canAdmin && (
-            <Button
-              type="dashed"
-              key="batchUploadPrices"
-              onClick={() => {
-                setBatchUploadPriceModalOpen(true);
-              }}
-            >
-              <UploadOutlined />{' '}
-              <FormattedMessage id="batch_upload_price" defaultMessage="批量上传价格表" />
-            </Button>
-          ),
+          // access.canAdmin && (
+          //   <Button
+          //     type="dashed"
+          //     key="batchUploadPrices"
+          //     onClick={() => {
+          //       setBatchUploadPriceModalOpen(true);
+          //     }}
+          //   >
+          //     <UploadOutlined />{' '}
+          //     <FormattedMessage id="batch_upload_price" defaultMessage="批量上传价格表" />
+          //   </Button>
+          // ),
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
         columns={columns}
@@ -384,7 +384,7 @@ const TableList: React.FC = () => {
         }}
       />
 
-      <BatchUploadPriceModal
+      {/* <BatchUploadPriceModal
         open={batchUploadPriceModalOpen}
         onOpenChange={setBatchUploadPriceModalOpen}
         onFinish={async (values: any) => {
@@ -395,7 +395,7 @@ const TableList: React.FC = () => {
             }
           }
         }}
-      />
+      /> */}
 
       <Recharge
         onSubmit={async (value) => {

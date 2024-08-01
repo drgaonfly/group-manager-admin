@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: '西装定制',
+  title: process.env.UMI_APP_APP_NAME || 'antd-ts-admin',
   pwa: true,
   logo: '/logoipsum-295.svg',
   iconfontUrl: '',

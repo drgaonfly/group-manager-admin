@@ -76,7 +76,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: '西装定制',
+  title: process.env.UMI_APP_APP_NAME || 'antd-ts-admin',
   layout: {
     locale: true,
     ...defaultSettings,
