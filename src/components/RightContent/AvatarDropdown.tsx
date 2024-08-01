@@ -3,7 +3,6 @@ import { FormattedMessage, history, useModel } from '@umijs/max';
 import { Spin } from 'antd';
 import { createStyles } from 'antd-style';
 import { stringify } from 'querystring';
-import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
@@ -62,18 +61,18 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
-    (event: MenuInfo) => {
+    (event: { key: React.Key }) => {
       const { key } = event;
       if (key === 'logout') {
         flushSync(() => {
           setInitialState((s) => ({ ...s, currentUser: undefined }));
         });
-        loginOut();
+        loginOut().catch(() => console.error);
         return;
       }
       history.push(`/account/${key}`);
     },
-    [setInitialState],
+    [initialState, setInitialState],
   );
 
   const loading = (
@@ -116,6 +115,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
           },
         ]
       : []),
+    {
+      key: 'change-password',
+      icon: <SettingOutlined />,
+      label: <FormattedMessage id="menu.account.change-password" defaultMessage="修改密码" />,
+    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,

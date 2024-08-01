@@ -45,20 +45,14 @@ export default [
   //     },
   //   ],
   // },
-  {
-    name: 'list.users',
-    icon: 'user',
-    access: 'canCustomerService',
-    path: '/users',
-    component: './Users',
-  },
   // {
-  //   name: 'list.tasks',
-  //   icon: 'checkCircle',
-  //   access: 'canSeeTasks',
-  //   path: '/tasks',
-  //   component: './Tasks',
+  //   name: 'list.users',
+  //   icon: 'user',
+  //   access: 'canSuperAdmin',
+  //   path: '/users',
+  //   component: './Users',
   // },
+
   {
     path: '/',
     redirect: '/Welcome',
@@ -67,5 +61,36 @@ export default [
     path: '*',
     layout: false,
     component: './404',
+  },
+  {
+    path: '/account/change-password',
+    hideInMenu: true,
+    name: '修改密码',
+    icon: 'table',
+    component: './account/change-password',
+  },
+  {
+    path: '/auth',
+    name: 'list.auth',
+    icon: 'table',
+    routes: [
+      {
+        path: '/auth/users',
+        name: 'list.users',
+        component: './Auth/Users',
+      },
+      {
+        path: '/auth/roles',
+        name: 'list.roles',
+        component: './Auth/Roles',
+      },
+    ],
+  },
+  {
+    name: 'list.materialCategories',
+    icon: 'checkCircle',
+    access: 'canSuperAdmin',
+    path: '/material-categories',
+    component: './MaterialCategories',
   },
 ];
