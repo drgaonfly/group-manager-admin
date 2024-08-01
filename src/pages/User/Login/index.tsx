@@ -123,8 +123,8 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo1.png" />}
-          title="做一只东南亚的招财猫"
+          logo={<img alt="logo" src="/logoipsum-295.svg" />}
+          title="西装定制"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           onFinish={async (values) => {
             await handleSubmit(values as API.LoginParams);

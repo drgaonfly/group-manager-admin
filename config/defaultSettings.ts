@@ -15,9 +15,9 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: '做一只东南亚的招财猫',
+  title: '西装定制',
   pwa: true,
-  logo: '/logo1.png',
+  logo: '/logoipsum-295.svg',
   iconfontUrl: '',
   token: {
     // 参见ts声明，demo 见文档，通过token 修改样式
