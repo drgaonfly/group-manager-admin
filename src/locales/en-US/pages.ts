@@ -89,7 +89,7 @@ export default {
   'pages.role.updateTime': 'Update Time',
   'pages.role.action': 'Action',
   'pages.role.edit': 'Edit',
-  'pages.role.management': 'Role Management',
+  'pages.role.management': 'List',
   'pages.role.new': 'New',
   'pages.role.chosen': 'Chosen',
   'pages.role.items': 'items',

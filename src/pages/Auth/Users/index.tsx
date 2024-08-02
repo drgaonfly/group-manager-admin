@@ -12,7 +12,8 @@ import Create from './components/Create';
 import Show from './components/Show';
 import Recharge from './components/Recharge';
 import BatchUploadModal from './components/BatchUploadModal';
-// import BatchUploadPriceModal from './components/BatchUploadPriceModal';
+import { Select } from 'antd';
+import useQueryList from '@/hooks/useQueryList';
 
 /**
  * @en-US Add node
@@ -129,24 +130,6 @@ const handleBatchAdd = async (fields: API.ItemData) => {
   }
 };
 
-// const handleBatchAddPrice = async (fields: API.ItemData) => {
-//   const hide = message.loading('正在批量上传价格');
-//   try {
-//     const res = (await addItem('/users/upload-prices', { ...fields })) as any;
-//     hide();
-//     message.success('已提交');
-//     return { success: true, data: res.data };
-//   } catch (error: any) {
-//     hide();
-//     message.error(
-//       error?.response?.data?.message ?? (
-//         <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
-//       ),
-//     );
-//     return false;
-//   }
-// };
-
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -174,6 +157,8 @@ const TableList: React.FC = () => {
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
+  // Define roles object with index signature
+  const { items: roles } = useQueryList('/roles');
 
   const columns: ProColumns<API.ItemData>[] = [
     {
@@ -200,13 +185,17 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'role' }),
       dataIndex: 'role',
-      valueEnum: {
-        SUPER_ADMIN: intl.formatMessage({ id: 'SUPER_ADMIN' }),
-        ADMIN: intl.formatMessage({ id: 'ADMIN' }),
-        CUSTOMER: intl.formatMessage({ id: 'CUSTOMER' }),
-        ORDER_PLACER: intl.formatMessage({ id: 'ORDER_PLACER' }),
-        REVIEWER: intl.formatMessage({ id: 'REVIEWER' }),
-        CUSTOMER_SERVICE: intl.formatMessage({ id: 'CUSTOMER_SERVICE' }),
+      render: () => {
+        return (
+          <Select
+            placeholder={intl.formatMessage({ id: 'role-choose' })}
+            allowClear
+            options={roles?.map((role: { name: string; _id: string }) => ({
+              label: role.name,
+              value: role._id,
+            }))}
+          />
+        );
       },
     },
     {
@@ -283,18 +272,6 @@ const TableList: React.FC = () => {
               <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
             </Button>
           ),
-          // access.canAdmin && (
-          //   <Button
-          //     type="dashed"
-          //     key="batchUploadPrices"
-          //     onClick={() => {
-          //       setBatchUploadPriceModalOpen(true);
-          //     }}
-          //   >
-          //     <UploadOutlined />{' '}
-          //     <FormattedMessage id="batch_upload_price" defaultMessage="批量上传价格表" />
-          //   </Button>
-          // ),
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
         columns={columns}
@@ -383,19 +360,6 @@ const TableList: React.FC = () => {
           }
         }}
       />
-
-      {/* <BatchUploadPriceModal
-        open={batchUploadPriceModalOpen}
-        onOpenChange={setBatchUploadPriceModalOpen}
-        onFinish={async (values: any) => {
-          const { success, data } = (await handleBatchAddPrice(values as API.ItemData)) as any;
-          if (success && data) {
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      /> */}
 
       <Recharge
         onSubmit={async (value) => {

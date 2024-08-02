@@ -88,6 +88,7 @@ export default {
   name: '名称',
   enter_email: '请输入邮箱',
   email: '邮箱',
+  role_choose: '角色选择',
   enter_password: '请输入密码',
   password: '密码',
   role: '角色',

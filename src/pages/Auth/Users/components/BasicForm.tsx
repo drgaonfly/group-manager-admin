@@ -1,9 +1,9 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
-import { useAccess } from '@umijs/max';
+import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
 import useForm from 'antd/lib/form/hooks/useForm';
 import { Form, Input } from 'antd';
+import useQueryList from '@/hooks/useQueryList';
 
 interface Props {
   newRecord?: boolean;
@@ -13,8 +13,9 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const access = useAccess();
   const [form] = useForm();
+  const { items: roles } = useQueryList('/roles');
+
   return (
     <ProForm
       initialValues={{ ...values }}
@@ -44,35 +45,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'password' })}
           name="password"
         />
-        {access.canCustomerService && (
-          <ProFormSelect
-            name="role"
-            width="md"
-            label={intl.formatMessage({ id: 'role' })}
-            valueEnum={
-              access.isCustomerService
-                ? {
-                    CUSTOMER: intl.formatMessage({ id: 'CUSTOMER' }),
-                  }
-                : access.isSuperAdmin
-                ? {
-                    SUPER_ADMIN: intl.formatMessage({ id: 'SUPER_ADMIN' }),
-                    ADMIN: intl.formatMessage({ id: 'ADMIN' }),
-                    CUSTOMER: intl.formatMessage({ id: 'CUSTOMER' }),
-                    ORDER_PLACER: intl.formatMessage({ id: 'ORDER_PLACER' }),
-                    REVIEWER: intl.formatMessage({ id: 'REVIEWER' }),
-                    CUSTOMER_SERVICE: intl.formatMessage({ id: 'CUSTOMER_SERVICE' }),
-                  }
-                : {
-                    ADMIN: intl.formatMessage({ id: 'ADMIN' }),
-                    CUSTOMER: intl.formatMessage({ id: 'CUSTOMER' }),
-                    ORDER_PLACER: intl.formatMessage({ id: 'ORDER_PLACER' }),
-                    REVIEWER: intl.formatMessage({ id: 'REVIEWER' }),
-                    CUSTOMER_SERVICE: intl.formatMessage({ id: 'CUSTOMER_SERVICE' }),
-                  }
-            }
-          />
-        )}
+
+        <ProFormCheckbox.Group
+          name="roles"
+          layout="horizontal"
+          label={intl.formatMessage({ id: 'role-choose' })}
+          options={roles?.map((role: { name: string; _id: string }) => ({
+            label: role.name,
+            value: role._id,
+          }))}
+        />
       </ProForm.Group>
 
       {!newRecord && (

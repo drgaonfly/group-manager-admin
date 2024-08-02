@@ -87,7 +87,7 @@ export default {
   'pages.role.updateTime': '更新时间',
   'pages.role.action': '操作',
   'pages.role.edit': '编辑',
-  'pages.role.management': '角色管理',
+  'pages.role.management': '列表',
   'pages.role.new': '新建',
   'pages.role.chosen': '已选择',
   'pages.role.items': '项',

@@ -1,8 +1,7 @@
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { FormattedMessage, useAccess } from '@umijs/max';
+import { FormattedMessage } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
@@ -122,8 +121,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.ListItem[]>([]);
 
-  const access = useAccess();
-
   const columns: ProColumns<API.ListItem>[] = [
     {
       title: <FormattedMessage id="pages.role.name" defaultMessage="Name" />,
@@ -148,12 +145,6 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: <FormattedMessage id="pages.role.users" defaultMessage="Users List" />,
-      dataIndex: 'employees',
-      renderText: (val: { username: string }[]) => val.map((item) => item.username).join(', '),
-      hideInSearch: true,
-    },
-    {
       title: <FormattedMessage id="pages.role.createTime" defaultMessage="Creation Time" />,
       width: 250,
       hideInSearch: true,
@@ -173,28 +164,26 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      render: (_, record) => [
-        access.canUpdateRole && (
-          <a
-            key="update"
-            onClick={() => {
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            <FormattedMessage id="pages.role.edit" defaultMessage="Edit" />
-          </a>
-        ),
-      ],
+      // render: (_, record) => [
+      //   access.canUpdateRole && (
+      //     <a
+      //       key="update"
+      //       onClick={() => {
+      //         handleUpdateModalOpen(true);
+      //         setCurrentRow(record);
+      //       }}
+      //     >
+      //       <FormattedMessage id="pages.role.edit" defaultMessage="Edit" />
+      //     </a>
+      //   ),
+      // ],
     },
   ];
 
   return (
     <PageContainer>
       <ProTable<API.ListItem, API.PageParams>
-        headerTitle={
-          <FormattedMessage id="pages.role.management" defaultMessage="Role Management" />
-        }
+        headerTitle={<FormattedMessage id="pages.role.management" defaultMessage="" />}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -202,13 +191,13 @@ const TableList: React.FC = () => {
         }}
         pagination={{ defaultPageSize: 10 }}
         scroll={{ x: 1200 }}
-        toolBarRender={() => [
-          access.canCreateRole && (
-            <Button type="primary" key="primary" onClick={() => handleModalOpen(true)}>
-              <PlusOutlined /> <FormattedMessage id="pages.role.new" defaultMessage="New" />
-            </Button>
-          ),
-        ]}
+        // toolBarRender={() => [
+        //   access.canCreateRole && (
+        //     <Button type="primary" key="primary" onClick={() => handleModalOpen(true)}>
+        //       <PlusOutlined /> <FormattedMessage id="pages.role.new" defaultMessage="New" />
+        //     </Button>
+        //   ),
+        // ]}
         request={async (params, sort, filter) => queryList('/roles', params, sort, filter)}
         columns={columns}
         rowSelection={false}

@@ -89,6 +89,7 @@ export default {
   name: 'Name',
   enter_email: 'Please Enter Email',
   email: 'Email',
+  role_choose: 'Choose Role',
   enter_password: 'Please Enter Password',
   password: 'Password',
   role: 'Role',
