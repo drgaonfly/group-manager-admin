@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
@@ -9,8 +9,6 @@ import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
-import Show from './components/Show';
-import Recharge from './components/Recharge';
 import BatchUploadModal from './components/BatchUploadModal';
 
 /**
@@ -21,7 +19,7 @@ import BatchUploadModal from './components/BatchUploadModal';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
   try {
-    await addItem('/users', { ...fields });
+    await addItem('/menus', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -45,7 +43,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/users/${fields._id}`, fields);
+    await updateItem(`/menus/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -61,21 +59,6 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const handleRecharge = async (fields: FormValueType) => {
-  const hide = message.loading('正在充值');
-  try {
-    await addItem(`/users/${fields._id}/recharge`, fields);
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '更新充值，请重试!');
-    return false;
-  }
-};
-
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -86,7 +69,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/users', {
+    await removeItem('/menus', {
       ids,
     });
     hide();
@@ -113,7 +96,7 @@ const handleBatchAdd = async (fields: API.ItemData) => {
     <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
   );
   try {
-    const res = (await addItem('/users/batch-upload', { ...fields })) as any;
+    const res = (await addItem('/menus/batch-upload', { ...fields })) as any;
     hide();
     message.success('已提交');
     return { success: true, data: res.data };
@@ -128,9 +111,25 @@ const handleBatchAdd = async (fields: API.ItemData) => {
   }
 };
 
-interface Role {
+interface Menu {
   _id: string;
   name: string;
+  path: string;
+  parent: Menu;
+  permission: Permission;
+}
+
+interface PermissionGroup {
+  name: string;
+  parent: PermissionGroup;
+}
+
+interface Permission {
+  _id: string;
+  name: string;
+  path: string;
+  action: string;
+  permissionGroup: PermissionGroup;
 }
 
 const TableList: React.FC = () => {
@@ -148,12 +147,9 @@ const TableList: React.FC = () => {
   const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
   // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const access = useAccess();
 
   /**
@@ -164,32 +160,23 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'email' }),
-      dataIndex: 'email',
-      copyable: true,
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
-    {
       title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
     },
     {
-      title: intl.formatMessage({ id: 'role' }),
-      dataIndex: 'roles',
-      renderText: (_, record: any) => {
-        return record.roles?.map((role: Role) => role.name)?.join(', ');
-      },
+      title: '父类菜单',
+      dataIndex: 'parent',
+      filters: true,
+      renderText: (val: Menu) => val && val.name,
+    },
+    {
+      title: intl.formatMessage({ id: 'path' }),
+      dataIndex: 'path',
+    },
+    {
+      title: '权限',
+      dataIndex: 'permission',
+      renderText: (val: any) => val && val.name,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -266,7 +253,7 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/menus', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
@@ -351,32 +338,6 @@ const TableList: React.FC = () => {
               actionRef.current.reload();
             }
           }
-        }}
-      />
-
-      <Recharge
-        onSubmit={async (value) => {
-          const success = await handleRecharge(value);
-          if (success) {
-            setRechargeModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={setRechargeModalVisible}
-        updateModalOpen={rechargeModalVisible}
-        values={currentRow || {}}
-      />
-
-      <Show
-        open={showDetail}
-        currentRow={currentRow as API.ItemData}
-        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
         }}
       />
     </PageContainer>

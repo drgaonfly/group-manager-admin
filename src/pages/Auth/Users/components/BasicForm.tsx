@@ -1,7 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
-import useForm from 'antd/lib/form/hooks/useForm';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 
@@ -13,13 +12,14 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const [form] = useForm();
+
   const { items: roles } = useQueryList('/roles');
+
+  const { roles: defaultRoles } = values;
 
   return (
     <ProForm
-      initialValues={{ ...values }}
-      form={form}
+      initialValues={{ ...values, roles: defaultRoles?.map((role: any) => role._id) }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
@@ -49,7 +49,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormCheckbox.Group
           name="roles"
           layout="horizontal"
-          label={intl.formatMessage({ id: 'role-choose' })}
+          label={intl.formatMessage({ id: 'role_choose' })}
           options={roles?.map((role: { name: string; _id: string }) => ({
             label: role.name,
             value: role._id,

@@ -92,6 +92,7 @@ export default {
   enter_password: '请输入密码',
   password: '密码',
   role: '角色',
+  role_chose: '角色选择',
   super_admin: '超级管理员',
   order_clerk: '订单员',
   admin: '管理员',

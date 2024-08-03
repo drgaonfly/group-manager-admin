@@ -7,6 +7,7 @@ declare namespace API {
     name?: string;
     avatar?: string;
     role?: string;
+    roles?: string[];
     _id?: string;
     userid?: string;
     email?: string;
@@ -26,7 +27,11 @@ declare namespace API {
     phone?: string;
   };
 
+  // Example type definition
+
   type ItemData = {
+    [x: string]: any;
+    [x: string]: boolean;
     code?: string;
     operations?: any;
     isReviewed?: boolean;
