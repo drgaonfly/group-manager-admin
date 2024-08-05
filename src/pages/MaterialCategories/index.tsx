@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal, TreeSelect } from 'antd';
@@ -9,8 +9,6 @@ import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
-import Show from './components/Show';
-import Recharge from './components/Recharge';
 import useQueryList from '@/hooks/useQueryList';
 
 /**
@@ -53,21 +51,6 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const handleRecharge = async (fields: FormValueType) => {
-  const hide = message.loading('正在充值');
-  try {
-    await addItem(`/admin/categories/${fields._id}/recharge`, fields);
-    hide();
-
-    message.success('Updated successfully');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '更新充值，请重试!');
-    return false;
-  }
-};
-
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -104,12 +87,9 @@ const TableList: React.FC = () => {
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
 
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const access = useAccess();
   const { items: categories } = useQueryList('/admin/categories');
 
@@ -126,7 +106,6 @@ const TableList: React.FC = () => {
         <a
           onClick={() => {
             setCurrentRow(record);
-            setShowDetail(true);
           }}
         >
           {text}
@@ -323,32 +302,6 @@ const TableList: React.FC = () => {
         onCancel={handleUpdateModalOpen}
         updateModalOpen={updateModalOpen}
         values={currentRow || {}}
-      />
-
-      <Recharge
-        onSubmit={async (value) => {
-          const success = await handleRecharge(value);
-          if (success) {
-            setRechargeModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={setRechargeModalVisible}
-        updateModalOpen={rechargeModalVisible}
-        values={currentRow || {}}
-      />
-
-      <Show
-        open={showDetail}
-        currentRow={currentRow as API.ItemData}
-        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
       />
     </PageContainer>
   );
