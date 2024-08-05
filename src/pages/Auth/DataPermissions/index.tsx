@@ -19,7 +19,7 @@ import Show from './components/Show';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
   try {
-    await addItem('/roles', { ...fields });
+    await addItem('/data-permissions', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -43,7 +43,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/roles/${fields._id}`, fields);
+    await updateItem(`/data-permissions/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -69,7 +69,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/roles', {
+    await removeItem('/data-permissions', {
       ids,
     });
     hide();
@@ -122,6 +122,10 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
+    },
+    {
+      title: intl.formatMessage({ id: 'path' }),
+      dataIndex: 'path',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -186,7 +190,9 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('/roles', params, sort, filter)}
+        request={async (params, sort, filter) =>
+          queryList('/data-permissions', params, sort, filter)
+        }
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {

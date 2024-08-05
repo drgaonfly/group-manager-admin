@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -9,7 +9,7 @@ import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
-import BatchUploadModal from './components/BatchUploadModal';
+import { Menu } from '@/apiDataStructures/ApiDataStructure';
 
 /**
  * @en-US Add node
@@ -91,47 +91,6 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
-const handleBatchAdd = async (fields: API.ItemData) => {
-  const hide = message.loading(
-    <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
-  );
-  try {
-    const res = (await addItem('/menus/batch-upload', { ...fields })) as any;
-    hide();
-    message.success('已提交');
-    return { success: true, data: res.data };
-  } catch (error: any) {
-    hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
-      ),
-    );
-    return false;
-  }
-};
-
-interface Menu {
-  _id: string;
-  name: string;
-  path: string;
-  parent: Menu;
-  permission: Permission;
-}
-
-interface PermissionGroup {
-  name: string;
-  parent: PermissionGroup;
-}
-
-interface Permission {
-  _id: string;
-  name: string;
-  path: string;
-  action: string;
-  permissionGroup: PermissionGroup;
-}
-
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -144,7 +103,6 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
   // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
@@ -164,7 +122,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
     },
     {
-      title: '父类菜单',
+      title: intl.formatMessage({ id: 'parent' }),
       dataIndex: 'parent',
       filters: true,
       renderText: (val: Menu) => val && val.name,
@@ -174,7 +132,7 @@ const TableList: React.FC = () => {
       dataIndex: 'path',
     },
     {
-      title: '权限',
+      title: intl.formatMessage({ id: 'permission' }),
       dataIndex: 'permission',
       renderText: (val: any) => val && val.name,
     },
@@ -238,18 +196,6 @@ const TableList: React.FC = () => {
               }}
             >
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-          (access.canAdmin || access.canCustomerService) && (
-            <Button
-              danger
-              key="batchUpload"
-              onClick={() => {
-                setBatchUploadModalOpen(true);
-              }}
-            >
-              <UploadOutlined />{' '}
-              <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
             </Button>
           ),
         ]}
@@ -325,20 +271,6 @@ const TableList: React.FC = () => {
         onCancel={handleUpdateModalOpen}
         updateModalOpen={updateModalOpen}
         values={currentRow || {}}
-      />
-
-      <BatchUploadModal
-        open={batchUploadModalOpen}
-        onOpenChange={setBatchUploadModalOpen}
-        onFinish={async (values: any) => {
-          const { success, data } = (await handleBatchAdd(values as API.ItemData)) as any;
-          if (success && data) {
-            // setBatchUploadModalOpen(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
       />
     </PageContainer>
   );

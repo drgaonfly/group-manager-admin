@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 
@@ -13,7 +13,7 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: roles } = useQueryList('/roles');
+  const { items: permissionGroups } = useQueryList('/permission-groups');
 
   return (
     <ProForm
@@ -32,13 +32,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="name"
         />
 
-        <ProFormCheckbox.Group
-          name="roles"
-          layout="horizontal"
-          label={intl.formatMessage({ id: 'role_choose' })}
-          options={roles?.map((role: { name: string; _id: string }) => ({
-            label: role.name,
-            value: role._id,
+        <ProFormSelect
+          name="permission-groups"
+          width="md"
+          rules={[
+            { required: true, message: intl.formatMessage({ id: 'enter_permission_group' }) },
+          ]}
+          label={intl.formatMessage({ id: 'permission_group' })}
+          options={permissionGroups?.map((permissionGroup: { name: string; _id: string }) => ({
+            label: permissionGroup.name,
+            value: permissionGroup._id,
           }))}
         />
       </ProForm.Group>

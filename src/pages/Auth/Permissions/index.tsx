@@ -19,7 +19,7 @@ import Show from './components/Show';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
   try {
-    await addItem('/roles', { ...fields });
+    await addItem('/permissions', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -43,7 +43,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/roles/${fields._id}`, fields);
+    await updateItem(`/permissions/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -69,7 +69,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/roles', {
+    await removeItem('/permissions', {
       ids,
     });
     hide();
@@ -122,6 +122,21 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
+    },
+    {
+      title: intl.formatMessage({ id: 'path' }),
+      dataIndex: 'path',
+    },
+    {
+      title: intl.formatMessage({ id: 'action' }),
+      dataIndex: 'action',
+    },
+    {
+      title: intl.formatMessage({ id: 'parent_pg' }),
+      dataIndex: 'permissionGroup',
+      renderText: (_, record: any) => {
+        return record.permissionGroup.name;
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -186,7 +201,7 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('/roles', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/permissions', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {

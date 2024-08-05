@@ -1,9 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
-import { Menu, Permission } from '@/apiDataStructures/ApiDataStructure';
 
 interface Props {
   newRecord?: boolean;
@@ -13,15 +12,16 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const { items: menus } = useQueryList('/menus');
+
   const { items: permissions } = useQueryList('/permissions');
+  const { items: permissionGroups } = useQueryList('/permission-groups');
 
   return (
     <ProForm
       initialValues={{
         ...values,
-        permission: values?.permission?._id,
-        parent: values?.parent?._id,
+        permissions: values?.permissions?.action,
+        permissionGroups: values?.permissions?.parent?.name,
       }}
       onFinish={async (values) => {
         await onFinish({
@@ -44,25 +44,25 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
 
         <ProFormSelect
-          rules={[{ required: true, message: intl.formatMessage({ id: 'select_permission' }) }]}
-          label={intl.formatMessage({ id: 'permission_choose' })}
+          name="action"
           width="md"
-          name="permission"
-          placeholder={intl.formatMessage({ id: 'please_select_permission' })}
-          options={permissions.map((permission: Permission) => ({
-            label: permission.name,
-            value: permission._id, // Store the ID for easy retrieval
+          label={intl.formatMessage({ id: 'enter_action' })}
+          options={permissions?.map((permission: { action: string; _id: string }) => ({
+            label: permission.action,
+            value: permission._id,
           }))}
         />
 
         <ProFormSelect
-          label={intl.formatMessage({ id: 'parent_choose' })}
-          name="parent"
+          name="permission-groups"
           width="md"
-          placeholder={intl.formatMessage({ id: 'please_select_parent' })}
-          options={menus.map((menu: Menu) => ({
-            label: menu.name,
-            value: menu._id,
+          rules={[
+            { required: true, message: intl.formatMessage({ id: 'enter_permission_group' }) },
+          ]}
+          label={intl.formatMessage({ id: 'permission_group' })}
+          options={permissionGroups?.map((permissionGroup: { name: string; _id: string }) => ({
+            label: permissionGroup.name,
+            value: permissionGroup._id,
           }))}
         />
       </ProForm.Group>

@@ -10,8 +10,9 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
-import Recharge from './components/Recharge';
 import BatchUploadModal from './components/BatchUploadModal';
+import Recharge from './components/Recharge';
+import { Role } from '@/apiDataStructures/ApiDataStructure';
 
 /**
  * @en-US Add node
@@ -127,11 +128,6 @@ const handleBatchAdd = async (fields: API.ItemData) => {
     return false;
   }
 };
-
-interface Role {
-  _id: string;
-  name: string;
-}
 
 const TableList: React.FC = () => {
   const intl = useIntl();

@@ -67,7 +67,7 @@ export default [
     path: '/account/change-password',
     hideInMenu: true,
     name: 'list.change-password',
-    icon: 'table',
+    icon: 'TableOutlined',
     component: './account/change-password',
   },
   {
@@ -89,6 +89,21 @@ export default [
         path: '/auth/menus',
         name: 'list.menus',
         component: './Auth/Menus',
+      },
+      {
+        path: '/auth/permissions',
+        name: 'list.permissions',
+        component: './Auth/Permissions',
+      },
+      {
+        path: '/auth/permission-groups',
+        name: 'list.permission_groups',
+        component: './Auth/PermissionGroups',
+      },
+      {
+        path: '/auth/data-permissions',
+        name: 'list.data_permissions',
+        component: './Auth/DataPermissions',
       },
     ],
   },
