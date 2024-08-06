@@ -1,11 +1,19 @@
 import { useIntl } from '@umijs/max';
-import { Modal } from 'antd';
+import { FormInstance, Modal } from 'antd';
 import BasicForm from './BasicForm';
+import { values } from 'lodash';
 
 interface Props {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   onFinish: (formData: any) => Promise<void>;
+}
+
+interface Props {
+  form?: FormInstance<any>;
+  newRecord?: boolean;
+  onFinish: (formData: any) => Promise<void>;
+  values?: any;
 }
 
 const Create: React.FC<Props> = (props) => {
@@ -21,7 +29,7 @@ const Create: React.FC<Props> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <BasicForm newRecord onFinish={onFinish} />
+      <BasicForm values={values} newRecord onFinish={onFinish} />
     </Modal>
   );
 };

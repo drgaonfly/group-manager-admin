@@ -1,8 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
+import PermissionGroupSelect from '@/components/PermissionGroupSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -13,11 +13,12 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: permissionGroups } = useQueryList('/permission-groups');
-
   return (
     <ProForm
-      initialValues={{ ...values }}
+      initialValues={{
+        ...values,
+        parent: values?.parent?._id,
+      }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
@@ -32,18 +33,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="name"
         />
 
-        <ProFormSelect
-          name="permission-groups"
-          width="md"
-          rules={[
-            { required: true, message: intl.formatMessage({ id: 'enter_permission_group' }) },
-          ]}
-          label={intl.formatMessage({ id: 'permission_group' })}
-          options={permissionGroups?.map((permissionGroup: { name: string; _id: string }) => ({
-            label: permissionGroup.name,
-            value: permissionGroup._id,
-          }))}
-        />
+        <PermissionGroupSelect name="parent" />
       </ProForm.Group>
 
       {!newRecord && (

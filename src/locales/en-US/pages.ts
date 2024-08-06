@@ -83,7 +83,7 @@ export default {
   'pages.role.deleteSuccess': 'Deleted successfully and will refresh soon',
   'pages.role.deleteFail': 'Delete failed, please try again!',
   'pages.role.name': 'Name',
-  'pages.role.permissions': 'Permissions List',
+  'pages.role.permissions_list': 'Permissions List',
   'pages.role.users': 'Users List',
   'pages.role.createTime': 'Creation Time',
   'pages.role.updateTime': 'Update Time',

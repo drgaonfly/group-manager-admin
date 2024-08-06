@@ -29,6 +29,7 @@ export default {
   'menu.account-library': '账号库',
   'menu.empty-packages': '空包',
   'menu.list.user': '用户',
+  ' menu.list.change-password': '修改密码',
   'menu.list.materialCategories': '材料类目',
   'menu.list.auth': '认证管理',
   'menu.list.table-list': '查询表格',

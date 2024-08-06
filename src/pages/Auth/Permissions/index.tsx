@@ -4,11 +4,12 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
+import useQueryList from '@/hooks/useQueryList';
 
 /**
  * @en-US Add node
@@ -108,6 +109,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
+  const { items: permissionGroups } = useQueryList('/permission-groups/list');
 
   /**
    * @en-US International configuration
@@ -123,16 +125,36 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'action' }),
-      dataIndex: 'action',
+      dataIndex: ['action'],
     },
     {
-      title: intl.formatMessage({ id: 'parent_pg' }),
-      dataIndex: 'permissionGroup',
-      renderText: (_, record: any) => {
-        return record.permissionGroup.name;
+      title: intl.formatMessage({ id: 'parent_permissionGroup' }),
+      render: (_, record) => {
+        return record.permissionGroup && record.permissionGroup.name
+          ? record.permissionGroup.name
+          : intl.formatMessage({ id: 'unknown' });
+      },
+      renderFormItem: (_, { type }) => {
+        if (type === 'form') {
+          return null;
+        }
+        return (
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder={intl.formatMessage({ id: 'select_permissionGroup' })}
+            allowClear
+            treeNodeFilterProp="name"
+            fieldNames={{ label: 'name', value: '_id', children: 'children' }}
+            treeDefaultExpandAll
+            treeData={permissionGroups}
+          />
+        );
       },
     },
     {

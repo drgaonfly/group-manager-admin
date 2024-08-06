@@ -81,7 +81,7 @@ export default {
   'pages.role.deleteSuccess': '删除成功，稍后将刷新',
   'pages.role.deleteFail': '删除失败，请重试!',
   'pages.role.name': '名称',
-  'pages.role.permissions': '权限列表',
+  'pages.role.permissions_list': '权限列表',
   'pages.role.users': '用户列表',
   'pages.role.createTime': '创建时间',
   'pages.role.updateTime': '更新时间',

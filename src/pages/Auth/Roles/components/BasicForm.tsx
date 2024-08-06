@@ -1,19 +1,42 @@
 import { useIntl } from '@umijs/max';
-import React from 'react';
-import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
+import React, { Key, useState } from 'react';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { Form, Input, Tree } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
+import { FormInstance } from 'antd/es/form';
+import { Permission } from '@/apiDataStructures/ApiDataStructure';
 
 interface Props {
+  form?: FormInstance<any>;
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
+  permissions?: Permission[];
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, permissions }) => {
   const intl = useIntl();
+  const { items: permissionGroups } = useQueryList('/permission-groups/list');
 
-  const { items: roles } = useQueryList('/roles');
+  const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [checkedKeys, setCheckedKeys] = useState<Key[] | { checked: Key[]; halfChecked: Key[] }>(
+    permissions?.map((permission) => `permission-${permission._id}`) ?? [],
+  );
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
+
+  const onExpand = (expandedKeysValue: Key[]) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
+  };
+
+  const onCheck = (checkedKeysValue: Key[] | { checked: Key[]; halfChecked: Key[] }) => {
+    setCheckedKeys(checkedKeysValue);
+  };
+
+  const onSelect = (selectedKeysValue: Key[]) => {
+    setSelectedKeys(selectedKeysValue);
+  };
 
   return (
     <ProForm
@@ -32,15 +55,23 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="name"
         />
 
-        <ProFormCheckbox.Group
-          name="roles"
-          layout="horizontal"
-          label={intl.formatMessage({ id: 'role_choose' })}
-          options={roles?.map((role: { name: string; _id: string }) => ({
-            label: role.name,
-            value: role._id,
-          }))}
-        />
+        <Form.Item name="permission">
+          <div>
+            <div>{intl.formatMessage({ id: 'permission_choose' })}</div>
+            <Tree
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              onSelect={onSelect}
+              selectedKeys={selectedKeys}
+              treeData={permissionGroups} // Use filtered top-level groups
+              fieldNames={{ title: 'name', key: 'key', children: 'children' }}
+            />
+          </div>
+        </Form.Item>
       </ProForm.Group>
 
       {!newRecord && (

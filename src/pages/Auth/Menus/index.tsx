@@ -4,12 +4,12 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
-import { Menu } from '@/apiDataStructures/ApiDataStructure';
+import useQueryList from '@/hooks/useQueryList';
 
 /**
  * @en-US Add node
@@ -109,6 +109,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
+  const { items: menus } = useQueryList('/menus');
 
   /**
    * @en-US International configuration
@@ -124,12 +125,37 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'parent' }),
       dataIndex: 'parent',
-      filters: true,
-      renderText: (val: Menu) => val && val.name,
+      render: (_, record) => {
+        return record.parent && record.parent.name
+          ? record.parent.name
+          : intl.formatMessage({ id: 'unknown' });
+      },
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
+        if (type === 'form') {
+          return null;
+        }
+        return (
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder={intl.formatMessage({ id: 'select_parent_menu' })}
+            allowClear
+            treeNodeFilterProp="name"
+            fieldNames={{ label: 'name', value: '_id', children: 'children' }}
+            treeDefaultExpandAll
+            treeData={menus}
+            {...fieldProps}
+          />
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'permission' }),

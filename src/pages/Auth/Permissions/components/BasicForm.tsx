@@ -1,8 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
+import PermissionGroupSelect from '@/components/PermissionGroupSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -13,15 +13,11 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: permissions } = useQueryList('/permissions');
-  const { items: permissionGroups } = useQueryList('/permission-groups');
-
   return (
     <ProForm
       initialValues={{
         ...values,
-        permissions: values?.permissions?.action,
-        permissionGroups: values?.permissions?.parent?.name,
+        permissionGroup: values?.permissionGroup?._id,
       }}
       onFinish={async (values) => {
         await onFinish({
@@ -43,28 +39,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="path"
         />
 
-        <ProFormSelect
+        <ProFormText
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_action' }) }]}
           name="action"
           width="md"
-          label={intl.formatMessage({ id: 'enter_action' })}
-          options={permissions?.map((permission: { action: string; _id: string }) => ({
-            label: permission.action,
-            value: permission._id,
-          }))}
+          label={intl.formatMessage({ id: 'action' })}
         />
 
-        <ProFormSelect
-          name="permission-groups"
-          width="md"
-          rules={[
-            { required: true, message: intl.formatMessage({ id: 'enter_permission_group' }) },
-          ]}
-          label={intl.formatMessage({ id: 'permission_group' })}
-          options={permissionGroups?.map((permissionGroup: { name: string; _id: string }) => ({
-            label: permissionGroup.name,
-            value: permissionGroup._id,
-          }))}
-        />
+        <PermissionGroupSelect name="permissionGroup" />
       </ProForm.Group>
 
       {!newRecord && (

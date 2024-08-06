@@ -7,6 +7,7 @@ export interface Menu {
 }
 
 export interface Role {
+  permissions: any;
   _id: string;
   name: string;
 }
@@ -17,6 +18,7 @@ export interface PermissionGroup {
   path: string;
   action: string;
   parent: PermissionGroup;
+  children: PermissionGroup[];
 }
 
 export interface Permission {

@@ -121,6 +121,13 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
     },
     {
+      title: intl.formatMessage({ id: 'permissions_list' }),
+      dataIndex: 'permissions',
+      renderText: (val: { name: string }[]) => {
+        return val.map((item) => item.name).join(', ');
+      },
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

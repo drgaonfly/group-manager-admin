@@ -1,9 +1,9 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
-import { Menu, Permission } from '@/apiDataStructures/ApiDataStructure';
+import { Permission } from '@/apiDataStructures/ApiDataStructure';
 
 interface Props {
   newRecord?: boolean;
@@ -15,6 +15,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
   const { items: menus } = useQueryList('/menus');
   const { items: permissions } = useQueryList('/permissions');
+  console.log('parent', values);
 
   return (
     <ProForm
@@ -55,15 +56,28 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           }))}
         />
 
-        <ProFormSelect
-          label={intl.formatMessage({ id: 'parent_choose' })}
+        <ProFormTreeSelect
           name="parent"
+          rules={[{ required: false }]}
           width="md"
-          placeholder={intl.formatMessage({ id: 'please_select_parent' })}
-          options={menus.map((menu: Menu) => ({
-            label: menu.name,
-            value: menu._id,
-          }))}
+          label={intl.formatMessage({ id: 'parent' })}
+          allowClear
+          secondary
+          fieldProps={{
+            showArrow: false,
+            treeDefaultExpandAll: true,
+            filterTreeNode: true,
+            showSearch: true,
+            dropdownMatchSelectWidth: false,
+            autoClearSearchValue: true,
+            treeNodeFilterProp: 'name',
+            fieldNames: {
+              label: 'name',
+              value: '_id',
+              children: 'children',
+            },
+            treeData: menus,
+          }}
         />
       </ProForm.Group>
 
