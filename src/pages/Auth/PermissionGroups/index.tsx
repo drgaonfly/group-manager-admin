@@ -129,7 +129,7 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return record.parent && record.parent.name
           ? record.parent.name
-          : intl.formatMessage({ id: 'unknown' });
+          : intl.formatMessage({ id: '---' });
       },
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

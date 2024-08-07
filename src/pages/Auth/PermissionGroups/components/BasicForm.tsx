@@ -33,7 +33,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="name"
         />
 
-        <PermissionGroupSelect name="parent" />
+        <PermissionGroupSelect name="parent" label="permission_group" />
       </ProForm.Group>
 
       {!newRecord && (

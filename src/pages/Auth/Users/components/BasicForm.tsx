@@ -15,9 +15,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
   const { items: roles } = useQueryList('/roles');
 
+  console.log('users values', values.roles);
+
   return (
     <ProForm
-      initialValues={{ ...values }}
+      initialValues={{ ...values, roles: values?.roles?.map((role: { _id: string }) => role._id) }}
       onFinish={async (values) => {
         await onFinish({
           ...values,

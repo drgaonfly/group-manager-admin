@@ -46,7 +46,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'action' })}
         />
 
-        <PermissionGroupSelect name="permissionGroup" />
+        <PermissionGroupSelect name="permissionGroup" label="permission_group" />
       </ProForm.Group>
 
       {!newRecord && (

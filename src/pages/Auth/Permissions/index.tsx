@@ -132,7 +132,7 @@ const TableList: React.FC = () => {
       dataIndex: ['action'],
     },
     {
-      title: intl.formatMessage({ id: 'parent_permissionGroup' }),
+      title: intl.formatMessage({ id: 'permission_group' }),
       render: (_, record) => {
         return record.permissionGroup && record.permissionGroup.name
           ? record.permissionGroup.name

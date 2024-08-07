@@ -4,7 +4,7 @@ import { useIntl } from '@umijs/max';
 import { Spin } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 
-const PermissionGroupSelect = ({ name }: { name: string }) => {
+const PermissionGroupSelect = ({ name, label }: { name: string; label: string }) => {
   const intl = useIntl();
   const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
 
@@ -14,7 +14,7 @@ const PermissionGroupSelect = ({ name }: { name: string }) => {
         name={name}
         rules={[{ required: false }]}
         width="md"
-        label={intl.formatMessage({ id: 'parent_permissionGroup' })}
+        label={intl.formatMessage({ id: label })}
         allowClear
         secondary
         fieldProps={{

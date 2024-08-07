@@ -19,7 +19,7 @@ import useQueryList from '@/hooks/useQueryList';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading('Adding...');
   try {
-    await addItem('/admin/categories', { ...fields });
+    await addItem('/material-categories', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -39,7 +39,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Updating...');
   try {
-    await updateItem(`/admin/categories/${fields._id}`, fields);
+    await updateItem(`/material-categories/${fields._id}`, fields);
     hide();
 
     message.success('Updated successfully');
@@ -61,7 +61,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading('Removing...');
   if (!ids) return true;
   try {
-    await removeItem('/admin/categories', {
+    await removeItem('/material-categories', {
       ids,
     });
     hide();
@@ -91,13 +91,12 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
-  const { items: categories } = useQueryList('/admin/categories');
+  const { items: categories } = useQueryList('/material-categories');
 
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
-
   const columns: ProColumns<any>[] = [
     {
       title: intl.formatMessage({ id: 'name' }),
@@ -113,24 +112,18 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'slug' }),
-      dataIndex: 'slug',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
       title: intl.formatMessage({ id: 'image' }),
       dataIndex: 'image',
       hideInSearch: true,
       valueType: 'image',
     },
     {
-      title: intl.formatMessage({ id: 'parent' }),
+      title: intl.formatMessage({ id: 'parent_category' }),
       dataIndex: 'parent',
       render: (_, record) => {
         return record.parent && record.parent.name
           ? record.parent.name
-          : intl.formatMessage({ id: 'unknown' });
+          : intl.formatMessage({ id: '---' });
       },
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -231,7 +224,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={async (params, sort, filter) =>
-          queryList('/admin/categories', params, sort, filter)
+          queryList('/material-categories', params, sort, filter)
         }
         columns={columns}
         rowSelection={{
