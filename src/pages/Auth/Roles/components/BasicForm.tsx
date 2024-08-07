@@ -55,23 +55,20 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, permissions }
           name="name"
         />
 
-        <Form.Item name="permission">
-          <div>
-            <div>{intl.formatMessage({ id: 'permission_choose' })}</div>
-            <Tree
-              checkable
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              autoExpandParent={autoExpandParent}
-              onCheck={onCheck}
-              checkedKeys={checkedKeys}
-              onSelect={onSelect}
-              selectedKeys={selectedKeys}
-              treeData={permissionGroups} // Use filtered top-level groups
-              fieldNames={{ title: 'name', key: 'key', children: 'children' }}
-            />
-          </div>
-        </Form.Item>
+        <ProForm.Item name="permissions" label={intl.formatMessage({ id: 'permission_choose' })}>
+          <Tree
+            checkable
+            onExpand={onExpand}
+            expandedKeys={expandedKeys}
+            autoExpandParent={autoExpandParent}
+            onCheck={onCheck}
+            checkedKeys={checkedKeys}
+            onSelect={onSelect}
+            selectedKeys={selectedKeys}
+            treeData={permissionGroups} // Use filtered top-level groups
+            fieldNames={{ title: 'name', key: 'key', children: 'children' }}
+          />
+        </ProForm.Item>
       </ProForm.Group>
 
       {!newRecord && (
