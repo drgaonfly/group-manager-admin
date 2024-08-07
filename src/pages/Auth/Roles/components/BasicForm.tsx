@@ -11,17 +11,16 @@ interface Props {
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
-  permissions?: Permission[];
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, permissions }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
   const { items: permissionGroups } = useQueryList('/permission-groups/list');
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [checkedKeys, setCheckedKeys] = useState<Key[] | { checked: Key[]; halfChecked: Key[] }>(
-    permissions?.map((permission) => `permission-${permission._id}`) ?? [],
+    values.permissions?.map((permission: Permission) => `${permission._id}`) ?? [],
   );
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
 
@@ -32,6 +31,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, permissions }
 
   const onCheck = (checkedKeysValue: Key[] | { checked: Key[]; halfChecked: Key[] }) => {
     setCheckedKeys(checkedKeysValue);
+    console.log('checkedKeysValue', checkedKeysValue);
   };
 
   const onSelect = (selectedKeysValue: Key[]) => {
@@ -40,10 +40,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, permissions }
 
   return (
     <ProForm
-      initialValues={{ ...values }}
+      initialValues={{
+        ...values,
+        permissions: values?.permissions?.map((permission: Permission) => permission._id),
+      }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
+          permissions: checkedKeys,
         });
       }}
     >
@@ -66,7 +70,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, permissions }
             onSelect={onSelect}
             selectedKeys={selectedKeys}
             treeData={permissionGroups} // Use filtered top-level groups
-            fieldNames={{ title: 'name', key: 'key', children: 'children' }}
+            fieldNames={{ title: 'name', key: '_id', children: 'children' }}
           />
         </ProForm.Item>
       </ProForm.Group>
