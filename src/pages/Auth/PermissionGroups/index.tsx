@@ -160,6 +160,7 @@ const TableList: React.FC = () => {
             fieldNames={{ label: 'name', value: '_id', children: 'children' }}
             treeDefaultExpandAll
             treeData={permissionGroup}
+            loading={loading}
             {...fieldProps}
           />
         );
@@ -201,7 +202,6 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        loading={loading}
         search={{
           labelWidth: 180,
         }}

@@ -164,6 +164,7 @@ const TableList: React.FC = () => {
               title: menu.name,
               value: menu._id,
             }))}
+            loading={loading}
             {...fieldProps}
           />
         );
@@ -216,7 +217,6 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        loading={loading}
         search={{
           labelWidth: 180,
         }}

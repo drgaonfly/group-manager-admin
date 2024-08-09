@@ -146,7 +146,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'action' }),
-      dataIndex: ['action'],
+      dataIndex: 'action',
       hideInSearch: true,
     },
     {
@@ -168,6 +168,7 @@ const TableList: React.FC = () => {
             fieldNames={{ label: 'name', value: '_id', children: 'children' }}
             treeDefaultExpandAll
             treeData={permissionGroups}
+            loading={loading}
           />
         );
       },
@@ -208,7 +209,6 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        loading={loading}
         search={{
           labelWidth: 180,
         }}

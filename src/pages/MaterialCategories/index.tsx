@@ -145,6 +145,7 @@ const TableList: React.FC = () => {
             fieldNames={{ label: 'name', value: '_id' }}
             treeDefaultExpandAll
             treeData={categories}
+            loading={loading}
             {...fieldProps}
           />
         );
@@ -205,7 +206,6 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        loading={loading}
         toolBarRender={() => [
           <Button
             type="primary"
