@@ -13,7 +13,6 @@ import useQueryList from '@/hooks/useQueryList';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import { Menu } from '@/apiDataStructures/ApiDataStructure';
 
 /**
  * @en-US Add node
@@ -141,7 +140,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'parent' }),
+      title: intl.formatMessage({ id: 'parent_category' }),
       dataIndex: ['parent', 'name'],
       hideInSearch: true,
       // @ts-ignore
@@ -155,15 +154,12 @@ const TableList: React.FC = () => {
             showSearch
             style={{ width: '100%' }}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            placeholder={intl.formatMessage({ id: 'select_parent_menu' })}
+            placeholder={intl.formatMessage({ id: 'select_parent_category' })}
             allowClear
-            treeNodeFilterProp="label" // Use 'label' to filter nodes
-            fieldNames={{ label: 'name', value: '_id' }} // Remove 'children' from fieldNames
+            treeNodeFilterProp="name"
+            fieldNames={{ label: 'name', value: '_id' }}
             treeDefaultExpandAll
-            treeData={menus.map((menu: Menu) => ({
-              title: menu.name,
-              value: menu._id,
-            }))}
+            treeData={menus}
             loading={loading}
             {...fieldProps}
           />
@@ -173,7 +169,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'permission' }),

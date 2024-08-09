@@ -125,7 +125,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
-      copyable: true,
       render: (dom, entity) => {
         return (
           <a
@@ -142,12 +141,12 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
-      hideInSearch: true,
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'action' }),
       dataIndex: 'action',
-      hideInSearch: true,
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'permission_group' }),

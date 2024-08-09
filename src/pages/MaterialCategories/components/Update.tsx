@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import BasicForm from './BasicForm';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import extractPathFromUrl from '@/utils/extractPathFromUrl';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -37,14 +36,19 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       open={updateModalOpen}
       onOpenChange={onCancel}
       onFinish={async (values: any) => {
+        console.log('imageUrl', imageUrl);
         onSubmit({
           ...values,
-          image: extractPathFromUrl(imageUrl!),
+          image: imageUrl,
         });
       }}
-      initialValues={{ ...values, parent: values?.parent?._id }}
+      initialValues={{ ...values, parent: values.parent?._id }}
     >
-      <BasicForm setImageUrl={setImageUrl} imageUrl={imageUrl} values={values} />
+      <BasicForm
+        setImageUrl={setImageUrl}
+        imageUrl={imageUrl} // 传递图片URL以显示已上传的图片
+        values={values}
+      />
       <Form.Item name="_id" label={false}>
         <Input type="hidden" />
       </Form.Item>

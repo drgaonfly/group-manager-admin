@@ -140,7 +140,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
-      hideInSearch: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
