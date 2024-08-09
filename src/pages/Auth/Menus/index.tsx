@@ -4,13 +4,15 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, TreeSelect } from 'antd';
+import { Button, message, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import useQueryList from '@/hooks/useQueryList';
 import Show from './components/Show';
+import DeleteButton from '@/components/DeleteButton';
+import DeleteLink from '@/components/DeleteLink';
 
 /**
  * @en-US Add node
@@ -140,6 +142,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'parent' }),
       dataIndex: ['parent', 'name'],
+      hideInSearch: true,
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
@@ -170,6 +173,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'permission' }),
       dataIndex: 'permission',
+      hideInSearch: true,
       renderText: (val: any) => val && val.name,
     },
     {
@@ -190,24 +194,13 @@ const TableList: React.FC = () => {
           </a>
         ),
         access.canAdmin && (
-          <a
-            key="delete"
-            onClick={() => {
-              return Modal.confirm({
-                title: intl.formatMessage({ id: 'confirm_delete' }),
-                onOk: async () => {
-                  await handleRemove([record._id!]);
-                  setSelectedRows([]);
-                  actionRef.current?.reloadAndRest?.();
-                },
-                content: intl.formatMessage({ id: 'confirm_delete_content' }),
-                okText: intl.formatMessage({ id: 'confirm' }),
-                cancelText: intl.formatMessage({ id: 'cancel' }),
-              });
+          <DeleteLink
+            onOk={async () => {
+              await handleRemove([record._id!]);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
             }}
-          >
-            {intl.formatMessage({ id: 'delete' })}
-          </a>
+          />
         ),
       ],
     },
@@ -256,27 +249,13 @@ const TableList: React.FC = () => {
           }
         >
           {access.canAdmin && (
-            <Button
-              danger
-              onClick={() => {
-                return Modal.confirm({
-                  title: intl.formatMessage({ id: 'confirm_delete' }),
-                  onOk: async () => {
-                    await handleRemove(selectedRowsState?.map((item) => item._id!));
-                    setSelectedRows([]);
-                    actionRef.current?.reloadAndRest?.();
-                  },
-                  content: intl.formatMessage({ id: 'confirm_delete_content' }),
-                  okText: intl.formatMessage({ id: 'confirm' }),
-                  cancelText: intl.formatMessage({ id: 'cancel' }),
-                });
+            <DeleteButton
+              onOk={async () => {
+                await handleRemove(selectedRowsState?.map((item: any) => item._id!));
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
               }}
-            >
-              <FormattedMessage
-                id="pages.searchTable.batchDeletion"
-                defaultMessage="Batch deletion"
-              />
-            </Button>
+            />
           )}
         </FooterToolbar>
       )}

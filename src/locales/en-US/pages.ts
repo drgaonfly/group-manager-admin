@@ -71,7 +71,6 @@ export default {
   'current.password': 'Current Password',
   'new.password': 'New Password',
   'confirm.password': 'Confirm Password',
-  'please.enter': 'Please enter',
   'passwords.must.match': 'Passwords must match',
   'pages.role.adding': 'Adding...',
   'pages.role.addSuccess': 'Added successfully',

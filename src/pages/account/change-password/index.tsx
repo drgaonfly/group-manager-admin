@@ -66,7 +66,7 @@ const ChangePassword: React.FC = () => {
           rules={[
             {
               required: true,
-              message: intl.formatMessage({ id: 'please.enter' }),
+              message: intl.formatMessage({ id: 'enter_password' }),
             },
           ]}
         />

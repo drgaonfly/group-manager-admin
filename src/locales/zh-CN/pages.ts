@@ -69,7 +69,6 @@ export default {
   'current.password': '当前密码',
   'new.password': '新密码',
   'confirm.password': '确认密码',
-  'please.enter': '请输入',
   'passwords.must.match': '密码必须匹配',
   'pages.role.adding': '正在添加',
   'pages.role.addSuccess': '添加成功',

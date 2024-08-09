@@ -1,5 +1,5 @@
 import { useIntl } from '@umijs/max';
-import { ModalForm } from '@ant-design/pro-components';
+import { Modal } from 'antd';
 import BasicForm from './BasicForm';
 import { useState } from 'react';
 
@@ -12,21 +12,26 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { open, onOpenChange, onFinish } = props;
-  const [, setImageUrl] = useState<string | undefined>('');
+  const [imageUrl, setImageUrl] = useState<string | undefined>('');
+
+  // 修改 onFinish 方法
+  const handleFinish = async (formData: any) => {
+    formData.image = imageUrl; // 添加 imageUrl 到表单数据中，并命名为 image 以匹配后端代码
+    await onFinish(formData);
+  };
+
   return (
-    <ModalForm
-      title={intl.formatMessage({ id: 'pages.searchTable.new' })}
-      width="50%"
+    <Modal
+      title={intl.formatMessage({ id: 'add_new' })}
+      width="45%"
       open={open}
-      onOpenChange={onOpenChange}
-      modalProps={{
-        destroyOnClose: true,
-        maskClosable: false,
-      }}
-      onFinish={onFinish}
+      onCancel={() => onOpenChange(false)}
+      destroyOnClose={true}
+      maskClosable={false}
+      footer={null}
     >
-      <BasicForm setImageUrl={setImageUrl} newRecord />
-    </ModalForm>
+      <BasicForm newRecord onFinish={handleFinish} setImageUrl={setImageUrl} />
+    </Modal>
   );
 };
 
