@@ -13,6 +13,7 @@ import useQueryList from '@/hooks/useQueryList';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import { Menu } from '@/apiDataStructures/ApiDataStructure';
 
 /**
  * @en-US Add node
@@ -113,7 +114,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
-  const { items: menus } = useQueryList('/menus');
+  const { items: menus, loading } = useQueryList('/menus');
 
   /**
    * @en-US International configuration
@@ -156,10 +157,13 @@ const TableList: React.FC = () => {
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             placeholder={intl.formatMessage({ id: 'select_parent_menu' })}
             allowClear
-            treeNodeFilterProp="name"
-            fieldNames={{ label: 'name', value: '_id', children: 'children' }}
+            treeNodeFilterProp="label" // Use 'label' to filter nodes
+            fieldNames={{ label: 'name', value: '_id' }} // Remove 'children' from fieldNames
             treeDefaultExpandAll
-            treeData={menus}
+            treeData={menus.map((menu: Menu) => ({
+              title: menu.name,
+              value: menu._id,
+            }))}
             {...fieldProps}
           />
         );
@@ -212,6 +216,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
+        loading={loading}
         search={{
           labelWidth: 180,
         }}
