@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, TreeSelect } from 'antd';
+import { Button, message, Modal, Switch, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -154,11 +154,21 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'isEnable' }),
       dataIndex: 'isEnable',
+      width: 150,
       hideInSearch: true,
-      valueEnum: {
-        true: { text: intl.formatMessage({ id: 'yes' }), status: 'Error' },
-        false: { text: intl.formatMessage({ id: 'no' }), status: 'Success' },
-      },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'select_online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'select_offline' })}
+          checked={record.isOnline}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
