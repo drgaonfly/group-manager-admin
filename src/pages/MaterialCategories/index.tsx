@@ -133,6 +133,7 @@ const TableList: React.FC = () => {
         if (type === 'form') {
           return null;
         }
+
         return (
           <TreeSelect
             showSearch
@@ -141,7 +142,7 @@ const TableList: React.FC = () => {
             placeholder={intl.formatMessage({ id: 'select_parent_category' })}
             allowClear
             treeNodeFilterProp="name"
-            fieldNames={{ label: 'name', value: '_id', children: 'children' }}
+            fieldNames={{ label: 'name', value: '_id' }}
             treeDefaultExpandAll
             treeData={categories}
             {...fieldProps}
@@ -150,7 +151,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'isEnalbe' }),
+      title: intl.formatMessage({ id: 'isEnable' }),
       dataIndex: 'isEnable',
       hideInSearch: true,
       valueEnum: {

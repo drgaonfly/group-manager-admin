@@ -113,7 +113,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
-  const { items: permissionGroups } = useQueryList('/permission-groups/list');
+  const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
 
   /**
    * @en-US International configuration
@@ -208,6 +208,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
+        loading={loading}
         search={{
           labelWidth: 180,
         }}

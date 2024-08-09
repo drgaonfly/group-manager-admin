@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormSelect, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
+import { Form, Input, Spin } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 import { Permission } from '@/apiDataStructures/ApiDataStructure';
 
@@ -13,7 +13,7 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const { items: menus } = useQueryList('/menus');
+  const { items: menus, loading: menusLoading } = useQueryList('/menus');
   const { items: permissions, loading } = useQueryList('/permissions');
   console.log('parent', values);
 
@@ -44,17 +44,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="path"
         />
 
-        <ProFormSelect
-          rules={[{ required: true, message: intl.formatMessage({ id: 'select_permission' }) }]}
-          label={intl.formatMessage({ id: 'permission_choose' })}
-          width="md"
-          name="permission"
-          placeholder={intl.formatMessage({ id: 'please_select_permission' })}
-          options={permissions.map((permission: Permission) => ({
-            label: permission.name,
-            value: permission._id, // Store the ID for easy retrieval
-          }))}
-        />
+        <Spin spinning={loading}>
+          <ProFormSelect
+            rules={[{ required: true, message: intl.formatMessage({ id: 'select_permission' }) }]}
+            label={intl.formatMessage({ id: 'permission_choose' })}
+            width="md"
+            name="permission"
+            placeholder={intl.formatMessage({ id: 'please_select_permission' })}
+            options={permissions.map((permission: Permission) => ({
+              label: permission.name,
+              value: permission._id, // Store the ID for easy retrieval
+            }))}
+          />
+        </Spin>
 
         <ProFormTreeSelect
           name="parent"
@@ -77,7 +79,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               children: 'children',
             },
             treeData: menus,
-            loading,
+            loading: menusLoading,
           }}
         />
       </ProForm.Group>

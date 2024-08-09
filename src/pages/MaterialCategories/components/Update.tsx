@@ -42,7 +42,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           image: extractPathFromUrl(imageUrl!),
         });
       }}
-      initialValues={{ ...values, parent: values.parent._id }}
+      initialValues={{ ...values, parent: values?.parent?._id }}
     >
       <BasicForm setImageUrl={setImageUrl} imageUrl={imageUrl} values={values} />
       <Form.Item name="_id" label={false}>
