@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import BasicForm from './BasicForm';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
+import extractPathFromUrl from '@/utils/extractPathFromUrl';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -27,7 +28,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <ModalForm
-      title={intl.formatMessage({ id: 'pages.searchTable.change' })}
+      title={intl.formatMessage({ id: 'modify' })}
       width="50%"
       modalProps={{
         destroyOnClose: true,
@@ -38,10 +39,10 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       onFinish={async (values: any) => {
         onSubmit({
           ...values,
-          image: imageUrl,
+          image: extractPathFromUrl(imageUrl!),
         });
       }}
-      initialValues={{ ...values }}
+      initialValues={{ ...values, parent: values.parent._id }}
     >
       <BasicForm setImageUrl={setImageUrl} imageUrl={imageUrl} values={values} />
       <Form.Item name="_id" label={false}>

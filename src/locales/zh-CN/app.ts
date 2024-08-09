@@ -92,7 +92,7 @@ export default {
   permissions_list: '权限列表',
   parent_permissionGroup: '父级权限组',
   parent_category: '父级目录',
-  featured: '特色',
+  isEnable: '是否启用',
   permission_choose: '选择权限',
   please_select_permission: '请选择权限',
   path: '路径',

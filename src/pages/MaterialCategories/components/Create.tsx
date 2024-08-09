@@ -30,7 +30,7 @@ const Create: React.FC<Props> = (props) => {
         });
       }}
     >
-      <BasicForm imageUrl={imageUrl} setImageUrl={setImageUrl} newRecord />
+      <BasicForm setImageUrl={setImageUrl} newRecord />
     </ModalForm>
   );
 };

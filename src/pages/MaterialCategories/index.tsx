@@ -93,7 +93,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const { items: categories } = useQueryList('/material-categories');
+  const { items: categories, loading } = useQueryList('/material-categories');
 
   /**
    * @en-US International configuration
@@ -126,6 +126,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'parent_category' }),
       dataIndex: ['parent', 'name'],
+      hideInSearch: true,
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
@@ -149,8 +150,9 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'featured' }),
-      dataIndex: 'featured',
+      title: intl.formatMessage({ id: 'isEnalbe' }),
+      dataIndex: 'isEnable',
+      hideInSearch: true,
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'yes' }), status: 'Error' },
         false: { text: intl.formatMessage({ id: 'no' }), status: 'Success' },
@@ -202,6 +204,7 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        loading={loading}
         toolBarRender={() => [
           <Button
             type="primary"

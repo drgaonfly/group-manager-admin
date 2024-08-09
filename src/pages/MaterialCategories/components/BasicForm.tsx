@@ -34,7 +34,7 @@ const BasicForm: React.FC<Props> = (props) => {
           name="name"
           label={intl.formatMessage({ id: 'name' })}
           width="md"
-          rules={[{ required: true, message: intl.formatMessage({ id: 'name.required' }) }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_name' }) }]}
         />
 
         <AliyunOSSUpload
@@ -71,7 +71,7 @@ const BasicForm: React.FC<Props> = (props) => {
           }}
         />
 
-        <ProFormSwitch name="featured" label={intl.formatMessage({ id: 'featured' })} />
+        <ProFormSwitch name="isEnable" label={intl.formatMessage({ id: 'isEnable' })} />
       </ProForm.Group>
     </>
   );

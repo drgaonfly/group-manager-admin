@@ -92,7 +92,7 @@ export default {
   parent: 'Parent',
   parent_permissionGroup: 'Parent',
   parent_category: 'Parent',
-  featured: 'Feature',
+  isEnable: 'isEnable',
   permission_choose: 'Choose Permissions',
   permissions_list: 'Permissions List',
   path: 'Path',

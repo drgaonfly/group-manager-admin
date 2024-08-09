@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import React, { Key, useState } from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
-import { Form, Input, Tree } from 'antd';
+import { Form, Input, Spin, Tree } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 import { FormInstance } from 'antd/es/form';
 import { Permission } from '@/apiDataStructures/ApiDataStructure';
@@ -15,7 +15,7 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const { items: permissionGroups } = useQueryList('/permission-groups/list');
+  const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -60,18 +60,20 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
 
         <ProForm.Item name="permissions" label={intl.formatMessage({ id: 'permission_choose' })}>
-          <Tree
-            checkable
-            onExpand={onExpand}
-            expandedKeys={expandedKeys}
-            autoExpandParent={autoExpandParent}
-            onCheck={onCheck}
-            checkedKeys={checkedKeys}
-            onSelect={onSelect}
-            selectedKeys={selectedKeys}
-            treeData={permissionGroups} // Use filtered top-level groups
-            fieldNames={{ title: 'name', key: '_id', children: 'children' }}
-          />
+          <Spin spinning={loading}>
+            <Tree
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              onSelect={onSelect}
+              selectedKeys={selectedKeys}
+              treeData={permissionGroups} // Use filtered top-level groups
+              fieldNames={{ title: 'name', key: '_id', children: 'children' }}
+            />
+          </Spin>
         </ProForm.Item>
       </ProForm.Group>
 
