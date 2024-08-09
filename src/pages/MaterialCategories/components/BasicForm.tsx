@@ -1,21 +1,20 @@
 import { useIntl } from '@umijs/max';
-import React from 'react';
-import { ProForm, ProFormSwitch, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
+import { ProForm, ProFormText, ProFormSwitch, ProFormTreeSelect } from '@ant-design/pro-components';
+import 'react-quill/dist/quill.snow.css';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 
 interface Props {
   newRecord?: boolean;
-  setImageUrl: (url: string | undefined) => void; // 允许 undefined 以便删除图片
+  setImageUrl: (url: string) => void;
   imageUrl?: string | undefined;
-  onFinish: (formData: any) => Promise<void>;
   values?: any;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, imageUrl }) => {
+const BasicForm: React.FC<Props> = (props) => {
   const intl = useIntl();
-  const { items: menus, loading } = useQueryList('/material-categories');
+  const { setImageUrl, imageUrl } = props;
+  const { items: categories, loading } = useQueryList('/material-categories');
 
   const defaultFileList = imageUrl
     ? [
@@ -29,33 +28,21 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
     : [];
 
   return (
-    <ProForm
-      initialValues={{
-        ...values,
-        parent: values?.parent?._id,
-      }}
-      onFinish={async (values) => {
-        await onFinish({
-          ...values,
-        });
-      }}
-    >
+    <>
       <ProForm.Group>
         <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_name' }) }]}
-          width="md"
-          label={intl.formatMessage({ id: 'name' })}
           name="name"
+          label={intl.formatMessage({ id: 'name' })}
+          width="md"
+          rules={[{ required: true, message: intl.formatMessage({ id: 'name.required' }) }]}
         />
 
         <AliyunOSSUpload
           onFileUpload={(url: string) => {
             console.log('Uploaded file URL:', url);
-            setImageUrl(url);
+            setImageUrl!(url);
           }}
-          onRemove={() => {
-            setImageUrl(undefined);
-          }}
+          accept=".jpg,.jpeg,.png,.pdf"
           defaultFileList={defaultFileList}
         />
 
@@ -63,7 +50,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
           name="parent"
           rules={[{ required: false }]}
           width="md"
-          label={intl.formatMessage({ id: 'parent' })}
+          label={intl.formatMessage({ id: 'parent_category' })}
           allowClear
           secondary
           fieldProps={{
@@ -79,20 +66,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
               value: '_id',
               children: 'children',
             },
-            treeData: menus,
+            treeData: categories,
             loading,
           }}
         />
 
         <ProFormSwitch name="featured" label={intl.formatMessage({ id: 'featured' })} />
       </ProForm.Group>
-
-      {!newRecord && (
-        <Form.Item name="_id" label={false}>
-          <Input type="hidden" />
-        </Form.Item>
-      )}
-    </ProForm>
+    </>
   );
 };
 

@@ -4,15 +4,13 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, TreeSelect } from 'antd';
+import { Button, message, Modal, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import useQueryList from '@/hooks/useQueryList';
 import Show from './components/Show';
-import DeleteButton from '@/components/DeleteButton';
-import DeleteLink from '@/components/DeleteLink';
 
 /**
  * @en-US Add node
@@ -20,19 +18,15 @@ import DeleteLink from '@/components/DeleteLink';
  * @param fields
  */
 const handleAdd = async (fields: API.ItemData) => {
-  const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
+  const hide = message.loading('Adding...');
   try {
     await addItem('/material-categories', { ...fields });
     hide();
-    message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
+    message.success('Added successfully');
     return true;
   } catch (error: any) {
     hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
-      ),
-    );
+    message.error(error?.response?.data?.message ?? 'Adding failed, please try again!');
     return false;
   }
 };
@@ -44,20 +38,16 @@ const handleAdd = async (fields: API.ItemData) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  const hide = message.loading('Updating...');
   try {
     await updateItem(`/material-categories/${fields._id}`, fields);
     hide();
 
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    message.success('Updated successfully');
     return true;
   } catch (error: any) {
     hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
-      ),
-    );
+    message.error(error?.response?.data?.message ?? 'Update failed, please try again!');
     return false;
   }
 };
@@ -69,27 +59,18 @@ const handleUpdate = async (fields: FormValueType) => {
  * @param selectedRows
  */
 const handleRemove = async (ids: string[]) => {
-  const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
+  const hide = message.loading('Removing...');
   if (!ids) return true;
   try {
     await removeItem('/material-categories', {
       ids,
     });
     hide();
-    message.success(
-      <FormattedMessage
-        id="delete_successful"
-        defaultMessage="Deleted successfully and will refresh soon"
-      />,
-    );
+    message.success('Deleted successfully and will refresh soon');
     return true;
   } catch (error: any) {
     hide();
-    message.error(
-      error.response.data.message ?? (
-        <FormattedMessage id="delete_failed" defaultMessage="Delete failed, please try again" />
-      ),
-    );
+    message.error(error.response.data.message ?? 'Delete failed, please try again');
     return false;
   }
 };
@@ -106,22 +87,19 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const { items: categories } = useQueryList('/material-categories');
 
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
-  // Define roles object with index signature
-
-  const columns: ProColumns<API.ItemData>[] = [
+  const columns: ProColumns<any>[] = [
     {
       title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
@@ -140,9 +118,14 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'parent' }),
-      dataIndex: ['parent', 'name'],
+      title: intl.formatMessage({ id: 'image' }),
+      dataIndex: 'image',
       hideInSearch: true,
+      valueType: 'image',
+    },
+    {
+      title: intl.formatMessage({ id: 'parent_category' }),
+      dataIndex: ['parent', 'name'],
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
@@ -154,7 +137,7 @@ const TableList: React.FC = () => {
             showSearch
             style={{ width: '100%' }}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            placeholder={intl.formatMessage({ id: 'select_parent_menu' })}
+            placeholder={intl.formatMessage({ id: 'select_parent_category' })}
             allowClear
             treeNodeFilterProp="name"
             fieldNames={{ label: 'name', value: '_id', children: 'children' }}
@@ -166,36 +149,45 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'image' }),
-      dataIndex: 'image',
-      hideInSearch: true,
-      valueType: 'image',
+      title: intl.formatMessage({ id: 'featured' }),
+      dataIndex: 'featured',
+      valueEnum: {
+        true: { text: intl.formatMessage({ id: 'yes' }), status: 'Error' },
+        false: { text: intl.formatMessage({ id: 'no' }), status: 'Success' },
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canAdmin && (
+        <a
+          key="edit"
+          onClick={() => {
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        access.canSuperAdmin && (
           <a
-            key="edit"
+            key="delete"
             onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
+              Modal.confirm({
+                title: intl.formatMessage({ id: 'confirm_delete' }),
+                content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                okText: intl.formatMessage({ id: 'confirm' }),
+                cancelText: intl.formatMessage({ id: 'cancel' }),
+                onOk: async () => {
+                  await handleRemove([record._id!]);
+                  actionRef.current?.reloadAndRest?.();
+                },
+              });
             }}
           >
-            {intl.formatMessage({ id: 'edit' })}
+            {intl.formatMessage({ id: 'delete' })}
           </a>
-        ),
-        access.canAdmin && (
-          <DeleteLink
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          />
         ),
       ],
     },
@@ -208,32 +200,28 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="_id"
         search={{
-          labelWidth: 180,
+          labelWidth: 120,
         }}
         toolBarRender={() => [
-          (access.canAdmin || access.canCustomerService) && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              handleModalOpen(true);
+            }}
+          >
+            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+          </Button>,
         ]}
         request={async (params, sort, filter) =>
           queryList('/material-categories', params, sort, filter)
         }
         columns={columns}
-        rowSelection={
-          access.canSuperAdmin && {
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows);
-            },
-          }
-        }
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+          },
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -245,14 +233,28 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canAdmin && (
-            <DeleteButton
-              onOk={async () => {
-                await handleRemove(selectedRowsState?.map((item: any) => item._id!));
-                setSelectedRows([]);
-                actionRef.current?.reloadAndRest?.();
+          {access.canSuperAdmin && (
+            <Button
+              danger
+              onClick={() => {
+                return Modal.confirm({
+                  title: intl.formatMessage({ id: 'modal.delete.title' }),
+                  onOk: async () => {
+                    await handleRemove(selectedRowsState?.map((item) => item._id!));
+                    setSelectedRows([]);
+                    actionRef.current?.reloadAndRest?.();
+                  },
+                  content: intl.formatMessage({ id: 'modal.delete.content' }),
+                  okText: intl.formatMessage({ id: 'modal.okText' }),
+                  cancelText: intl.formatMessage({ id: 'modal.cancelText' }),
+                });
               }}
-            />
+            >
+              <FormattedMessage
+                id="pages.searchTable.batchDeletion"
+                defaultMessage="Batch deletion"
+              />
+            </Button>
           )}
         </FooterToolbar>
       )}

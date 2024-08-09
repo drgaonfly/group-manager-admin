@@ -9,33 +9,22 @@ interface Props {
   columns: ProDescriptionsItemProps<API.ItemData>[];
 }
 
-export interface IPriceList {
-  isLocalCurrency: boolean;
-  exchangeRate: number;
-  serviceFee: number;
-  country: string;
-  platform: string;
-}
-
 const Show: React.FC<Props> = (props) => {
-  const { onClose, open, currentRow, columns: cols } = props;
-
+  const { onClose, open, currentRow, columns } = props;
   return (
     <Drawer width="70%" open={open} onClose={onClose} closable={false}>
       {currentRow?.name && (
-        <>
-          <ProDescriptions<API.ItemData>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={cols as ProDescriptionsItemProps<API.ItemData>[]}
-          />
-        </>
+        <ProDescriptions<API.ItemData>
+          column={2}
+          title={currentRow?.name}
+          request={async () => ({
+            data: currentRow || {},
+          })}
+          params={{
+            id: currentRow?._id,
+          }}
+          columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
+        />
       )}
     </Drawer>
   );

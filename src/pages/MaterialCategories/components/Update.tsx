@@ -1,7 +1,8 @@
 import { useIntl } from '@umijs/max';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BasicForm from './BasicForm';
-import { Modal } from 'antd';
+import { ModalForm } from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -10,7 +11,8 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    roles?: { id: number }[];
+    image?: string;
+    parent?: any;
   } & Partial<API.ItemData>;
 };
 
@@ -18,23 +20,34 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const [imageUrl, setImageUrl] = useState<string | undefined>('');
+
+  useEffect(() => {
+    setImageUrl(values.image);
+  }, [values]);
+
   return (
-    <Modal
-      maskClosable={false}
+    <ModalForm
+      title={intl.formatMessage({ id: 'pages.searchTable.change' })}
       width="50%"
-      destroyOnClose
-      title={intl.formatMessage({ id: 'modify' })}
+      modalProps={{
+        destroyOnClose: true,
+        maskClosable: false,
+      }}
       open={updateModalOpen}
-      footer={false}
-      onCancel={() => onCancel(false)}
+      onOpenChange={onCancel}
+      onFinish={async (values: any) => {
+        onSubmit({
+          ...values,
+          image: imageUrl,
+        });
+      }}
+      initialValues={{ ...values }}
     >
-      <BasicForm
-        values={values}
-        onFinish={onSubmit}
-        setImageUrl={setImageUrl}
-        imageUrl={imageUrl}
-      />
-    </Modal>
+      <BasicForm setImageUrl={setImageUrl} imageUrl={imageUrl} values={values} />
+      <Form.Item name="_id" label={false}>
+        <Input type="hidden" />
+      </Form.Item>
+    </ModalForm>
   );
 };
 

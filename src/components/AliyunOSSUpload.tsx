@@ -19,7 +19,6 @@ interface AliyunOSSUploadProps {
   accept?: string;
   onFileUpload: (url: string) => void;
   defaultFileList?: any;
-  onRemove: () => void;
 }
 
 const defaultAccept = '*';
