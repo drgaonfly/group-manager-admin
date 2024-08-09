@@ -299,4 +299,6 @@ export default {
   creator: 'Creator',
   claimer: 'Claimer',
   modification_time: 'Modification Time',
+  select_online: 'Online',
+  select_offline: 'Offline',
 };

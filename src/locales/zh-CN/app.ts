@@ -300,4 +300,6 @@ export default {
   creator: '创建者',
   claimer: '领取人',
   modification_time: '修改时间',
+  select_online: '在线',
+  select_offline: '离线',
 };
