@@ -144,6 +144,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'permissions_list' }),
       dataIndex: 'permissions',
       hideInSearch: true,
+      hideInTable: true,
       renderText: (val: { name: string }[]) => {
         return val.map((item) => item.name).join(', ');
       },

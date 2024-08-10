@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import PermissionGroupSelect from '@/components/PermissionGroupSelect';
 
@@ -39,11 +39,17 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="path"
         />
 
-        <ProFormText
+        <ProFormSelect
           rules={[{ required: true, message: intl.formatMessage({ id: 'enter_action' }) }]}
           name="action"
           width="md"
           label={intl.formatMessage({ id: 'action' })}
+          options={[
+            { label: 'GET', value: 'GET' },
+            { label: 'POST', value: 'POST' },
+            { label: 'DELETE', value: 'DELETE' },
+            { label: 'PUT', value: 'PUT' },
+          ]}
         />
 
         <PermissionGroupSelect name="permissionGroup" label="permission_group" />
