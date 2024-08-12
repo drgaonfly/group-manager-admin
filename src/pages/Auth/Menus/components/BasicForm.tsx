@@ -1,9 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
-import { Form, Input, Spin } from 'antd';
+import { ProForm, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
-import { Permission } from '@/apiDataStructures/ApiDataStructure';
 
 interface Props {
   newRecord?: boolean;
@@ -14,7 +13,7 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
   const { items: menus, loading: menusLoading } = useQueryList('/menus');
-  const { items: permissions, loading } = useQueryList('/permissions');
+  const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
   console.log('parent', values);
 
   return (
@@ -44,19 +43,30 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="path"
         />
 
-        <Spin spinning={loading}>
-          <ProFormSelect
-            rules={[{ required: true, message: intl.formatMessage({ id: 'select_permission' }) }]}
-            label={intl.formatMessage({ id: 'permission_choose' })}
-            width="md"
-            name="permission"
-            placeholder={intl.formatMessage({ id: 'please_select_permission' })}
-            options={permissions.map((permission: Permission) => ({
-              label: permission.name,
-              value: permission._id, // Store the ID for easy retrieval
-            }))}
-          />
-        </Spin>
+        <ProFormTreeSelect
+          name="permission"
+          rules={[{ required: false }]}
+          width="md"
+          label={intl.formatMessage({ id: 'permission_choose' })}
+          allowClear
+          secondary
+          fieldProps={{
+            showArrow: false,
+            treeDefaultExpandAll: true,
+            filterTreeNode: true,
+            showSearch: true,
+            dropdownMatchSelectWidth: false,
+            autoClearSearchValue: true,
+            treeNodeFilterProp: 'name',
+            fieldNames: {
+              label: 'name',
+              value: '_id',
+              children: 'children',
+            },
+            treeData: permissionGroups,
+            loading: loading,
+          }}
+        />
 
         <ProFormTreeSelect
           name="parent"

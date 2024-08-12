@@ -11,8 +11,6 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 
-import access from '@/access';
-
 export default [
   {
     path: '/user',
@@ -51,6 +49,7 @@ export default [
     path: '/auth',
     name: 'list.auth',
     icon: 'table',
+    access: 'canGetUser',
     routes: [
       {
         path: '/auth/users',

@@ -1,12 +1,24 @@
 // @ts-ignore
 /* eslint-disable */
+import type { MenuDataItem } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
+
+interface menuResponse {
+  success: boolean;
+  data: MenuDataItem[];
+}
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<API.CurrentUser>('/auth/profile', {
     method: 'GET',
     ...(options || {}),
+  });
+}
+
+export async function fetchMenuData() {
+  return request<menuResponse>('/menus/fetch', {
+    method: 'GET',
   });
 }
 

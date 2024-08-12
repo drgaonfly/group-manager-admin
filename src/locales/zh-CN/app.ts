@@ -135,7 +135,7 @@ export default {
   operation: '操作',
   edit: '编辑',
   modify: '修改',
-  add_new: '新增项目',
+  add_new: '新增',
   batch_setting: '批量设置',
   auto_assign_account: '自动分配账号',
   batch_upload_account: '批量上传账号库',

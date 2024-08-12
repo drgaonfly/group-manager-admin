@@ -31,7 +31,7 @@ export default {
   'menu.list.user': '用户',
   ' menu.list.change-password': '修改密码',
   'menu.list.materialCategories': '材料类目',
-  'menu.list.auth': '认证管理',
+  'menu.list.auth': '授权管理',
   'menu.list.table-list': '查询表格',
   'menu.list.tasks': '任务',
   'menu.list.bills': '账单',
