@@ -8,13 +8,14 @@ interface Props {
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
+  setImageUrl: (url: string) => void;
+  imageUrl?: string | undefined;
 }
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
   const { items: menus, loading: menusLoading } = useQueryList('/menus');
   const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
-  console.log('parent', values);
 
   return (
     <ProForm
@@ -41,6 +42,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'path' })}
           name="path"
+        />
+
+        <ProFormText
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_path' }) }]}
+          width="md"
+          label={intl.formatMessage({ id: 'path' })}
+          name="icon"
         />
 
         <ProFormTreeSelect

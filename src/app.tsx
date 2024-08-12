@@ -1,15 +1,49 @@
 import { Footer, SelectLang, AvatarDropdown, AvatarName } from '@/components';
-import { LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import {
+  DatabaseOutlined,
+  GatewayOutlined,
+  GlobalOutlined,
+  HeartOutlined,
+  LinkOutlined,
+  MenuFoldOutlined,
+  SecurityScanOutlined,
+  SmileOutlined,
+  TeamOutlined,
+  UsergroupAddOutlined,
+} from '@ant-design/icons';
+import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { fetchMenuData, currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
-import React from 'react';
+import React, { ReactElement } from 'react';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+
+const iconEnum: { [key: string]: ReactElement<any, any> } = {
+  UsergroupAddOutlined: <UsergroupAddOutlined />,
+  SmileOutlined: <SmileOutlined />,
+  HeartOutlined: <HeartOutlined />,
+  GlobalOutlined: <GlobalOutlined />,
+  MenuFoldOutlined: <MenuFoldOutlined />,
+  TeamOutlined: <TeamOutlined />,
+  DatabaseOutlined: <DatabaseOutlined />,
+  GatewayOutlined: <GatewayOutlined />,
+  SecurityScanOutlined: <SecurityScanOutlined />,
+};
+
+console.log('iconEnum', iconEnum);
+
+const loopMenuItem = (menus: MenuDataItem[]): MenuDataItem[] =>
+  menus.map(({ icon, children, ...item }) => {
+    return {
+      ...item,
+      icon: icon && iconEnum[icon as string],
+      children: children && loopMenuItem(children),
+    };
+  });
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -65,8 +99,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       },
       request: async () => {
         // initialState.currentUser 中包含了所有用户信息
-        const res = await fetchMenuData();
-        console.log('response', res);
+        const { data, success } = await fetchMenuData();
+        console.log('data', data);
+        if (success) {
+          console.log('loopMenuItem(data)', loopMenuItem(data));
+          return loopMenuItem(data);
+        } else {
+          return [];
+        }
       },
     },
     waterMarkProps: {
@@ -80,26 +120,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
       }
     },
-    // bgLayoutImgList: [
-    //   {
-    //     src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
-    //     left: 85,
-    //     bottom: 100,
-    //     height: '303px',
-    //   },
-    //   {
-    //     src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
-    //     bottom: -68,
-    //     right: -45,
-    //     height: '303px',
-    //   },
-    //   {
-    //     src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
-    //     bottom: 0,
-    //     left: 0,
-    //     width: '331px',
-    //   },
-    // ],
     links: isDev
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">

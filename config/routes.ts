@@ -54,16 +54,19 @@ export default [
       {
         path: '/auth/users',
         name: 'list.users',
+        icon: 'table',
         component: './Auth/Users',
       },
       {
         path: '/auth/roles',
         name: 'list.roles',
+        icon: 'table',
         component: './Auth/Roles',
       },
       {
         path: '/auth/menus',
         name: 'list.menus',
+        icon: 'table',
         component: './Auth/Menus',
       },
       {
