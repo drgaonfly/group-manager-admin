@@ -51,7 +51,6 @@ export default [
     path: '/auth',
     name: 'list.auth',
     icon: 'table',
-    access: 'canGetMenu',
     routes: [
       {
         path: '/auth/users',
