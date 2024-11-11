@@ -1,125 +1,236 @@
 import { useIntl } from '@umijs/max';
-import { queryList, removeItem, addItem } from '@/services/ant-design-pro/api';
+import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import {
-  PageContainer,
-  ProTable,
-  ModalForm,
-  ProFormDigit,
-  ProFormSelect,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
-import { FormattedMessage } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import { FormattedMessage, useAccess } from '@umijs/max';
+import { Button, message, Modal, Switch, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
+import type { FormValueType } from './components/Update';
+import Update from './components/Update';
+import Create from './components/Create';
+import useQueryList from '@/hooks/useQueryList';
+import Show from './components/Show';
+
+/**
+ * @en-US Add node
+ * @zh-CN 添加节点
+ * @param fields
+ */
+const handleAdd = async (fields: API.ItemData) => {
+  const hide = message.loading('Adding...');
+  try {
+    await addItem('/bills', { ...fields });
+    hide();
+    message.success('Added successfully');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? 'Adding failed, please try again!');
+    return false;
+  }
+};
+
+/**
+ * @en-US Update node
+ * @zh-CN 更新节点
+ *
+ * @param fields
+ */
+const handleUpdate = async (fields: FormValueType) => {
+  const hide = message.loading('Updating...');
+  try {
+    await updateItem(`/bills/${fields._id}`, fields);
+    hide();
+
+    message.success('Updated successfully');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? 'Update failed, please try again!');
+    return false;
+  }
+};
+
+/**
+ *  Delete node
+ * @zh-CN 删除节点
+ *
+ * @param selectedRows
+ */
+const handleRemove = async (ids: string[]) => {
+  const hide = message.loading('Removing...');
+  if (!ids) return true;
+  try {
+    await removeItem('/bills', {
+      ids,
+    });
+    hide();
+    message.success('Deleted successfully and will refresh soon');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error.response.data.message ?? 'Delete failed, please try again');
+    return false;
+  }
+};
 
 const TableList: React.FC = () => {
   const intl = useIntl();
-  const actionRef = useRef<ActionType>();
-  const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
+  /**
+   * @en-US Pop-up window of new window
+   * @zh-CN 新建窗口的弹窗
+   *  */
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  /**2024fc.xyz
+   * @en-US The pop-up window of the distribution update window
+   * @zh-CN 分布更新窗口的弹窗
+   * */
+  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
 
+  const actionRef = useRef<ActionType>();
+  const [currentRow, setCurrentRow] = useState<API.ItemData>();
+  const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const access = useAccess();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+  const { items: categories, loading } = useQueryList('/bills');
+
+  /**
+   * @en-US International configuration
+   * @zh-CN 国际化配置
+   * */
   const columns: ProColumns<any>[] = [
     {
-      title: intl.formatMessage({ id: 'pages.bills.amount' }),
-      dataIndex: 'amount',
-      valueType: 'money',
-      sorter: true,
-      search: true,
-      fieldProps: {
-        placeholder: intl.formatMessage({ id: 'pages.bills.amount.placeholder' }),
+      title: intl.formatMessage({ id: 'name' }),
+      dataIndex: 'name',
+      copyable: true,
+      renderFormItem: (item, { ...rest }) => {
+        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_name' })} />;
+      },
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.bills.type' }),
-      dataIndex: 'type',
-      valueEnum: {
-        income: {
-          text: intl.formatMessage({ id: 'pages.bills.income' }),
-          status: 'Success',
-        },
-        expense: {
-          text: intl.formatMessage({ id: 'pages.bills.expense' }),
-          status: 'Error',
-        },
-      },
-      fieldProps: {
-        placeholder: intl.formatMessage({ id: 'pages.bills.type.placeholder' }),
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.bills.description' }),
-      dataIndex: 'description',
-      ellipsis: true,
+      title: intl.formatMessage({ id: 'image' }),
+      dataIndex: 'image',
       hideInSearch: true,
-      fieldProps: {
-        placeholder: intl.formatMessage({ id: 'pages.bills.description.placeholder' }),
+      valueType: 'image',
+    },
+    {
+      title: intl.formatMessage({ id: 'parent_category' }),
+      dataIndex: ['parent', 'name'],
+      hideInSearch: true,
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
+        if (type === 'form') {
+          return null;
+        }
+
+        return (
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder={intl.formatMessage({ id: 'select_parent_category' })}
+            allowClear
+            treeNodeFilterProp="name"
+            fieldNames={{ label: 'name', value: '_id' }}
+            treeDefaultExpandAll
+            treeData={categories}
+            loading={loading}
+            {...fieldProps}
+          />
+        );
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.bills.createTime' }),
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
-      sorter: true,
+      title: intl.formatMessage({ id: 'isEnable' }),
+      dataIndex: 'isEnable',
+      width: 150,
       hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'select_online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'select_offline' })}
+          checked={record.isOnline}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <Button
-          key="delete"
-          type="link"
+        <a
+          key="edit"
           onClick={() => {
-            Modal.confirm({
-              title: intl.formatMessage({ id: 'pages.bills.confirmDelete' }),
-              onOk: async () => {
-                try {
-                  await removeItem('/bills', { ids: [record._id] });
-                  message.success('删除成功');
-                  actionRef.current?.reload();
-                } catch (error) {
-                  message.error('删除失败');
-                }
-              },
-            });
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
           }}
         >
-          {intl.formatMessage({ id: 'pages.bills.delete' })}
-        </Button>,
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        access.canDeleteMaterialCategory && (
+          <a
+            key="delete"
+            onClick={() => {
+              Modal.confirm({
+                title: intl.formatMessage({ id: 'confirm_delete' }),
+                content: intl.formatMessage({ id: 'confirm_delete_content' }),
+                okText: intl.formatMessage({ id: 'confirm' }),
+                cancelText: intl.formatMessage({ id: 'cancel' }),
+                onOk: async () => {
+                  await handleRemove([record._id!]);
+                  actionRef.current?.reloadAndRest?.();
+                },
+              });
+            }}
+          >
+            {intl.formatMessage({ id: 'delete' })}
+          </a>
+        ),
       ],
     },
   ];
 
   return (
     <PageContainer>
-      <ProTable
-        headerTitle={intl.formatMessage({ id: 'pages.bills.list' })}
+      <ProTable<API.ItemData, API.PageParams>
+        headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
         search={{
-          labelWidth: 120,
+          labelWidth: 100,
         }}
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => setCreateModalVisible(true)}>
-            <PlusOutlined />
-            <FormattedMessage id="pages.bills.new" />
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              handleModalOpen(true);
+            }}
+          >
+            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={async (params, sort, filter) => {
-          try {
-            return await queryList('/bills', params, sort, filter);
-          } catch (error) {
-            message.error('获取数据失败');
-            return {
-              data: [],
-              success: false,
-              total: 0,
-            };
-          }
-        }}
+        request={async (params, sort, filter) => queryList('/bills', params, sort, filter)}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -127,88 +238,82 @@ const TableList: React.FC = () => {
           },
         }}
       />
-
-      <ModalForm
-        title={intl.formatMessage({ id: 'pages.bills.new' })}
-        open={createModalVisible}
-        onOpenChange={setCreateModalVisible}
-        onFinish={async (values) => {
-          try {
-            await addItem('/bills', values);
-            message.success('创建成功');
-            setCreateModalVisible(false);
-            actionRef.current?.reload();
-            return true;
-          } catch (error) {
-            message.error('创建失败');
-            return false;
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
+            </div>
           }
-        }}
-      >
-        <ProFormDigit
-          name="amount"
-          label={intl.formatMessage({ id: 'pages.bills.amount' })}
-          placeholder={intl.formatMessage({ id: 'pages.bills.amount.placeholder' })}
-          rules={[{ required: true }]}
-          min={0}
-          fieldProps={{
-            precision: 2,
+        >
+          {(access.canSuperAdmin || access.canDeleteMaterialCategory) && (
+            <Button
+              danger
+              onClick={() => {
+                return Modal.confirm({
+                  title: intl.formatMessage({ id: 'modal.delete.title' }),
+                  onOk: async () => {
+                    await handleRemove(selectedRowsState?.map((item) => item._id!));
+                    setSelectedRows([]);
+                    actionRef.current?.reloadAndRest?.();
+                  },
+                  content: intl.formatMessage({ id: 'modal.delete.content' }),
+                  okText: intl.formatMessage({ id: 'modal.okText' }),
+                  cancelText: intl.formatMessage({ id: 'modal.cancelText' }),
+                });
+              }}
+            >
+              <FormattedMessage
+                id="pages.searchTable.batchDeletion"
+                defaultMessage="Batch deletion"
+              />
+            </Button>
+          )}
+        </FooterToolbar>
+      )}
+      {(access.canSuperAdmin || access.canCreateMaterialCategory) && (
+        <Create
+          open={createModalOpen}
+          onOpenChange={handleModalOpen}
+          onFinish={async (value) => {
+            const success = await handleAdd(value as API.ItemData);
+            if (success) {
+              handleModalOpen(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
           }}
         />
-        <ProFormSelect
-          name="type"
-          label={intl.formatMessage({ id: 'pages.bills.type' })}
-          placeholder={intl.formatMessage({ id: 'pages.bills.type.placeholder' })}
-          options={[
-            {
-              label: intl.formatMessage({ id: 'pages.bills.income' }),
-              value: 'income',
-            },
-            {
-              label: intl.formatMessage({ id: 'pages.bills.expense' }),
-              value: 'expense',
-            },
-          ]}
-          rules={[{ required: true }]}
-        />
-        <ProFormTextArea
-          name="description"
-          label={intl.formatMessage({ id: 'pages.bills.description' })}
-          placeholder={intl.formatMessage({ id: 'pages.bills.description.placeholder' })}
-        />
-      </ModalForm>
-
-      {selectedRows.length > 0 && (
-        <div style={{ backgroundColor: '#fff', padding: 24, marginTop: 24 }}>
-          <span>
-            <FormattedMessage id="pages.bills.chosen" /> {selectedRows.length}{' '}
-            <FormattedMessage id="pages.bills.item" />
-          </span>
-          <Button
-            style={{ marginLeft: 8 }}
-            danger
-            onClick={() => {
-              Modal.confirm({
-                title: intl.formatMessage({ id: 'pages.bills.batchDelete' }),
-                onOk: async () => {
-                  try {
-                    await removeItem('/bills', {
-                      ids: selectedRows.map((row) => row._id),
-                    });
-                    message.success('批量删除成功');
-                    setSelectedRows([]);
-                    actionRef.current?.reload();
-                  } catch (error) {
-                    message.error('批量删除失败');
-                  }
-                },
-              });
-            }}
-          >
-            <FormattedMessage id="pages.bills.batchDeletion" />
-          </Button>
-        </div>
       )}
+      {(access.canSuperAdmin || access.canUpdateMaterialCategory) && (
+        <Update
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalOpen(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+          onCancel={handleUpdateModalOpen}
+          updateModalOpen={updateModalOpen}
+          values={currentRow || {}}
+        />
+      )}
+      <Show
+        open={showDetail}
+        currentRow={currentRow as API.ItemData}
+        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+      />
     </PageContainer>
   );
 };
