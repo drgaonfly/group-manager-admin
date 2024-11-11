@@ -93,9 +93,9 @@ export default [
     component: './MaterialCategories',
   },
   {
-    path: '/Bill-Category',
-    name: 'menu.bill-category',
-    component: './Bill-Category',
-    icon: 'checkCircle',
+    path: '/bills',
+    name: 'menu.bills',
+    component: './Bills',
+    icon: 'CheckCircleOutlined',
   },
 ];
