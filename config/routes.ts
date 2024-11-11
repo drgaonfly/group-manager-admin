@@ -87,15 +87,9 @@ export default [
     ],
   },
   {
-    name: 'list.materialCategories',
-    icon: 'checkCircle',
-    path: '/material-categories',
-    component: './MaterialCategories',
-  },
-  {
     path: '/bills',
     name: 'menu.bills',
     component: './Bills',
-    icon: 'CheckCircleOutlined',
+    icon: 'UsergroupAddOutlined',
   },
 ];
