@@ -92,4 +92,10 @@ export default [
     path: '/material-categories',
     component: './MaterialCategories',
   },
+  {
+    path: '/bills',
+    name: 'menu.bills',
+    component: './Bills',
+    icon: 'CheckCircleOutlined',
+  },
 ];
