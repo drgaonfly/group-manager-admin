@@ -86,4 +86,5 @@ export default {
   'menu.auth.permission-groups': '权限组',
   'menu.auth.data-permissions': '数据权限',
   'menu.material-categories': '材料类目',
+  'menu.bill-category': '账单类目',
 };
