@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
@@ -10,7 +10,6 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 // import useQueryList from '@/hooks/useQueryList';
-import Show from './components/Show';
 
 /**
  * @en-US Add node
@@ -20,7 +19,7 @@ import Show from './components/Show';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading('Adding...');
   try {
-    await addItem('/bills', { ...fields });
+    await addItem('/bills/fetch', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -40,7 +39,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Updating...');
   try {
-    await updateItem(`/bills/${fields._id}`, fields);
+    await updateItem(`/${fields._id}`, fields);
     hide();
 
     message.success('Updated successfully');
@@ -62,13 +61,16 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading('Removing...');
   if (!ids) return true;
   try {
-    await removeItem('/bills', {
+    console.log('Attempting to delete:', ids);
+    const response = await removeItem('/bills/fetch', {
       ids,
     });
+    console.log('zhel', 'Delete response:', response);
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
   } catch (error: any) {
+    console.error('Delete error:', error);
     hide();
     message.error(error.response.data.message ?? 'Delete failed, please try again');
     return false;
@@ -92,8 +94,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -104,21 +104,18 @@ const TableList: React.FC = () => {
       dataIndex: 'amount',
       valueType: 'money',
       hideInSearch: false,
-      sorter: true,
     },
     {
       title: intl.formatMessage({ id: 'rate' }),
       dataIndex: 'rate',
       valueType: 'percent',
       hideInSearch: false,
-      sorter: true,
     },
     {
       title: intl.formatMessage({ id: 'fixedRate' }),
       dataIndex: 'fixedRate',
       valueType: 'digit',
       hideInSearch: false,
-      sorter: true,
     },
     {
       title: intl.formatMessage({ id: 'transactionType' }),
@@ -191,7 +188,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={async (params, sort, filter) => queryList('/bills', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/bills/fetch', params, sort, filter)}
         dataSource={[]}
         pagination={{
           defaultPageSize: 10,
@@ -271,15 +268,6 @@ const TableList: React.FC = () => {
           values={currentRow || {}}
         />
       )}
-      <Show
-        open={showDetail}
-        currentRow={currentRow as API.ItemData}
-        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-      />
     </PageContainer>
   );
 };

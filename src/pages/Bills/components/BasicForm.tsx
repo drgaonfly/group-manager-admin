@@ -1,77 +1,54 @@
 import { useIntl } from '@umijs/max';
-import useQueryList from '@/hooks/useQueryList';
-import { ProForm, ProFormText, ProFormSwitch, ProFormTreeSelect } from '@ant-design/pro-components';
-import 'react-quill/dist/quill.snow.css';
-import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { ProForm, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 
 interface Props {
-  newRecord?: boolean;
-  setImageUrl: (url: string) => void;
-  imageUrl?: string | undefined;
   values?: any;
 }
 
-const BasicForm: React.FC<Props> = (props) => {
+const BasicForm: React.FC<Props> = () => {
   const intl = useIntl();
-  const { setImageUrl, imageUrl } = props;
-  const { items: categories, loading } = useQueryList('/bills');
-
-  const defaultFileList = imageUrl
-    ? [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: imageUrl,
-        },
-      ]
-    : [];
 
   return (
     <>
       <ProForm.Group>
-        <ProFormText
-          name="name"
-          label={intl.formatMessage({ id: 'name' })}
+        <ProFormDigit
+          name="amount"
+          label={intl.formatMessage({ id: 'amount' })}
           width="md"
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_name' }) }]}
+          rules={[{ required: true }]}
         />
 
-        <AliyunOSSUpload
-          onFileUpload={(url: string) => {
-            console.log('Uploaded file URL:', url);
-            setImageUrl!(url);
-          }}
-          accept=".jpg,.jpeg,.png,.pdf"
-          defaultFileList={defaultFileList}
-        />
-
-        <ProFormTreeSelect
-          name="parent"
-          rules={[{ required: false }]}
+        <ProFormDigit
+          name="rate"
+          label={intl.formatMessage({ id: 'rate' })}
           width="md"
-          label={intl.formatMessage({ id: 'parent_category' })}
-          allowClear
-          secondary
           fieldProps={{
-            showArrow: false,
-            treeDefaultExpandAll: true,
-            filterTreeNode: true,
-            showSearch: true,
-            dropdownMatchSelectWidth: false,
-            autoClearSearchValue: true,
-            treeNodeFilterProp: 'name',
-            fieldNames: {
-              label: 'name',
-              value: '_id',
-              children: 'children',
-            },
-            treeData: categories,
-            loading,
+            precision: 2,
+            min: 0,
+            max: 1,
           }}
         />
 
-        <ProFormSwitch name="isEnable" label={intl.formatMessage({ id: 'isEnable' })} />
+        <ProFormDigit
+          name="fixedRate"
+          label={intl.formatMessage({ id: 'fixedRate' })}
+          width="md"
+          rules={[{ required: true }]}
+        />
+
+        <ProFormSelect
+          name="transactionType"
+          label={intl.formatMessage({ id: 'transactionType' })}
+          width="md"
+          rules={[{ required: true }]}
+          valueEnum={{
+            income: {
+              text: intl.formatMessage({ id: 'transactionType.income' }),
+              status: 'Success',
+            },
+            issue: { text: intl.formatMessage({ id: 'transactionType.issue' }), status: 'Error' },
+          }}
+        />
       </ProForm.Group>
     </>
   );
