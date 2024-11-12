@@ -19,7 +19,7 @@ import Create from './components/Create';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading('Adding...');
   try {
-    await addItem('/bills/fetch', { ...fields });
+    await addItem('/bills', { ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -62,7 +62,7 @@ const handleRemove = async (ids: string[]) => {
   if (!ids) return true;
   try {
     console.log('Attempting to delete:', ids);
-    const response = await removeItem('/bills/fetch', {
+    const response = await removeItem('/bills', {
       ids,
     });
     console.log('zhel', 'Delete response:', response);
@@ -189,7 +189,6 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={async (params, sort, filter) => queryList('/bills/fetch', params, sort, filter)}
-        dataSource={[]}
         pagination={{
           defaultPageSize: 10,
           showQuickJumper: true,
