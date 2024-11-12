@@ -2,14 +2,14 @@ import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, Switch, TreeSelect } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
-import useQueryList from '@/hooks/useQueryList';
+// import useQueryList from '@/hooks/useQueryList';
 import Show from './components/Show';
 
 /**
@@ -93,7 +93,6 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const { items: categories, loading } = useQueryList('/bills');
 
   /**
    * @en-US International configuration
@@ -101,80 +100,42 @@ const TableList: React.FC = () => {
    * */
   const columns: ProColumns<any>[] = [
     {
-      title: intl.formatMessage({ id: 'name' }),
-      dataIndex: 'name',
-      copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_name' })} />;
-      },
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
+      title: intl.formatMessage({ id: 'amount' }),
+      dataIndex: 'amount',
+      valueType: 'money',
+      hideInSearch: false,
+      sorter: true,
     },
     {
-      title: intl.formatMessage({ id: 'image' }),
-      dataIndex: 'image',
-      hideInSearch: true,
-      valueType: 'image',
+      title: intl.formatMessage({ id: 'rate' }),
+      dataIndex: 'rate',
+      valueType: 'percent',
+      hideInSearch: false,
+      sorter: true,
     },
     {
-      title: intl.formatMessage({ id: 'parent_category' }),
-      dataIndex: ['parent', 'name'],
-      hideInSearch: true,
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
-        if (type === 'form') {
-          return null;
-        }
-
-        return (
-          <TreeSelect
-            showSearch
-            style={{ width: '100%' }}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            placeholder={intl.formatMessage({ id: 'select_parent_category' })}
-            allowClear
-            treeNodeFilterProp="name"
-            fieldNames={{ label: 'name', value: '_id' }}
-            treeDefaultExpandAll
-            treeData={categories}
-            loading={loading}
-            {...fieldProps}
-          />
-        );
+      title: intl.formatMessage({ id: 'fixedRate' }),
+      dataIndex: 'fixedRate',
+      valueType: 'digit',
+      hideInSearch: false,
+      sorter: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'transactionType' }),
+      dataIndex: 'transactionType',
+      valueEnum: {
+        income: { text: intl.formatMessage({ id: 'transactionType.income' }), status: 'Success' },
+        issue: { text: intl.formatMessage({ id: 'transactionType.issue' }), status: 'Error' },
       },
     },
     {
-      title: intl.formatMessage({ id: 'isEnable' }),
-      dataIndex: 'isEnable',
-      width: 150,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'select_online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'select_offline' })}
-          checked={record.isOnline}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+      sorter: true,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -231,6 +192,11 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={async (params, sort, filter) => queryList('/bills', params, sort, filter)}
+        dataSource={[]}
+        pagination={{
+          defaultPageSize: 10,
+          showQuickJumper: true,
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

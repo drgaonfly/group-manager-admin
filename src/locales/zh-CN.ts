@@ -23,4 +23,18 @@ export default {
   ...pwa,
   ...component,
   ...app,
+  amount: '金额',
+  rate: '费率',
+  fixedRate: '固定汇率',
+  transactionType: '交易类型',
+  'transactionType.income': '收入',
+  'transactionType.issue': '支出',
+  createdAt: '创建时间',
+  updatedAt: '更新时间',
+
+  // 表单提示文字
+  'enter.amount': '请输入金额',
+  'enter.rate': '请输入费率',
+  'enter.fixedRate': '请输入固定汇率',
+  'select.transactionType': '请选择交易类型',
 };
