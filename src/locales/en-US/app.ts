@@ -95,7 +95,7 @@ export default {
   isEnable: 'isEnable',
   permission_choose: 'Choose Permissions',
   permissions_list: 'Permissions List',
-  path: 'Path',
+  path: 'Route Path',
   select_parent_menu: 'Choose Parent',
   select_parent_category: 'Choose Parent',
   select_parent_permissionGroup: 'Choose Parent',
@@ -302,4 +302,9 @@ export default {
   select_online: 'Online',
   select_offline: 'Offline',
   isAdmin: 'isAdmin',
+  icon: 'Menu Icon',
+  'path.placeholder': 'Please enter route path',
+  'icon.placeholder': 'Please enter icon name',
+  'path.required': 'Please enter route path',
+  'icon.required': 'Please enter icon name',
 };

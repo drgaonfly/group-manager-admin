@@ -45,9 +45,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
 
         <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_path' }) }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_icon' }) }]}
           width="md"
-          label={intl.formatMessage({ id: 'path' })}
+          label={intl.formatMessage({ id: 'icon' })}
           name="icon"
         />
 
