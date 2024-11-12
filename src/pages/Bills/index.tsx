@@ -39,7 +39,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Updating...');
   try {
-    await updateItem(`/${fields._id}`, fields);
+    await updateItem(`/bills/${fields._id}`, fields);
     hide();
 
     message.success('Updated successfully');
