@@ -37,4 +37,6 @@ export default {
   'enter.rate': '请输入费率',
   'enter.fixedRate': '请输入固定汇率',
   'select.transactionType': '请选择交易类型',
+  'menu.bills': '账单',
+  list: '账单列表',
 };

@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
@@ -9,6 +9,7 @@ import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
+import type { Key } from 'react';
 // import useQueryList from '@/hooks/useQueryList';
 
 /**
@@ -89,8 +90,10 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [activeKey, setActiveKey] = useState<string>('');
 
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<ProFormInstance>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
@@ -103,19 +106,19 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'amount' }),
       dataIndex: 'amount',
       valueType: 'money',
-      hideInSearch: false,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'rate' }),
       dataIndex: 'rate',
       valueType: 'percent',
-      hideInSearch: false,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'fixedRate' }),
       dataIndex: 'fixedRate',
       valueType: 'digit',
-      hideInSearch: false,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'transactionType' }),
@@ -175,7 +178,45 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="_id"
         search={{
-          labelWidth: 100,
+          defaultCollapsed: false,
+          span: {
+            xs: 24, // 手机端占满
+            sm: 24, // 平板端占满
+            md: 8, // 电脑端
+            lg: 8, // 大屏幕
+            xl: 8, // 超大屏幕
+            xxl: 8, // 超超大屏幕
+          },
+        }}
+        formRef={formRef}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: intl.formatMessage({ id: 'all', defaultMessage: '全部' }),
+                key: '',
+              },
+              {
+                label: intl.formatMessage({ id: 'transactionType.income', defaultMessage: '收入' }),
+                key: 'income',
+              },
+              {
+                label: intl.formatMessage({ id: 'transactionType.issue', defaultMessage: '支出' }),
+                key: 'issue',
+              },
+            ],
+            onChange: (activeKey?: Key) => {
+              setActiveKey(activeKey as string);
+              if (formRef.current) {
+                formRef.current.setFieldsValue({
+                  transactionType: activeKey ? (activeKey as string) : undefined,
+                });
+                formRef.current.submit();
+              }
+            },
+          },
         }}
         toolBarRender={() => [
           <Button

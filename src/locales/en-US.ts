@@ -33,4 +33,6 @@ export default {
   'enter.rate': 'Please enter rate',
   'enter.fixedRate': 'Please enter fixed rate',
   'select.transactionType': 'Please select transaction type',
+  'menu.bills': 'Bills',
+  list: 'Bills List',
 };

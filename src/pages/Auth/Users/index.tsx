@@ -241,7 +241,16 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="_id"
         search={{
-          labelWidth: 100,
+          labelWidth: 65,
+          collapsed: false,
+          span: {
+            xs: 24, // 手机端占满
+            sm: 24, // 平板端占满
+            md: 8, // 电脑端占满
+            lg: 8, // 大屏幕占满
+            xl: 8, // 超大屏幕
+            xxl: 8, // 超超大屏幕
+          },
         }}
         toolBarRender={() => [
           (access.canSuperAdmin || access.canUpdateUser) && (
