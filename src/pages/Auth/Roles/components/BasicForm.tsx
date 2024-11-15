@@ -50,6 +50,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           permissions: checkedKeys,
         });
       }}
+      submitter={{
+        render: (props, dom) => {
+          return (
+            <div style={{ textAlign: 'right' }}>
+              {dom.map((button, index) => (
+                <span key={index} style={{ marginLeft: 8 }}>
+                  {button}
+                </span>
+              ))}
+            </div>
+          );
+        },
+      }}
     >
       <ProForm.Group>
         <ProFormText

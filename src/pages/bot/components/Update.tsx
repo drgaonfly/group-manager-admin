@@ -1,4 +1,4 @@
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import { ModalForm, ProFormText, ProFormTextArea, ProForm } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 
 export type FormValueType = {
@@ -29,6 +29,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       open={updateModalOpen}
       modalProps={{
         onCancel: () => onCancel(false),
+        width: '800px', // 调整模态框宽度
       }}
       onFinish={async (formValues) => {
         await onSubmit({
@@ -39,62 +40,54 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
       initialValues={values}
     >
-      <ProFormText
-        name="botId"
-        label={intl.formatMessage({ id: 'pages.searchTable.form.botId' })}
-        placeholder={intl.formatMessage({
-          id: 'pages.searchTable.form.placeholder',
-        })}
-      />
-      <ProFormText
-        name="botToken"
-        label={intl.formatMessage({ id: 'pages.searchTable.form.botToken' })}
-        rules={[
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'pages.searchTable.form.required' }),
-          },
-        ]}
-        placeholder={intl.formatMessage({
-          id: 'pages.searchTable.form.placeholder',
-        })}
-      />
-      <ProFormText
-        name="botUsername"
-        label={intl.formatMessage({ id: 'pages.searchTable.form.botUsername' })}
-        placeholder={intl.formatMessage({
-          id: 'pages.searchTable.form.placeholder',
-        })}
-      />
-      <ProFormText
-        name="botName"
-        label={intl.formatMessage({ id: 'pages.searchTable.form.botName' })}
-        placeholder={intl.formatMessage({
-          id: 'pages.searchTable.form.placeholder',
-        })}
-      />
-      <ProFormText
-        name="telegramId"
-        label={intl.formatMessage({ id: 'pages.searchTable.form.telegramId' })}
-        placeholder={intl.formatMessage({
-          id: 'pages.searchTable.form.placeholder',
-        })}
-      />
-      <ProFormText
-        name="telegramUsername"
-        label={intl.formatMessage({ id: 'pages.searchTable.form.telegramUsername' })}
-        placeholder={intl.formatMessage({
-          id: 'pages.searchTable.form.placeholder',
-        })}
-      />
-      <ProFormTextArea
-        name="description"
-        label={intl.formatMessage({ id: 'description' })}
-        placeholder={intl.formatMessage({ id: 'pages.searchTable.form.placeholder' })}
-        fieldProps={{
-          autoSize: { minRows: 2, maxRows: 6 },
-        }}
-      />
+      <ProForm.Group>
+        <ProFormText
+          name="botId"
+          label={intl.formatMessage({ id: 'botId' })}
+          width="md"
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+        />
+        <ProFormText
+          name="botToken"
+          label={intl.formatMessage({ id: 'botToken' })}
+          width="md"
+          rules={[{ required: true }]}
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+        />
+        <ProFormText
+          name="botUsername"
+          label={intl.formatMessage({ id: 'botUsername' })}
+          width="md"
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+        />
+        <ProFormText
+          name="botName"
+          label={intl.formatMessage({ id: 'botName' })}
+          width="md"
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+        />
+        <ProFormText
+          name="telegramId"
+          label={intl.formatMessage({ id: 'telegramId' })}
+          width="md"
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+        />
+        <ProFormText
+          name="telegramUsername"
+          label={intl.formatMessage({ id: 'telegramUsername' })}
+          width="md"
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+        />
+        <ProFormTextArea
+          name="description"
+          label={intl.formatMessage({ id: 'description' })}
+          width="xl"
+          placeholder={intl.formatMessage({ id: 'please.enter' })}
+          fieldProps={{
+            autoSize: { minRows: 2, maxRows: 6 },
+          }}
+        />
+      </ProForm.Group>
     </ModalForm>
   );
 };

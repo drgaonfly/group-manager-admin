@@ -110,7 +110,7 @@ const TableList: React.FC = () => {
       dataIndex: 'botToken',
       valueType: 'text',
       hideInTable: false, // 出于安全考虑，在表格中隐藏 token
-      search: false,
+      // search: false,
     },
     {
       title: intl.formatMessage({ id: 'botUsername' }),
