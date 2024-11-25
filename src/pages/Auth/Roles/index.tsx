@@ -150,6 +150,16 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: '/data-permissions', defaultMessage: '数据权限列表' }),
+      dataIndex: 'dataPermissions',
+      hideInSearch: true,
+      ellipsis: false,
+      renderText: (val: { name: string }[]) => {
+        if (!val || val.length === 0) return '-';
+        return val.map((item) => item.name).join(', ');
+      },
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

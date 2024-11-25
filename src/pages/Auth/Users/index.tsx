@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -264,18 +264,18 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          (access.canSuperAdmin || access.canUpdateUser) && (
-            <Button
-              danger
-              key="batchUpload"
-              onClick={() => {
-                setBatchUploadModalOpen(true);
-              }}
-            >
-              <UploadOutlined />{' '}
-              <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
-            </Button>
-          ),
+          // (access.canSuperAdmin || access.canUpdateUser) && (
+          //   <Button
+          //     danger
+          //     key="batchUpload"
+          //     onClick={() => {
+          //       setBatchUploadModalOpen(true);
+          //     }}
+          //   >
+          //     <UploadOutlined />{' '}
+          //     <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
+          //   </Button>
+          // ),
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
         columns={columns}

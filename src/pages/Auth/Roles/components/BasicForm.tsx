@@ -16,6 +16,8 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
   const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
+  const { items: dataPermissionGroups, loading: dataPermissionLoading } =
+    useQueryList('/data-permissions');
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -23,6 +25,10 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     values.permissions?.map((permission: Permission) => `${permission._id}`) ?? [],
   );
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
+
+  const [dataCheckedKeys, setDataCheckedKeys] = useState<
+    Key[] | { checked: Key[]; halfChecked: Key[] }
+  >(values.dataPermissions?.map((permission: any) => `${permission._id}`) ?? []);
 
   const onExpand = (expandedKeysValue: Key[]) => {
     setExpandedKeys(expandedKeysValue);
@@ -38,16 +44,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     setSelectedKeys(selectedKeysValue);
   };
 
+  const onDataPermissionCheck = (
+    checkedKeysValue: Key[] | { checked: Key[]; halfChecked: Key[] },
+  ) => {
+    setDataCheckedKeys(checkedKeysValue);
+  };
+
   return (
     <ProForm
       initialValues={{
         ...values,
         permissions: values?.permissions?.map((permission: Permission) => permission._id),
+        dataPermissions: values?.dataPermissions?.map((dp: any) => dp._id),
       }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
           permissions: checkedKeys,
+          dataPermissions: dataCheckedKeys,
         });
       }}
       submitter={{
@@ -83,7 +97,22 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               checkedKeys={checkedKeys}
               onSelect={onSelect}
               selectedKeys={selectedKeys}
-              treeData={permissionGroups} // Use filtered top-level groups
+              treeData={permissionGroups}
+              fieldNames={{ title: 'name', key: '_id', children: 'children' }}
+            />
+          </Spin>
+        </ProForm.Item>
+
+        <ProForm.Item
+          name="dataPermissions"
+          label={intl.formatMessage({ id: 'data_permission_choose', defaultMessage: '数据权限' })}
+        >
+          <Spin spinning={dataPermissionLoading}>
+            <Tree
+              checkable
+              onCheck={onDataPermissionCheck}
+              checkedKeys={dataCheckedKeys}
+              treeData={dataPermissionGroups}
               fieldNames={{ title: 'name', key: '_id', children: 'children' }}
             />
           </Spin>
