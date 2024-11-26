@@ -1,8 +1,8 @@
+import { useIntl } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
 import BasicForm from './BasicForm';
-import { ModalForm } from '@ant-design/pro-components';
-import { useIntl } from '@umijs/max';
-import extractPathFromUrl from '@/utils/extractPathFromUrl';
+import { Modal } from 'antd';
+// import extractPathFromUrl from '@/utils/extractPathFromUrl';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -20,48 +20,35 @@ export type UpdateFormProps = {
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
-  const [imageUrl, setImageUrl] = useState<string | undefined>('');
+  const [imageUrl, setImageUrl] = useState<string | undefined>(values.avatar?.url || '');
 
   useEffect(() => {
-    // 初始化图片URL
     setImageUrl(values.avatar?.url);
   }, [values]);
 
+  const handleSubmit = async (formValues: any) => {
+    await onSubmit({
+      ...formValues,
+    });
+  };
+
   return (
-    <ModalForm
-      title={intl.formatMessage({ id: 'modify' })}
+    <Modal
+      maskClosable={false}
       width="70%"
-      modalProps={{
-        destroyOnClose: true,
-        maskClosable: false,
-      }}
+      destroyOnClose
+      title={intl.formatMessage({ id: 'modify' })}
       open={updateModalOpen}
-      onOpenChange={onCancel}
-      onFinish={async (formValues: any) => {
-        // 处理表单提交
-        await onSubmit({
-          ...formValues,
-          avatar: imageUrl
-            ? {
-                url: extractPathFromUrl(imageUrl),
-                name: 'avatar',
-                type: 'image',
-              }
-            : values.avatar,
-        });
-      }}
-      initialValues={values}
+      footer={false}
+      onCancel={() => onCancel(false)}
     >
       <BasicForm
         values={values}
+        onFinish={handleSubmit}
         setImageUrl={setImageUrl}
         imageUrl={imageUrl}
-        onFinish={async (values) => {
-          // 这个 onFinish 可能不会被调用，因为我们使用的是 ModalForm 的 onFinish
-          console.log('BasicForm onFinish:', values);
-        }}
       />
-    </ModalForm>
+    </Modal>
   );
 };
 
