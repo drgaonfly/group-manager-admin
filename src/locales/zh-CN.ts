@@ -172,4 +172,43 @@ export default {
   'menu.teacher': '教师管理',
   'list.teachers': '教师管理',
   'menu.teachers': '教师管理',
+
+  // 教师相关
+  'pages.teacher.avatar': '头像',
+  'pages.teacher.avatar.required': '请上传头像',
+
+  'pages.teacher.education.required': '请选择学历',
+
+  'pages.teacher.teachingAge.required': '请输入教龄',
+
+  'pages.teacher.lessonCategory': '课程类别',
+  'pages.teacher.lessonCategory.speaking': '口语',
+  'pages.teacher.lessonCategory.writing': '写作',
+  'pages.teacher.lessonCategory.listening': '听力',
+  'pages.teacher.lessonCategory.reading': '阅读',
+  'pages.teacher.lessonCategory.spelling': '拼写',
+  'pages.teacher.lessonCategory.grammar': '语法',
+  'pages.teacher.lessonCategory.pronunciation': '发音',
+  'pages.teacher.lessonCategory.all': '全部',
+  'pages.teacher.lessonCategory.required': '请选择课程类别',
+
+  'pages.teacher.speaks': '语言能力',
+  'pages.teacher.speaks.spanish': '西班牙语',
+  'pages.teacher.speaks.japanese': '日语',
+  'pages.teacher.speaks.french': '法语',
+  'pages.teacher.speaks.english': '英语',
+  'pages.teacher.speaks.chinese': '中文（普通话）',
+  'pages.teacher.speaks.required': '请选择语言能力',
+
+  'pages.teacher.teacherType': '教师类型',
+  'pages.teacher.teacherType.both': '两者都是',
+  'pages.teacher.teacherType.communityTutor': '社区导师',
+  'pages.teacher.teacherType.professionalTeacher': '专业教师',
+  'pages.teacher.teacherType.required': '请选择教师类型',
+
+  // 上传相关
+  'upload.text': '点击或拖拽文件到此区域上传',
+  'upload.hint': '支持单个或批量上传，严禁上传公司数据或其他违禁文件',
+  please_upload_image: '请上传图片文件',
+  image_must_smaller_than_2mb: '图片必须小于2MB',
 };

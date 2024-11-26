@@ -124,9 +124,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'username', defaultMessage: '用户名' }),
       dataIndex: 'username',
       copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_username' })} />;
-      },
       render: (dom, entity) => {
         return (
           <a
@@ -144,9 +141,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'email', defaultMessage: '邮箱' }),
       dataIndex: 'email',
       copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_email' })} />;
-      },
     },
     {
       title: intl.formatMessage({ id: 'phone', defaultMessage: '电话' }),
@@ -178,23 +172,6 @@ const TableList: React.FC = () => {
           status: 'Error',
         },
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.customer.isTeacher', defaultMessage: '是否是老师' }),
-      dataIndex: 'isTeacher',
-      valueType: 'select',
-      valueEnum: {
-        yes: {
-          text: intl.formatMessage({ id: 'pages.customer.isTeacher.yes', defaultMessage: '是' }),
-          status: 'Success',
-        },
-        no: {
-          text: intl.formatMessage({ id: 'pages.customer.isTeacher.no', defaultMessage: '否' }),
-          status: 'Default',
-        },
-      },
-      // filters: true,
-      // onFilter: true,
     },
     {
       title: intl.formatMessage({ id: 'created_at', defaultMessage: '创建时间' }),
@@ -246,7 +223,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="_id"
         search={{
-          labelWidth: 85,
+          labelWidth: 75,
           collapsed: false,
           span: {
             xs: 24, // 手机端占满

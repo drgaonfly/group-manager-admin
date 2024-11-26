@@ -2,18 +2,23 @@ import React from 'react';
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import { UploadProps } from 'antd/lib/upload/interface';
+import { UploadProps, UploadFile } from 'antd/lib/upload/interface';
 import { useIntl } from '@umijs/max';
 
 interface MyUploadProps {
   onFileUpload: (url: string) => void;
-  accept?: string; // 使accept属性可选
+  accept?: string;
   url?: string;
+  defaultFileList?: UploadFile[];
 }
 
-const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/upload' }) => {
+const MyUpload: React.FC<MyUploadProps> = ({
+  onFileUpload,
+  accept,
+  url = '/upload',
+  defaultFileList = [],
+}) => {
   const intl = useIntl();
-  // 定义默认的accept值
   const defaultAccept = '*';
 
   const customRequest = async (options: any) => {
@@ -34,7 +39,9 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/uploa
         if (onSuccess) {
           onSuccess(response);
         }
-        const httpUrl = response.data.file; // 假设返回的signedURL就在data字段中
+        // const httpUrl = response.data.file;
+        // onFileUpload(httpUrl);
+        const httpUrl = response.data.signedURL;
         onFileUpload(httpUrl);
       } else {
         message.error(intl.formatMessage({ id: 'upload_failed', defaultMessage: 'Upload failed' }));
@@ -63,13 +70,6 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/uploa
     multiple: false,
     customRequest,
     showUploadList: true,
-    // beforeUpload: (file) => {
-    //   const isLessThan2M = file.size / 1024 / 1024 < 6; // 检查文件大小是否小于2MB
-    //   if (!isLessThan2M) {
-    //     message.error('文件大小不能超过6MB!');
-    //   }
-    //   return isLessThan2M; // 如果文件大于2MB，不上传文件
-    // },
     onChange(info) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
@@ -101,6 +101,7 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/uploa
       accept={accept || defaultAccept}
       maxCount={1}
       style={{ width: 328 }}
+      defaultFileList={defaultFileList}
     >
       <p className="ant-upload-drag-icon">
         <InboxOutlined />

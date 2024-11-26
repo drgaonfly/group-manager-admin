@@ -1,6 +1,8 @@
 import { useIntl } from '@umijs/max';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import BasicForm from './BasicForm';
+import { useState } from 'react';
+// import extractPathFromUrl from '@/utils/extractPathFromUrl';
 
 interface Props {
   open: boolean;
@@ -11,6 +13,19 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { open, onOpenChange, onFinish } = props;
+  const [imageUrl, setImageUrl] = useState<string | undefined>('');
+
+  const handleFormFinish = async (values: any) => {
+    if (!imageUrl) {
+      message.error(intl.formatMessage({ id: 'message.error.imageUpload' }));
+      return;
+    }
+
+    await onFinish({
+      ...values,
+    });
+  };
+
   return (
     <Modal
       title={intl.formatMessage({ id: 'add_new' })}
@@ -21,7 +36,12 @@ const Create: React.FC<Props> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <BasicForm newRecord onFinish={onFinish} />
+      <BasicForm
+        newRecord
+        onFinish={handleFormFinish}
+        setImageUrl={setImageUrl}
+        imageUrl={imageUrl}
+      />
     </Modal>
   );
 };

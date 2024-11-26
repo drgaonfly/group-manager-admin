@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+// import DeleteLink from '@/components/DeleteLink';
 
 /**
  * @en-US Add node
@@ -121,6 +122,23 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      title: intl.formatMessage({ id: 'pages.teacher.avatar' }),
+      dataIndex: 'image',
+      hideInSearch: true,
+      render: (_, record) => (
+        <img
+          src={record.avatar}
+          alt="avatar"
+          style={{
+            width: '45px',
+            height: '45px',
+            borderRadius: '50%',
+            objectFit: 'cover',
+          }}
+        />
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'username' }),
       dataIndex: 'username',
       copyable: true,
@@ -200,16 +218,54 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'status' }),
-      dataIndex: 'status',
+      title: intl.formatMessage({ id: 'pages.teacher.lessonCategory' }),
+      dataIndex: 'lessonCategory',
+      valueType: 'select',
+      search: false,
+      fieldProps: {
+        mode: 'multiple', // 设置多选
+      },
       valueEnum: {
-        active: {
-          text: intl.formatMessage({ id: 'active' }),
-          status: 'Success',
+        Speaking: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.speaking' }) },
+        Writing: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.writing' }) },
+        Listening: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.listening' }) },
+        Reading: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.reading' }) },
+        Spelling: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.spelling' }) },
+        Grammar: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.grammar' }) },
+        Pronunciation: {
+          text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.pronunciation' }),
         },
-        inactive: {
-          text: intl.formatMessage({ id: 'inactive' }),
-          status: 'Error',
+        All: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.all' }) },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.speaks' }),
+      dataIndex: 'speaks',
+      valueType: 'select',
+      fieldProps: {
+        mode: 'multiple', // 设置多选
+      },
+      valueEnum: {
+        Spanish: { text: intl.formatMessage({ id: 'pages.teacher.speaks.spanish' }) },
+        Japanese: { text: intl.formatMessage({ id: 'pages.teacher.speaks.japanese' }) },
+        French: { text: intl.formatMessage({ id: 'pages.teacher.speaks.french' }) },
+        English: { text: intl.formatMessage({ id: 'pages.teacher.speaks.english' }) },
+        'Chinese (Mandarin)': { text: intl.formatMessage({ id: 'pages.teacher.speaks.chinese' }) },
+      },
+      search: false,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.teacherType' }),
+      dataIndex: 'teacherType',
+      search: false,
+      valueType: 'select',
+      valueEnum: {
+        Both: { text: intl.formatMessage({ id: 'pages.teacher.teacherType.both' }) },
+        'Community Tutor': {
+          text: intl.formatMessage({ id: 'pages.teacher.teacherType.communityTutor' }),
+        },
+        'Professional Teacher': {
+          text: intl.formatMessage({ id: 'pages.teacher.teacherType.professionalTeacher' }),
         },
       },
     },
@@ -228,7 +284,7 @@ const TableList: React.FC = () => {
       sorter: true,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [

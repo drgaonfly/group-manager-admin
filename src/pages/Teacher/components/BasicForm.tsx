@@ -1,27 +1,96 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormText, ProFormSelect, ProFormDigit } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
+import { Form, Input, message } from 'antd';
+
+import MyUpload from '@/components/MyUpload';
+// import { RcFile } from 'antd/es/upload';
+// import { addItem } from '@/services/ant-design-pro/api';
 
 interface Props {
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
+  setImageUrl: (url: string) => void;
+  imageUrl?: string;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, imageUrl }) => {
   const intl = useIntl();
+  const [formRef] = ProForm.useForm();
+  console.log(imageUrl);
+
+  // const defaultFileList: UploadFile[] = imageUrl
+  //   ? [
+  //       {
+  //         uid: '-1',
+  //         name: 'avatar.png',
+  //         status: 'done' as const,
+  //         url: imageUrl,
+  //         type: 'image/png',
+  //       },
+  //     ]
+  //   : [];
+
+  const handleFormFinish = async (formData: any) => {
+    try {
+      // 检查所有必填字段
+      const requiredFields = {
+        username: '用户名',
+        email: '邮箱',
+        teacherType: '教师类型',
+        education: '教育程度',
+        teachingAge: '教龄',
+        title: '职称',
+        speaks: '语言',
+        lessonCategory: '课程类别',
+      };
+
+      // 检查每个必填字段是否存在且有值
+      const missingFields = Object.entries(requiredFields).filter(
+        ([key]) => !formData[key] || (Array.isArray(formData[key]) && formData[key].length === 0),
+      );
+
+      if (missingFields.length > 0) {
+        const missingFieldNames = missingFields.map(([, label]) => label).join(', ');
+        message.error(`请填写以下必填字段: ${missingFieldNames}`);
+        return;
+      }
+
+      // if (!imageUrl) {
+      //   message.error(intl.formatMessage({ id: 'pages.teacher.avatar.required' }));
+      //   return;
+      // }
+
+      // 构建提交数据
+      console.log('-----', formData);
+      const submitData = {
+        ...formData,
+        // avatar: {
+        //   url: imageUrl,
+        //   name: 'avatar',
+        //   type: 'image',
+        // },
+        // 确保数字类型字段被正确转换
+        teachingAge: Number(formData.teachingAge),
+      };
+
+      console.log('Form submission data:', submitData);
+      await onFinish(submitData);
+    } catch (error) {
+      console.error('表单提交错误:', error);
+      message.error('提交失败，请重试');
+    }
+  };
 
   return (
     <ProForm
+      form={formRef}
       initialValues={{
         ...values,
+        teacherType: values?.teacherType || 'Both',
       }}
-      onFinish={async (values) => {
-        await onFinish({
-          ...values,
-        });
-      }}
+      onFinish={handleFormFinish}
       submitter={{
         render: (props, dom) => {
           return (
@@ -71,16 +140,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'pages.teacher.education' })}
           valueEnum={{
-            bachelor: {
+            Bachelor: {
               text: intl.formatMessage({ id: 'pages.teacher.education.bachelor' }),
             },
-            master: {
+            Master: {
               text: intl.formatMessage({ id: 'pages.teacher.education.master' }),
             },
-            doctor: {
+            Doctor: {
               text: intl.formatMessage({ id: 'pages.teacher.education.doctor' }),
             },
-            other: {
+            Other: {
               text: intl.formatMessage({ id: 'pages.teacher.education.other' }),
             },
           }}
@@ -110,19 +179,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'pages.teacher.title' })}
           valueEnum={{
-            teacher: {
+            Teacher: {
               text: intl.formatMessage({ id: 'pages.teacher.title.teacher' }),
             },
-            gradeDirector: {
+            'Grade Director': {
               text: intl.formatMessage({ id: 'pages.teacher.title.gradeDirector' }),
             },
-            groupLeader: {
+            'Group Leader': {
               text: intl.formatMessage({ id: 'pages.teacher.title.groupLeader' }),
             },
-            viceDirector: {
+            'Vice Director': {
               text: intl.formatMessage({ id: 'pages.teacher.title.viceDirector' }),
             },
-            director: {
+            Director: {
               text: intl.formatMessage({ id: 'pages.teacher.title.director' }),
             },
           }}
@@ -131,7 +200,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           ]}
         />
 
-        <ProFormSelect
+        {/* <ProFormSelect
           name="status"
           width="md"
           initialValue="active"
@@ -147,6 +216,98 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             },
           }}
           rules={[{ required: true, message: intl.formatMessage({ id: 'please_select_status' }) }]}
+        /> */}
+
+        <ProForm.Item
+          required
+          label={intl.formatMessage({ id: 'pages.teacher.avatar' })}
+          name="avatar"
+          getValueFromEvent={(e) => {
+            if (Array.isArray(e)) {
+              return e;
+            }
+            return e?.fileList;
+          }}
+        >
+          <MyUpload
+            accept="image/*"
+            onFileUpload={(url) => {
+              console.log('Uploaded avatar URL:', url);
+              setImageUrl(url);
+              formRef.setFieldsValue({ avatar: url });
+            }}
+            url="/upload"
+          />
+        </ProForm.Item>
+
+        <ProFormSelect
+          name="lessonCategory"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.teacher.lessonCategory' })}
+          mode="multiple"
+          valueEnum={{
+            Speaking: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.speaking' }) },
+            Writing: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.writing' }) },
+            Listening: {
+              text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.listening' }),
+            },
+            Reading: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.reading' }) },
+            Spelling: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.spelling' }) },
+            Grammar: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.grammar' }) },
+            Pronunciation: {
+              text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.pronunciation' }),
+            },
+            All: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.all' }) },
+          }}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'pages.teacher.lessonCategory.required' }),
+            },
+          ]}
+        />
+
+        <ProFormSelect
+          name="speaks"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.teacher.speaks' })}
+          mode="multiple"
+          valueEnum={{
+            Spanish: { text: intl.formatMessage({ id: 'pages.teacher.speaks.spanish' }) },
+            Japanese: { text: intl.formatMessage({ id: 'pages.teacher.speaks.japanese' }) },
+            French: { text: intl.formatMessage({ id: 'pages.teacher.speaks.french' }) },
+            English: { text: intl.formatMessage({ id: 'pages.teacher.speaks.english' }) },
+            'Chinese (Mandarin)': {
+              text: intl.formatMessage({ id: 'pages.teacher.speaks.chinese' }),
+            },
+          }}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'pages.teacher.speaks.required' }),
+            },
+          ]}
+        />
+
+        <ProFormSelect
+          name="teacherType"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.teacher.teacherType' })}
+          valueEnum={{
+            Both: { text: intl.formatMessage({ id: 'pages.teacher.teacherType.both' }) },
+            'Community Tutor': {
+              text: intl.formatMessage({ id: 'pages.teacher.teacherType.communityTutor' }),
+            },
+            'Professional Teacher': {
+              text: intl.formatMessage({ id: 'pages.teacher.teacherType.professionalTeacher' }),
+            },
+          }}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'pages.teacher.teacherType.required' }),
+            },
+          ]}
         />
       </ProForm.Group>
 
