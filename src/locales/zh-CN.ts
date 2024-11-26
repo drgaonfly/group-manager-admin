@@ -137,7 +137,7 @@ export default {
   'menu.认证管理.权限管理': '权限管理',
   'menu.认证管理.权限组管理': '权限组管理',
   'menu.认证管理.数据权限管理': '数据权限管理',
-  'menu.用户管理': '用户管理',
+  'menu.用户管理': '客户管理',
   'menu.customers': '客户管理',
 
   // 标签页操作
@@ -145,4 +145,31 @@ export default {
   'tabs.close.right': '关闭右侧标签页',
   'tabs.close.others': '关闭其他标签页',
   'tabs.refresh': '刷新当前页面',
+
+  // 客户管理相关
+  'pages.customer.isTeacher': '是否是老师',
+  'pages.customer.isTeacher.yes': '是',
+  'pages.customer.isTeacher.no': '否',
+
+  // 教师职称相关
+  'pages.teacher.education': '学历',
+  'pages.teacher.teachingAge': '教龄',
+  'pages.teacher.title': '职称',
+  'pages.teacher.title.teacher': '教师',
+  'pages.teacher.title.gradeDirector': '年级主任',
+  'pages.teacher.title.groupLeader': '教研组长',
+  'pages.teacher.title.viceDirector': '副主任',
+  'pages.teacher.title.director': '主任',
+
+  // 教师学历相关
+  'pages.teacher.education.bachelor': '本科',
+  'pages.teacher.education.master': '硕士',
+  'pages.teacher.education.doctor': '博士',
+  'pages.teacher.education.other': '其他',
+
+  // 教师管理相关
+  'menu.教师管理': '教师管理',
+  'menu.teacher': '教师管理',
+  'list.teachers': '教师管理',
+  'menu.teachers': '教师管理',
 };

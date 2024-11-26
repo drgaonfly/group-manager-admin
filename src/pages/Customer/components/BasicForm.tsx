@@ -74,6 +74,29 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           }}
           rules={[{ required: true, message: intl.formatMessage({ id: 'please_select_status' }) }]}
         />
+
+        <ProFormSelect
+          name="isTeacher"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.customer.isTeacher' })}
+          initialValue="no"
+          valueEnum={{
+            yes: {
+              text: intl.formatMessage({
+                id: 'pages.customer.isTeacher.yes',
+                defaultMessage: '是',
+              }),
+              status: 'Success',
+            },
+            no: {
+              text: intl.formatMessage({ id: 'pages.customer.isTeacher.no', defaultMessage: '否' }),
+              status: 'Default',
+            },
+          }}
+          rules={[
+            { required: true, message: intl.formatMessage({ id: 'please_select_isTeacher' }) },
+          ]}
+        />
       </ProForm.Group>
 
       {!newRecord && (

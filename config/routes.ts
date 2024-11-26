@@ -92,4 +92,10 @@ export default [
     icon: 'UserOutlined',
     component: './Customer',
   },
+  {
+    path: '/teachers',
+    name: 'list.teachers',
+    icon: 'SolutionOutlined',
+    component: './Teacher',
+  },
 ];

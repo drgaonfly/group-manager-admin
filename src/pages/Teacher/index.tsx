@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -21,7 +21,7 @@ import DeleteLink from '@/components/DeleteLink';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
   try {
-    await addItem('/customers', { ...fields });
+    await addItem('/teachers', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -45,7 +45,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/customers/${fields._id}`, fields);
+    await updateItem(`/teachers/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -71,7 +71,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/customers', {
+    await removeItem('/teachers', {
       ids,
     });
     hide();
@@ -121,97 +121,114 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'username', defaultMessage: '用户名' }),
+      title: intl.formatMessage({ id: 'username' }),
       dataIndex: 'username',
       copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_username' })} />;
-      },
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
+      render: (dom, entity) => (
+        <a
+          onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}
+        >
+          {dom}
+        </a>
+      ),
     },
     {
-      title: intl.formatMessage({ id: 'email', defaultMessage: '邮箱' }),
+      title: intl.formatMessage({ id: 'email' }),
       dataIndex: 'email',
       copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_email' })} />;
-      },
     },
     {
-      title: intl.formatMessage({ id: 'phone', defaultMessage: '电话' }),
+      title: intl.formatMessage({ id: 'phone' }),
       dataIndex: 'phone',
       hideInSearch: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_phone' })} />;
-      },
     },
     {
-      title: intl.formatMessage({ id: 'address', defaultMessage: '地址' }),
+      title: intl.formatMessage({ id: 'address' }),
       dataIndex: 'address',
       hideInSearch: true,
       ellipsis: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_address' })} />;
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.education', defaultMessage: '学历' }),
+      dataIndex: 'education',
+      valueType: 'select',
+      valueEnum: {
+        bachelor: {
+          text: intl.formatMessage({ id: 'pages.teacher.education.bachelor' }),
+        },
+        master: {
+          text: intl.formatMessage({ id: 'pages.teacher.education.master' }),
+        },
+        doctor: {
+          text: intl.formatMessage({ id: 'pages.teacher.education.doctor' }),
+        },
+        other: {
+          text: intl.formatMessage({ id: 'pages.teacher.education.other' }),
+        },
       },
     },
     {
-      title: intl.formatMessage({ id: 'status', defaultMessage: '状态' }),
+      title: intl.formatMessage({ id: 'pages.teacher.teachingAge', defaultMessage: '教龄' }),
+      dataIndex: 'teachingAge',
+      valueType: 'digit',
+      hideInSearch: true,
+      sorter: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.title', defaultMessage: '职称' }),
+      dataIndex: 'title',
+      valueType: 'select',
+      valueEnum: {
+        teacher: {
+          text: intl.formatMessage({ id: 'pages.teacher.title.teacher' }),
+        },
+        gradeDirector: {
+          text: intl.formatMessage({ id: 'pages.teacher.title.gradeDirector' }),
+        },
+        groupLeader: {
+          text: intl.formatMessage({ id: 'pages.teacher.title.groupLeader' }),
+        },
+        viceDirector: {
+          text: intl.formatMessage({ id: 'pages.teacher.title.viceDirector' }),
+        },
+        director: {
+          text: intl.formatMessage({ id: 'pages.teacher.title.director' }),
+        },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'status',
       valueEnum: {
         active: {
-          text: intl.formatMessage({ id: 'active', defaultMessage: '活跃' }),
+          text: intl.formatMessage({ id: 'active' }),
           status: 'Success',
         },
         inactive: {
-          text: intl.formatMessage({ id: 'inactive', defaultMessage: '不活跃' }),
+          text: intl.formatMessage({ id: 'inactive' }),
           status: 'Error',
         },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.customer.isTeacher', defaultMessage: '是否是老师' }),
-      dataIndex: 'isTeacher',
-      valueType: 'select',
-      valueEnum: {
-        yes: {
-          text: intl.formatMessage({ id: 'pages.customer.isTeacher.yes', defaultMessage: '是' }),
-          status: 'Success',
-        },
-        no: {
-          text: intl.formatMessage({ id: 'pages.customer.isTeacher.no', defaultMessage: '否' }),
-          status: 'Default',
-        },
-      },
-      // filters: true,
-      // onFilter: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'created_at', defaultMessage: '创建时间' }),
+      title: intl.formatMessage({ id: 'created_at' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       hideInSearch: true,
       sorter: true,
     },
     {
-      title: intl.formatMessage({ id: 'updated_at', defaultMessage: '更新时间' }),
+      title: intl.formatMessage({ id: 'updated_at' }),
       dataIndex: 'updatedAt',
       valueType: 'dateTime',
       hideInSearch: true,
       sorter: true,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -270,7 +287,7 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('/customers', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/teachers', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
