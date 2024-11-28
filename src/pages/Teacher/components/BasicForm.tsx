@@ -23,7 +23,7 @@ const BasicForm: React.FC<Props> = ({
   values,
   setImageUrl,
   imageUrl,
-  defaultFileList = [],
+  // defaultFileList = [],
 }) => {
   const intl = useIntl();
   const [formRef] = ProForm.useForm();
@@ -246,7 +246,7 @@ const BasicForm: React.FC<Props> = ({
               formRef.setFieldsValue({ avatar: url });
             }}
             url="/upload"
-            defaultFileList={defaultFileList}
+            // defaultFileList={defaultFileList}
           />
         </ProForm.Item>
 
