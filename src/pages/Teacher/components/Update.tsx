@@ -1,8 +1,8 @@
 import { useIntl } from '@umijs/max';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import BasicForm from './BasicForm';
-import { Modal } from 'antd';
-// import extractPathFromUrl from '@/utils/extractPathFromUrl';
+import { ModalForm } from '@ant-design/pro-components';
+import { Form } from 'antd';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -10,45 +10,49 @@ export type UpdateFormProps = {
   onCancel: (visible: boolean) => void;
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
-  values: {
-    avatar?: {
-      url?: string;
-    };
-  } & Partial<API.ItemData>;
+  values: Partial<API.ItemData>;
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
-  const [imageUrl, setImageUrl] = useState<string | undefined>(values.avatar?.url || '');
-
-  useEffect(() => {
-    setImageUrl(values.avatar?.url);
-  }, [values]);
-
-  const handleSubmit = async (formValues: any) => {
-    await onSubmit({
-      ...formValues,
-    });
-  };
+  const [imageUrl, setImageUrl] = useState<string | undefined>(values.imageUrl);
 
   return (
-    <Modal
-      maskClosable={false}
-      width="70%"
-      destroyOnClose
+    <ModalForm
       title={intl.formatMessage({ id: 'modify' })}
+      width="50%"
+      modalProps={{
+        destroyOnClose: true,
+        maskClosable: false,
+      }}
       open={updateModalOpen}
-      footer={false}
-      onCancel={() => onCancel(false)}
+      onOpenChange={onCancel}
+      onFinish={async (formValues: FormValueType) => {
+        await onSubmit({
+          ...values,
+          ...formValues,
+          imageUrl,
+        });
+        return true;
+      }}
+      initialValues={values}
     >
       <BasicForm
         values={values}
-        onFinish={handleSubmit}
+        onFinish={async (formValues) => {
+          await onSubmit({
+            ...values,
+            ...formValues,
+            imageUrl,
+          });
+        }}
         setImageUrl={setImageUrl}
-        imageUrl={imageUrl}
       />
-    </Modal>
+      <Form.Item name="_id" hidden>
+        <input type="hidden" />
+      </Form.Item>
+    </ModalForm>
   );
 };
 

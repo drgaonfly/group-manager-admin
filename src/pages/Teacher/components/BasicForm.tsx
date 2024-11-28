@@ -3,7 +3,7 @@ import React from 'react';
 import { ProForm, ProFormText, ProFormSelect, ProFormDigit } from '@ant-design/pro-components';
 import { Form, Input, message } from 'antd';
 
-import MyUpload from '@/components/MyUpload';
+import ImageUpload from '@/components/ImageUpload';
 // import { RcFile } from 'antd/es/upload';
 // import { addItem } from '@/services/ant-design-pro/api';
 
@@ -20,17 +20,18 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
   const [formRef] = ProForm.useForm();
   console.log(imageUrl);
 
-  // const defaultFileList: UploadFile[] = imageUrl
-  //   ? [
-  //       {
-  //         uid: '-1',
-  //         name: 'avatar.png',
-  //         status: 'done' as const,
-  //         url: imageUrl,
-  //         type: 'image/png',
-  //       },
-  //     ]
-  //   : [];
+  // 定义 defaultFileList
+  const defaultFileList = imageUrl
+    ? [
+        {
+          uid: '-1',
+          name: 'avatar.png',
+          status: 'done' as const,
+          url: imageUrl,
+          type: 'image/png',
+        },
+      ]
+    : [];
 
   const handleFormFinish = async (formData: any) => {
     try {
@@ -229,14 +230,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
             return e?.fileList;
           }}
         >
-          <MyUpload
-            accept="image/*"
-            onFileUpload={(url) => {
+          <ImageUpload
+            onFileUpload={(url: string) => {
               console.log('Uploaded avatar URL:', url);
               setImageUrl(url);
               formRef.setFieldsValue({ avatar: url });
             }}
-            url="/upload"
+            accept=".jpg,.jpeg,.png"
+            defaultFileList={defaultFileList}
           />
         </ProForm.Item>
 
