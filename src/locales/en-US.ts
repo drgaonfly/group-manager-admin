@@ -230,4 +230,46 @@ export default {
   'pages.comment.rating.4': '4 Stars',
   'pages.comment.rating.5': '5 Stars',
   'menu.comments': 'Comment Management',
+
+  'menu.vipMembers': 'VIP Member Management',
+  'pages.vipMember.title': 'VIP Member Management',
+  'pages.vipMember.customer': 'Member',
+  'pages.vipMember.level': 'VIP Level',
+  'pages.vipMember.level.1': 'Regular',
+  'pages.vipMember.level.2': 'Silver',
+  'pages.vipMember.level.3': 'Gold',
+  'pages.vipMember.level.4': 'Platinum',
+  'pages.vipMember.level.5': 'Diamond',
+  'pages.vipMember.startDate': 'Start Date',
+  'pages.vipMember.endDate': 'End Date',
+  'pages.vipMember.isActive': 'Status',
+  'pages.vipMember.amount': 'Amount',
+  'pages.vipMember.status.active': 'Active',
+  'pages.vipMember.status.inactive': 'Inactive',
+  'pages.vipMember.select.customer': 'Please select member',
+  'pages.vipMember.select.level': 'Please select VIP level',
+  'pages.vipMember.enter.amount': 'Please enter membership fee',
+  'pages.vipMember.select.dates': 'Please select membership period',
+
+  'menu.list.vip_members': 'VIP Member List',
+  'menu.vip_members': 'VIP Members',
+  'menu.list.vip_members.list': 'VIP Member List',
+
+  'pages.vip_members': 'VIP Members',
+  'pages.vip_members.list': 'VIP Member List',
+
+  // VIP Members
+  'menu.vip-members': 'VIP Members',
+  'menu.list.vip-members': 'VIP Member List',
+
+  // Teachers
+  'menu.list.teachers': 'Teacher List',
+
+  // Lessons
+
+  'menu.list.lessons': 'Lesson List',
+
+  // Comments
+
+  'menu.list.comments': 'Comment List',
 };

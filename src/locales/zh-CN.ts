@@ -269,4 +269,38 @@ export default {
   'pages.comment.rating.4': '4分',
   'pages.comment.rating.5': '5分',
   'menu.comments': '评论管理',
+
+  // VIP 会员相关
+  'menu.vip_members': 'VIP 会员管理',
+  'menu.vipMembers': 'VIP 会员管理',
+  'pages.vipMember.title': 'VIP 会员管理',
+  'pages.vipMember.customer': '会员用户',
+  'pages.vipMember.level': 'VIP 等级',
+  'pages.vipMember.level.1': '普通会员',
+  'pages.vipMember.level.2': '白银会员',
+  'pages.vipMember.level.3': '黄金会员',
+  'pages.vipMember.level.4': '铂金会员',
+  'pages.vipMember.level.5': '钻石会员',
+  'pages.vipMember.startDate': '开始日期',
+  'pages.vipMember.endDate': '结束日期',
+  'pages.vipMember.isActive': '会员状态',
+  'pages.vipMember.amount': '会员费用',
+  'pages.vipMember.status.active': '活跃',
+  'pages.vipMember.status.inactive': '不活跃',
+  'pages.vipMember.select.customer': '请选择会员用户',
+  'pages.vipMember.select.level': '请选择会员等级',
+  'pages.vipMember.enter.amount': '请输入会员费用',
+  'pages.vipMember.select.dates': '请选择会员期限',
+
+  // 菜单项翻译
+  'menu.list.vip_members': 'VIP 会员列表',
+  'menu.list.vip_members.list': 'VIP 会员列表',
+
+  // 如果你使用了面包屑，可能还需要这些
+  'pages.vip_members': 'VIP 会员管理',
+  'pages.vip_members.list': 'VIP 会员列表',
+
+  // VIP会员相关
+  'menu.vip-members': 'VIP 会员管理',
+  'menu.list.vip-members': 'VIP 会员列表',
 };

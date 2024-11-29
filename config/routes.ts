@@ -110,4 +110,10 @@ export default [
     icon: 'CommentOutlined',
     component: './Comment',
   },
+  {
+    path: '/vip-members',
+    name: 'list.vip_members',
+    icon: 'StarOutlined',
+    component: './vipMember',
+  },
 ];
