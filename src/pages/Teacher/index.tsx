@@ -47,8 +47,8 @@ const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
     await updateItem(`/teachers/${fields._id}`, fields);
+    console.log('Update Form Data:', fields);
     hide();
-
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
     return true;
   } catch (error: any) {
@@ -270,6 +270,55 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'pages.teacher.level' }),
+      dataIndex: 'level',
+      valueType: 'select',
+      search: false,
+      valueEnum: {
+        Basic: { text: intl.formatMessage({ id: 'pages.teacher.level.basic' }) },
+        Intermediate: { text: intl.formatMessage({ id: 'pages.teacher.level.intermediate' }) },
+        Advanced: { text: intl.formatMessage({ id: 'pages.teacher.level.advanced' }) },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.employmentType' }),
+      dataIndex: 'employmentType',
+      valueType: 'select',
+      search: false,
+      valueEnum: {
+        'Full-time': { text: intl.formatMessage({ id: 'pages.teacher.employmentType.fullTime' }) },
+        'Part-time': { text: intl.formatMessage({ id: 'pages.teacher.employmentType.partTime' }) },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.hoursPerWeek' }),
+      dataIndex: 'hoursPerWeek',
+      valueType: 'digit',
+      hideInSearch: true,
+      sorter: true,
+      render: (val, record) => {
+        console.log('hoursPerWeek:', {
+          value: val,
+          type: typeof val,
+          record: record.hoursPerWeek,
+        });
+
+        const hours = record.hoursPerWeek;
+
+        const displayHours = Number.isFinite(hours) ? hours : 0;
+
+        return `${displayHours} ${intl.formatMessage({ id: 'pages.teacher.hours' })}`;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.teacher.introduction' }),
+      dataIndex: 'introduction',
+      valueType: 'text',
+      hideInSearch: true,
+      ellipsis: true,
+      width: 200,
+    },
+    {
       title: intl.formatMessage({ id: 'created_at' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
@@ -330,6 +379,11 @@ const TableList: React.FC = () => {
             xxl: 6, // 超超大屏幕
           },
         }}
+        scroll={{
+          x: 2000, // 设置水平滚动宽度
+        }}
+        size="large"
+        tableLayout="fixed" //
         toolBarRender={() => [
           access.canSuperAdmin && (
             <Button

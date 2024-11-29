@@ -272,4 +272,23 @@ export default {
   // Comments
 
   'menu.list.comments': 'Comment List',
+
+  'pages.teacher.level': 'Level',
+  'pages.teacher.level.basic': 'Basic',
+  'pages.teacher.level.intermediate': 'Intermediate',
+  'pages.teacher.level.advanced': 'Advanced',
+  'pages.teacher.level.required': 'Please select level',
+
+  'pages.teacher.employmentType': 'Employment Type',
+  'pages.teacher.employmentType.fullTime': 'Full-time',
+  'pages.teacher.employmentType.partTime': 'Part-time',
+  'pages.teacher.employmentType.required': 'Please select employment type',
+
+  'pages.teacher.hoursPerWeek': 'Hours Per Week',
+  'pages.teacher.hours': 'hours',
+  'pages.teacher.hoursPerWeek.required': 'Please enter hours per week',
+
+  'pages.teacher.introduction': 'Introduction',
+  'pages.teacher.introduction.placeholder': 'Please enter your introduction (max 1500 characters)',
+  'pages.teacher.introduction.maxLength': 'Introduction cannot exceed 1500 characters',
 };

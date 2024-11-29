@@ -303,4 +303,24 @@ export default {
   // VIP会员相关
   'menu.vip-members': 'VIP 会员管理',
   'menu.list.vip-members': 'VIP 会员列表',
+
+  // 新增字段的翻译
+  'pages.teacher.level': '级别',
+  'pages.teacher.level.basic': '初级',
+  'pages.teacher.level.intermediate': '中级',
+  'pages.teacher.level.advanced': '高级',
+  'pages.teacher.level.required': '请选择级别',
+
+  'pages.teacher.employmentType': '工作类型',
+  'pages.teacher.employmentType.fullTime': '全职',
+  'pages.teacher.employmentType.partTime': '兼职',
+  'pages.teacher.employmentType.required': '请选择工作类型',
+
+  'pages.teacher.hoursPerWeek': '每周工时',
+  'pages.teacher.hours': '小时',
+  'pages.teacher.hoursPerWeek.required': '请输入每周工时',
+
+  'pages.teacher.introduction': '个人介绍',
+  'pages.teacher.introduction.placeholder': '请输入个人介绍（最多1500字）',
+  'pages.teacher.introduction.maxLength': '个人介绍不能超过1500字',
 };

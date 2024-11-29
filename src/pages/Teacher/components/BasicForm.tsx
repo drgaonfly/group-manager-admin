@@ -3,8 +3,8 @@ import React from 'react';
 import { ProForm, ProFormText, ProFormSelect, ProFormDigit } from '@ant-design/pro-components';
 import { Form, Input, message } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
-
-import MyUpload from '@/components/MyUpload';
+import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+// import MyUpload from '@/components/MyUpload';
 // import { RcFile } from 'antd/es/upload';
 // import { addItem } from '@/services/ant-design-pro/api';
 
@@ -29,17 +29,17 @@ const BasicForm: React.FC<Props> = ({
   const [formRef] = ProForm.useForm();
   console.log(imageUrl);
 
-  // const defaultFileList: UploadFile[] = imageUrl
-  //   ? [
-  //       {
-  //         uid: '-1',
-  //         name: 'avatar.png',
-  //         status: 'done' as const,
-  //         url: imageUrl,
-  //         type: 'image/png',
-  //       },
-  //     ]
-  //   : [];
+  const defaultFileList: UploadFile[] = imageUrl
+    ? [
+        {
+          uid: '-1',
+          name: 'avatar.png',
+          status: 'done' as const,
+          url: imageUrl,
+          type: 'image/png',
+        },
+      ]
+    : [];
 
   const handleFormFinish = async (formData: any) => {
     try {
@@ -66,21 +66,16 @@ const BasicForm: React.FC<Props> = ({
         return;
       }
 
-      // if (!imageUrl) {
-      //   message.error(intl.formatMessage({ id: 'pages.teacher.avatar.required' }));
-      //   return;
-      // }
+      if (!imageUrl) {
+        message.error(intl.formatMessage({ id: 'pages.teacher.avatar.required' }));
+        return;
+      }
 
       // 构建提交数据
-      console.log('-----', formData);
+      // console.log('-----', formData);
       const submitData = {
         ...formData,
-        // avatar: {
-        //   url: imageUrl,
-        //   name: 'avatar',
-        //   type: 'image',
-        // },
-        // 确保数字类型字段被正确转换
+        avatar: imageUrl,
         teachingAge: Number(formData.teachingAge),
       };
 
@@ -98,6 +93,10 @@ const BasicForm: React.FC<Props> = ({
       initialValues={{
         ...values,
         teacherType: values?.teacherType || 'Both',
+        level: values?.level || 'Intermediate',
+        employmentType: values?.employmentType || 'Part-time',
+        hoursPerWeek: values?.hoursPerWeek || 0,
+        introduction: values?.introduction || '',
       }}
       onFinish={handleFormFinish}
       submitter={{
@@ -135,14 +134,6 @@ const BasicForm: React.FC<Props> = ({
         <ProFormText width="md" label={intl.formatMessage({ id: 'phone' })} name="phone" />
 
         <ProFormText width="md" label={intl.formatMessage({ id: 'address' })} name="address" />
-
-        {/* <ProFormSelect
-          name="subject"
-          width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.subject' })}
-          mode="multiple"
-          rules={[{ required: true, message: intl.formatMessage({ id: 'pages.teacher.subject.required' }) }]}
-        /> */}
 
         <ProFormSelect
           name="education"
@@ -209,46 +200,14 @@ const BasicForm: React.FC<Props> = ({
           ]}
         />
 
-        {/* <ProFormSelect
-          name="status"
-          width="md"
-          initialValue="active"
-          label={intl.formatMessage({ id: 'status' })}
-          valueEnum={{
-            active: {
-              text: intl.formatMessage({ id: 'active' }),
-              status: 'Success',
-            },
-            inactive: {
-              text: intl.formatMessage({ id: 'inactive' }),
-              status: 'Error',
-            },
+        <AliyunOSSUpload
+          onFileUpload={(url: string) => {
+            console.log('Uploaded file URL:', url);
+            setImageUrl!(url);
           }}
-          rules={[{ required: true, message: intl.formatMessage({ id: 'please_select_status' }) }]}
-        /> */}
-
-        <ProForm.Item
-          required
-          label={intl.formatMessage({ id: 'pages.teacher.avatar' })}
-          name="avatar"
-          getValueFromEvent={(e) => {
-            if (Array.isArray(e)) {
-              return e;
-            }
-            return e?.fileList;
-          }}
-        >
-          <MyUpload
-            accept="image/*"
-            onFileUpload={(url) => {
-              console.log('Uploaded avatar URL:', url);
-              setImageUrl(url);
-              formRef.setFieldsValue({ avatar: url });
-            }}
-            url="/upload"
-            // defaultFileList={defaultFileList}
-          />
-        </ProForm.Item>
+          accept=".jpg,.jpeg,.png,.pdf"
+          defaultFileList={defaultFileList}
+        />
 
         <ProFormSelect
           name="lessonCategory"
@@ -319,6 +278,70 @@ const BasicForm: React.FC<Props> = ({
             },
           ]}
         />
+
+        <ProFormSelect
+          name="level"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.teacher.level' })}
+          initialValue="Intermediate"
+          valueEnum={{
+            Basic: { text: intl.formatMessage({ id: 'pages.teacher.level.basic' }) },
+            Intermediate: { text: intl.formatMessage({ id: 'pages.teacher.level.intermediate' }) },
+            Advanced: { text: intl.formatMessage({ id: 'pages.teacher.level.advanced' }) },
+          }}
+          rules={[
+            { required: true, message: intl.formatMessage({ id: 'pages.teacher.level.required' }) },
+          ]}
+        />
+
+        <ProFormSelect
+          name="employmentType"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.teacher.employmentType' })}
+          initialValue="Part-time"
+          valueEnum={{
+            'Full-time': {
+              text: intl.formatMessage({ id: 'pages.teacher.employmentType.fullTime' }),
+            },
+            'Part-time': {
+              text: intl.formatMessage({ id: 'pages.teacher.employmentType.partTime' }),
+            },
+          }}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'pages.teacher.employmentType.required' }),
+            },
+          ]}
+        />
+
+        <ProFormDigit
+          name="hoursPerWeek"
+          width="md"
+          label={intl.formatMessage({ id: 'pages.teacher.hoursPerWeek' })}
+          min={0}
+          max={168}
+          initialValue={0}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'pages.teacher.hoursPerWeek.required' }),
+            },
+          ]}
+        />
+
+        <ProForm.Item
+          name="introduction"
+          label={intl.formatMessage({ id: 'pages.teacher.introduction' })}
+          style={{ width: '100%' }}
+        >
+          <Input.TextArea
+            rows={4}
+            maxLength={1500}
+            showCount
+            placeholder={intl.formatMessage({ id: 'pages.teacher.introduction.placeholder' })}
+          />
+        </ProForm.Item>
       </ProForm.Group>
 
       {!newRecord && (
