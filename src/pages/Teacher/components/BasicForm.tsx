@@ -34,7 +34,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
     try {
       // 只保留头像的验证，因为这是特殊字段
       if (!imageUrl) {
-        message.error(intl.formatMessage({ id: 'pages.teacher.avatar.required' }));
+        message.error(intl.formatMessage({ id: 'avatar.required' }));
         return;
       }
 
@@ -73,89 +73,73 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
     >
       <ProForm.Group>
         <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_username' }) }]}
+          rules={[{ required: true }]}
           width="md"
           label={intl.formatMessage({ id: 'username' })}
           name="username"
         />
 
         <ProFormText
-          rules={[
-            { required: true, message: intl.formatMessage({ id: 'enter_email' }) },
-            { type: 'email', message: intl.formatMessage({ id: 'invalid_email' }) },
-          ]}
+          rules={[{ required: true }, { type: 'email' }]}
           width="md"
           label={intl.formatMessage({ id: 'email' })}
           name="email"
         />
 
         <ProFormText width="md" label={intl.formatMessage({ id: 'phone' })} name="phone" />
-
         <ProFormText width="md" label={intl.formatMessage({ id: 'address' })} name="address" />
 
         <ProFormSelect
           name="education"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.education' })}
+          label={intl.formatMessage({ id: 'education' })}
           valueEnum={{
             Bachelor: {
-              text: intl.formatMessage({ id: 'pages.teacher.education.bachelor' }),
+              text: intl.formatMessage({ id: 'education.bachelor' }),
             },
             Master: {
-              text: intl.formatMessage({ id: 'pages.teacher.education.master' }),
+              text: intl.formatMessage({ id: 'education.master' }),
             },
             Doctor: {
-              text: intl.formatMessage({ id: 'pages.teacher.education.doctor' }),
+              text: intl.formatMessage({ id: 'education.doctor' }),
             },
             Other: {
-              text: intl.formatMessage({ id: 'pages.teacher.education.other' }),
+              text: intl.formatMessage({ id: 'education.other' }),
             },
           }}
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.education.required' }),
-            },
-          ]}
+          rules={[{ required: true }]}
         />
 
         <ProFormDigit
           name="teachingAge"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.teachingAge' })}
+          label={intl.formatMessage({ id: 'teachingAge' })}
           min={0}
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.teachingAge.required' }),
-            },
-          ]}
+          rules={[{ required: true }]}
         />
 
         <ProFormSelect
           name="title"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.title' })}
+          label={intl.formatMessage({ id: 'title' })}
           valueEnum={{
             Teacher: {
-              text: intl.formatMessage({ id: 'pages.teacher.title.teacher' }),
+              text: intl.formatMessage({ id: 'title.teacher' }),
             },
             'Grade Director': {
-              text: intl.formatMessage({ id: 'pages.teacher.title.gradeDirector' }),
+              text: intl.formatMessage({ id: 'title.gradeDirector' }),
             },
             'Group Leader': {
-              text: intl.formatMessage({ id: 'pages.teacher.title.groupLeader' }),
+              text: intl.formatMessage({ id: 'title.groupLeader' }),
             },
             'Vice Director': {
-              text: intl.formatMessage({ id: 'pages.teacher.title.viceDirector' }),
+              text: intl.formatMessage({ id: 'title.viceDirector' }),
             },
             Director: {
-              text: intl.formatMessage({ id: 'pages.teacher.title.director' }),
+              text: intl.formatMessage({ id: 'title.director' }),
             },
           }}
-          rules={[
-            { required: true, message: intl.formatMessage({ id: 'pages.teacher.title.required' }) },
-          ]}
+          rules={[{ required: true }]}
         />
 
         <AliyunOSSUpload
@@ -170,26 +154,25 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
         <ProFormSelect
           name="lessonCategory"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.lessonCategory' })}
+          label={intl.formatMessage({ id: 'lessonCategory' })}
           mode="multiple"
           valueEnum={{
-            Speaking: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.speaking' }) },
-            Writing: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.writing' }) },
+            Speaking: { text: intl.formatMessage({ id: 'lessonCategory.speaking' }) },
+            Writing: { text: intl.formatMessage({ id: 'lessonCategory.writing' }) },
             Listening: {
-              text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.listening' }),
+              text: intl.formatMessage({ id: 'lessonCategory.listening' }),
             },
-            Reading: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.reading' }) },
-            Spelling: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.spelling' }) },
-            Grammar: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.grammar' }) },
+            Reading: { text: intl.formatMessage({ id: 'lessonCategory.reading' }) },
+            Spelling: { text: intl.formatMessage({ id: 'lessonCategory.spelling' }) },
+            Grammar: { text: intl.formatMessage({ id: 'lessonCategory.grammar' }) },
             Pronunciation: {
-              text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.pronunciation' }),
+              text: intl.formatMessage({ id: 'lessonCategory.pronunciation' }),
             },
-            All: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.all' }) },
+            All: { text: intl.formatMessage({ id: 'lessonCategory.all' }) },
           }}
           rules={[
             {
               required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.lessonCategory.required' }),
             },
           ]}
         />
@@ -197,42 +180,36 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
         <ProFormSelect
           name="speaks"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.speaks' })}
+          label={intl.formatMessage({ id: 'speaks' })}
           mode="multiple"
           valueEnum={{
-            Spanish: { text: intl.formatMessage({ id: 'pages.teacher.speaks.spanish' }) },
-            Japanese: { text: intl.formatMessage({ id: 'pages.teacher.speaks.japanese' }) },
-            French: { text: intl.formatMessage({ id: 'pages.teacher.speaks.french' }) },
-            English: { text: intl.formatMessage({ id: 'pages.teacher.speaks.english' }) },
+            Spanish: { text: intl.formatMessage({ id: 'speaks.spanish' }) },
+            Japanese: { text: intl.formatMessage({ id: 'speaks.japanese' }) },
+            French: { text: intl.formatMessage({ id: 'speaks.french' }) },
+            English: { text: intl.formatMessage({ id: 'speaks.english' }) },
             'Chinese (Mandarin)': {
-              text: intl.formatMessage({ id: 'pages.teacher.speaks.chinese' }),
+              text: intl.formatMessage({ id: 'speaks.chinese' }),
             },
           }}
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.speaks.required' }),
-            },
-          ]}
+          rules={[{ required: true }]}
         />
 
         <ProFormSelect
           name="teacherType"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.teacherType' })}
+          label={intl.formatMessage({ id: 'teacherType' })}
           valueEnum={{
-            Both: { text: intl.formatMessage({ id: 'pages.teacher.teacherType.both' }) },
+            Both: { text: intl.formatMessage({ id: 'teacherType.both' }) },
             'Community Tutor': {
-              text: intl.formatMessage({ id: 'pages.teacher.teacherType.communityTutor' }),
+              text: intl.formatMessage({ id: 'teacherType.communityTutor' }),
             },
             'Professional Teacher': {
-              text: intl.formatMessage({ id: 'pages.teacher.teacherType.professionalTeacher' }),
+              text: intl.formatMessage({ id: 'teacherType.professionalTeacher' }),
             },
           }}
           rules={[
             {
               required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.teacherType.required' }),
             },
           ]}
         />
@@ -240,35 +217,32 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
         <ProFormSelect
           name="level"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.level' })}
+          label={intl.formatMessage({ id: 'level' })}
           initialValue="Intermediate"
           valueEnum={{
-            Basic: { text: intl.formatMessage({ id: 'pages.teacher.level.basic' }) },
-            Intermediate: { text: intl.formatMessage({ id: 'pages.teacher.level.intermediate' }) },
-            Advanced: { text: intl.formatMessage({ id: 'pages.teacher.level.advanced' }) },
+            Basic: { text: intl.formatMessage({ id: 'level.basic' }) },
+            Intermediate: { text: intl.formatMessage({ id: 'level.intermediate' }) },
+            Advanced: { text: intl.formatMessage({ id: 'level.advanced' }) },
           }}
-          rules={[
-            { required: true, message: intl.formatMessage({ id: 'pages.teacher.level.required' }) },
-          ]}
+          rules={[{ required: true }]}
         />
 
         <ProFormSelect
           name="employmentType"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.employmentType' })}
+          label={intl.formatMessage({ id: 'employmentType' })}
           initialValue="Part-time"
           valueEnum={{
             'Full-time': {
-              text: intl.formatMessage({ id: 'pages.teacher.employmentType.fullTime' }),
+              text: intl.formatMessage({ id: 'employmentType.fullTime' }),
             },
             'Part-time': {
-              text: intl.formatMessage({ id: 'pages.teacher.employmentType.partTime' }),
+              text: intl.formatMessage({ id: 'employmentType.partTime' }),
             },
           }}
           rules={[
             {
               required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.employmentType.required' }),
             },
           ]}
         />
@@ -276,21 +250,20 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
         <ProFormDigit
           name="hoursPerWeek"
           width="md"
-          label={intl.formatMessage({ id: 'pages.teacher.hoursPerWeek' })}
+          label={intl.formatMessage({ id: 'hoursPerWeek' })}
           min={0}
           max={168}
           initialValue={0}
           rules={[
             {
               required: true,
-              message: intl.formatMessage({ id: 'pages.teacher.hoursPerWeek.required' }),
             },
           ]}
         />
 
         <ProForm.Item
           name="introduction"
-          label={intl.formatMessage({ id: 'pages.teacher.introduction' })}
+          label={intl.formatMessage({ id: 'introduction' })}
           style={{ width: '100%' }}
         >
           <Input.TextArea
@@ -301,7 +274,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
               width: 330,
               resize: 'vertical',
             }}
-            placeholder={intl.formatMessage({ id: 'pages.teacher.introduction.placeholder' })}
+            placeholder={intl.formatMessage({ id: 'introduction.placeholder' })}
           />
         </ProForm.Item>
       </ProForm.Group>

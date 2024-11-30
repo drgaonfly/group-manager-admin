@@ -140,20 +140,7 @@ const TableList: React.FC = () => {
         return <Rate disabled value={ratingValue} style={{ fontSize: 14 }} count={5} />;
       },
     },
-    {
-      title: intl.formatMessage({ id: 'created_at' }),
-      dataIndex: 'createdAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      sorter: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'updated_at' }),
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      sorter: true,
-    },
+
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',

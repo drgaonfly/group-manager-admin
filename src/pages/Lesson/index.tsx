@@ -123,23 +123,23 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'pages.lesson.lessonType' }),
+      title: intl.formatMessage({ id: 'lessonType' }),
       dataIndex: 'lessonType',
       valueEnum: {
-        'Trial Lesson': { text: intl.formatMessage({ id: 'pages.lesson.type.trial' }) },
+        'Trial Lesson': { text: intl.formatMessage({ id: 'type.trial' }) },
         'Conversational English': {
-          text: intl.formatMessage({ id: 'pages.lesson.type.conversational' }),
+          text: intl.formatMessage({ id: 'type.conversational' }),
         },
-        'Business English': { text: intl.formatMessage({ id: 'pages.lesson.type.business' }) },
-        'Meeting Preparation': { text: intl.formatMessage({ id: 'pages.lesson.type.meeting' }) },
+        'Business English': { text: intl.formatMessage({ id: 'type.business' }) },
+        'Meeting Preparation': { text: intl.formatMessage({ id: 'type.meeting' }) },
         'Presentation Skills': {
-          text: intl.formatMessage({ id: 'pages.lesson.type.presentation' }),
+          text: intl.formatMessage({ id: 'type.presentation' }),
         },
-        'Job Application': { text: intl.formatMessage({ id: 'pages.lesson.type.job' }) },
+        'Job Application': { text: intl.formatMessage({ id: 'type.job' }) },
         'Interview Preparation': {
-          text: intl.formatMessage({ id: 'pages.lesson.type.interview' }),
+          text: intl.formatMessage({ id: 'type.interview' }),
         },
-        'Reading and Discussion': { text: intl.formatMessage({ id: 'pages.lesson.type.reading' }) },
+        'Reading and Discussion': { text: intl.formatMessage({ id: 'type.reading' }) },
       },
       render: (dom, entity) => {
         return (
@@ -155,39 +155,39 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.lesson.language' }),
+      title: intl.formatMessage({ id: 'language' }),
       dataIndex: 'language',
       valueEnum: {
-        English: { text: intl.formatMessage({ id: 'pages.lesson.language.english' }) },
-        'Chinese (Mandarin)': { text: intl.formatMessage({ id: 'pages.lesson.language.chinese' }) },
-        Japanese: { text: intl.formatMessage({ id: 'pages.lesson.language.japanese' }) },
-        French: { text: intl.formatMessage({ id: 'pages.lesson.language.french' }) },
-        Spanish: { text: intl.formatMessage({ id: 'pages.lesson.language.spanish' }) },
+        English: { text: intl.formatMessage({ id: 'language.english' }) },
+        'Chinese (Mandarin)': { text: intl.formatMessage({ id: 'language.chinese' }) },
+        Japanese: { text: intl.formatMessage({ id: 'language.japanese' }) },
+        French: { text: intl.formatMessage({ id: 'language.french' }) },
+        Spanish: { text: intl.formatMessage({ id: 'language.spanish' }) },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.lesson.description' }),
+      title: intl.formatMessage({ id: 'description' }),
       dataIndex: 'description',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.lesson.price' }),
+      title: intl.formatMessage({ id: 'price' }),
       dataIndex: 'price',
       valueType: 'money',
       hideInSearch: true,
       sorter: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.lesson.duration' }),
+      title: intl.formatMessage({ id: 'duration' }),
       dataIndex: 'duration',
       valueType: 'select',
       valueEnum: {
-        30: { text: intl.formatMessage({ id: 'pages.lesson.duration.30' }) },
-        45: { text: intl.formatMessage({ id: 'pages.lesson.duration.45' }) },
-        60: { text: intl.formatMessage({ id: 'pages.lesson.duration.60' }) },
-        90: { text: intl.formatMessage({ id: 'pages.lesson.duration.90' }) },
-        120: { text: intl.formatMessage({ id: 'pages.lesson.duration.120' }) },
+        30: { text: intl.formatMessage({ id: 'duration.30' }) },
+        45: { text: intl.formatMessage({ id: 'duration.45' }) },
+        60: { text: intl.formatMessage({ id: 'duration.60' }) },
+        90: { text: intl.formatMessage({ id: 'duration.90' }) },
+        120: { text: intl.formatMessage({ id: 'duration.120' }) },
       },
       hideInSearch: true,
     },

@@ -122,7 +122,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'pages.teacher.avatar' }),
+      title: intl.formatMessage({ id: 'avatar' }),
       dataIndex: 'avatar',
       hideInSearch: true,
       render: (_, record) => (
@@ -172,55 +172,55 @@ const TableList: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.education', defaultMessage: '学历' }),
+      title: intl.formatMessage({ id: 'education', defaultMessage: '学历' }),
       dataIndex: 'education',
       valueType: 'select',
       valueEnum: {
         bachelor: {
-          text: intl.formatMessage({ id: 'pages.teacher.education.bachelor' }),
+          text: intl.formatMessage({ id: 'education.bachelor' }),
         },
         master: {
-          text: intl.formatMessage({ id: 'pages.teacher.education.master' }),
+          text: intl.formatMessage({ id: 'education.master' }),
         },
         doctor: {
-          text: intl.formatMessage({ id: 'pages.teacher.education.doctor' }),
+          text: intl.formatMessage({ id: 'education.doctor' }),
         },
         other: {
-          text: intl.formatMessage({ id: 'pages.teacher.education.other' }),
+          text: intl.formatMessage({ id: 'education.other' }),
         },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.teachingAge', defaultMessage: '教龄' }),
+      title: intl.formatMessage({ id: 'teachingAge', defaultMessage: '教龄' }),
       dataIndex: 'teachingAge',
       valueType: 'digit',
       hideInSearch: true,
       sorter: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.title' }),
+      title: intl.formatMessage({ id: 'title' }),
       dataIndex: 'title',
       valueType: 'select',
       valueEnum: {
         Teacher: {
-          text: intl.formatMessage({ id: 'pages.teacher.title.teacher' }),
+          text: intl.formatMessage({ id: 'title.teacher' }),
         },
         'Grade Director': {
-          text: intl.formatMessage({ id: 'pages.teacher.title.gradeDirector' }),
+          text: intl.formatMessage({ id: 'title.gradeDirector' }),
         },
         'Group Leader': {
-          text: intl.formatMessage({ id: 'pages.teacher.title.groupLeader' }),
+          text: intl.formatMessage({ id: 'title.groupLeader' }),
         },
         'Vice Director': {
-          text: intl.formatMessage({ id: 'pages.teacher.title.viceDirector' }),
+          text: intl.formatMessage({ id: 'title.viceDirector' }),
         },
         Director: {
-          text: intl.formatMessage({ id: 'pages.teacher.title.director' }),
+          text: intl.formatMessage({ id: 'title.director' }),
         },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.lessonCategory' }),
+      title: intl.formatMessage({ id: 'lessonCategory' }),
       dataIndex: 'lessonCategory',
       valueType: 'select',
       search: false,
@@ -228,72 +228,72 @@ const TableList: React.FC = () => {
         mode: 'multiple', // 设置多选
       },
       valueEnum: {
-        Speaking: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.speaking' }) },
-        Writing: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.writing' }) },
-        Listening: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.listening' }) },
-        Reading: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.reading' }) },
-        Spelling: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.spelling' }) },
-        Grammar: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.grammar' }) },
+        Speaking: { text: intl.formatMessage({ id: 'lessonCategory.speaking' }) },
+        Writing: { text: intl.formatMessage({ id: 'lessonCategory.writing' }) },
+        Listening: { text: intl.formatMessage({ id: 'lessonCategory.listening' }) },
+        Reading: { text: intl.formatMessage({ id: 'lessonCategory.reading' }) },
+        Spelling: { text: intl.formatMessage({ id: 'lessonCategory.spelling' }) },
+        Grammar: { text: intl.formatMessage({ id: 'lessonCategory.grammar' }) },
         Pronunciation: {
-          text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.pronunciation' }),
+          text: intl.formatMessage({ id: 'lessonCategory.pronunciation' }),
         },
-        All: { text: intl.formatMessage({ id: 'pages.teacher.lessonCategory.all' }) },
+        All: { text: intl.formatMessage({ id: 'lessonCategory.all' }) },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.speaks' }),
+      title: intl.formatMessage({ id: 'speaks' }),
       dataIndex: 'speaks',
       valueType: 'select',
       fieldProps: {
         mode: 'multiple', // 设置多选
       },
       valueEnum: {
-        Spanish: { text: intl.formatMessage({ id: 'pages.teacher.speaks.spanish' }) },
-        Japanese: { text: intl.formatMessage({ id: 'pages.teacher.speaks.japanese' }) },
-        French: { text: intl.formatMessage({ id: 'pages.teacher.speaks.french' }) },
-        English: { text: intl.formatMessage({ id: 'pages.teacher.speaks.english' }) },
-        'Chinese (Mandarin)': { text: intl.formatMessage({ id: 'pages.teacher.speaks.chinese' }) },
+        Spanish: { text: intl.formatMessage({ id: 'speaks.spanish' }) },
+        Japanese: { text: intl.formatMessage({ id: 'speaks.japanese' }) },
+        French: { text: intl.formatMessage({ id: 'speaks.french' }) },
+        English: { text: intl.formatMessage({ id: 'speaks.english' }) },
+        'Chinese (Mandarin)': { text: intl.formatMessage({ id: 'speaks.chinese' }) },
       },
       search: false,
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.teacherType' }),
+      title: intl.formatMessage({ id: 'teacherType' }),
       dataIndex: 'teacherType',
       search: false,
       valueType: 'select',
       valueEnum: {
-        Both: { text: intl.formatMessage({ id: 'pages.teacher.teacherType.both' }) },
+        Both: { text: intl.formatMessage({ id: 'teacherType.both' }) },
         'Community Tutor': {
-          text: intl.formatMessage({ id: 'pages.teacher.teacherType.communityTutor' }),
+          text: intl.formatMessage({ id: 'teacherType.communityTutor' }),
         },
         'Professional Teacher': {
-          text: intl.formatMessage({ id: 'pages.teacher.teacherType.professionalTeacher' }),
+          text: intl.formatMessage({ id: 'teacherType.professionalTeacher' }),
         },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.level' }),
+      title: intl.formatMessage({ id: 'level' }),
       dataIndex: 'level',
       valueType: 'select',
       search: false,
       valueEnum: {
-        Basic: { text: intl.formatMessage({ id: 'pages.teacher.level.basic' }) },
-        Intermediate: { text: intl.formatMessage({ id: 'pages.teacher.level.intermediate' }) },
-        Advanced: { text: intl.formatMessage({ id: 'pages.teacher.level.advanced' }) },
+        Basic: { text: intl.formatMessage({ id: 'level.basic' }) },
+        Intermediate: { text: intl.formatMessage({ id: 'level.intermediate' }) },
+        Advanced: { text: intl.formatMessage({ id: 'level.advanced' }) },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.employmentType' }),
+      title: intl.formatMessage({ id: 'employmentType' }),
       dataIndex: 'employmentType',
       valueType: 'select',
       search: false,
       valueEnum: {
-        'Full-time': { text: intl.formatMessage({ id: 'pages.teacher.employmentType.fullTime' }) },
-        'Part-time': { text: intl.formatMessage({ id: 'pages.teacher.employmentType.partTime' }) },
+        'Full-time': { text: intl.formatMessage({ id: 'employmentType.fullTime' }) },
+        'Part-time': { text: intl.formatMessage({ id: 'employmentType.partTime' }) },
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.hoursPerWeek' }),
+      title: intl.formatMessage({ id: 'hoursPerWeek' }),
       dataIndex: 'hoursPerWeek',
       valueType: 'digit',
       hideInSearch: true,
@@ -309,11 +309,11 @@ const TableList: React.FC = () => {
 
         const displayHours = Number.isFinite(hours) ? hours : 0;
 
-        return `${displayHours} ${intl.formatMessage({ id: 'pages.teacher.hours' })}`;
+        return `${displayHours} ${intl.formatMessage({ id: 'hours' })}`;
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.introduction' }),
+      title: intl.formatMessage({ id: 'introduction' }),
       dataIndex: 'introduction',
       valueType: 'text',
       hideInSearch: true,
