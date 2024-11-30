@@ -235,6 +235,7 @@ export default {
 
   // VIP Members
   'menu.vip-members': 'VIP Members',
+  'menu.resumes': 'Resumes',
   'menu.list.vip-members': 'VIP Member List',
 
   // Teachers
@@ -266,4 +267,29 @@ export default {
   introduction: 'Introduction',
   'introduction.placeholder': 'Please enter your introduction (max 1500 characters)',
   'introduction.maxLength': 'Introduction cannot exceed 1500 characters',
+
+  // Resume forms
+  'resume.customer': 'Customer',
+  'resume.fullName': 'Full Name',
+  'resume.birthDate': 'Birth Date',
+  'resume.location': 'Location',
+  'resume.degree': 'Degree',
+  'resume.degree.bachelor': 'Bachelor',
+  'resume.degree.master': 'Master',
+  'resume.degree.doctor': 'Doctor',
+  'resume.degree.other': 'Other',
+  'resume.school': 'School',
+  'resume.major': 'Major',
+  'resume.teachingYears': 'Teaching Years',
+  'resume.subjects': 'Subjects',
+  'resume.subjects.placeholder': 'Enter subjects, press Enter to separate',
+  'resume.teachingLevel': 'Teaching Level',
+  'resume.level.primary': 'Primary School',
+  'resume.level.junior': 'Junior High',
+  'resume.level.senior': 'Senior High',
+  'resume.level.college': 'College',
+  'resume.level.other': 'Other',
+  'resume.status': 'Status',
+  'resume.status.draft': 'Draft',
+  'resume.status.published': 'Published',
 };

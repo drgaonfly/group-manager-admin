@@ -116,4 +116,10 @@ export default [
     icon: 'StarOutlined',
     component: './vipMember',
   },
+  {
+    path: '/resumes',
+    name: 'list.resumes',
+    icon: 'FileOutlined',
+    component: './Resume',
+  },
 ];

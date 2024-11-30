@@ -277,6 +277,7 @@ export default {
 
   // VIP会员相关
   'menu.vip-members': 'VIP 会员',
+  'menu.resumes': '简历',
   'menu.list.vip-members': 'VIP 会员列表',
 
   // 新增字段的翻译
@@ -298,4 +299,30 @@ export default {
   introduction: '个人介绍',
   'introduction.placeholder': '请输入个人介绍（最多1500字）',
   'introduction.maxLength': '个人介绍不能超过1500字',
+
+  // Resume forms
+  'resume.customer': '客户',
+  'resume.fullName': '姓名',
+  'resume.birthDate': '出生日期',
+  'resume.location': '所在地',
+  'resume.degree': '学历',
+  'resume.degree.bachelor': '学士',
+  'resume.degree.master': '硕士',
+  'resume.degree.doctor': '博士',
+  'resume.degree.other': '其他',
+  'resume.school': '毕业院校',
+  'resume.major': '专业',
+  'resume.teachingYears': '教学年限',
+  'resume.subjects': '教授科目',
+  'resume.subjects.placeholder': '请输入科目，按回车分隔',
+  'resume.teachingLevel': '教学层级',
+  'resume.level.primary': '小学',
+  'resume.level.junior': '初中',
+  'resume.level.senior': '高中',
+  'resume.level.college': '大学',
+  'resume.level.other': '其他',
+  'resume.status': '状态',
+  'resume.status.draft': '草稿',
+  'resume.status.published': '已发布',
+  'resume.lastUpdated': '最后更新时间',
 };

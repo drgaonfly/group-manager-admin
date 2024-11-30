@@ -18,6 +18,8 @@ import {
   CrownOutlined,
   TrophyOutlined,
   StarOutlined,
+  FileTextOutlined,
+  ProfileOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -48,6 +50,8 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   CrownOutlined: <CrownOutlined />,
   TrophyOutlined: <TrophyOutlined />,
   StarOutlined: <StarOutlined />,
+  FileTextOutlined: <FileTextOutlined />,
+  ProfileOutlined: <ProfileOutlined />,
 };
 
 console.log('iconEnum', iconEnum);
