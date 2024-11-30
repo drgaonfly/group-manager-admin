@@ -122,22 +122,6 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   const columns: ProColumns<API.ItemData>[] = [
-    // {
-    //   title: intl.formatMessage({ id: 'pages.lesson.teacher' }),
-    //   dataIndex: 'teacher',
-    // render: (dom, entity) => {
-    //   return (
-    //     <a
-    //       onClick={() => {
-    //         setCurrentRow(entity);
-    //         setShowDetail(true);
-    //       }}
-    //     >
-    //       {dom}
-    //     </a>
-    //   );
-    // },
-    // },
     {
       title: intl.formatMessage({ id: 'pages.lesson.lessonType' }),
       dataIndex: 'lessonType',

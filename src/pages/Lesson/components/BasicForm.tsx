@@ -109,11 +109,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'pages.lesson.duration' })}
           valueEnum={{
-            30: { text: '30分钟' },
-            45: { text: '45分钟' },
-            60: { text: '60分钟' },
-            90: { text: '90分钟' },
-            120: { text: '120分钟' },
+            30: { text: intl.formatMessage({ id: 'pages.lesson.duration.30' }) },
+            45: { text: intl.formatMessage({ id: 'pages.lesson.duration.45' }) },
+            60: { text: intl.formatMessage({ id: 'pages.lesson.duration.60' }) },
+            90: { text: intl.formatMessage({ id: 'pages.lesson.duration.90' }) },
+            120: { text: intl.formatMessage({ id: 'pages.lesson.duration.120' }) },
           }}
           rules={[
             {

@@ -157,11 +157,13 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'email' }),
       dataIndex: 'email',
       copyable: true,
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'phone' }),
       dataIndex: 'phone',
       hideInSearch: true,
+      width: 150,
     },
     {
       title: intl.formatMessage({ id: 'address' }),
@@ -196,23 +198,23 @@ const TableList: React.FC = () => {
       sorter: true,
     },
     {
-      title: intl.formatMessage({ id: 'pages.teacher.title', defaultMessage: '职称' }),
+      title: intl.formatMessage({ id: 'pages.teacher.title' }),
       dataIndex: 'title',
       valueType: 'select',
       valueEnum: {
-        teacher: {
+        Teacher: {
           text: intl.formatMessage({ id: 'pages.teacher.title.teacher' }),
         },
-        gradeDirector: {
+        'Grade Director': {
           text: intl.formatMessage({ id: 'pages.teacher.title.gradeDirector' }),
         },
-        groupLeader: {
+        'Group Leader': {
           text: intl.formatMessage({ id: 'pages.teacher.title.groupLeader' }),
         },
-        viceDirector: {
+        'Vice Director': {
           text: intl.formatMessage({ id: 'pages.teacher.title.viceDirector' }),
         },
-        director: {
+        Director: {
           text: intl.formatMessage({ id: 'pages.teacher.title.director' }),
         },
       },
@@ -322,6 +324,8 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
+      width: 120,
       render: (_, record) => [
         access.canSuperAdmin && (
           <a

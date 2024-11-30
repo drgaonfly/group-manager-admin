@@ -140,6 +140,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'email', defaultMessage: '邮箱' }),
       dataIndex: 'email',
+      width: 200,
       copyable: true,
     },
     {
@@ -172,20 +173,6 @@ const TableList: React.FC = () => {
           status: 'Error',
         },
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'created_at', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      sorter: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'updated_at', defaultMessage: '更新时间' }),
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      sorter: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,

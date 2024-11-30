@@ -4,9 +4,6 @@ import { ProForm, ProFormText, ProFormSelect, ProFormDigit } from '@ant-design/p
 import { Form, Input, message } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
-// import MyUpload from '@/components/MyUpload';
-// import { RcFile } from 'antd/es/upload';
-// import { addItem } from '@/services/ant-design-pro/api';
 
 interface Props {
   newRecord?: boolean;
@@ -17,17 +14,9 @@ interface Props {
   defaultFileList?: UploadFile[];
 }
 
-const BasicForm: React.FC<Props> = ({
-  newRecord,
-  onFinish,
-  values,
-  setImageUrl,
-  imageUrl,
-  // defaultFileList = [],
-}) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, imageUrl }) => {
   const intl = useIntl();
   const [formRef] = ProForm.useForm();
-  console.log('----------------', imageUrl);
 
   const defaultFileList: UploadFile[] = imageUrl
     ? [
@@ -43,43 +32,19 @@ const BasicForm: React.FC<Props> = ({
 
   const handleFormFinish = async (formData: any) => {
     try {
-      // 检查所有必填字段
-      const requiredFields = {
-        username: '用户名',
-        email: '邮箱',
-        teacherType: '教师类型',
-        education: '教育程度',
-        teachingAge: '教龄',
-        title: '职称',
-        speaks: '语言',
-        lessonCategory: '课程类别',
-      };
-
-      // 检查每个必填字段是否存在且有值
-      const missingFields = Object.entries(requiredFields).filter(
-        ([key]) => !formData[key] || (Array.isArray(formData[key]) && formData[key].length === 0),
-      );
-
-      if (missingFields.length > 0) {
-        const missingFieldNames = missingFields.map(([, label]) => label).join(', ');
-        message.error(`请填写以下必填字段: ${missingFieldNames}`);
-        return;
-      }
-
+      // 只保留头像的验证，因为这是特殊字段
       if (!imageUrl) {
         message.error(intl.formatMessage({ id: 'pages.teacher.avatar.required' }));
         return;
       }
 
       // 构建提交数据
-      // console.log('-----', formData);
       const submitData = {
         ...formData,
         avatar: imageUrl,
-        teachingAge: Number(formData.teachingAge),
+        teachingAge: Number(formData.teachingAge), // 验证图片
       };
 
-      console.log('Form submission data:', submitData);
       await onFinish(submitData);
     } catch (error) {
       console.error('表单提交错误:', error);
@@ -90,14 +55,7 @@ const BasicForm: React.FC<Props> = ({
   return (
     <ProForm
       form={formRef}
-      initialValues={{
-        ...values,
-        teacherType: values?.teacherType || 'Both',
-        level: values?.level || 'Intermediate',
-        employmentType: values?.employmentType || 'Part-time',
-        hoursPerWeek: values?.hoursPerWeek || 0,
-        introduction: values?.introduction || '',
-      }}
+      initialValues={values}
       onFinish={handleFormFinish}
       submitter={{
         render: (props, dom) => {
@@ -336,9 +294,13 @@ const BasicForm: React.FC<Props> = ({
           style={{ width: '100%' }}
         >
           <Input.TextArea
-            rows={4}
-            maxLength={1500}
+            rows={3}
+            maxLength={1000}
             showCount
+            style={{
+              width: 330,
+              resize: 'vertical',
+            }}
             placeholder={intl.formatMessage({ id: 'pages.teacher.introduction.placeholder' })}
           />
         </ProForm.Item>
