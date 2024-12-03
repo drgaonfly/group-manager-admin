@@ -4,13 +4,16 @@ import BasicForm from './BasicForm';
 
 export type FormValueType = {
   _id?: string;
-  userId?: string;
-  bot?: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  languageCode?: string;
-  balance?: string;
+  customer?: string | { _id: string; username: string };
+  fullName?: string;
+  birthDate?: string;
+  location?: string;
+  degree?: string;
+  school?: string;
+  major?: string;
+  teachingYears?: number;
+  teachingLevel?: string;
+  status?: string | number;
 };
 
 export type UpdateFormProps = {
@@ -23,6 +26,11 @@ export type UpdateFormProps = {
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const intl = useIntl();
+
+  const initialValues = {
+    ...values,
+    customer: typeof values.customer === 'object' ? values.customer._id : values.customer,
+  };
 
   return (
     <ModalForm
@@ -39,7 +47,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         });
         return true;
       }}
-      initialValues={values}
+      initialValues={initialValues}
     >
       <BasicForm />
     </ModalForm>

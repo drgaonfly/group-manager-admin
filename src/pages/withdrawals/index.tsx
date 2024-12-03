@@ -193,6 +193,7 @@ const TableList: React.FC = () => {
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
+              // console.log('record===============================', record);
             }}
           >
             {intl.formatMessage({ id: 'edit' })}

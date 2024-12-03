@@ -11,6 +11,7 @@ export type FormValueType = {
   lastName?: string;
   languageCode?: string;
   balance?: string;
+  customer?: { _id: string };
 };
 
 export type UpdateFormProps = {
@@ -39,7 +40,10 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         });
         return true;
       }}
-      initialValues={values}
+      initialValues={{
+        ...values,
+        customer: values.customer?._id,
+      }}
     >
       <BasicForm values={values} />
     </ModalForm>

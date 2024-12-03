@@ -134,7 +134,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'pages.comment.rating' }),
       dataIndex: 'rating',
       valueType: 'digit',
-      width: 120,
+      width: 150,
       render: (_, record) => {
         const ratingValue = Number(record.rating || 0);
         return <Rate disabled value={ratingValue} style={{ fontSize: 14 }} count={5} />;
@@ -149,6 +149,7 @@ const TableList: React.FC = () => {
         <a
           key="edit"
           onClick={() => {
+            console.log('====================', record);
             handleUpdateModalOpen(true);
             setCurrentRow(record);
           }}

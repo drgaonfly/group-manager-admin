@@ -25,6 +25,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         ...values,
         isActive: values?.isActive ?? true,
         level: values?.level ?? 1,
+        customer: values?.customer?._id,
       }}
       onFinish={async (values) => {
         await onFinish({

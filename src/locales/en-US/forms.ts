@@ -305,4 +305,5 @@ export default {
   'withdrawal.status.completed': 'Completed',
   'withdrawal.status': 'Status',
   'withdrawal.amount': 'Amount',
+  'menu.withdrawals': 'Withdrawals',
 };

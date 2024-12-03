@@ -5,14 +5,14 @@ interface Props {
   values?: any;
 }
 
-const BasicForm: React.FC<Props> = () => {
+const BasicForm: React.FC<Props> = ({ values }) => {
   const intl = useIntl();
 
   return (
     <>
       <ProForm.Group>
-        {/* 教师关联名字 */}
-        <CustomerSelect />
+        {/* 评论人只在新建时显示教师选择器 */}
+        {!values && <CustomerSelect />}
 
         <ProFormTextArea
           name="content"

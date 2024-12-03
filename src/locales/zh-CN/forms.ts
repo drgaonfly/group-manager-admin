@@ -270,6 +270,7 @@ export default {
   // 菜单项翻译
   'menu.list.vip_members': 'VIP 会员列表',
   'menu.list.vip_members.list': 'VIP 会员列表',
+  'menu.withdrawals': '提现',
 
   // 如果你使用了面包屑，可能还需要这些
   'pages.vip_members': 'VIP 会员',
