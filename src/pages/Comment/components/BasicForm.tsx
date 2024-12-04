@@ -2,17 +2,16 @@ import { useIntl } from '@umijs/max';
 import { ProForm, ProFormTextArea, ProFormRate } from '@ant-design/pro-components';
 import CustomerSelect from '@/components/tearcher';
 interface Props {
-  values?: any;
+  newRecord?: boolean;
 }
 
-const BasicForm: React.FC<Props> = ({ values }) => {
+const BasicForm: React.FC<Props> = ({ newRecord = true }) => {
   const intl = useIntl();
 
   return (
     <>
       <ProForm.Group>
-        {/* 评论人只在新建时显示教师选择器 */}
-        {!values && <CustomerSelect />}
+        {newRecord && <CustomerSelect />}
 
         <ProFormTextArea
           name="content"

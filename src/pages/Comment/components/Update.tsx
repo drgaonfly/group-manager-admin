@@ -4,13 +4,14 @@ import BasicForm from './BasicForm';
 
 export type FormValueType = {
   _id?: string;
-  userId?: string;
-  bot?: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  languageCode?: string;
-  balance?: string;
+  content?: string;
+  rating?: number;
+  customer?: {
+    _id: string;
+    username: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type UpdateFormProps = {
@@ -26,6 +27,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <ModalForm
+      key={values._id}
       title={intl.formatMessage({ id: 'pages.searchTable.updateForm.title' })}
       open={updateModalOpen}
       modalProps={{
@@ -41,7 +43,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
       initialValues={values}
     >
-      <BasicForm values={values} />
+      <BasicForm newRecord={false} />
     </ModalForm>
   );
 };

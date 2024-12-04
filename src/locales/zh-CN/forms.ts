@@ -339,4 +339,10 @@ export default {
   'withdrawal.status.completed': '已完成',
   'withdrawal.status': '状态',
   'withdrawal.amount': '金额',
+
+  // 微信和谷歌账号相关
+  wechat: '微信',
+  enter_wechat: '请输入微信号',
+  googleAccount: '谷歌账号',
+  enter_google_account: '请输入谷歌账号',
 };

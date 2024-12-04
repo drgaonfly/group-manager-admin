@@ -306,4 +306,10 @@ export default {
   'withdrawal.status': 'Status',
   'withdrawal.amount': 'Amount',
   'menu.withdrawals': 'Withdrawals',
+
+  // 微信和谷歌账号相关
+  wechat: 'WeChat',
+  enter_wechat: 'Please enter WeChat',
+  googleAccount: 'Google Account',
+  enter_google_account: 'Please enter Google Account',
 };

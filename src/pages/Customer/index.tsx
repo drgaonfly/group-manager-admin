@@ -152,6 +152,26 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'wechat', defaultMessage: '微信' }),
+      dataIndex: 'wechat',
+      hideInSearch: true,
+      copyable: true,
+      renderFormItem: (item, { ...rest }) => {
+        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_wechat' })} />;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'googleAccount', defaultMessage: '谷歌账号' }),
+      dataIndex: 'googleAccount',
+      hideInSearch: true,
+      copyable: true,
+      renderFormItem: (item, { ...rest }) => {
+        return (
+          <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_google_account' })} />
+        );
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'address', defaultMessage: '地址' }),
       dataIndex: 'address',
       hideInSearch: true,

@@ -56,6 +56,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
         <ProFormText width="md" label={intl.formatMessage({ id: 'phone' })} name="phone" />
 
+        <ProFormText width="md" label={intl.formatMessage({ id: 'wechat' })} name="wechat" />
+
+        <ProFormText
+          width="md"
+          label={intl.formatMessage({ id: 'googleAccount' })}
+          name="googleAccount"
+        />
+
         <ProFormText width="md" label={intl.formatMessage({ id: 'address' })} name="address" />
 
         <ProFormSelect
