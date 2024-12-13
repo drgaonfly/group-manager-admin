@@ -92,40 +92,4 @@ export default [
     icon: 'UserOutlined',
     component: './Customer',
   },
-  {
-    path: '/teachers',
-    name: 'list.teachers',
-    icon: 'SolutionOutlined',
-    component: './Teacher',
-  },
-  {
-    path: '/lessons',
-    name: 'list.lessons',
-    icon: 'BookOutlined',
-    component: './Lesson',
-  },
-  {
-    path: '/comments',
-    name: 'list.comments',
-    icon: 'CommentOutlined',
-    component: './Comment',
-  },
-  {
-    path: '/vip-members',
-    name: 'list.vip_members',
-    icon: 'StarOutlined',
-    component: './vipMember',
-  },
-  {
-    path: '/resumes',
-    name: 'list.resumes',
-    icon: 'FileOutlined',
-    component: './Resume',
-  },
-  {
-    path: '/withdrawals',
-    name: 'list.withdrawals',
-    icon: 'TransactionOutlined',
-    component: './withdrawals',
-  },
 ];
