@@ -6,12 +6,11 @@ interface Props {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   onFinish: (formData: any) => Promise<void>;
-  setVideoUrl: (url: string) => void;
 }
 
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
-  const { open, onOpenChange, onFinish, setVideoUrl } = props;
+  const { open, onOpenChange, onFinish } = props;
 
   return (
     <Modal
@@ -23,7 +22,7 @@ const Create: React.FC<Props> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <BasicForm setVideoUrl={setVideoUrl} newRecord onFinish={onFinish} />
+      <BasicForm newRecord onFinish={onFinish} />
     </Modal>
   );
 };

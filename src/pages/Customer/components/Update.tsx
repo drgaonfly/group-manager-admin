@@ -1,5 +1,5 @@
 import { useIntl } from '@umijs/max';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import BasicForm from './BasicForm';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
@@ -19,11 +19,6 @@ export type UpdateFormProps = {
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
-  const [videoUrl, setVideoUrl] = useState<string | undefined>('');
-
-  useEffect(() => {
-    setVideoUrl(values.videoUrl);
-  }, [values]);
 
   return (
     <ModalForm
@@ -38,18 +33,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       onFinish={async (values: any) => {
         onSubmit({
           ...values,
-          videoUrl,
         });
       }}
       initialValues={{ ...values }}
       submitter={false}
     >
-      <BasicForm
-        videoUrl={videoUrl}
-        setVideoUrl={setVideoUrl}
-        values={values}
-        onFinish={onSubmit}
-      />
+      <BasicForm values={values} onFinish={onSubmit} />
       <Form.Item name="_id" label={false}>
         <Input type="hidden" />
       </Form.Item>

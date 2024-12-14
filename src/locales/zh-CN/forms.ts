@@ -340,9 +340,11 @@ export default {
   'withdrawal.status': '状态',
   'withdrawal.amount': '金额',
 
-  // 微信和谷歌账号相关
-  wechat: '微信',
-  enter_wechat: '请输入微信号',
-  googleAccount: '谷歌账号',
-  enter_google_account: '请输入谷歌账号',
+  phoneNumber: '手机号',
+  password: '密码',
+  phoneCode: '电话区号',
+  session: '会话',
+  'platforms.detail': '详情',
+
+  remarks: '备注',
 };

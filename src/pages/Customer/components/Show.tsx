@@ -1,5 +1,6 @@
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { Modal } from 'antd'; // 改用 Modal
+// import { FormattedMessage } from '@umijs/max';
+import { Modal } from 'antd';
 import React from 'react';
 
 interface Props {
@@ -10,7 +11,9 @@ interface Props {
 }
 
 const Show: React.FC<Props> = (props) => {
-  const { onClose, open, currentRow, columns } = props;
+  const { onClose, open, currentRow, columns: cols } = props;
+  const filteredColumns = cols.filter((col) => col.dataIndex !== 'option');
+
   return (
     <Modal
       open={open}
@@ -20,18 +23,31 @@ const Show: React.FC<Props> = (props) => {
       centered
       className="rounded-lg overflow-hidden"
     >
-      {currentRow?.username && ( // 修改为
+      {currentRow?.username && (
         <ProDescriptions<API.ItemData>
           column={2}
-          title={currentRow?.username} // 使用  作为标题
+          title={currentRow?.username}
           request={async () => ({
             data: currentRow || {},
           })}
           params={{
             id: currentRow?._id,
           }}
-          columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
+          columns={filteredColumns as ProDescriptionsItemProps<API.ItemData>[]}
           style={{ marginTop: '20px' }}
+          bordered
+          labelStyle={{
+            width: '10%',
+            justifyContent: 'flex-end',
+            padding: '8px 16px',
+            backgroundColor: '#f0f0f0',
+          }}
+          contentStyle={{
+            width: '50%',
+            padding: '8px 16px',
+          }}
+          size="small"
+          className="custom-descriptions"
         />
       )}
     </Modal>

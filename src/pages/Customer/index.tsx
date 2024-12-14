@@ -4,7 +4,7 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
-import { PlusOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -112,9 +112,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
-  const [videoUrl, setVideoUrl] = useState<string>('');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState('');
 
   /**
    * @en-US International configuration
@@ -147,77 +145,52 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'phone', defaultMessage: '电话' }),
-      dataIndex: 'phone',
-      hideInSearch: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_phone' })} />;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'wechat', defaultMessage: '微信' }),
-      dataIndex: 'wechat',
-      hideInSearch: true,
-      copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_wechat' })} />;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'googleAccount', defaultMessage: '谷歌账号' }),
-      dataIndex: 'googleAccount',
-      hideInSearch: true,
-      copyable: true,
+      title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
+      dataIndex: 'phoneNumber',
+      hideInSearch: false,
       renderFormItem: (item, { ...rest }) => {
         return (
-          <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_google_account' })} />
+          <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_phone_number' })} />
         );
       },
     },
     {
-      title: intl.formatMessage({ id: 'address', defaultMessage: '地址' }),
-      dataIndex: 'address',
+      title: intl.formatMessage({ id: 'password', defaultMessage: '密码' }),
+      dataIndex: 'password',
       hideInSearch: true,
-      ellipsis: true,
       renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_address' })} />;
+        return (
+          <ProFormText.Password
+            {...rest}
+            placeholder={intl.formatMessage({ id: 'enter_password' })}
+          />
+        );
       },
     },
     {
-      title: intl.formatMessage({ id: 'video', defaultMessage: '视频' }),
-      dataIndex: 'video',
-      hideInSearch: true,
-      render: (video) =>
-        video ? (
-          <Button
-            type="link"
-            icon={<PlayCircleOutlined />}
-            onClick={() => {
-              setCurrentVideo(video as string);
-              setVideoModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({ id: 'play_video', defaultMessage: '播放视频' })}
-          </Button>
-        ) : (
-          <span>{intl.formatMessage({ id: 'no_video', defaultMessage: '无视频' })}</span>
-        ),
+      title: intl.formatMessage({ id: 'phoneCode', defaultMessage: '电话区号' }),
+      dataIndex: 'phoneCode',
+      hideInSearch: false,
       renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_video' })} />;
+        return (
+          <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_phone_code' })} />
+        );
       },
     },
     {
-      title: intl.formatMessage({ id: 'status', defaultMessage: '状态' }),
-      dataIndex: 'status',
-      valueEnum: {
-        active: {
-          text: intl.formatMessage({ id: 'active', defaultMessage: '活跃' }),
-          status: 'Success',
-        },
-        inactive: {
-          text: intl.formatMessage({ id: 'inactive', defaultMessage: '不活跃' }),
-          status: 'Error',
-        },
+      title: intl.formatMessage({ id: 'session', defaultMessage: '会话' }),
+      dataIndex: 'session',
+      hideInSearch: true,
+      renderFormItem: (item, { ...rest }) => {
+        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_session' })} />;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
+      dataIndex: 'remarks',
+      hideInSearch: true,
+      renderFormItem: (item, { ...rest }) => {
+        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
       },
     },
     {
@@ -225,6 +198,15 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
+        <a
+          key="detail"
+          onClick={() => {
+            setCurrentRow(record);
+            setShowDetail(true);
+          }}
+        >
+          <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
+        </a>,
         access.canSuperAdmin && (
           <a
             key="edit"
@@ -317,15 +299,12 @@ const TableList: React.FC = () => {
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
-          setVideoUrl={setVideoUrl}
           onFinish={async (value) => {
             const success = await handleAdd({
               ...value,
-              video: videoUrl,
             } as API.ItemData);
             if (success) {
               handleModalOpen(false);
-              setVideoUrl('');
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -365,9 +344,7 @@ const TableList: React.FC = () => {
         onCancel={() => setVideoModalOpen(false)}
         footer={null}
         width={800}
-      >
-        <video controls style={{ width: '100%' }} src={currentVideo} />
-      </Modal>
+      ></Modal>
     </PageContainer>
   );
 };
