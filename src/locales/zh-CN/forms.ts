@@ -378,4 +378,6 @@ export default {
   enter_bot_name: '请输入机器人名称',
   enter_remarks: '请输入备注',
   'pages.comment.proxy': '代理用户',
+  'list.messages': '信息管理',
+  'menu.messages': '信息管理',
 };

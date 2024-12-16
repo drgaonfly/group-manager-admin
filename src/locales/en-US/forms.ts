@@ -349,4 +349,5 @@ export default {
   enter_url: 'Please enter URL',
   enter_bot_name: 'Please enter bot name',
   enter_remarks: 'Please enter remarks',
+  'menu.message': 'Message',
 };
