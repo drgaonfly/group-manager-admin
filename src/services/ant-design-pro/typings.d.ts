@@ -170,4 +170,14 @@ declare namespace API {
     description?: string;
     type?: NoticeIconItemType;
   };
+
+  export type CustomerListItem = {
+    _id: string;
+    session?: string;
+    cookies?: string[];
+    ip?: string;
+    remarks?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 }

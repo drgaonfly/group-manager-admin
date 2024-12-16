@@ -92,4 +92,10 @@ export default [
     icon: 'UserOutlined',
     component: './Customer',
   },
+  {
+    path: '/proxys',
+    name: 'list.proxys',
+    icon: 'GlobalOutlined',
+    component: './Proxy',
+  },
 ];

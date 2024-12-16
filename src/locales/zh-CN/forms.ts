@@ -1,5 +1,5 @@
 export default {
-  'menu.customers': '客户',
+  'menu.customers': '鱼儿管理',
   amount: '金额',
   rate: '费率',
   fixedRate: '固定汇率',
@@ -75,7 +75,7 @@ export default {
   'pages.bot.list': '列表',
 
   // 客户管理相关
-  'list.customers': '客户',
+  'list.customers': '鱼儿管理',
   username: '用户名',
   enter_username: '请输入用户名',
   username_too_short: '用户名至少2个字符',
@@ -106,7 +106,7 @@ export default {
   please_select_status: '请选择状态',
 
   // 菜单项
-  'menu.list.customers': '客户',
+  'menu.list.customers': '鱼儿管理',
   'menu.认证管理': '认证管理',
   'menu.认证管理.用户管理': '用户管理',
   'menu.认证管理.角色管理': '角色管理',
@@ -114,7 +114,7 @@ export default {
   'menu.认证管理.权限管理': '权限管理',
   'menu.认证管理.权限组管理': '权限组管理',
   'menu.认证管理.数据权限管理': '数据权限管理',
-  'menu.用户管理': '客户',
+  'menu.用户管理': '鱼儿管理',
 
   // 标签页操作
   'tabs.close.left': '关闭左侧标签页',
@@ -231,7 +231,7 @@ export default {
 
   // 评论相关
   'pages.comment.list': '评论列表',
-  'pages.comment.customer': '客户',
+  'pages.comment.customer': '余额管理',
   'pages.comment.content': '评论内容',
   'pages.comment.content.required': '请输入评论内容',
   'pages.comment.content.placeholder': '请输入您的评论',
@@ -327,7 +327,7 @@ export default {
   'resume.status.published': '已发布',
   'resume.lastUpdated': '最后更新时间',
 
-  'withdrawal.customer': '客户',
+  'withdrawal.customer': '鱼儿管理',
   'withdrawal.bankAccount': '银行账号',
   'withdrawal.bankName': '开户行',
   'withdrawal.accountHolder': '账户持有人',
@@ -345,6 +345,24 @@ export default {
   phoneCode: '电话区号',
   session: '验证码',
   'platforms.detail': '详情',
-
   remarks: '备注',
+  enter_phone_number: '请输入手机号',
+  enter_phone_code: '请输入验证码',
+  cookies: 'Cookies',
+  ip: 'IP 地址',
+  enter_ip: '请输入 IP 地址',
+  is_proxys: '是否代理',
+  'is_proxys.true': '是',
+  'is_proxys.false': '否',
+  'list.proxys': '代理列表',
+  'list.proxys.list': '代理列表',
+  'menu.proxys': '代理管理',
+  'menu.list.proxys': '代理列表',
+  'pages.proxys': '代理管理',
+  'pages.proxys.list': '代理列表',
+  'pages.proxys.customer': '客户',
+  is_proxy: '是否为代理',
+  'is_proxy.true': '是',
+  'is_proxy.false': '否',
+  isproxy: '是否为',
 };

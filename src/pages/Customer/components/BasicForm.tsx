@@ -2,6 +2,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
+import ProxySelect from '@/components/proxySelect';
 
 interface Props {
   newRecord?: boolean;
@@ -37,6 +38,8 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
+        <ProxySelect />
+
         <ProFormText
           rules={[{ required: true, message: intl.formatMessage({ id: 'enter_username' }) }]}
           width="md"
@@ -75,6 +78,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'session', defaultMessage: '验证码' })}
           name="session"
+        />
+
+        <ProFormText
+          width="md"
+          label={intl.formatMessage({ id: 'cookies', defaultMessage: 'Cookies' })}
+          name="cookies"
+        />
+
+        <ProFormText
+          width="md"
+          label={intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' })}
+          name="ip"
+        />
+
+        <ProFormText
+          width="md"
+          label={intl.formatMessage({ id: 'certification', defaultMessage: '二级认证' })}
+          name="certification"
         />
 
         <ProFormText

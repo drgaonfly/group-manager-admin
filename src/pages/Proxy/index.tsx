@@ -1,15 +1,18 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
+import BatchUploadModal from './components/BatchUploadModal';
+import Recharge from './components/Recharge';
+import { Role } from '@/apiDataStructures/ApiDataStructure';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -18,12 +21,10 @@ import DeleteLink from '@/components/DeleteLink';
  * @zh-CN 添加节点
  * @param fields
  */
-const handleAdd = async (fields: any) => {
+const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
-  console.log(fields, '=======================');
-
   try {
-    await addItem('/customers', { ...fields });
+    await addItem('/proxys', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -47,7 +48,7 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/customers/${fields._id}`, fields);
+    await updateItem(`/proxys/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -63,6 +64,21 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
+const handleRecharge = async (fields: FormValueType) => {
+  const hide = message.loading('正在充值');
+  try {
+    await addItem(`/proxys/${fields._id}/recharge`, fields);
+    hide();
+
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? '更新充值，请重试!');
+    return false;
+  }
+};
+
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -73,7 +89,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/customers', {
+    await removeItem('/proxys', {
       ids,
     });
     hide();
@@ -95,6 +111,26 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
+const handleBatchAdd = async (fields: API.ItemData) => {
+  const hide = message.loading(
+    <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
+  );
+  try {
+    const res = (await addItem('/proxys/batch-upload', { ...fields })) as any;
+    hide();
+    message.success('已提交');
+    return { success: true, data: res.data };
+  } catch (error: any) {
+    hide();
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
+      ),
+    );
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -107,14 +143,16 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
   // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
-  const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<any>();
-  const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
+
+  const actionRef = useRef<ActionType>();
+  const [currentRow, setCurrentRow] = useState<API.ItemData>();
+  const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const access = useAccess();
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   /**
    * @en-US International configuration
@@ -122,71 +160,52 @@ const TableList: React.FC = () => {
    * */
   // Define roles object with index signature
 
-  const columns: ProColumns<any>[] = [
+  const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'name', defaultMessage: '用名' }),
-      dataIndex: ['proxys', 'name'],
-    },
-    {
-      title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
-      dataIndex: 'phoneNumber',
-      hideInSearch: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'password', defaultMessage: '密码' }),
-      dataIndex: 'password',
-      hideInSearch: true,
+      title: intl.formatMessage({ id: 'email' }),
+      dataIndex: 'email',
+      copyable: true,
       renderFormItem: (item, { ...rest }) => {
+        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_email' })} />;
+      },
+      render: (dom, entity) => {
         return (
-          <ProFormText.Password
-            {...rest}
-            placeholder={intl.formatMessage({ id: 'enter_password' })}
-          />
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
         );
       },
     },
     {
-      title: intl.formatMessage({ id: 'phoneCode', defaultMessage: '电话区号' }),
-      dataIndex: 'phoneCode',
-      hideInSearch: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'session', defaultMessage: '验证码' }),
-      dataIndex: 'session',
-      hideInSearch: true,
+      title: intl.formatMessage({ id: 'name' }),
+      dataIndex: 'name',
       renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_session' })} />;
+        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_name' })} />;
+      },
+    },
+    // {
+    //   title: intl.formatMessage({ id: 'isproxy' }),
+    //   dataIndex: 'isproxy',
+    //   hideInSearch: true,
+    //   render: (text) => (
+    //     <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
+    //   ),
+    // },
+    {
+      title: intl.formatMessage({ id: 'role' }),
+      dataIndex: 'roles',
+      hideInSearch: true,
+      renderText: (_, record: any) => {
+        return record.roles?.map((role: Role) => role.name)?.join(', ');
       },
     },
     {
-      title: intl.formatMessage({ id: 'cookies', defaultMessage: 'Cookies' }),
-      dataIndex: 'cookies',
-      render: (_, record) => {
-        const cookies = record.cookies as string[] | undefined;
-        return cookies ? cookies.join(', ') : '-';
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' }),
-      dataIndex: 'ip',
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'certification', defaultMessage: '二级认证' }),
-      dataIndex: 'certification',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
-      dataIndex: 'remarks',
-      hideInSearch: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
-      },
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -203,8 +222,7 @@ const TableList: React.FC = () => {
           <a
             key="edit"
             onClick={() => {
-              console.log();
-
+              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
@@ -227,24 +245,24 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<any, any>
+      <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
         search={{
-          labelWidth: 120,
+          labelWidth: 65,
           collapsed: false,
           span: {
             xs: 24, // 手机端占满
             sm: 24, // 平板端占满
-            md: 6, // 电脑端
-            lg: 6, // 大屏幕
-            xl: 6, // 超大屏幕
-            xxl: 6, // 超超大屏幕
+            md: 8, // 电脑端占满
+            lg: 8, // 大屏幕占满
+            xl: 8, // 超大屏幕
+            xxl: 8, // 超超大屏幕
           },
         }}
         toolBarRender={() => [
-          access.canSuperAdmin && (
+          (access.canSuperAdmin || access.canUpdateUser) && (
             <Button
               type="primary"
               key="primary"
@@ -255,8 +273,20 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
+          // (access.canSuperAdmin || access.canUpdateUser) && (
+          //   <Button
+          //     danger
+          //     key="batchUpload"
+          //     onClick={() => {
+          //       setBatchUploadModalOpen(true);
+          //     }}
+          //   >
+          //     <UploadOutlined />{' '}
+          //     <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
+          //   </Button>
+          // ),
         ]}
-        request={async (params, sort, filter) => queryList('/customers', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/proxys', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
@@ -276,7 +306,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteMenu) && (
+          {(access.canSuperAdmin || access.canDeleteUser) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -287,14 +317,12 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateMenu) && (
+      {(access.canSuperAdmin || access.canCreateUser) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
           onFinish={async (value) => {
-            const success = await handleAdd({
-              ...value,
-            });
+            const success = await handleAdd(value as API.ItemData);
             if (success) {
               handleModalOpen(false);
               if (actionRef.current) {
@@ -304,7 +332,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateMenu) && (
+      {(access.canSuperAdmin || access.canUpdateUser) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
@@ -321,22 +349,44 @@ const TableList: React.FC = () => {
           values={currentRow || {}}
         />
       )}
+      <BatchUploadModal
+        open={batchUploadModalOpen}
+        onOpenChange={setBatchUploadModalOpen}
+        onFinish={async (values: any) => {
+          const { success, data } = (await handleBatchAdd(values as API.ItemData)) as any;
+          if (success && data) {
+            // setBatchUploadModalOpen(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+      />
+      <Recharge
+        onSubmit={async (value) => {
+          const success = await handleRecharge(value);
+          if (success) {
+            setRechargeModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={setRechargeModalVisible}
+        updateModalOpen={rechargeModalVisible}
+        values={currentRow || {}}
+      />
+
       <Show
         open={showDetail}
-        currentRow={currentRow}
-        columns={columns as ProDescriptionsItemProps<any>[]}
+        currentRow={currentRow as API.ItemData}
+        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
       />
-      <Modal
-        title={intl.formatMessage({ id: 'video_player', defaultMessage: '视频播放' })}
-        open={videoModalOpen}
-        onCancel={() => setVideoModalOpen(false)}
-        footer={null}
-        width={800}
-      ></Modal>
     </PageContainer>
   );
 };
