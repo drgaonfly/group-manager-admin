@@ -11,6 +11,8 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 
+import route from 'mock/route';
+
 export default [
   {
     path: '/user',
@@ -103,5 +105,11 @@ export default [
     name: 'list.two-telegram',
     icon: 'TableOutlined',
     component: './telegram',
+  },
+  {
+    path: '/messages',
+    name: 'list.messages',
+    icon: 'TableOutlined',
+    component: './Messages',
   },
 ];
