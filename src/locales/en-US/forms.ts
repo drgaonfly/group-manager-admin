@@ -338,4 +338,15 @@ export default {
   'pages.proxys.is_proxy': 'Is Proxy',
   'pages.proxys.is_proxy.required': 'Please select is proxy',
   'pages.proxys.phone_number': 'Phone Number',
+
+  // Telegram Bot Management
+  'list.two-telegram': 'Telegram Bots',
+  'menu.two-telegrams': 'Telegram Bots',
+  url: 'URL',
+  'platform.online': 'Online',
+  'platform.offline': 'Offline',
+  enter_bot_token: 'Please enter bot token',
+  enter_url: 'Please enter URL',
+  enter_bot_name: 'Please enter bot name',
+  enter_remarks: 'Please enter remarks',
 };

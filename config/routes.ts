@@ -98,4 +98,10 @@ export default [
     icon: 'GlobalOutlined',
     component: './Proxy',
   },
+  {
+    path: '/two-telegrams',
+    name: 'list.two-telegram',
+    icon: 'TableOutlined',
+    component: './telegram',
+  },
 ];

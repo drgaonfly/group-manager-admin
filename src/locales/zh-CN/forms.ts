@@ -365,4 +365,16 @@ export default {
   'is_proxy.true': '是',
   'is_proxy.false': '否',
   isproxy: '是否为',
+  'isActive.true': '是',
+  'isActive.false': '否',
+  // Telegram Bot Management
+  'list.two-telegram': 'Telegram机器人',
+  'menu.two-telegrams': 'Telegram机器人',
+  url: '网址',
+  'platform.online': '在线',
+  'platform.offline': '离线',
+  enter_bot_token: '请输入机器人Token',
+  enter_url: '请输入网址',
+  enter_bot_name: '请输入机器人名称',
+  enter_remarks: '请输入备注',
 };
