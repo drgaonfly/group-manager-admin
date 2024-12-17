@@ -351,4 +351,5 @@ export default {
   enter_remarks: 'Please enter remarks',
   'menu.message': 'Message',
   'menu.employees': 'Employees',
+  'pages.customer.user': 'User',
 };

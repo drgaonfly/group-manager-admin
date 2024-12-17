@@ -17,6 +17,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     <ProForm
       initialValues={{
         ...values,
+        users: values?.users?._id,
       }}
       onFinish={async (values) => {
         await onFinish({
