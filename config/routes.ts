@@ -118,4 +118,10 @@ export default [
     icon: 'UsergroupAddOutlined',
     component: './Employee',
   },
+  {
+    path: '/telegram-users',
+    name: 'list.telegram-users',
+    icon: 'RobotOutlined',
+    component: './telegramUser',
+  },
 ];

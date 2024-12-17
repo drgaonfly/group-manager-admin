@@ -382,4 +382,5 @@ export default {
   'menu.messages': '信息管理',
   'menu.employees': '员工管理',
   'pages.customer.user': '用户',
+  'menu.telegram-users': '机器人用户',
 };

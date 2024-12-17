@@ -352,4 +352,5 @@ export default {
   'menu.message': 'Message',
   'menu.employees': 'Employees',
   'pages.customer.user': 'User',
+  'menu.telegram-users': 'Telegram Users',
 };
