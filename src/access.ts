@@ -123,6 +123,29 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals/:id', 'PUT')),
     canGetWithdrawal:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals', 'GET')),
+
+    // proxy权限
+    canCreateNewRole:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/new-roles', 'POST')),
+    canDeleteNewRole:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/new-roles', 'DELETE')),
+    canUpdateNewRole:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/new-roles/:id', 'PUT')),
+    canGetNewRole:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/new-roles', 'GET')),
+
+    // employee权限
+    canCreateNewEmployee:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/new-employees', 'POST')),
+    canDeleteNewEmployee:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/new-employees', 'DELETE')),
+    canUpdateNewEmployee:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/new-employees/:id', 'PUT')),
+    canGetNewEmployee:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/new-employees', 'GET')),
   };
 }
 

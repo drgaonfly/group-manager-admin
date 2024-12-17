@@ -11,7 +11,6 @@ import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import BatchUploadModal from './components/BatchUploadModal';
-import Recharge from './components/Recharge';
 import { Role } from '@/apiDataStructures/ApiDataStructure';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
@@ -24,7 +23,7 @@ import DeleteLink from '@/components/DeleteLink';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
   try {
-    await addItem('/users', { ...fields });
+    await addItem('/employees', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -48,7 +47,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/users/${fields._id}`, fields);
+    await updateItem(`/employees/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -64,21 +63,6 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const handleRecharge = async (fields: FormValueType) => {
-  const hide = message.loading('正在充值');
-  try {
-    await addItem(`/users/${fields._id}/recharge`, fields);
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '更新充值，请重试!');
-    return false;
-  }
-};
-
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -89,7 +73,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/users', {
+    await removeItem('/employees', {
       ids,
     });
     hide();
@@ -116,7 +100,7 @@ const handleBatchAdd = async (fields: API.ItemData) => {
     <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
   );
   try {
-    const res = (await addItem('/users/batch-upload', { ...fields })) as any;
+    const res = (await addItem('/employees/batch-upload', { ...fields })) as any;
     hide();
     message.success('已提交');
     return { success: true, data: res.data };
@@ -151,7 +135,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const access = useAccess();
 
   /**
@@ -245,7 +228,7 @@ const TableList: React.FC = () => {
           },
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canUpdateUser) && (
+          (access.canSuperAdmin || access.canCreateNewEmployee) && (
             <Button
               type="primary"
               key="primary"
@@ -269,7 +252,7 @@ const TableList: React.FC = () => {
           //   </Button>
           // ),
         ]}
-        request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/employees', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
@@ -289,7 +272,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteUser) && (
+          {(access.canSuperAdmin || access.canDeleteNewEmployee) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -300,7 +283,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateUser) && (
+      {(access.canSuperAdmin || access.canCreateNewEmployee) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -315,7 +298,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateUser) && (
+      {(access.canSuperAdmin || access.canUpdateNewEmployee) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
@@ -344,21 +327,6 @@ const TableList: React.FC = () => {
             }
           }
         }}
-      />
-      <Recharge
-        onSubmit={async (value) => {
-          const success = await handleRecharge(value);
-          if (success) {
-            setRechargeModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={setRechargeModalVisible}
-        updateModalOpen={rechargeModalVisible}
-        values={currentRow || {}}
       />
 
       <Show
