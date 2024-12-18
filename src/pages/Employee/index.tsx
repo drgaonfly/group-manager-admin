@@ -168,7 +168,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'pages.employee.proxy' }),
-      dataIndex: ['proxys', 'name'],
+      dataIndex: ['proxy', 'name'],
       renderFormItem: (item, { ...rest }) => {
         return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_name' })} />;
       },

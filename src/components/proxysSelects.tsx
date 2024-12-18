@@ -15,12 +15,12 @@ const ProxysSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
   return (
     <ProFormSelect
       rules={[{ required: true }]}
-      options={proxys.map((proxys: any) => ({
-        label: proxys.name,
-        value: proxys._id,
+      options={proxys.map((proxy: any) => ({
+        label: proxy.name,
+        value: proxy._id,
       }))}
       width="md"
-      name="proxys"
+      name="proxy"
       label={intl.formatMessage({ id: 'pages.comment.user' })}
       showSearch
       fieldProps={{
