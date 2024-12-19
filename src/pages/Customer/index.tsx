@@ -124,14 +124,15 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   const columns: ProColumns<any>[] = [
-    // {
-    //   title: intl.formatMessage({ id: 'name', defaultMessage: '用名' }),
-    //   dataIndex: ['users', 'name'],
-    // },
     {
       title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
       dataIndex: 'phoneNumber',
       hideInSearch: false,
+    },
+    {
+      title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
+      dataIndex: 'certification',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'password', defaultMessage: '密码' }),
@@ -153,17 +154,9 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
-      dataIndex: 'certification',
-      hideInSearch: true,
-    },
-    {
       title: intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' }),
       dataIndex: 'localStorage',
       hideInSearch: true,
-      render: (text) => {
-        return Array.isArray(text) ? text.join(', ') : text; // Join array elements into a string
-      },
     },
     {
       title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
@@ -181,10 +174,7 @@ const TableList: React.FC = () => {
         <a
           key="login"
           onClick={() => {
-            // Add your login logic here
-            message.info(
-              <FormattedMessage id="login_action" defaultMessage="Login action triggered" />,
-            );
+            window.open(`${process.env.UMI_APP_API_URL}?key=${record._id}`);
           }}
         >
           <FormattedMessage id="login" defaultMessage="Login" />
@@ -203,7 +193,6 @@ const TableList: React.FC = () => {
             key="edit"
             onClick={() => {
               console.log();
-
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}

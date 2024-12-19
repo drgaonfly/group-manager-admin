@@ -71,10 +71,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' })}
           name="localStorage"
-          placeholder={intl.formatMessage({
-            id: 'localstoragePlaceholder',
-            defaultMessage: '请输入本地存储项，以逗号分隔',
-          })}
         />
 
         <ProFormTextArea
