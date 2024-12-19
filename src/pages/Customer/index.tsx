@@ -133,7 +133,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
-      dataIndex: 'certification',
+      dataIndex: 'phoneCode',
       hideInSearch: true,
       width: 200,
     },
@@ -156,7 +156,7 @@ const TableList: React.FC = () => {
       dataIndex: 'ip',
       hideInSearch: true,
       copyable: true,
-      width: 200,
+      width: 300,
     },
     {
       title: intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' }),
@@ -170,7 +170,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
       dataIndex: 'remarks',
       hideInSearch: true,
-      width: 200,
+      width: 300,
       renderFormItem: (item, { ...rest }) => {
         return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
       },

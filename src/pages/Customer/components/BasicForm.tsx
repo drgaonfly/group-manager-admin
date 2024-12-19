@@ -64,7 +64,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormText
           width="md"
           label={intl.formatMessage({ id: 'certification', defaultMessage: '验证码' })}
-          name="certification"
+          name="phoneCode"
         />
 
         <ProFormTextArea
