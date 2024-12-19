@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import { CopyOutlined } from '@ant-design/icons';
 // import { Tooltip } from 'antd';
 // import { ProFormTextArea } from '@ant-design/pro-components';
 
@@ -170,24 +171,43 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
       dataIndex: 'remarks',
       hideInSearch: true,
-      width: 300,
+      width: 200,
       renderFormItem: (item, { ...rest }) => {
         return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'user_path', defaultMessage: '用户链接' }),
+      width: 380,
+      render: (_, record) => {
+        const link = `${process.env.UMI_APP_LOGIN_URL}?key=${record._id}`;
+        return (
+          <span>
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              {link}
+            </a>
+            <Button
+              type="link"
+              onClick={() => {
+                navigator.clipboard.writeText(link);
+                message.success(
+                  <FormattedMessage id="copy_success" defaultMessage="Copied to clipboard!" />,
+                );
+              }}
+            >
+              <CopyOutlined />
+            </Button>
+          </span>
+        );
       },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
+      width: 100,
+      fixed: 'right',
       render: (_, record) => [
-        <a
-          key="login"
-          onClick={() => {
-            window.open(`${process.env.UMI_APP_LOGIN_URL}?key=${record._id}`);
-          }}
-        >
-          <FormattedMessage id="login" defaultMessage="Login" />
-        </a>,
         <a
           key="detail"
           onClick={() => {
@@ -228,6 +248,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
+        scroll={{ x: 2200 }} // 或者可以设置为具体的像素值
         search={{
           labelWidth: 120,
           collapsed: false,
