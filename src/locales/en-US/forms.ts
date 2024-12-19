@@ -354,4 +354,5 @@ export default {
   'pages.customer.user': 'User',
   'menu.telegram-users': 'Telegram Users',
   'pages.employee.proxy': 'Proxy',
+  login: 'Login',
 };

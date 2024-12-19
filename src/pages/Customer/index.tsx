@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+// import { ProFormTextArea } from '@ant-design/pro-components';
 
 /**
  * @en-US Add node
@@ -123,10 +124,10 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   const columns: ProColumns<any>[] = [
-    {
-      title: intl.formatMessage({ id: 'name', defaultMessage: '用名' }),
-      dataIndex: ['users', 'name'],
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'name', defaultMessage: '用名' }),
+    //   dataIndex: ['users', 'name'],
+    // },
     {
       title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
       dataIndex: 'phoneNumber',
@@ -146,14 +147,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'session', defaultMessage: '验证码' }),
-      dataIndex: 'session',
-      hideInSearch: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_session' })} />;
-      },
-    },
-    {
       title: intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' }),
       dataIndex: 'ip',
       hideInSearch: true,
@@ -163,6 +156,14 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
       dataIndex: 'certification',
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' }),
+      dataIndex: 'localStorage',
+      hideInSearch: true,
+      render: (text) => {
+        return Array.isArray(text) ? text.join(', ') : text; // Join array elements into a string
+      },
     },
     {
       title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
@@ -177,6 +178,17 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
+        <a
+          key="login"
+          onClick={() => {
+            // Add your login logic here
+            message.info(
+              <FormattedMessage id="login_action" defaultMessage="Login action triggered" />,
+            );
+          }}
+        >
+          <FormattedMessage id="login" defaultMessage="Login" />
+        </a>,
         <a
           key="detail"
           onClick={() => {

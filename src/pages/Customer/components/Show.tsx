@@ -26,7 +26,7 @@ const Show: React.FC<Props> = (props) => {
       {currentRow?._id && (
         <ProDescriptions<API.ItemData>
           column={2}
-          title={currentRow?.users.name}
+          title={currentRow?.phoneNumber}
           request={async () => ({
             data: currentRow || {},
           })}

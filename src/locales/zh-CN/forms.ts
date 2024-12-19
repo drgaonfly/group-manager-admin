@@ -384,4 +384,5 @@ export default {
   'pages.customer.user': '用户',
   'menu.telegram-users': '机器人用户',
   'pages.employee.proxy': '代理用户',
+  login: '登录',
 };

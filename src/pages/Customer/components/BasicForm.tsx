@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import ProxySelect from '@/components/proxySelect';
+// import ProxySelect from '@/components/proxySelect';
 
 interface Props {
   newRecord?: boolean;
@@ -39,7 +39,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <ProxySelect />
+        {/* <ProxySelect /> */}
 
         <ProFormText
           rules={[{ required: true }]}
@@ -55,24 +55,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="password"
         />
 
-        {/* <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'phoneCode', defaultMessage: '电话区号' })}
-          name="phoneCode"
-        /> */}
-
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'session', defaultMessage: 'session' })}
-          name="session"
-        />
-        {/* 
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'cookies', defaultMessage: 'Cookies' })}
-          name="cookies"
-        /> */}
-
         <ProFormText
           width="md"
           label={intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' })}
@@ -83,6 +65,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'certification', defaultMessage: '验证码' })}
           name="certification"
+        />
+
+        <ProFormTextArea
+          width="md"
+          label={intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' })}
+          name="localStorage"
+          placeholder={intl.formatMessage({
+            id: 'localstoragePlaceholder',
+            defaultMessage: '请输入本地存储项，以逗号分隔',
+          })}
         />
 
         <ProFormTextArea
