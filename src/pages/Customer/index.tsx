@@ -129,16 +129,19 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
       dataIndex: 'phoneNumber',
       hideInSearch: false,
+      width: 230,
     },
     {
       title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
       dataIndex: 'certification',
       hideInSearch: true,
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'password', defaultMessage: '密码' }),
       dataIndex: 'password',
       hideInSearch: true,
+      width: 200,
       renderFormItem: (item, { ...rest }) => {
         return (
           <ProFormText.Password
@@ -153,23 +156,21 @@ const TableList: React.FC = () => {
       dataIndex: 'ip',
       hideInSearch: true,
       copyable: true,
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' }),
       dataIndex: 'localStorage',
       hideInSearch: true,
-      render: (dom: React.ReactNode) => {
-        return (
-          <span title={typeof dom === 'string' ? dom : ''}>
-            {typeof dom === 'string' && dom.length > 20 ? `${dom.substring(0, 20)}...` : dom}
-          </span>
-        );
-      },
+      hideInTable: true,
+      hideInDescriptions: true,
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
       dataIndex: 'remarks',
       hideInSearch: true,
+      width: 200,
       renderFormItem: (item, { ...rest }) => {
         return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
       },
