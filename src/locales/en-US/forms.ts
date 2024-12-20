@@ -355,4 +355,7 @@ export default {
   'menu.telegram-users': 'Telegram Users',
   'pages.employee.proxy': 'Proxy',
   login: 'Login',
+  'pages.customer.proxy': 'Inviter',
+  copy_success: 'Copied to clipboard!',
+  copy: 'Copy',
 };

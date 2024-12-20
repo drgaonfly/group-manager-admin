@@ -385,4 +385,7 @@ export default {
   'menu.telegram-users': '机器人用户',
   'pages.employee.proxy': '代理用户',
   login: '登录',
+  'pages.customer.proxy': '邀请人',
+  copy_success: '复制成功',
+  copy: '复制',
 };

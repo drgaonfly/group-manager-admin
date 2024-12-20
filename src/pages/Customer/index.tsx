@@ -12,9 +12,6 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import { CopyOutlined } from '@ant-design/icons';
-// import { Tooltip } from 'antd';
-// import { ProFormTextArea } from '@ant-design/pro-components';
 
 /**
  * @en-US Add node
@@ -23,7 +20,6 @@ import { CopyOutlined } from '@ant-design/icons';
  */
 const handleAdd = async (fields: any) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
-  console.log(fields, '=======================');
 
   try {
     await addItem('/customers', { ...fields });
@@ -129,6 +125,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
       dataIndex: 'phoneNumber',
+      copyable: true,
       hideInSearch: false,
       width: 230,
     },
@@ -151,6 +148,12 @@ const TableList: React.FC = () => {
           />
         );
       },
+    },
+    {
+      title: intl.formatMessage({ id: 'proxy', defaultMessage: '邀请人' }),
+      dataIndex: ['users', 'name'],
+      hideInSearch: false,
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' }),
@@ -179,13 +182,11 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'user_path', defaultMessage: '用户链接' }),
       width: 380,
+      hideInSearch: true,
       render: (_, record) => {
         const link = `${process.env.UMI_APP_LOGIN_URL}?key=${record._id}`;
         return (
           <span>
-            <a href={link} target="_blank" rel="noopener noreferrer">
-              {link}
-            </a>
             <Button
               type="link"
               onClick={() => {
@@ -195,7 +196,7 @@ const TableList: React.FC = () => {
                 );
               }}
             >
-              <CopyOutlined />
+              {intl.formatMessage({ id: 'copy', defaultMessage: '复制' })}
             </Button>
           </span>
         );
@@ -205,9 +206,17 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
-      width: 100,
+      width: 150,
       fixed: 'right',
       render: (_, record) => [
+        <a
+          key="login"
+          onClick={() => {
+            window.open(`${process.env.UMI_APP_LOGIN_URL}?key=${record._id}`);
+          }}
+        >
+          <FormattedMessage id="login" defaultMessage="Login" />
+        </a>,
         <a
           key="detail"
           onClick={() => {

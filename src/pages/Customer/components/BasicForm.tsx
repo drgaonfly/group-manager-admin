@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-// import ProxySelect from '@/components/proxySelect';
+import ProxySelect from '@/components/proxySelect';
 
 interface Props {
   newRecord?: boolean;
@@ -39,7 +39,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        {/* <ProxySelect /> */}
+        <ProxySelect />
 
         <ProFormText
           rules={[{ required: true }]}
