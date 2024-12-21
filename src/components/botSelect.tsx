@@ -16,12 +16,12 @@ const ProxySelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
     <ProFormSelect
       rules={[{ required: true }]}
       options={bot.map((bot: any) => ({
-        label: bot.botToken,
+        label: bot.name,
         value: bot._id,
       }))}
       width="md"
       name="bot"
-      label={intl.formatMessage({ id: 'pages.comment.user' })}
+      label={intl.formatMessage({ id: 'bot_name' })}
       showSearch
       fieldProps={{
         loading,

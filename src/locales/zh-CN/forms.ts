@@ -408,10 +408,5 @@ export default {
   'menu.monitoring.messages': '信息管理',
   'menu.monitoring.list.messages': '信息管理',
   inviteCode: '邀请码',
-  isOnline: '是否在线',
-  'isOnline.true': '是',
-  'isOnline.false': '否',
-  bot: '飞机号',
-  userName: '用户名',
-  firstName: '昵称',
+
 };

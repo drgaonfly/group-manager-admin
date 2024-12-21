@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal, Switch } from 'antd';
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
@@ -132,7 +132,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
       dataIndex: 'phoneCode',
-      hideInSearch: true,
+      hideInSearch: false,
       width: 200,
     },
     {
@@ -140,14 +140,6 @@ const TableList: React.FC = () => {
       dataIndex: 'password',
       hideInSearch: true,
       width: 200,
-      renderFormItem: (item, { ...rest }) => {
-        return (
-          <ProFormText.Password
-            {...rest}
-            placeholder={intl.formatMessage({ id: 'enter_password' })}
-          />
-        );
-      },
     },
     {
       title: intl.formatMessage({ id: 'user_path', defaultMessage: '用户链接' }),
@@ -173,21 +165,22 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'proxy', defaultMessage: '邀请人' }),
+      title: intl.formatMessage({ id: 'pages.customer.proxy', defaultMessage: '邀请人' }),
       dataIndex: ['user', 'name'],
       hideInSearch: false,
       width: 200,
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' }),
       dataIndex: 'ip',
-      hideInSearch: true,
+      hideInSearch: false,
       copyable: true,
       width: 300,
     },
     {
-      title: intl.formatMessage({ id: 'telegram', defaultMessage: '飞机号' }),
-      dataIndex: ['bot', 'botToken'],
+      title: intl.formatMessage({ id: 'bot_name' }),
+      dataIndex: ['bot', 'name'],
       hideInSearch: false,
       width: 300,
     },
@@ -202,16 +195,17 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
       dataIndex: 'remarks',
-      hideInSearch: true,
+      hideInSearch: false,
       width: 200,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
-      },
     },
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
       dataIndex: 'isOnline',
-      hideInSearch: true,
+      hideInSearch: false,
+      valueEnum: {
+        true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
+      },
       width: 200,
       render: (_, record: any) => (
         <Switch

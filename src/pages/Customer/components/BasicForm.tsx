@@ -86,6 +86,8 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
           name="isOnline"
           initialValue={true}
+          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
         />
       </ProForm.Group>
 

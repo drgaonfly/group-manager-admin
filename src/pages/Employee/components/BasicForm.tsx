@@ -44,12 +44,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        {/* <ProFormText
+        <ProFormText
           rules={[{ required: true, message: intl.formatMessage({ id: 'enter_name' }) }]}
           width="md"
           label={intl.formatMessage({ id: 'name' })}
           name="name"
-        /> */}
+        />
         <ProxysSelect />
 
         <ProFormText

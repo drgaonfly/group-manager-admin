@@ -17,6 +17,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     <ProForm
       initialValues={{
         ...values,
+        user: values?.user?._id,
       }}
       onFinish={async (values) => {
         await onFinish({
@@ -48,12 +49,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
 
         <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_url' }) }]}
           width="md"
-          label={intl.formatMessage({ id: 'url', defaultMessage: 'URL' })}
-          name="url"
+          label={intl.formatMessage({ id: 'bot_name', defaultMessage: 'Bot Name' })}
+          name="name"
         />
-        <ProFormText
+
+        <ProFormTextArea
           width="md"
           label={intl.formatMessage({ id: 'remarks', defaultMessage: 'Remarks' })}
           name="remarks"
@@ -66,9 +67,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
 
         <ProFormSwitch
-          label={intl.formatMessage({ id: 'isActive', defaultMessage: 'Status' })}
+          label={intl.formatMessage({ id: 'isActive', defaultMessage: '状态' })}
           name="isActive"
           initialValue={true}
+          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
         />
       </ProForm.Group>
 

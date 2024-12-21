@@ -21,7 +21,7 @@ const ProxySelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
       }))}
       width="md"
       name="user"
-      label={intl.formatMessage({ id: 'telegram' })}
+      label={intl.formatMessage({ id: 'user' })}
       showSearch
       fieldProps={{
         loading,
