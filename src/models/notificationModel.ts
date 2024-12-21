@@ -1,12 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 export default function Page() {
-  const [customerNewStatus, setCustomerNewStatus] = useState<string>('loading');
-
-  const handleCustomerNew = useCallback((data: any) => {
-    setCustomerNewStatus('completed');
+  const handleCustomerNew = useCallback((data: { title: string; message: string }) => {
     console.log('Received newCustomerAdded event:', data);
   }, []);
 
-  return { handleCustomerNew, customerNewStatus };
+  return { handleCustomerNew };
 }

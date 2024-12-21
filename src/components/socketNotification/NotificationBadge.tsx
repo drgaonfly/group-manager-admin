@@ -30,10 +30,10 @@ const NotificationBadge: React.FC = () => {
 
   useSocketNotification([
     {
-      eventName: 'customerNew',
-      onDataReceived: (data) => {
+      eventName: 'newCustomerAdded',
+      onDataReceived: (data: { title: string; message: string }) => {
         handleCustomerNew(data);
-        openNotification('New Customer', 'A new customer has been added.', true);
+        openNotification(data.title, data.message, true);
       },
     },
   ]);
