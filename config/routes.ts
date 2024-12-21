@@ -104,7 +104,7 @@ export default [
     path: '/bots',
     name: 'list.two-telegram',
     icon: 'TableOutlined',
-    component: './telegram',
+    component: './Bot',
   },
   {
     path: '/monitoring',

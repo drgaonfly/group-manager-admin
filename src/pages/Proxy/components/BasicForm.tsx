@@ -13,11 +13,22 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: roles, loading } = useQueryList('/roles');
+  const { items: roles } = useQueryList('/roles');
   const filteredRoles = roles?.filter((role: { name: string }) => role.name === '代理'); // 只筛选出名称为代理的角色
+
+  const [form] = Form.useForm();
+  //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
+  React.useEffect(() => {
+    if (filteredRoles) {
+      form.setFieldsValue({
+        roles: filteredRoles.map((role: { _id: string }) => role._id),
+      });
+    }
+  }, [filteredRoles]);
 
   return (
     <ProForm
+      form={form}
       initialValues={{
         ...values,
         roles: values?.roles?.map((role: { _id: string }) => role._id),
@@ -66,7 +77,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="password"
         />
 
-        {/* 点击编辑不显示*/}
         {newRecord && (
           <ProFormCheckbox.Group
             name="roles"
@@ -77,8 +87,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               value: role._id,
             }))}
             fieldProps={{
-              disabled: loading, // 确保在 loading 时禁用复选框
+              disabled: true, // 确保在 loading 时禁用复选框
             }}
+            initialValue={filteredRoles?.map((role: { _id: string }) => role._id)}
           />
         )}
       </ProForm.Group>
