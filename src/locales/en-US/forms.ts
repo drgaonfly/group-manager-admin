@@ -387,10 +387,13 @@ export default {
   proxy: 'Proxy', // Added missing message
   localstorage: 'Local Storage',
   inviteCode: 'Invite Code',
-  'menu.bots': 'Bots',
+  'menu.bots': 'Telegram Bot',
   'menu.bot-users': 'Bot Users',
   isOnline: 'Is Online',
   'isOnline.true': 'Yes',
   'isOnline.false': 'No',
   telegram: 'Telegram',
+  isActive: 'Status',
+  message: 'This is a sample message',
+  bot_name: 'Bot Name',
 };

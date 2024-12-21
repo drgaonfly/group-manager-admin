@@ -1,7 +1,7 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -136,48 +136,40 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'url', defaultMessage: 'URL' }),
-      dataIndex: 'url',
+      title: intl.formatMessage({ id: 'bot_name', defaultMessage: 'Bot Name' }),
+      dataIndex: 'name',
       hideInSearch: false,
-      copyable: true,
+      width: 200,
     },
     {
-      title: intl.formatMessage({ id: 'message  ', defaultMessage: '消息' }),
-      dataIndex: 'message',
-      hideInSearch: false,
-      width: 270,
+      title: intl.formatMessage({ id: 'remarks', defaultMessage: 'Remarks' }),
+      dataIndex: 'remarks',
+      hideInSearch: true,
+      width: 300,
+      valueType: 'text',
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'isActive', defaultMessage: '状态' }),
       dataIndex: 'isActive',
-      hideInSearch: true,
+      hideInSearch: false,
+      valueEnum: {
+        true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
+      },
       render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'platform.online' })}
           unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-          checked={record.isOnline}
+          checked={record.isActive}
           onChange={async () => {
-            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            await handleUpdate({ _id: record._id, isActive: !record.isActive });
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }}
         />
       ),
-    },
-    {
-      title: intl.formatMessage({ id: 'remarks', defaultMessage: 'Remarks' }),
-      dataIndex: 'remarks',
-      hideInSearch: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_remarks' })} />;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'Created At' }),
-      dataIndex: 'createdAt',
-      hideInSearch: true,
-      valueType: 'dateTime',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
