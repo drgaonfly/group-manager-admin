@@ -23,7 +23,7 @@ const handleAdd = async (fields: any) => {
   console.log(fields, '=======================');
 
   try {
-    await addItem('/telegram-users', { ...fields });
+    await addItem('/bot-users', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -47,7 +47,7 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/telegram-users/${fields._id}`, fields);
+    await updateItem(`/bot-users/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -73,7 +73,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/telegram-users', {
+    await removeItem('/bot-users', {
       ids,
     });
     hide();
@@ -124,33 +124,28 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<any>[] = [
     {
-      title: intl.formatMessage({ id: 'telegram', defaultMessage: '飞机号' }),
-      dataIndex: ['bot', 'botToken'],
+      title: intl.formatMessage({ id: 'bot' }),
+      dataIndex: 'bot',
       hideInSearch: false,
-      width: 300,
     },
     {
-      title: intl.formatMessage({ id: 'userName', defaultMessage: '用户名' }),
+      title: intl.formatMessage({ id: 'userName' }),
       dataIndex: 'userName',
-      width: 200,
     },
     {
-      title: intl.formatMessage({ id: 'firstName', defaultMessage: '名' }),
+      title: intl.formatMessage({ id: 'firstName' }),
       dataIndex: 'firstName',
       hideInSearch: false,
-      width: 200,
     },
     {
-      title: intl.formatMessage({ id: 'message', defaultMessage: '信息内容' }),
-      dataIndex: 'message',
-      hideInSearch: true,
-      width: 300,
+      title: intl.formatMessage({ id: 'lastName' }),
+      dataIndex: 'lastName',
+      hideInSearch: false,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
-      width: 200,
       render: (_, record) => [
         <a
           key="detail"
@@ -218,7 +213,7 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('/telegram-users', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/bot-users', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {

@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 // import ProxySelect from '@/components/proxySelect';
 import BotSelect from '@/components/botSelect';
@@ -42,22 +42,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       <ProForm.Group>
         <BotSelect />
 
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'userName', defaultMessage: '用户名' })}
-          name="userName"
-        />
+        <ProFormText width="md" label={intl.formatMessage({ id: 'userName' })} name="userName" />
 
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'firstName', defaultMessage: '名' })}
-          name="firstName"
-        />
-        <ProFormTextArea
-          width="md"
-          label={intl.formatMessage({ id: 'message', defaultMessage: '信息内容' })}
-          name="message"
-        />
+        <ProFormText width="md" label={intl.formatMessage({ id: 'firstName' })} name="firstName" />
+
+        <ProFormText width="md" label={intl.formatMessage({ id: 'lastName' })} name="lastName" />
       </ProForm.Group>
 
       {!newRecord && (

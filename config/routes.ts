@@ -127,8 +127,8 @@ export default [
   },
   {
     path: '/bot-users',
-    name: 'list.telegram-users',
+    name: 'list.bot-users',
     icon: 'RobotOutlined',
-    component: './telegramUser',
+    component: './botUser',
   },
 ];
