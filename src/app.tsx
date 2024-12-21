@@ -32,7 +32,7 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { fetchMenuData, currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import React, { ReactElement } from 'react';
-import NotificationHandler from '@/components/socketNotification/NotificationHandler';
+import NotificationBadge from './components/socketNotification/NotificationBadge';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -112,7 +112,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     actionsRender: () => [
-      <NotificationHandler key="NotificationHandler" />,
+      <NotificationBadge key="NotificationBadge" />,
       <SelectLang key="SelectLang" />,
     ],
     avatarProps: {

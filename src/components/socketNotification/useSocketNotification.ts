@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+import { useEffect } from 'react';
+import io, { Socket } from 'socket.io-client';
 
 interface SocketConfig {
   eventName: string;
@@ -7,54 +7,67 @@ interface SocketConfig {
   onDataReceived: (data: any) => void;
 }
 
-export const useSocketNotification = ({
-  eventName,
-  initialEmitEvent,
-  onDataReceived,
-}: SocketConfig) => {
-  const socketRef = useRef<any>(null);
-
+export const useSocketNotification = (configs: SocketConfig[]) => {
   useEffect(() => {
-    if (!socketRef.current) {
-      const SOCKET_URL = process.env.UMI_APP_SOCKET_URL || 'http://localhost:5006';
-      socketRef.current = io(SOCKET_URL, {
-        transports: ['websocket', 'polling'],
-        reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionAttempts: Infinity,
-        withCredentials: true,
-      });
+    const SOCKET_URL = process.env.UMI_APP_SOCKET_URL || 'http://localhost:5003';
+    const socket: Socket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
+      withCredentials: true,
+    });
 
-      socketRef.current.on('connect', () => {
-        console.log(`Socket connected successfully for ${eventName}`);
-        if (initialEmitEvent) {
-          socketRef.current.emit(initialEmitEvent);
+    // Handle socket connection
+    socket.on('connect', () => {
+      console.log('Socket connected successfully');
+      // Emit initial events for all configurations that have it
+      configs.forEach((config) => {
+        if (config.initialEmitEvent) {
+          socket.emit(config.initialEmitEvent);
+          console.log(`Emitted initial event: ${config.initialEmitEvent} for ${config.eventName}`);
         }
       });
+    });
 
-      socketRef.current.on(eventName, (data: any) => {
-        console.log(`Received data for ${eventName}:`, data);
-        onDataReceived(data);
-      });
+    // Set up listeners for each configuration
+    configs.forEach((config) => {
+      socket.on(config.eventName, config.onDataReceived);
+      console.log(`Listening to event: ${config.eventName}`);
+    });
 
-      socketRef.current.on('disconnect', (reason: string) => {
-        console.log(`Socket disconnected for ${eventName}, reason:`, reason);
-      });
-    }
+    // Handle socket disconnection
+    socket.on('disconnect', (reason) => {
+      console.log('Socket disconnected, reason:', reason);
+    });
 
+    // Handle connection errors
+    socket.on('connect_error', (error: Error) => {
+      console.error('Socket.IO connection error:', error);
+    });
+
+    // Optional: Listen to reconnection events
+    socket.on('reconnect_attempt', (attempt: number) => {
+      console.log(`Socket.IO reconnection attempt ${attempt}`);
+    });
+
+    socket.on('reconnect_failed', () => {
+      console.log('Socket.IO reconnection failed');
+    });
+
+    // Listen to 'message' event (if needed)
+    socket.on('message', (data: any) => {
+      console.log("Received 'message' event:", data);
+    });
+
+    // Cleanup function to remove all listeners and disconnect the socket
     return () => {
-      if (socketRef.current) {
-        console.log('Cleaning up socket connection');
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      console.log('Cleaning up socket connection');
+      configs.forEach((config) => {
+        socket.off(config.eventName, config.onDataReceived);
+        console.log(`Stopped listening to event: ${config.eventName}`);
+      });
+      socket.disconnect();
     };
-  }, [eventName, initialEmitEvent, onDataReceived]);
-};
-
-export const useNewCustomerNotification = (onNewCustomer: (data: any) => void) => {
-  useSocketNotification({
-    eventName: 'newCustomerAdded',
-    onDataReceived: onNewCustomer,
-  });
+  }, []); // Dependency array includes the entire configs array
 };
