@@ -5,7 +5,7 @@ export default function Page() {
 
   const handleCustomerNew = useCallback((data: any) => {
     setCustomerNewStatus('completed');
-    console.log('Received inactiveOrdersUpdated event:', data);
+    console.log('Received newCustomerAdded event:', data);
   }, []);
 
   return { handleCustomerNew, customerNewStatus };
