@@ -3,18 +3,12 @@ import { useModel } from '@umijs/max';
 import { useSocketNotification } from './useSocketNotification';
 
 const NotificationBadge: React.FC = () => {
-  const { handleOrderCountUpdate, handleTodoListCountUpdate } = useModel('notificationModel');
+  const { handleCustomerNew } = useModel('notificationModel');
 
   useSocketNotification([
     {
-      eventName: 'inactiveOrdersCountUpdated',
-      initialEmitEvent: 'inactiveOrdersUpdatedInit',
-      onDataReceived: handleOrderCountUpdate,
-    },
-    {
-      eventName: 'todoListCountUpdated',
-      initialEmitEvent: 'todoListUpdatedInit',
-      onDataReceived: handleTodoListCountUpdate,
+      eventName: 'customerNew',
+      onDataReceived: handleCustomerNew,
     },
   ]);
   return <></>;
