@@ -19,7 +19,7 @@ export default {
 
   // Bot 相关字段
   botId: '机器人ID',
-  botToken: 'Token',
+  token: 'Token',
   botUsername: '机器人用户名',
   botName: '机器人名称',
   telegramId: 'Telegram ID',
@@ -62,7 +62,7 @@ export default {
   // 表格相关
   'pages.searchTable.updateForm.title': '编辑机器人',
   'pages.searchTable.form.botId': '机器人ID',
-  'pages.searchTable.form.botToken': 'Token',
+  'pages.searchTable.form.token': 'Token',
   'pages.searchTable.form.botUsername': '机器人用户名',
   'pages.searchTable.form.botName': '机器人名称',
   'pages.searchTable.form.telegramId': 'Telegram ID',

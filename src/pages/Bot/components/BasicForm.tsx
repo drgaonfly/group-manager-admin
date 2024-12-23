@@ -44,8 +44,8 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormText
           rules={[{ required: true, message: intl.formatMessage({ id: 'enter_bot_token' }) }]}
           width="md"
-          label={intl.formatMessage({ id: 'botToken', defaultMessage: 'Bot Token' })}
-          name="botToken"
+          label={intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' })}
+          name="token"
         />
 
         <ProFormText

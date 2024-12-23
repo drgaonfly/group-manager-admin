@@ -132,8 +132,8 @@ const TableList: React.FC = () => {
       width: 200,
     },
     {
-      title: intl.formatMessage({ id: 'botToken', defaultMessage: 'Bot Token' }),
-      dataIndex: 'botToken',
+      title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
+      dataIndex: 'token',
       hideInSearch: false,
       copyable: true,
     },

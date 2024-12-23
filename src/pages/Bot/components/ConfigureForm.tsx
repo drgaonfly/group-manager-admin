@@ -105,7 +105,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               exclusiveOriginalPrice: 0,
               seatCount: 0,
               user: values.user,
-              botToken: values.botToken,
+              token: values.token,
               name: values.name,
               userName: values.userName,
             }),
