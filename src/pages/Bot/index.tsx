@@ -135,24 +135,35 @@ const TableList: React.FC = () => {
       dataIndex: 'token',
       hideInSearch: false,
       copyable: true,
-      width: 400,
+      width: 420,
     },
     {
       title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
-      dataIndex: '_id',
+      dataIndex: 'id',
       hideInSearch: false,
+      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'bot_name', defaultMessage: 'Bot Name' }),
       dataIndex: 'botName',
       hideInSearch: false,
-      copyable: true,
-      render: (text) => `@${text}`,
     },
     {
       title: intl.formatMessage({ id: 'user_name', defaultMessage: '用户名' }),
       dataIndex: 'userName',
       hideInSearch: false,
+      width: 250,
+      render: (text, record) => (
+        <span
+          onClick={() => {
+            navigator.clipboard.writeText(`@${record.userName}`);
+            message.success('复制成功');
+          }}
+          style={{ cursor: 'pointer' }}
+        >
+          @{record.userName}
+        </span>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'BotStartMessage', defaultMessage: 'BotStartMessage' }),
