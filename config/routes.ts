@@ -88,4 +88,9 @@ export default [
       },
     ],
   },
+  {
+    path: '/answers',
+    name: 'list.answers',
+    component: './Answers',
+  },
 ];
