@@ -88,47 +88,4 @@ export default [
       },
     ],
   },
-  {
-    path: '/customers',
-    name: 'list.customers',
-    icon: 'UserOutlined',
-    component: './Customer',
-  },
-  {
-    path: '/proxys',
-    name: 'list.proxys',
-    icon: 'GlobalOutlined',
-    component: './Proxy',
-  },
-  {
-    path: '/bots',
-    name: 'list.two-telegram',
-    icon: 'TableOutlined',
-    component: './Bot',
-  },
-  {
-    path: '/monitoring',
-    name: 'list.monitoring',
-    icon: 'TableOutlined',
-    routes: [
-      {
-        path: '/monitoring/messages',
-        name: 'list.messages',
-        icon: 'TableOutlined',
-        component: './Messages',
-      },
-    ],
-  },
-  {
-    path: '/employees',
-    name: 'list.employees',
-    icon: 'UsergroupAddOutlined',
-    component: './Employee',
-  },
-  {
-    path: '/bot-users',
-    name: 'list.bot-users',
-    icon: 'RobotOutlined',
-    component: './botUser',
-  },
 ];
