@@ -63,22 +63,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
         <ProFormTextArea
           width="md"
-          label={intl.formatMessage({ id: 'remarks', defaultMessage: 'Remarks' })}
+          label={intl.formatMessage({ id: 'remarks', defaultMessage: '备注' })}
           name="remarks"
         />
 
-        <ProFormText
+        <ProFormTextArea
           width="md"
-          label={intl.formatMessage({ id: 'message', defaultMessage: 'Message' })}
+          label={intl.formatMessage({ id: 'message', defaultMessage: '/start 消息' })}
           name="message"
-        />
-
-        <ProFormSwitch
-          label={intl.formatMessage({ id: 'isActive', defaultMessage: '状态' })}
-          name="isActive"
-          initialValue={true}
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
         />
 
         <ProFormSwitch

@@ -135,12 +135,19 @@ const TableList: React.FC = () => {
       dataIndex: 'token',
       hideInSearch: false,
       copyable: true,
-      width: 450,
+      width: 400,
+    },
+    {
+      title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
+      dataIndex: '_id',
+      hideInSearch: false,
     },
     {
       title: intl.formatMessage({ id: 'bot_name', defaultMessage: 'Bot Name' }),
       dataIndex: 'botName',
       hideInSearch: false,
+      copyable: true,
+      render: (text) => `@${text}`,
     },
     {
       title: intl.formatMessage({ id: 'user_name', defaultMessage: '用户名' }),
@@ -162,31 +169,9 @@ const TableList: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: intl.formatMessage({ id: 'isActive', defaultMessage: '状态' }),
-      dataIndex: 'isActive',
-      hideInSearch: false,
-      valueEnum: {
-        true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
-      },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-          checked={record.isActive}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isActive: !record.isActive });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
       dataIndex: 'isOnline',
-      hideInSearch: false,
+      hideInSearch: true,
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
