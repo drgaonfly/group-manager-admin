@@ -303,14 +303,16 @@ const TableList: React.FC = () => {
           },
         }}
         request={async (params, sort, filter) => {
-          const response = await queryList('/bots', params, sort, filter);
-          // 根据 activeKey 过滤数据
-          if (activeKey) {
-            return {
-              ...response,
-              data: response.data?.filter((item) => String(item.isOnline) === activeKey),
-            };
-          }
+          // 将 activeKey 添加到请求参数中
+          const response = await queryList(
+            '/bots',
+            {
+              ...params,
+              isOnline: activeKey, // 添加这个行
+            },
+            sort,
+            filter,
+          );
           return response;
         }}
         columns={columns}
