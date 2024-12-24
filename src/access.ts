@@ -136,16 +136,13 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
     // employee权限
     canCreateNewEmployee:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/new-employees', 'POST')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees', 'POST')),
     canDeleteNewEmployee:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/new-employees', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees', 'DELETE')),
     canUpdateNewEmployee:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/new-employees/:id', 'PUT')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees/:id', 'PUT')),
     canGetNewEmployee:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/new-employees', 'GET')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees', 'GET')),
   };
 }
 

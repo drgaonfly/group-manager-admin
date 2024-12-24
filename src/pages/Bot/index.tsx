@@ -275,7 +275,7 @@ const TableList: React.FC = () => {
           },
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateBot) && (
+          (access.canSuperAdmin || access.canCreateBot || access.canCreateNewEmployee) && (
             <Button
               type="primary"
               key="primary"
@@ -345,7 +345,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteBot) && (
+          {(access.canSuperAdmin || access.canDeleteBot || access.canDeleteNewEmployee) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -356,7 +356,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateBot) && (
+      {(access.canSuperAdmin || access.canCreateBot || access.canCreateNewEmployee) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -373,7 +373,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateBot) && (
+      {(access.canSuperAdmin || access.canUpdateBot || access.canUpdateNewEmployee) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
