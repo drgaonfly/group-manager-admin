@@ -58,6 +58,7 @@ const AliyunOSSUpload = ({
 
   const onRemove = (file: UploadFile) => {
     const files = (value || []).filter((v) => v.url !== file.url);
+    console.log(files);
     onChange?.(files);
   };
 
