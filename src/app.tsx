@@ -23,6 +23,7 @@ import {
   TransactionOutlined,
   TableOutlined,
   RobotOutlined,
+  CheckCircleOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -59,6 +60,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   TransactionOutlined: <TransactionOutlined />,
   TableOutlined: <TableOutlined />,
   RobotOutlined: <RobotOutlined />,
+  CheckCircleOutlined: <CheckCircleOutlined />,
 };
 
 console.log('iconEnum', iconEnum);

@@ -50,7 +50,7 @@ export default [
   {
     path: '/newbie-training',
     name: 'list.newbie-training',
-    icon: 'CheckCircleOutlined',
+    icon: 'UserOutlined',
     component: './newbieTraining',
   },
   {
@@ -98,5 +98,18 @@ export default [
     path: '/answers',
     name: 'list.answers',
     component: './Answers',
+    icon: 'SolutionOutlined',
+  },
+  {
+    path: '/topics',
+    name: 'list.topic',
+    component: './Topic',
+    icon: 'CheckCircleOutlined',
+  },
+  {
+    path: '/records',
+    name: 'list.record',
+    component: './Record',
+    icon: 'FileTextOutlined',
   },
 ];
