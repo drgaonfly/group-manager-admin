@@ -48,6 +48,12 @@ export default [
     component: './account/change-password',
   },
   {
+    path: '/newbie-training',
+    name: 'list.newbie-training',
+    icon: 'CheckCircleOutlined',
+    component: './newbieTraining',
+  },
+  {
     path: '/auth',
     name: 'list.auth',
     icon: 'table',
