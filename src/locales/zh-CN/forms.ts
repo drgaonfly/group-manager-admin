@@ -112,4 +112,6 @@ export default {
   'answers.skuName': 'sku名称',
   'answers.spec': '规格',
   'answers.sn': '序列号',
+  Name: '名称',
+  'menu.answers': '答案管理',
 };

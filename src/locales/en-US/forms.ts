@@ -103,4 +103,6 @@ export default {
   'answers.packageImageUrl': 'Package Image',
   'answers.spec': 'specification',
   'answers.sn': 'Serial Number',
+  Name: 'Name',
+  'menu.answers': 'Answer management',
 };

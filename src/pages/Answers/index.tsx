@@ -10,8 +10,6 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
-import BatchUploadModal from './components/BatchUploadModal';
-import Recharge from './components/Recharge';
 import { Image } from 'antd';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
@@ -64,21 +62,6 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const handleRecharge = async (fields: FormValueType) => {
-  const hide = message.loading('正在充值');
-  try {
-    await addItem(`/answers/${fields._id}/recharge`, fields);
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '更新充值，请重试!');
-    return false;
-  }
-};
-
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -111,26 +94,6 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
-const handleBatchAdd = async (fields: API.ItemData) => {
-  const hide = message.loading(
-    <FormattedMessage id="bulk_uploading" defaultMessage="Bulk uploading..." />,
-  );
-  try {
-    const res = (await addItem('/answers/batch-upload', { ...fields })) as any;
-    hide();
-    message.success('已提交');
-    return { success: true, data: res.data };
-  } catch (error: any) {
-    hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="upload_failed" defaultMessage="Upload failed, please try again!" />
-      ),
-    );
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -143,7 +106,6 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [batchUploadModalOpen, setBatchUploadModalOpen] = useState<boolean>(false);
   // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -151,7 +113,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const access = useAccess();
 
   /**
@@ -162,8 +123,8 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'answers.brandName' }),
-      dataIndex: 'brandName',
+      title: intl.formatMessage({ id: 'Name' }),
+      dataIndex: 'Name',
       copyable: true,
     },
     {
@@ -183,19 +144,6 @@ const TableList: React.FC = () => {
           preview={true}
         />
       ),
-    },
-    {
-      title: intl.formatMessage({ id: 'answers.skuName' }),
-      dataIndex: 'skuName',
-    },
-    {
-      title: intl.formatMessage({ id: 'answers.sn' }),
-      dataIndex: 'sn',
-    },
-    {
-      title: intl.formatMessage({ id: 'answers.spec' }),
-      dataIndex: 'spec',
-      hideInSearch: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -257,18 +205,6 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          // (access.canSuperAdmin || access.canUpdateUser) && (
-          //   <Button
-          //     danger
-          //     key="batchUpload"
-          //     onClick={() => {
-          //       setBatchUploadModalOpen(true);
-          //     }}
-          //   >
-          //     <UploadOutlined />{' '}
-          //     <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
-          //   </Button>
-          // ),
         ]}
         request={async (params, sort, filter) => queryList('/answers', params, sort, filter)}
         columns={columns}
@@ -333,34 +269,6 @@ const TableList: React.FC = () => {
           values={currentRow || {}}
         />
       )}
-      <BatchUploadModal
-        open={batchUploadModalOpen}
-        onOpenChange={setBatchUploadModalOpen}
-        onFinish={async (values: any) => {
-          const { success, data } = (await handleBatchAdd(values as API.ItemData)) as any;
-          if (success && data) {
-            // setBatchUploadModalOpen(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      />
-      <Recharge
-        onSubmit={async (value) => {
-          const success = await handleRecharge(value);
-          if (success) {
-            setRechargeModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={setRechargeModalVisible}
-        updateModalOpen={rechargeModalVisible}
-        values={currentRow || {}}
-      />
 
       <Show
         open={showDetail}

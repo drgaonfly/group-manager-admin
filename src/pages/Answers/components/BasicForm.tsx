@@ -24,7 +24,16 @@ const BasicForm: React.FC<Props> = ({
   const intl = useIntl();
   const [formRef] = ProForm.useForm();
 
-  const defaultFileList = packgeImageUrl;
+  const defaultFileList = packgeImageUrl
+    ? [
+        {
+          uid: '1',
+          name: 'packageImage',
+          status: 'done' as UploadFile['status'],
+          url: packgeImageUrl,
+        },
+      ]
+    : [];
 
   const handleFormFinish = async (formData: any) => {
     try {
@@ -32,7 +41,6 @@ const BasicForm: React.FC<Props> = ({
         message.error(intl.formatMessage({ id: 'answers.packageImageUrl.required' }));
         return;
       }
-
       // 构建提交数据
       const submitData = {
         ...formData,
@@ -40,16 +48,16 @@ const BasicForm: React.FC<Props> = ({
       };
 
       await onFinish(submitData);
-    } catch (error) {
-      console.error('表单提交错误:', error);
-      message.error('提交失败，请重试');
-    }
+    } catch (error) {}
   };
 
   return (
     <ProForm
       form={formRef}
-      initialValues={values}
+      initialValues={{
+        ...values,
+        packageImageUrl: packgeImageUrl,
+      }}
       onFinish={handleFormFinish}
       submitter={{
         render: (props, dom) => {
@@ -66,13 +74,6 @@ const BasicForm: React.FC<Props> = ({
       }}
     >
       <ProForm.Group>
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'answers.brandName' })}
-          name="brandName"
-        />
-
         <AliyunOSSUpload
           onFileUpload={(url: string) => {
             console.log('Uploaded file URL:', url);
@@ -85,20 +86,8 @@ const BasicForm: React.FC<Props> = ({
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'answers.skuName' })}
-          name="skuName"
-        />
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'answers.sn' })}
-          name="sn"
-        />
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'answers.spec' })}
-          name="spec"
+          label={intl.formatMessage({ id: 'Name' })}
+          name="Name"
         />
       </ProForm.Group>
 
