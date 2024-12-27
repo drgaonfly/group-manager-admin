@@ -11,7 +11,7 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    packageImageUrl?: string;
+    image?: string;
   } & Partial<API.ItemData>;
 };
 
@@ -21,31 +21,31 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   console.log('Initial values:', values);
 
-  const [packageImageUrl, setImageUrl] = useState<string | undefined>(values.packageImageUrl || '');
+  const [image, setImageUrl] = useState<string | undefined>(values.image || '');
 
-  const defaultFileList = values.packageImageUrl
+  const defaultFileList = values.image
     ? [
         {
           uid: '1',
           name: 'packageImage',
           status: 'done' as UploadFile['status'],
-          url: values.packageImageUrl,
+          url: values.image,
         },
       ]
     : [];
 
   useEffect(() => {
     console.log('Values changed:', values);
-    setImageUrl(values.packageImageUrl);
+    setImageUrl(values.image);
   }, [values]);
 
   const handleSubmit = async (formValues: any) => {
     console.log('Submitting form with values:', formValues);
-    console.log('Current imageUrl:', packageImageUrl);
+    console.log('Current imageUrl:', image);
     console.log(values);
     await onSubmit({
       ...formValues,
-      packageImageUrl: packageImageUrl,
+      image: image,
     });
   };
 
@@ -63,7 +63,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         values={values}
         onFinish={handleSubmit}
         setImageUrl={setImageUrl}
-        packgeImageUrl={packageImageUrl}
+        packgeImageUrl={image}
         defaultFileList={defaultFileList}
       />
     </Modal>

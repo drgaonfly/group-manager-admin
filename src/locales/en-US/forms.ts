@@ -100,9 +100,10 @@ export default {
   'menu.答案管理': 'Answer management',
   'answers.brandName': 'Brand Name',
   'answers.skuName': 'SKU Name',
-  'answers.packageImageUrl': 'Package Image',
+  'answers.image': 'Package Image',
   'answers.spec': 'specification',
   'answers.sn': 'Serial Number',
   Name: 'Name',
   'menu.answers': 'Answer management',
+  detail: 'Detail',
 };

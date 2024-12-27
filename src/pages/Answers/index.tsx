@@ -124,18 +124,18 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'Name' }),
-      dataIndex: 'Name',
+      dataIndex: 'name',
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'answers.packageImageUrl' }),
-      dataIndex: 'packageImageUrl',
+      title: intl.formatMessage({ id: 'answers.image' }),
+      dataIndex: 'image',
       hideInSearch: true,
       valueType: 'image',
       render: (_, record) => (
         <Image
-          src={record.packageImageUrl}
-          alt="packageImageUrl"
+          src={record.image}
+          alt="image"
           width={45}
           height={45}
           style={{
@@ -150,6 +150,15 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
+        <a
+          key="detail"
+          onClick={() => {
+            setCurrentRow(record);
+            setShowDetail(true);
+          }}
+        >
+          <FormattedMessage id="detail" />
+        </a>,
         access.canSuperAdmin && (
           <a
             key="edit"

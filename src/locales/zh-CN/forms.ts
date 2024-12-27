@@ -108,10 +108,11 @@ export default {
   'menu.list.answers': '答案管理',
   'menu.答案管理': '答案管理',
   'answers.brandName': '品牌名称',
-  'answers.packageImageUrl': '图片',
+  'answers.image': '图片',
   'answers.skuName': 'sku名称',
   'answers.spec': '规格',
   'answers.sn': '序列号',
   Name: '名称',
   'menu.answers': '答案管理',
+  detail: '详情',
 };

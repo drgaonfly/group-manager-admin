@@ -38,13 +38,13 @@ const BasicForm: React.FC<Props> = ({
   const handleFormFinish = async (formData: any) => {
     try {
       if (!packgeImageUrl) {
-        message.error(intl.formatMessage({ id: 'answers.packageImageUrl.required' }));
+        message.error(intl.formatMessage({ id: 'answers.image.required' }));
         return;
       }
       // 构建提交数据
       const submitData = {
         ...formData,
-        packageImageUrl: packgeImageUrl,
+        image: packgeImageUrl,
       };
 
       await onFinish(submitData);
@@ -56,7 +56,7 @@ const BasicForm: React.FC<Props> = ({
       form={formRef}
       initialValues={{
         ...values,
-        packageImageUrl: packgeImageUrl,
+        image: packgeImageUrl,
       }}
       onFinish={handleFormFinish}
       submitter={{
@@ -87,7 +87,7 @@ const BasicForm: React.FC<Props> = ({
           rules={[{ required: true }]}
           width="md"
           label={intl.formatMessage({ id: 'Name' })}
-          name="Name"
+          name="name"
         />
       </ProForm.Group>
 

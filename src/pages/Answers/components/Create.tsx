@@ -13,16 +13,16 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { open, onOpenChange, onFinish } = props; // Added setImageUrl to destructured props
-  const [packageImageUrl, setImageUrl] = useState<string | undefined>('');
+  const [image, setImageUrl] = useState<string | undefined>('');
 
   const handleFormFinish = async (values: any): Promise<void> => {
-    if (!packageImageUrl) {
+    if (!image) {
       message.error(intl.formatMessage({ id: 'message.error.imageUpload' }));
       return;
     }
     await onFinish({
       ...values,
-      packageImageUrl: packageImageUrl,
+      image: image,
     });
   };
 
@@ -46,7 +46,7 @@ const Create: React.FC<Props> = (props) => {
       <BasicForm
         newRecord
         setImageUrl={setImageUrl}
-        packgeImageUrl={packageImageUrl}
+        packgeImageUrl={image}
         onFinish={handleFormFinish}
       />
     </ModalForm>

@@ -1,13 +1,4 @@
-// export const ROLES = {
-//   SuperAdmin: 'SUPER_ADMIN',
-//   Admin: 'ADMIN',
-//   Customer: 'CUSTOMER',
-//   OrderPlacer: 'ORDER_PLACER', // New role for placing orders
-//   Reviewer: 'REVIEWER', // New role for reviewing orders
-//   CustomerService: 'CUSTOMER_SERVICE', // New role for customer service
-// } as const;
-
-const checkPermission = (currentUser: API.CurrentUser, action: string, path: string) => {
+const checkPermission = (currentUser: API.CurrentUser, path: string, action: string) => {
   return (
     currentUser &&
     currentUser.roles.some(
