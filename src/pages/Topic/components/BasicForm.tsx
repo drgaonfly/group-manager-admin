@@ -30,7 +30,7 @@ const BasicForm: React.FC<Props> = ({
     ? [
         {
           uid: '-1',
-          name: 'video.mp4',
+          name: 'video1.mp4',
           status: 'done',
           url: video1,
           type: 'video/mp4',
@@ -42,7 +42,7 @@ const BasicForm: React.FC<Props> = ({
     ? [
         {
           uid: '-1',
-          name: 'video.mp4',
+          name: 'video2.mp4',
           status: 'done',
           url: video2,
           type: 'video/mp4',
@@ -85,6 +85,7 @@ const BasicForm: React.FC<Props> = ({
         <ProFormSelect
           name="issue"
           label={intl.formatMessage({ id: 'issue' })}
+          width="md"
           valueEnum={{
             normal: { text: intl.formatMessage({ id: 'issue.normal', defaultMessage: 'Normal' }) },
             unfriendly: {

@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import { FooterToolbar, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -125,9 +125,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_name' })} />;
-      },
       render: (dom, entity) => {
         return (
           <a
@@ -145,17 +142,11 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
       copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_path' })} />;
-      },
     },
     {
       title: intl.formatMessage({ id: 'action' }),
       dataIndex: 'action',
       copyable: true,
-      renderFormItem: (item, { ...rest }) => {
-        return <ProFormText {...rest} placeholder={intl.formatMessage({ id: 'enter_action' })} />;
-      },
     },
     {
       title: intl.formatMessage({ id: 'permission_group' }),
@@ -217,18 +208,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        search={{
-          labelWidth: 65,
-          collapsed: false,
-          span: {
-            xs: 24, // 手机端占满
-            sm: 24, // 平板端占满
-            md: 8, // 电脑端占满
-            lg: 8, // 大屏幕占满
-            xl: 8, // 超大屏幕
-            xxl: 8, // 超超大屏幕
-          },
-        }}
+        search={{ labelWidth: 100 }}
         toolBarRender={() => [
           access.canSuperAdmin && (
             <Button

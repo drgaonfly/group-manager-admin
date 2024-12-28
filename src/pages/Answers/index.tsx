@@ -163,7 +163,6 @@ const TableList: React.FC = () => {
           <a
             key="edit"
             onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
@@ -190,18 +189,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        search={{
-          labelWidth: 65,
-          collapsed: false,
-          span: {
-            xs: 24, // 手机端占满
-            sm: 24, // 平板端占满
-            md: 8, // 电脑端占满
-            lg: 8, // 大屏幕占满
-            xl: 8, // 超大屏幕
-            xxl: 8, // 超超大屏幕
-          },
-        }}
+        search={{ labelWidth: 120 }}
         toolBarRender={() => [
           (access.canSuperAdmin || access.canUpdateUser) && (
             <Button
