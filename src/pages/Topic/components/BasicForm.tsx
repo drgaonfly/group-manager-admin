@@ -32,7 +32,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setVideoUrl, 
     <ProForm
       initialValues={{
         ...values,
-        answers: values?.answers?.map((answer: any) => answer._id),
+        answer: values?.answer?.map((answer: any) => answer._id),
         videoUrl: videoUrl,
       }}
       onFinish={async (values) => {

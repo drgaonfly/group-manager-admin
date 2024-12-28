@@ -121,18 +121,18 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'name' }),
-      dataIndex: ['answers', 'name'],
+      title: intl.formatMessage({ id: 'answers.name' }),
+      dataIndex: ['answer', 'name'],
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'topic' }),
-      dataIndex: ['topics', 'name'],
+      title: intl.formatMessage({ id: 'pages.topic' }),
+      dataIndex: ['topic', 'issue'],
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'user' }),
-      dataIndex: ['users', 'name'],
+      dataIndex: ['user', 'name'],
       hideInSearch: true,
     },
     {

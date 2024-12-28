@@ -10,17 +10,17 @@ interface Props {
 
 const AnswerSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
   const intl = useIntl();
-  const { items: answers, loading } = useQueryList('/answers');
+  const { items: answer, loading } = useQueryList('/answers');
 
   return (
     <ProFormSelect
       rules={[{ required: true }]}
-      options={answers.map((answers: any) => ({
-        label: answers.name,
-        value: answers._id,
+      options={answer.map((answer: any) => ({
+        label: answer.name,
+        value: answer._id,
       }))}
       width="md"
-      name="answers"
+      name="answer"
       label={intl.formatMessage({ id: 'pages.comment.answer' })}
       showSearch
       fieldProps={{

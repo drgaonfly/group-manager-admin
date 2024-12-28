@@ -126,7 +126,10 @@ export default {
   'menu.topics': '答案管理',
   name: '名称',
   'pages.comment.user': '用户',
-  'pages.comment.topic': '答案',
+  'pages.comment.topic': '问题',
   'pages.comment.record': '记录',
   topic: '答案',
+  'menu.records': '记录管理',
+  'pages.topic': '问题',
+  'answers.name': '答案名称',
 };

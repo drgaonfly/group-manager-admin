@@ -117,7 +117,10 @@ export default {
   name: 'Name',
   'menu.topics': 'Topic management',
   'pages.comment.user': 'User',
-  'pages.comment.topic': 'Answer',
+  'pages.comment.topic': 'Issue',
   'pages.comment.record': 'Record',
   topic: 'Topic',
+  'menu.records': 'Record management',
+  'pages.topic': 'Issue',
+  'answers.name': 'Answer Name',
 };

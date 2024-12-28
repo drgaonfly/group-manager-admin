@@ -10,17 +10,17 @@ interface Props {
 
 const UserSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
   const intl = useIntl();
-  const { items: users, loading } = useQueryList('/users');
+  const { items: user, loading } = useQueryList('/users');
 
   return (
     <ProFormSelect
       rules={[{ required: true }]}
-      options={users.map((users: any) => ({
-        label: users.name,
-        value: users._id,
+      options={user.map((user: any) => ({
+        label: user.name,
+        value: user._id,
       }))}
       width="md"
-      name="users"
+      name="user"
       label={intl.formatMessage({ id: 'pages.comment.user' })}
       showSearch
       fieldProps={{
