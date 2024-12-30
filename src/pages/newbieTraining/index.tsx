@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Layout, Button, Input, Radio, Row, Col, InputNumber } from 'antd';
+import { Layout, Button, Input, Radio, Row, Col, InputNumber, Modal } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { Header, Content, Sider } = Layout;
 
@@ -10,6 +11,8 @@ export default function NewbieTraining() {
   const [activeVideo, setActiveVideo] = useState(1);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [selectedStatus, setSelectedStatus] = useState<number>(1);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
 
   // 视频控制函数
   const handleFullScreen = () => {
@@ -110,7 +113,9 @@ export default function NewbieTraining() {
       <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
         <div className="flex items-center justify-between">
           <div className="text-xl font-medium font-bold">新手训练</div>
-          <Button className="text-sm rounded-md px-2 py-1">答题概况</Button>
+          <Button className="text-sm rounded-md px-2 py-1" onClick={() => setIsModalVisible(true)}>
+            答题概况
+          </Button>
         </div>
       </div>
 
@@ -174,6 +179,7 @@ export default function NewbieTraining() {
                       <Button
                         className="px-1 py-1 text-sm text-white rounded-md"
                         style={{ backgroundColor: '#1890ff' }}
+                        onClick={() => setIsSubmitModalVisible(true)}
                       >
                         提交(ENTER)
                       </Button>
@@ -287,7 +293,7 @@ export default function NewbieTraining() {
                     <Input
                       type="text"
                       placeholder="请输入商品名称"
-                      className="border rounded px-4 py-2 mr-2 w-48"
+                      className="border rounded px-4 py-1 mr-2 w-48"
                     />
                     <span className="text-gray-600 text-xs">商品搜索</span>
                   </div>
@@ -317,20 +323,32 @@ export default function NewbieTraining() {
                           onClick={() => handleQuantityChange(index, 1)}
                         />
                         {/* 数量控制器 */}
-                        {quantities[index] > 0 && (
+                        {quantities[index] > 0 && selectedStatus === 1 && (
                           <>
                             <hr />
                             <div className="flex items-center justify-between w-full">
                               <div
-                                className="text-blue-500 text-lg font-bold flex items-center justify-center cursor-pointer"
-                                onClick={() => handleQuantityChange(index, -1)}
+                                className={`text-lg font-bold flex items-center justify-center ${
+                                  selectedStatus === 1
+                                    ? 'text-blue-500 cursor-pointer'
+                                    : 'text-gray-300 cursor-not-allowed'
+                                }`}
+                                onClick={() =>
+                                  selectedStatus === 1 && handleQuantityChange(index, -1)
+                                }
                               >
                                 -
                               </div>
                               <span className="text-sm">{quantities[index] || 0}</span>
                               <div
-                                className="text-blue-500 text-lg font-bold flex items-center justify-center cursor-pointer"
-                                onClick={() => handleQuantityChange(index, 1)}
+                                className={`text-lg font-bold flex items-center justify-center ${
+                                  selectedStatus === 1
+                                    ? 'text-blue-500 cursor-pointer'
+                                    : 'text-gray-300 cursor-not-allowed'
+                                }`}
+                                onClick={() =>
+                                  selectedStatus === 1 && handleQuantityChange(index, 1)
+                                }
                               >
                                 +
                               </div>
@@ -345,6 +363,101 @@ export default function NewbieTraining() {
           </Layout>
         </Col>
       </Row>
+
+      {/* 答题概况 Modal */}
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <ExclamationCircleOutlined style={{ color: '#1890ff' }} />
+            <span>答题概况</span>
+          </div>
+        }
+        open={isModalVisible}
+        closable={false}
+        footer={
+          <Button type="primary" onClick={() => setIsModalVisible(false)}>
+            知道了
+          </Button>
+        }
+        width={800}
+      >
+        <div className="p-4">
+          <div className="grid grid-cols-4 gap-4">
+            {[
+              { id: '202411116479060934013829', status: 'correct' },
+              { id: '202411116479040331760394', status: 'wrong' },
+              { id: '202411116477466053443624', status: 'pending' },
+              { id: '202411116478993430971760', status: 'correct' },
+              { id: '202411116478993430971765', status: 'wrong' },
+              // ... 更多订单号
+            ].map((item, index) => (
+              <div key={index} className="flex items-center gap-1 text-xs">
+                <span
+                  style={{
+                    color:
+                      item.status === 'correct'
+                        ? 'green'
+                        : item.status === 'wrong'
+                        ? 'red'
+                        : 'gray',
+                  }}
+                >
+                  ●
+                </span>
+                <span className="text-gray-600 hover:text-blue-500 cursor-pointer truncate">
+                  {item.id}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
+
+      {/* 提交 Modal */}
+      <Modal
+        title={
+          selectedStatus === 1 ? (
+            <span>确认提交</span>
+          ) : (
+            <div className="flex items-center gap-2">
+              <ExclamationCircleOutlined style={{ color: '#faad14' }} />
+              <span>确认标记订单为异常吗？</span>
+            </div>
+          )
+        }
+        open={isSubmitModalVisible}
+        closable={false}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => setIsSubmitModalVisible(false)}>取消</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                // 处理提交逻辑
+                setIsSubmitModalVisible(false);
+              }}
+            >
+              确认
+            </Button>
+          </div>
+        }
+        width={500}
+      >
+        {selectedStatus === 1 ? (
+          // 显示选择的商品信息
+          <div className="space-y-4">
+            {Object.entries(quantities).map(
+              ([index, quantity]) =>
+                quantity > 0 && (
+                  <div key={index} className="flex justify-between items-center">
+                    <div className="text-sm">爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升</div>
+                    <div className="text-sm">X{quantity}</div>
+                  </div>
+                ),
+            )}
+          </div>
+        ) : null}
+      </Modal>
     </>
   );
 }
