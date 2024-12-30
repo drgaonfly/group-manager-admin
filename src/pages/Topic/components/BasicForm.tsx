@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import AnswerSelect from '@/components/AnswerSelect';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
@@ -81,6 +81,13 @@ const BasicForm: React.FC<Props> = ({
     >
       <ProForm.Group>
         <AnswerSelect />
+
+        <ProFormText
+          name="answerCount"
+          label={intl.formatMessage({ id: 'quantity' })}
+          rules={[{ required: true }]}
+          initialValue={1}
+        />
       </ProForm.Group>
 
       <ProForm.Group>

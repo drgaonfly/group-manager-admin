@@ -134,6 +134,11 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'quantity' }),
+      dataIndex: 'answerCount',
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'video1', defaultMessage: '视频' }),
       dataIndex: 'video1',
       hideInSearch: true,

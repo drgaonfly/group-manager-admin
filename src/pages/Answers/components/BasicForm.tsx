@@ -89,6 +89,14 @@ const BasicForm: React.FC<Props> = ({
           label={intl.formatMessage({ id: 'Name' })}
           name="name"
         />
+
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'quantity' })}
+          name="answerCount"
+          initialValue={1}
+        />
       </ProForm.Group>
 
       {!newRecord && (
