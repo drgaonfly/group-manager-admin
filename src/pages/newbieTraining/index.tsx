@@ -10,7 +10,7 @@ export default function NewbieTraining() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [activeVideo, setActiveVideo] = useState(1);
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [selectedStatus, setSelectedStatus] = useState<number>(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
@@ -19,11 +19,52 @@ export default function NewbieTraining() {
   const [searchKeyword, setSearchKeyword] = useState('');
 
   // 添加商品数据数组（这里使用示例数据，你可以根据实际情况修改）
-  const products = Array(12).fill({
-    name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
-    image:
-      'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
-  });
+  const products = [
+    // category 1
+    {
+      name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 1,
+    },
+    {
+      name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 1,
+    },
+    {
+      name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 1,
+    },
+    {
+      name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 1,
+    },
+    {
+      name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 1,
+    },
+    // category 2
+    {
+      name: '石斌_石斌椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 2,
+    },
+    {
+      name: '石斌_石斌椰蓉奶酪味面包90G_90毫升',
+      image:
+        'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+      category: 2,
+    },
+  ];
 
   // 添加搜索处理函数
   const filteredProducts = products.filter((product) =>
@@ -159,10 +200,10 @@ export default function NewbieTraining() {
   };
 
   // 处理数量变化的函数
-  const handleQuantityChange = (index: number, change: number) => {
+  const handleQuantityChange = (uniqueIndex: string, change: number) => {
     setQuantities((prev) => ({
       ...prev,
-      [index]: Math.max(0, (prev[index] || 0) + change),
+      [uniqueIndex]: Math.max(0, (prev[uniqueIndex] || 0) + change),
     }));
   };
 
@@ -325,13 +366,13 @@ export default function NewbieTraining() {
                               onChange={(value) => {
                                 const newValue = value ?? 0;
                                 const change = newValue - quantity;
-                                handleQuantityChange(Number(index), change);
+                                handleQuantityChange(index, change);
                               }}
                               min={0}
                               className="w-16"
                             />
                             <div
-                              onClick={() => handleQuantityChange(Number(index), -quantity)}
+                              onClick={() => handleQuantityChange(index, -quantity)}
                               className="text-blue-500 hover:text-blue-700 cursor-pointer"
                             >
                               删除
@@ -369,64 +410,86 @@ export default function NewbieTraining() {
                   </div>
                 </div>
 
-                {/* 商品网格 */}
-                <div className="grid grid-cols-4 gap-4 divide-x divide-y divide-gray-200 border border-gray-200">
-                  {filteredProducts.map((product, index) => (
-                    <div key={index} className="flex flex-col items-center p-2 relative">
-                      <div
-                        className="text-xs text-center mt-1 text-gray-600 truncate w-full"
-                        title={product.name}
-                        style={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {product.name}
+                {/* 动态渲染分类和商品 */}
+                {[1, 2].map((categoryNum) => (
+                  <React.Fragment key={categoryNum}>
+                    <div className="flex">
+                      {/* 左侧分类号 */}
+                      <div className="flex items-center text-sm font-medium mr-4">
+                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                          {categoryNum}
+                        </div>
                       </div>
-                      <img
-                        src={product.image}
-                        alt="商品图片"
-                        className="w-full aspect-square object-contain"
-                        style={{
-                          cursor: selectedStatus === 1 ? 'pointer' : 'not-allowed',
-                        }}
-                        onClick={() => selectedStatus === 1 && handleQuantityChange(index, 1)}
-                      />
-                      {/* 数量控制器 */}
-                      {quantities[index] > 0 && selectedStatus === 1 && (
-                        <>
-                          <hr />
-                          <div className="flex items-center justify-between w-full">
-                            <div
-                              className={`text-lg font-bold flex items-center justify-center ${
-                                selectedStatus === 1
-                                  ? 'text-blue-500 cursor-pointer'
-                                  : 'text-gray-300 cursor-not-allowed'
-                              }`}
-                              onClick={() =>
-                                selectedStatus === 1 && handleQuantityChange(index, -1)
-                              }
-                            >
-                              -
-                            </div>
-                            <span className="text-sm">{quantities[index] || 0}</span>
-                            <div
-                              className={`text-lg font-bold flex items-center justify-center ${
-                                selectedStatus === 1
-                                  ? 'text-blue-500 cursor-pointer'
-                                  : 'text-gray-300 cursor-not-allowed'
-                              }`}
-                              onClick={() => selectedStatus === 1 && handleQuantityChange(index, 1)}
-                            >
-                              +
-                            </div>
-                          </div>
-                        </>
-                      )}
+                      {/* 右侧商品网格 */}
+                      <div className="flex-1">
+                        <div className="grid grid-cols-4">
+                          {filteredProducts
+                            .filter((product) => product.category === categoryNum)
+                            .map((product, productIndex) => {
+                              const uniqueIndex = `${categoryNum}-${productIndex}`;
+
+                              return (
+                                <div
+                                  key={uniqueIndex}
+                                  className="flex flex-col items-center p-2 relative"
+                                  style={{
+                                    border: '1px solid #e8e8e8',
+                                    borderRadius: '0px',
+                                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                                  }}
+                                >
+                                  <div
+                                    className="text-xs text-center mt-1 text-gray-600 truncate w-full"
+                                    title={product.name}
+                                  >
+                                    {product.name}
+                                  </div>
+                                  <img
+                                    src={product.image}
+                                    alt="商品图片"
+                                    className="w-full aspect-square object-contain"
+                                    style={{
+                                      cursor: selectedStatus === 1 ? 'pointer' : 'not-allowed',
+                                    }}
+                                    onClick={() =>
+                                      selectedStatus === 1 && handleQuantityChange(uniqueIndex, 1)
+                                    }
+                                  />
+                                  {/* 数量控制器 */}
+                                  {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
+                                    <div className="flex items-center justify-between w-full">
+                                      <div
+                                        className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                        onClick={() =>
+                                          selectedStatus === 1 &&
+                                          handleQuantityChange(uniqueIndex, -1)
+                                        }
+                                      >
+                                        -
+                                      </div>
+                                      <span className="text-sm">
+                                        {quantities[uniqueIndex] || 0}
+                                      </span>
+                                      <div
+                                        className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                        onClick={() =>
+                                          selectedStatus === 1 &&
+                                          handleQuantityChange(uniqueIndex, 1)
+                                        }
+                                      >
+                                        +
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                    {categoryNum < 2 && <div className="border-t border-gray-200 my-4" />}
+                  </React.Fragment>
+                ))}
               </div>
             </Content>
           </Layout>
