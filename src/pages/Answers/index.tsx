@@ -128,8 +128,8 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'answers.quantity' }),
-      dataIndex: 'quantity',
+      title: intl.formatMessage({ id: 'answers.answerCount' }),
+      dataIndex: 'answerCount',
       hideInSearch: true,
       render: (text) => text,
     },

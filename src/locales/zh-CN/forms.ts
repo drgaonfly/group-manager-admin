@@ -137,6 +137,6 @@ export default {
   'status.doing': '正在',
   'status.right': '答对',
   'status.wrong': '答错',
-  answerCount: '数量',
-  number: '编号',
+  'answers.answerCount': '数量',
+  'answers.rowNumber': '行数',
 };
