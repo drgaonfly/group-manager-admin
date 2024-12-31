@@ -123,6 +123,8 @@ export default {
   'menu.records': 'Record management',
   'pages.topic': 'Topic',
   'answers.name': 'Answer Name',
+  'answers.answerCount': 'Answer Count',
+  'answers.rowNumber': 'Row Number',
   video1: 'Video1',
   video2: 'Video2',
   'status.doing': 'Doing',
