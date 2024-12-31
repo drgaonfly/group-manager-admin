@@ -103,6 +103,15 @@ const BasicForm: React.FC<Props> = ({
           width="md"
           label={intl.formatMessage({ id: 'answers.rowNumber' })}
           name="rowNumber"
+
+          initialValue={1}
+        />
+
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'answers.rowNumber' })}
+          name="rowNumber"
           initialValue={1}
         />
       </ProForm.Group>

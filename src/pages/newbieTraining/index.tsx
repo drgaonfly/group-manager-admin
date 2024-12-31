@@ -16,6 +16,19 @@ export default function NewbieTraining() {
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
   const [topics, setTopics] = useState<any[]>([]);
   const [statuses, setStatuses] = useState<any[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  // 添加商品数据数组（这里使用示例数据，你可以根据实际情况修改）
+  const products = Array(12).fill({
+    name: '爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升',
+    image:
+      'https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png',
+  });
+
+  // 添加搜索处理函数
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchKeyword.toLowerCase()),
+  );
 
   // 获取新手训练数据的函数
   const fetchNewbieTrainingData = async () => {
@@ -134,9 +147,14 @@ export default function NewbieTraining() {
     setActiveVideo(videoNum);
     // 切换视频时重置播放速度
     setPlaybackRate(1);
-    // 如果视频正在播放，重新开始播放新视频
-    if (videoRef.current && !videoRef.current.paused) {
-      videoRef.current.play();
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.log('切换视频后自动播放失败:', error);
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          videoRef.current.play();
+        }
+      });
     }
   };
 
@@ -147,6 +165,21 @@ export default function NewbieTraining() {
       [index]: Math.max(0, (prev[index] || 0) + change),
     }));
   };
+
+  // 在组件加载时自动播放视频
+  React.useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.log('自动播放失败:', error);
+        // 大多数浏览器需要用户交互才能自动播放带声音的视频
+        // 可以选择静音播放
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          videoRef.current.play();
+        }
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -246,12 +279,7 @@ export default function NewbieTraining() {
             {/* 左侧视频区域 */}
             <Content style={{ padding: '16px' }}>
               <div className="relative bg-black aspect-video">
-                <video
-                  ref={videoRef}
-                  className="w-full h-full"
-                  controls
-                  key={activeVideo} // 添加 key 属性确保视频切换时完全重新渲染
-                >
+                <video ref={videoRef} className="w-full h-full" controls autoPlay key={activeVideo}>
                   <source
                     src={
                       activeVideo === 1
@@ -334,6 +362,8 @@ export default function NewbieTraining() {
                       type="text"
                       placeholder="请输入商品名称"
                       className="border rounded px-4 py-1 mr-2 w-48"
+                      value={searchKeyword}
+                      onChange={(e) => setSearchKeyword(e.target.value)}
                     />
                     <span className="text-gray-600 text-xs">商品搜索</span>
                   </div>
@@ -341,62 +371,61 @@ export default function NewbieTraining() {
 
                 {/* 商品网格 */}
                 <div className="grid grid-cols-4 gap-4 divide-x divide-y divide-gray-200 border border-gray-200">
-                  {Array(12)
-                    .fill(0)
-                    .map((_, index) => (
-                      <div key={index} className="flex flex-col items-center p-2 relative">
-                        <div
-                          className="text-xs text-center mt-1 text-gray-600 truncate w-full"
-                          title="爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升"
-                          style={{
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
-                        >
-                          爱彼依_爱彼依椰蓉奶酪味面包90G_90毫升
-                        </div>
-                        <img
-                          src="https://image.op-api.hetuntech.cn/resources/1470756546412577/bce6826ca8611079b72dd4273d042f0e.png"
-                          alt="商品图片"
-                          className="w-full aspect-square object-contain cursor-pointer"
-                          onClick={() => handleQuantityChange(index, 1)}
-                        />
-                        {/* 数量控制器 */}
-                        {quantities[index] > 0 && selectedStatus === 1 && (
-                          <>
-                            <hr />
-                            <div className="flex items-center justify-between w-full">
-                              <div
-                                className={`text-lg font-bold flex items-center justify-center ${
-                                  selectedStatus === 1
-                                    ? 'text-blue-500 cursor-pointer'
-                                    : 'text-gray-300 cursor-not-allowed'
-                                }`}
-                                onClick={() =>
-                                  selectedStatus === 1 && handleQuantityChange(index, -1)
-                                }
-                              >
-                                -
-                              </div>
-                              <span className="text-sm">{quantities[index] || 0}</span>
-                              <div
-                                className={`text-lg font-bold flex items-center justify-center ${
-                                  selectedStatus === 1
-                                    ? 'text-blue-500 cursor-pointer'
-                                    : 'text-gray-300 cursor-not-allowed'
-                                }`}
-                                onClick={() =>
-                                  selectedStatus === 1 && handleQuantityChange(index, 1)
-                                }
-                              >
-                                +
-                              </div>
-                            </div>
-                          </>
-                        )}
+                  {filteredProducts.map((product, index) => (
+                    <div key={index} className="flex flex-col items-center p-2 relative">
+                      <div
+                        className="text-xs text-center mt-1 text-gray-600 truncate w-full"
+                        title={product.name}
+                        style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {product.name}
                       </div>
-                    ))}
+                      <img
+                        src={product.image}
+                        alt="商品图片"
+                        className="w-full aspect-square object-contain"
+                        style={{
+                          cursor: selectedStatus === 1 ? 'pointer' : 'not-allowed',
+                        }}
+                        onClick={() => selectedStatus === 1 && handleQuantityChange(index, 1)}
+                      />
+                      {/* 数量控制器 */}
+                      {quantities[index] > 0 && selectedStatus === 1 && (
+                        <>
+                          <hr />
+                          <div className="flex items-center justify-between w-full">
+                            <div
+                              className={`text-lg font-bold flex items-center justify-center ${
+                                selectedStatus === 1
+                                  ? 'text-blue-500 cursor-pointer'
+                                  : 'text-gray-300 cursor-not-allowed'
+                              }`}
+                              onClick={() =>
+                                selectedStatus === 1 && handleQuantityChange(index, -1)
+                              }
+                            >
+                              -
+                            </div>
+                            <span className="text-sm">{quantities[index] || 0}</span>
+                            <div
+                              className={`text-lg font-bold flex items-center justify-center ${
+                                selectedStatus === 1
+                                  ? 'text-blue-500 cursor-pointer'
+                                  : 'text-gray-300 cursor-not-allowed'
+                              }`}
+                              onClick={() => selectedStatus === 1 && handleQuantityChange(index, 1)}
+                            >
+                              +
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </Content>
