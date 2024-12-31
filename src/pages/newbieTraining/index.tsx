@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Layout, Button, Input, Radio, Row, Col, InputNumber, Modal } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { queryList, addItem } from '@/services/ant-design-pro/api';
 
 const { Header, Content, Sider } = Layout;
 
@@ -13,6 +14,45 @@ export default function NewbieTraining() {
   const [selectedStatus, setSelectedStatus] = useState<number>(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
+  const [topics, setTopics] = useState<any[]>([]);
+  const [statuses, setStatuses] = useState<any[]>([]);
+
+  // 获取新手训练数据的函数
+  const fetchNewbieTrainingData = async () => {
+    try {
+      console.log('请求开始...');
+      const response = await queryList('/records/newbie-training');
+      console.log('请求响应:', response);
+
+      if (response?.data) {
+        setTopics(response.data);
+        setStatuses(response.data);
+      }
+    } catch (error) {
+      console.log('请求错误:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNewbieTrainingData(); // 页面刷新时调用
+    console.log('数据请求发起');
+  }, []);
+
+  // 提交新手训练记录的函数
+  const submitNewbieTrainingRecord = async (id: string) => {
+    const topicId = id; // 假设您使用 activeVideo 作为 topicId
+    try {
+      const response = await addItem(`/submit-newbie-training/${topicId}`); // 调用提交记录的接口
+      console.log('Newbie training record submitted:', response);
+    } catch (error) {
+      console.error('Error submitting newbie training record:', error);
+    }
+  };
+
+  console.log(submitNewbieTrainingRecord);
+
+  console.log(topics);
+  console.log(statuses);
 
   // 视频控制函数
   const handleFullScreen = () => {

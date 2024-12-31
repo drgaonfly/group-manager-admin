@@ -1,9 +1,10 @@
 import { useIntl } from '@umijs/max';
-import React from 'react';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
+import React, { useState } from 'react';
+import { EditableProTable, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import AnswerSelect from '@/components/AnswerSelect';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { FormattedMessage } from '@umijs/max';
 
 interface Props {
   newRecord?: boolean;
@@ -15,6 +16,10 @@ interface Props {
   setvideo2: (url: string) => void;
 }
 
+type menuItem = {
+  _id: string;
+};
+
 const BasicForm: React.FC<Props> = ({
   newRecord,
   onFinish,
@@ -25,6 +30,38 @@ const BasicForm: React.FC<Props> = ({
   video2,
 }) => {
   const intl = useIntl();
+
+  const [menus, setMenus] = useState<menuItem[]>(values?.menus || []);
+
+  const columns = [
+    {
+      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
+      dataIndex: 'menuName',
+      hideInSearch: false,
+      width: 200,
+    },
+    {
+      title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
+      dataIndex: 'url',
+      hideInSearch: false,
+      copyable: true,
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      valueType: 'option',
+      width: 200,
+      render: (text: any, record: any, _: any, action: any) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
 
   const defaultFileList = video1
     ? [
@@ -61,6 +98,7 @@ const BasicForm: React.FC<Props> = ({
       onFinish={async (values) => {
         await onFinish({
           ...values,
+          menus: menus,
           video1: video1,
           video2: video2,
         });
@@ -112,6 +150,25 @@ const BasicForm: React.FC<Props> = ({
           />
         </Form.Item>
       </ProForm.Group>
+
+      <EditableProTable<menuItem>
+        rowKey="_id"
+        headerTitle={intl.formatMessage({ id: 'start' })}
+        columns={columns as ProColumns<menuItem, 'text'>[]}
+        value={menus}
+        onChange={(value: readonly menuItem[]) => setMenus([...value])}
+        editable={{
+          type: 'multiple',
+        }}
+        recordCreatorProps={{
+          newRecordType: 'dataSource',
+          position: 'bottom',
+          record: () => ({
+            _id: Date.now().toString(),
+            // 其他字段...
+          }),
+        }}
+      />
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>
