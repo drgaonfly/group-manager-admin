@@ -38,7 +38,6 @@ const BasicForm: React.FC<Props> = ({
       title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
       dataIndex: 'menuName',
       hideInSearch: false,
-      width: 200,
     },
     {
       title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
@@ -49,7 +48,6 @@ const BasicForm: React.FC<Props> = ({
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       valueType: 'option',
-      width: 200,
       render: (text: any, record: any, _: any, action: any) => [
         <a
           key="editable"
@@ -121,8 +119,8 @@ const BasicForm: React.FC<Props> = ({
         <AnswerSelect />
 
         <ProFormText
-          name="answerCount"
-          label={intl.formatMessage({ id: 'quantity' })}
+          name={['correctAnswers', 'count']}
+          label={intl.formatMessage({ id: 'count' })}
           rules={[{ required: true }]}
           initialValue={1}
         />

@@ -128,12 +128,6 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'answers.answerCount' }),
-      dataIndex: 'answerCount',
-      hideInSearch: true,
-      render: (text) => text,
-    },
-    {
       title: intl.formatMessage({ id: 'answers.image' }),
       dataIndex: 'image',
       hideInSearch: true,
@@ -150,6 +144,21 @@ const TableList: React.FC = () => {
           preview={true}
         />
       ),
+    },
+    {
+      title: intl.formatMessage({ id: 'answers.skuName' }),
+      dataIndex: 'skuName',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'answers.sn' }),
+      dataIndex: 'sn',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'answers.spec' }),
+      dataIndex: 'spec',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'answers.rowNumber' }),

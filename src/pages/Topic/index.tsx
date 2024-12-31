@@ -116,12 +116,6 @@ const TableList: React.FC = () => {
   const [video1, setvideo1] = useState<string>('');
   const [video2, setvideo2] = useState<string>('');
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  // Define roles object with index signature
-
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'number' }),
@@ -130,12 +124,12 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'name' }),
-      dataIndex: ['answer', 'name'],
+      dataIndex: ['correctAnswers', 'answer', 'name'],
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'quantity' }),
-      dataIndex: 'answerCount',
+      title: intl.formatMessage({ id: 'count' }),
+      dataIndex: ['correctAnswers', 'count'],
       hideInSearch: true,
     },
     {

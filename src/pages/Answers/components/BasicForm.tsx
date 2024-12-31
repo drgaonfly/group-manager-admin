@@ -93,18 +93,22 @@ const BasicForm: React.FC<Props> = ({
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'answers.answerCount' })}
-          name="answerCount"
-          initialValue={1}
+          label={intl.formatMessage({ id: 'answers.skuName' })}
+          name="skuName"
         />
 
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'answers.rowNumber' })}
-          name="rowNumber"
+          label={intl.formatMessage({ id: 'answers.sn' })}
+          name="sn"
+        />
 
-          initialValue={1}
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'answers.spec' })}
+          name="spec"
         />
 
         <ProFormText
