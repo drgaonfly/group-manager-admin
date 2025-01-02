@@ -2,106 +2,9 @@ import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Layout, Button, Input, Radio, Row, Col, InputNumber, Modal, message } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { queryList } from '@/services/ant-design-pro/api';
+import { queryList, addItem } from '@/services/ant-design-pro/api';
 
 const { Header, Content, Sider } = Layout;
-
-// 定义接口响应类型
-interface AnswerItem {
-  _id: string;
-  brandName: string;
-  skuName: string;
-  image: string;
-  rowNumber: number;
-  spec: string;
-  sn: string;
-  id: string;
-  topic: any;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface AnswerResponse {
-  success: boolean;
-  data: AnswerItem[];
-  total: number;
-}
-
-// 定义 Answer 类型
-interface Answer {
-  _id: string;
-  skuName: string;
-  brandName: string;
-  spec: string;
-  image: string;
-  id: string;
-  rowNumber?: number;
-}
-
-// 定义 Topic 类型
-interface TopicItem {
-  _id: string;
-  video1: string;
-  video2: string;
-  issue?: string;
-  topicNumber: string;
-  answers: Answer[];
-  correctAnswers: {
-    answer: Answer;
-  }[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface TopicResponse {
-  success: boolean;
-  data: TopicItem[];
-  total: number;
-}
-
-// 定义提交数据的接口
-interface SubmitData {
-  answers: Array<{
-    id: string;
-    quantity: number;
-  }>;
-  issue: string;
-}
-
-// 定义状态类型
-type RecordStatus = 'pending' | 'success' | 'fail';
-
-interface TrainingRecord {
-  id: string;
-  status: RecordStatus;
-}
-
-interface NewbieTrainingResponse {
-  success: boolean;
-  data: {
-    currentUser: {
-      topics: Array<{
-        topic: {
-          _id: string;
-          topicNumber: string;
-        };
-        status: 'pending' | 'success' | 'fail';
-      }>;
-    };
-    currentTopic: any;
-    topics: any[];
-    isHasTopics: boolean;
-  };
-}
-
-interface Product {
-  id: string;
-  name: string;
-  image: string;
-  category: number;
-  brandName: string;
-  spec: string;
-}
 
 export default function NewbieTraining() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -112,145 +15,61 @@ export default function NewbieTraining() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [products, setProducts] = useState<Product[]>([]);
-  const [topicData, setTopicData] = useState<TopicItem | null>(null);
-  const [trainingRecords, setTrainingRecords] = useState<TrainingRecord[]>([]);
+  const [topicData, setTopicData] = useState<{
+    currentTopic?: {
+      _id: string;
+      video1?: string;
+      video2?: string;
+      expectedCount?: number;
+      issue?: string;
+      answers?: Array<{
+        id: string;
+        skuName: string;
+        brandName: string | null;
+        spec: string | null;
+        image: string;
+        category?: number;
+      }>;
+    };
+  }>({});
 
-  // 获取商品数据
-  const fetchProducts = async () => {
+  // 获取新手训练数据
+  const fetchNewbieTraining = async () => {
     try {
-      const params = {
+      const response = await queryList('/records/newbie-training', {
         current: 1,
-        pageSize: 100,
-      };
+        pageSize: 10,
+      });
 
-      const response = (await queryList('/answers', params)) as unknown as AnswerResponse;
-      console.log('fetchProducts', response);
+      if (response && 'data' in response) {
+        const { data } = response as any;
+        const currentTopic = data.currentTopic;
 
-      if (response?.success && Array.isArray(response.data)) {
-        const formattedProducts = response.data.map((item) => ({
-          id: item._id,
-          name: item.skuName,
-          image: item.image,
-          category: item.rowNumber ?? 1,
-          brandName: item.brandName,
-          spec: item.spec,
-        }));
-        setProducts(formattedProducts);
+        // 将视频数据和商品数据保存到 state 中
+        setTopicData({
+          currentTopic: {
+            _id: currentTopic._id,
+            video1: currentTopic.video1,
+            video2: currentTopic.video2,
+            answers: currentTopic.answers.map((answer: any) => ({
+              id: answer.id,
+              skuName: answer.skuName,
+              brandName: answer.brandName,
+              spec: answer.spec,
+              image: answer.image,
+              category: 1,
+            })),
+          },
+        });
       }
     } catch (error) {
-      console.error('获取商品数据失败:', error);
-      setProducts([]);
+      console.error('获取数据失败:', error);
     }
   };
-
-  // 使用 useMemo 处理商品过滤
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
-      product.name.toLowerCase().includes(searchKeyword.toLowerCase()),
-    );
-  }, [products, searchKeyword]);
 
   // 在组件加载时获取数据
   useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  // 获取视频数据的函数
-  const fetchTopicData = async () => {
-    try {
-      const params = {
-        current: 1,
-        pageSize: 1, // 假设我们只需要一个 topic
-      };
-
-      const response = (await queryList('/topics', params)) as unknown as TopicResponse;
-      console.log('fetchTopicData', response);
-
-      if (response?.success && Array.isArray(response.data) && response.data.length > 0) {
-        setTopicData(response.data[0]);
-        // 如果有视频，自动设置第一个视频
-        if (response.data[0].video1) {
-          setActiveVideo(1);
-        }
-      }
-    } catch (error) {
-      console.error('获取视频数据失败:', error);
-    }
-  };
-
-  // 在组件加载时获取视频数据
-  useEffect(() => {
-    fetchTopicData();
-  }, []);
-
-  // 获取新手训练数据的函数
-  const fetchNewbieTrainingData = async () => {
-    try {
-      const response = (await queryList(
-        '/records/newbie-training',
-      )) as unknown as NewbieTrainingResponse;
-      console.log('fetchNewbieTrainingData', response);
-
-      if (response?.success && response.data.currentUser.topics) {
-        const formattedRecords = response.data.currentUser.topics.map((topic) => ({
-          id: topic.topic.topicNumber,
-          status: topic.status as RecordStatus,
-        }));
-        setTrainingRecords(formattedRecords);
-      }
-    } catch (error) {
-      console.error('获取新手训练数据失败:', error);
-    }
-  };
-
-  // 提交训练记录
-  const submitNewbieTrainingRecord = async () => {
-    try {
-      // 转换商品数量数据为提交格式
-      const answers = Object.entries(quantities)
-        .filter(([, quantity]) => quantity > 0)
-        .map(([id, quantity]) => ({
-          id,
-          quantity,
-        }));
-
-      // 准备提交数据
-      const submitData: SubmitData = {
-        answers: selectedStatus === 1 ? answers : [],
-        issue:
-          selectedStatus === 1
-            ? 'No Issue'
-            : selectedStatus === 2
-            ? 'Unfriendly Operation'
-            : selectedStatus === 3
-            ? 'Recognition Error'
-            : 'Video Error',
-      };
-
-      // 发送请求
-      const response = await queryList('/records/submit-newbie-training/' + topicData?._id, {
-        method: 'POST',
-        data: submitData,
-      });
-
-      if (response.success) {
-        message.success('提交成功');
-        // 刷新数据
-        fetchNewbieTrainingData();
-      } else {
-        message.error('提交失败');
-      }
-    } catch (error) {
-      console.error('提交训练记录失败:', error);
-      message.error('提交失败: ' + (error as Error).message);
-    } finally {
-      setIsSubmitModalVisible(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchNewbieTrainingData();
+    fetchNewbieTraining();
   }, []);
 
   // 视频控制函数
@@ -371,6 +190,91 @@ export default function NewbieTraining() {
     }
   }, []);
 
+  const filteredProducts = useMemo(() => {
+    if (!topicData.currentTopic?.answers) return [];
+
+    return topicData.currentTopic.answers.filter(
+      (product) =>
+        product.skuName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        (product.brandName &&
+          product.brandName.toLowerCase().includes(searchKeyword.toLowerCase())),
+    );
+  }, [searchKeyword, topicData.currentTopic?.answers]);
+
+  // 添加提交函数
+  const handleSubmit = async () => {
+    try {
+      const currentTopicId = topicData?.currentTopic?._id; // 获取当前题目ID
+      if (!currentTopicId) {
+        message.error('题目ID不存在');
+        return;
+      }
+
+      let submitData = {
+        issue: 'No Issue',
+        answers: [] as Array<{ id: string; quantity: number }>,
+      };
+
+      // 如果不是"无异常"状态，设置对应的issue
+      if (selectedStatus !== 1) {
+        const issueMap = {
+          2: 'Unfriendly Operation',
+          3: 'Recognition Error',
+          4: 'Video Error',
+        };
+        submitData.issue = issueMap[selectedStatus as keyof typeof issueMap] || 'No Issue';
+      } else {
+        // 如果是"无异常"状态，收集所有数量大于0的商品
+        submitData.answers = Object.entries(quantities)
+          .filter(([, quantity]) => quantity > 0)
+          .map(([id, quantity]) => ({
+            id,
+            quantity,
+          }));
+      }
+
+      // 使用 addItem 发送 POST 请求
+      const response = await addItem(
+        `/records/submit-newbie-training/${currentTopicId}`,
+        submitData,
+      );
+
+      if (response?.success) {
+        message.success('提交成功');
+        setIsSubmitModalVisible(false);
+
+        const { currentTopic } = response.data as any;
+
+        setTopicData({
+          currentTopic: {
+            _id: currentTopic._id,
+            video1: currentTopic.video1,
+            video2: currentTopic.video2,
+            answers: currentTopic.answers,
+            expectedCount: currentTopic.expectedCount,
+            issue: currentTopic.issue,
+          },
+        });
+
+        // 重置状态
+        setQuantities({});
+        setSelectedStatus(1);
+
+        // 切换到新题目的第一个有效视频
+        if (currentTopic.video1) {
+          setActiveVideo(1);
+        } else if (currentTopic.video2) {
+          setActiveVideo(2);
+        }
+      } else {
+        message.error(response?.message || '提交失败');
+      }
+    } catch (error) {
+      console.error('提交失败:', error);
+      message.error('提交失败，请重试');
+    }
+  };
+
   return (
     <>
       <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
@@ -405,23 +309,37 @@ export default function NewbieTraining() {
                     className={`cursor-pointer ${
                       activeVideo === 1 ? 'text-blue-500' : 'text-gray-500'
                     }`}
-                    onClick={() => topicData?.video1 && handleVideoSwitch(1)}
-                    style={{ padding: '8px', cursor: 'pointer' }}
+                    onClick={() => topicData?.currentTopic?.video1 && handleVideoSwitch(1)}
+                    style={{
+                      padding: '8px',
+                      cursor: topicData?.currentTopic?.video1 ? 'pointer' : 'not-allowed',
+                      opacity: topicData?.currentTopic?.video1 ? 1 : 0.5,
+                    }}
                   >
-                    视频一
+                    视频一{!topicData?.currentTopic?.video1 && '(无)'}
                   </div>
                   <div
                     className={`cursor-pointer ${
                       activeVideo === 2 ? 'text-blue-500' : 'text-gray-500'
                     }`}
-                    onClick={() => topicData?.video2 && handleVideoSwitch(2)}
-                    style={{ padding: '8px', cursor: 'pointer' }}
+                    onClick={() => topicData?.currentTopic?.video2 && handleVideoSwitch(2)}
+                    style={{
+                      padding: '8px',
+                      cursor: topicData?.currentTopic?.video2 ? 'pointer' : 'not-allowed',
+                      opacity: topicData?.currentTopic?.video2 ? 1 : 0.5,
+                    }}
                   >
-                    视频二
+                    视频二{!topicData?.currentTopic?.video2 && '(无)'}
                   </div>
-                  <div className="text-gray-500 text-md">预计到达466单</div>
-                  {topicData?.issue && (
-                    <div className="text-gray-500 text-md">问题：{topicData.issue}</div>
+                  <div className="text-gray-500 text-md">
+                    {topicData?.currentTopic?.expectedCount
+                      ? `预计到达${topicData.currentTopic.expectedCount}单`
+                      : ''}
+                  </div>
+                  {topicData?.currentTopic?.issue && (
+                    <div className="text-gray-500 text-md">
+                      问题：{topicData.currentTopic.issue}
+                    </div>
                   )}
                   <div
                     className="text-xs rounded-md px-2 py-1"
@@ -474,7 +392,11 @@ export default function NewbieTraining() {
               <div className="relative bg-black aspect-video">
                 <video ref={videoRef} className="w-full h-full" controls autoPlay key={activeVideo}>
                   <source
-                    src={activeVideo === 1 ? topicData?.video1 : topicData?.video2}
+                    src={
+                      activeVideo === 1
+                        ? topicData.currentTopic?.video1
+                        : topicData.currentTopic?.video2
+                    }
                     type="video/mp4"
                   />
                 </video>
@@ -508,9 +430,11 @@ export default function NewbieTraining() {
                           <div className="flex-1">
                             <div className="text-sm">
                               {(() => {
-                                const product = products.find((p) => p.id === index);
+                                const product = topicData.currentTopic?.answers?.find(
+                                  (p: any) => p.id === index,
+                                );
                                 return product
-                                  ? `${product.brandName} ${product.name} ${product.spec}`
+                                  ? `${product.brandName} ${product.skuName} ${product.spec}`
                                   : '';
                               })()}
                             </div>
@@ -566,22 +490,20 @@ export default function NewbieTraining() {
                 </div>
 
                 {/* 动态渲染分类和商品 */}
-                {[1, 2].map((categoryNum) => (
-                  <React.Fragment key={categoryNum}>
+                {[1, 2].map((category) => (
+                  <React.Fragment key={category}>
                     <div className="flex">
                       {/* 左侧分类号 */}
                       <div className="flex items-center text-sm font-medium mr-4">
                         <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                          {categoryNum}
+                          {category}
                         </div>
                       </div>
                       {/* 右侧商品网格 */}
                       <div className="flex-1">
                         <div className="grid grid-cols-4">
                           {filteredProducts
-                            .filter((product) => product.category === categoryNum)
-                            // .map((product, productIndex) => {
-                            //   const uniqueIndex = `${categoryNum}-${productIndex}`;
+                            .filter((product) => product.category === category)
                             .map((product) => {
                               const uniqueIndex = product.id;
                               return (
@@ -596,9 +518,9 @@ export default function NewbieTraining() {
                                 >
                                   <div
                                     className="text-xs text-center mt-1 text-gray-600 truncate w-full"
-                                    title={`${product.brandName} ${product.name} ${product.spec}`}
+                                    title={`${product.brandName} ${product.skuName} ${product.spec}`}
                                   >
-                                    {product.name}
+                                    {product.skuName}
                                   </div>
                                   <img
                                     src={product.image}
@@ -643,7 +565,7 @@ export default function NewbieTraining() {
                         </div>
                       </div>
                     </div>
-                    {categoryNum < 2 && <div className="border-t border-gray-200 my-4" />}
+                    {category < 2 && <div className="border-t border-gray-200 my-4" />}
                   </React.Fragment>
                 ))}
               </div>
@@ -669,7 +591,7 @@ export default function NewbieTraining() {
         }
         width={800}
       >
-        <div className="p-4">
+        {/* <div className="p-4">
           <div className="grid grid-cols-4 gap-4">
             {trainingRecords.map((item, index) => (
               <div key={index} className="flex items-center gap-1 text-xs">
@@ -687,7 +609,7 @@ export default function NewbieTraining() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </Modal>
 
       {/* 提交 Modal */}
@@ -707,7 +629,7 @@ export default function NewbieTraining() {
         footer={
           <div className="flex justify-end gap-2">
             <Button onClick={() => setIsSubmitModalVisible(false)}>取消</Button>
-            <Button type="primary" onClick={submitNewbieTrainingRecord}>
+            <Button type="primary" onClick={handleSubmit}>
               确认
             </Button>
           </div>
@@ -723,10 +645,7 @@ export default function NewbieTraining() {
                   <div key={index} className="flex justify-between items-center">
                     <div className="text-sm">
                       {(() => {
-                        const product = products.find((p) => p.id === index);
-                        return product
-                          ? `${product.brandName} ${product.name} ${product.spec}`
-                          : '';
+                        return '显示选择的商品信息';
                       })()}
                     </div>
                     <div className="text-sm">X{quantity}</div>
