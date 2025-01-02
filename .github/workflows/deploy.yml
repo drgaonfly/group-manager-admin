@@ -13,7 +13,7 @@ jobs:
           username: root
           password: ${{ secrets.PASSWORD }}
           port: 22
-          script: cd /www/wwwroot/mev-bot-admin.2025fc.xyz/mev-bot-admin && git pull --rebase origin main && /www/server/nodejs/v20.16.0/bin/pnpm install && git checkout -f . && if [ -f .user.ini ]; then sudo chattr -i .user.ini && sudo rm -f .user.ini && echo ".user.ini 已被成功删除。"; else echo ".user.ini 文件不存在，无需删除。"; fi && npm run build
+          script: cd /www/wwwroot/mev-bot-admin.2025fc.xyz/mev-bot-admin && git pull --rebase origin main && /www/server/nodejs/v20.16.0/bin/pnpm install && git checkout -f . && npm run build
 
       # - name: executing remote ssh commands using password
       #   uses: appleboy/ssh-action@v1.0.3
