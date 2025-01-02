@@ -147,6 +147,11 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'inviteCode' }),
+      dataIndex: 'inviteCode',
+      copyable: true,
+    },
+    {
       title: intl.formatMessage({ id: 'proxy.employee' }),
       dataIndex: ['proxy', 'name'],
     },

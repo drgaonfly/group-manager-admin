@@ -16,7 +16,7 @@ const AnswerSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
     <ProFormSelect
       rules={[{ required: true }]}
       options={answer.map((answer: any) => ({
-        label: answer.name,
+        label: answer.brandName,
         value: answer._id,
       }))}
       width="md"

@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { EditableProTable, ModalForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
+import AnswerSelect from '@/components/AnswerSelect';
+// import { render } from '@testing-library/react';
 
 type menuItem = {
   _id: string;
+  answer?: string;
 };
 
 export type FormValueType = Partial<API.ItemData>;
@@ -14,7 +17,7 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    menus?: any;
+    correctAnswers?: any;
     user?: any;
   } & Partial<API.ItemData>;
 };
@@ -22,16 +25,20 @@ export type UpdateFormProps = {
 const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
-  const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
+  const [correctAnswers, setmenu] = useState<menuItem[]>(values?.correctAnswers || []);
   console.log('values', values);
+
   const columns = [
     {
-      title: intl.formatMessage({ id: 'correctAnswers' }),
-      hideInSearch: false,
-      width: 200,
+      title: intl.formatMessage({ id: 'answer', defaultMessage: '答案' }),
+      dataIndex: 'answer',
+      renderFormItem: () => <AnswerSelect />,
+      render: (answer: { brandName: string }) => {
+        return answer ? answer.brandName : '无'; // 显示 brandName 或者 '无'
+      },
     },
     {
-      title: intl.formatMessage({ id: 'count' }),
+      title: intl.formatMessage({ id: 'count', defaultMessage: '数量' }),
       dataIndex: 'count',
       hideInSearch: false,
       copyable: true,
@@ -52,6 +59,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       ],
     },
   ];
+
   return (
     <ModalForm
       title={intl.formatMessage({ id: 'configure', defaultMessage: 'Configure' })}
@@ -66,7 +74,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
         await onSubmit({
           ...values,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          menus: menus.map(({ _id, ...rest }) => rest),
+          correctAnswers: correctAnswers.map(({ _id, ...rest }) => rest),
         });
       }}
       initialValues={{ ...values }}
@@ -77,8 +85,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           headerTitle={intl.formatMessage({ id: 'correctAnswers' })}
           // @ts-ignore
           columns={columns}
-          value={menus}
-          name="menus"
+          value={correctAnswers}
+          name="correctAnswers"
           onChange={(value: readonly menuItem[]) => setmenu([...value])}
           editable={{
             type: 'multiple',
@@ -88,19 +96,10 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             position: 'bottom',
             record: () => ({
               _id: Date.now().toString(),
-              months: 0,
-              price: 0,
-              originalPrice: 0,
-              isOnline: false,
-              isCarSeat: false,
-              isExclusive: false,
-              exclusivePrice: 0,
-              exclusiveOriginalPrice: 0,
-              seatCount: 0,
-              user: values.user,
-              token: values.token,
-              name: values.name,
-              userName: values.userName,
+              menuName: '',
+              url: '',
+              count: 1,
+              answer: '',
             }),
           }}
         />

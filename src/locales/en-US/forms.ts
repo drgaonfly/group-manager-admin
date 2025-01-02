@@ -141,4 +141,5 @@ export default {
   'menu.proxies': 'proxy management',
   'proxy.employee': 'proxy employee',
   'platforms.detail': 'detail',
+  inviteCode: 'Invite Code',
 };

@@ -149,4 +149,5 @@ export default {
   'menu.employees': '员工管理',
   'proxy.employee': '代理用户',
   'platforms.detail': '详情',
+  inviteCode: '邀请码',
 };
