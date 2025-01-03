@@ -1,5 +1,16 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { Layout, Button, Input, Radio, Row, Col, InputNumber, Modal, message } from 'antd';
+import {
+  Layout,
+  Button,
+  Input,
+  Radio,
+  Row,
+  Col,
+  InputNumber,
+  Modal,
+  message,
+  Progress,
+} from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import {
   ExclamationCircleOutlined,
@@ -315,14 +326,41 @@ export default function NewbieTraining() {
     return [...new Set(answers.map((product) => product.rowNumber))].sort();
   }, [answers]);
 
+  // 在组件内添加计算进度的函数
+  const calculateProgress = useMemo(() => {
+    if (!allTopics || allTopics.length === 0) return 0;
+
+    const completedTopics = allTopics.filter(
+      (topic) => topic.status === 'success' || topic.status === 'fail',
+    ).length;
+
+    return Math.round((completedTopics / allTopics.length) * 100);
+  }, [allTopics]);
+
   return (
     <>
       <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
         <div className="flex items-center justify-between">
           <div className="text-xl font-medium font-bold">新手训练</div>
-          <Button className="text-sm rounded-md px-2 py-1" onClick={() => setIsModalVisible(true)}>
-            答题概况
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" style={{ width: '300px' }}>
+              <Progress
+                percent={calculateProgress}
+                size="small"
+                format={(percent) => `${percent}%`}
+                strokeColor={{
+                  '0%': '#108ee9',
+                  '100%': '#87d068',
+                }}
+              />
+            </div>
+            <Button
+              className="text-sm rounded-md px-2 py-1"
+              onClick={() => setIsModalVisible(true)}
+            >
+              答题概况
+            </Button>
+          </div>
         </div>
       </div>
 
