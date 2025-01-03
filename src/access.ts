@@ -65,23 +65,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/data-permissions', 'GET')),
 
-    canCreateBot:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bots', 'POST')),
-    canDeleteBot:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bots', 'DELETE')),
-    canUpdateBot:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bots/:id', 'PUT')),
-    canGetBot: currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bots', 'GET')),
-
-    canCreateBill:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bills', 'POST')),
-    canDeleteBill:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bills', 'DELETE')),
-    canUpdateBill:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bills/:id', 'PUT')),
-    canGetBill:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bills', 'GET')),
-
     canCreatePermissionGroup:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/permission-groups', 'POST')),
@@ -134,5 +117,35 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees/:id', 'PUT')),
     canGetEmployee:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees', 'GET')),
+
+    //Topic权限
+    canCreateTopic:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/topics', 'POST')),
+    canDeleteTopic:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/topics', 'DELETE')),
+    canUpdateTopic:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/topics/:id', 'PUT')),
+    canGetTopic:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/topics', 'GET')),
+
+    //Record权限
+    canCreateRecord:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/records', 'POST')),
+    canDeleteRecord:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/records', 'DELETE')),
+    canUpdateRecord:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/records/:id', 'PUT')),
+    canGetRecord:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/records', 'GET')),
+
+    //Answers权限
+    canCreateAnswers:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'POST')),
+    canDeleteAnswers:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'DELETE')),
+    canUpdateAnswers:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers/:id', 'PUT')),
+    canGetAnswers:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'GET')),
   };
 }

@@ -150,4 +150,9 @@ export default {
   'proxy.employee': '代理用户',
   'platforms.detail': '详情',
   inviteCode: '邀请码',
+  'menu.list.proxies': '代理列表',
+  'menu.list.employees': '员工列表',
+  'menu.代理管理': '代理管理',
+  'menu.员工管理': '员工管理',
+  answer: '答案',
 };
