@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Layout,
   Button,
@@ -21,8 +21,9 @@ import {
 } from '@ant-design/icons';
 import { queryList, addItem } from '@/services/ant-design-pro/api';
 import { history } from '@umijs/max';
+import VideoPlayer from './components/VideoPlayer';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 // 定义 answer 的类型
 interface Answer {
@@ -35,13 +36,8 @@ interface Answer {
 }
 
 export default function NewbieTraining() {
-  // 创建一个用于存储视频元素的引用
-  const videoRef = useRef<HTMLVideoElement>(null); // 存储视频元素的引用
-  const [playbackRate, setPlaybackRate] = useState(1); // 视频播放速度的状态
-  const [activeVideo, setActiveVideo] = useState(1); // 当前激活的视频的状态
-
-  const [quantities, setQuantities] = useState<Record<string, number>>({}); // 商品数量的状态
-  const [selectedStatus, setSelectedStatus] = useState<number>(1); // 当前选中的状态的状态
+  // 移除不需要的视频相关状态
+  const [selectedStatus, setSelectedStatus] = useState<number>(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -52,11 +48,10 @@ export default function NewbieTraining() {
   // const [expectedCount, setExpectedCount] = useState<number>();
   const [issue, setIssue] = useState<string>();
   const [topicNumber, setTopicNumber] = useState<string>('');
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [allTopics, setAllTopics] = useState<
     Array<{
-      topic: {
-        topicNumber: string;
-      };
+      topic: { topicNumber: string };
       status: string;
     }>
   >([]);
@@ -170,136 +165,22 @@ export default function NewbieTraining() {
   useEffect(() => {
     const initPage = async () => {
       await fetchNewbieTraining();
-      // 获取数据后尝试播放视频
-      if (videoRef.current) {
-        videoRef.current.muted = true;
-        videoRef.current.playbackRate = playbackRate;
-        try {
-          await videoRef.current.play();
-          console.log('初始视频自动播放成功');
-        } catch (error) {
-          console.warn('初始视频自动播放失败:', error);
-        }
-      }
     };
 
     initPage();
   }, []); // 仅在组件挂载时执行
 
-  // 当视频源改变时自动播放
-  useEffect(() => {
-    if (videoRef.current && (video1 || video2)) {
-      videoRef.current.muted = true;
-      videoRef.current.playbackRate = playbackRate;
-
-      const playVideo = async () => {
-        try {
-          await videoRef.current?.play();
-          console.log('视频切换后自动播放成功');
-        } catch (error) {
-          console.warn('视频切换后自动播放失败:', error);
-          // 如果播放失败，确保视频是静音的并重试
-          if (videoRef.current) {
-            videoRef.current.muted = true;
-            videoRef.current.play();
-          }
-        }
-      };
-
-      playVideo();
-    }
-  }, [activeVideo, video1, video2, playbackRate]); // 当视频源或播放速率改变时重新触发
-
-  // 视频控制函数
-  const handleFullScreen = () => {
-    if (videoRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        videoRef.current.requestFullscreen();
-      }
-    }
-  };
-
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-      } else {
-        videoRef.current.pause();
-      }
-    }
-  };
-
-  const handleSpeedChange = (change: number) => {
-    if (videoRef.current) {
-      // 获取视频当前的播放速度
-      const currentRate = videoRef.current.playbackRate;
-      // 计算新的播放速度，并限制在合理范围内
-      const newRate = Math.max(0.25, Math.min(2, currentRate + change));
-      videoRef.current.playbackRate = newRate;
-      setPlaybackRate(newRate);
-    }
-  };
-
-  // 监听视频播放速度变化
-  useEffect(() => {
-    const video = videoRef.current;
-    const handleRateChange = () => {
-      if (video) {
-        setPlaybackRate(video.playbackRate);
-      }
-    };
-
-    if (video) {
-      video.addEventListener('ratechange', handleRateChange);
-    }
-
-    return () => {
-      if (video) {
-        video.removeEventListener('ratechange', handleRateChange);
-      }
-    };
-  }, []);
-
-  // 键盘事件处理
+  // 键盘事件处理 - 只保留 ENTER 键的处理
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      switch (e.key.toUpperCase()) {
-        case 'ENTER':
-          // 处理提交逻辑
-          break;
-        case 'W':
-          handleSpeedChange(-0.25);
-          break;
-        case 'S':
-          handlePlayPause();
-          break;
-        case 'E':
-          handleSpeedChange(0.25);
-          break;
+      if (e.key.toUpperCase() === 'ENTER') {
+        // 处理提交逻辑
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [playbackRate]);
-
-  // 视频切换处理函数
-  const handleVideoSwitch = (videoNum: number) => {
-    setActiveVideo(videoNum);
-    // 切换视频时重置播放速度
-    setPlaybackRate(1);
-    if (videoRef.current) {
-      videoRef.current.play().catch((error) => {
-        console.log('切换视频后自动播放失败:', error);
-        if (videoRef.current) {
-          videoRef.current.muted = true;
-          videoRef.current.play();
-        }
-      });
-    }
-  };
+  }, []);
 
   // 处理数量变化的函数
   const handleQuantityChange = (uniqueIndex: string, change: number) => {
@@ -367,171 +248,74 @@ export default function NewbieTraining() {
       <Row gutter={[5, 5]}>
         {/* 左侧区域 (3份) */}
         <Col xs={24} sm={24} md={14} lg={14} xl={14}>
-          <Sider width="100%" style={{ background: '#fff' }}>
-            {/* 顶部控制栏 */}
-            <Header
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '8px 16px',
-                borderBottom: '1px solid #e8e8e8',
-                background: '#fff',
-                height: 'auto',
-                minHeight: '64px',
-              }}
-            >
-              <div className="flex xl:flex-row flex-col justify-between w-full">
-                {/* 左侧视频切换和信息 */}
-                <div className="flex items-center gap-2 text-sm">
-                  <div
-                    className={`cursor-pointer ${
-                      activeVideo === 1 ? 'text-blue-500' : 'text-gray-500'
-                    }`}
-                    onClick={() => video1 && handleVideoSwitch(1)}
-                    style={{
-                      padding: '8px',
-                      cursor: video1 ? 'pointer' : 'not-allowed',
-                      opacity: video1 ? 1 : 0.5,
-                    }}
-                  >
-                    视频一{!video1 && '(无)'}
-                  </div>
-                  <div
-                    className={`cursor-pointer ${
-                      activeVideo === 2 ? 'text-blue-500' : 'text-gray-500'
-                    }`}
-                    onClick={() => video2 && handleVideoSwitch(2)}
-                    style={{
-                      padding: '8px',
-                      cursor: video2 ? 'pointer' : 'not-allowed',
-                      opacity: video2 ? 1 : 0.5,
-                    }}
-                  >
-                    视频二{!video2 && '(无)'}
-                  </div>
-                  {/* <div className="text-gray-500 text-md">
-                    {expectedCount ? `预计到达${expectedCount}单` : ''}
-                  </div> */}
-                  {issue && <div className="text-gray-500 text-md">问题：{issue}</div>}
-                  <div
-                    className="text-xs rounded-md px-2 py-1"
-                    style={{
-                      backgroundColor: '#f6ffed',
-                      color: 'green',
-                      border: '1px solid green',
-                    }}
-                  >
-                    正常运单
-                  </div>
-                </div>
+          <Sider width="100%" style={{ background: '#fff', padding: '10px' }}>
+            <VideoPlayer video1={video1} video2={video2} issue={issue} />
 
-                {/* 右侧按钮组 */}
-                <div className="flex gap-2 text-sm">
-                  <div className="sm:flex flex-col sm:flex-row gap-2 text-sm">
-                    <div className="flex gap-2">
-                      <Button onClick={handleFullScreen} className="px-1 py-1 text-sm">
-                        全屏
-                      </Button>
-                      <Button
-                        className="px-1 py-1 text-sm text-white rounded-md"
-                        style={{ backgroundColor: '#1890ff' }}
-                        onClick={() => setIsSubmitModalVisible(true)}
-                      >
-                        提交(ENTER)
-                      </Button>
-                      <Button
-                        onClick={() => handleSpeedChange(-0.25)}
-                        className="px-1 py-1 text-sm"
-                      >
-                        减速(W)
-                      </Button>
-                    </div>
-                    <div className="flex gap-2 mt-2 sm:mt-0">
-                      <Button onClick={handlePlayPause} className="px-1 py-1 text-sm">
-                        暂停/播放(S)
-                      </Button>
-                      <Button onClick={() => handleSpeedChange(0.25)} className="px-1 py-1 text-sm">
-                        加速(E)
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Header>
+            {/* 视频下方的选项和提交按钮 */}
+            <div className="flex justify-between items-center mt-4">
+              <Radio.Group
+                name="videoStatus"
+                className="xl:space-x-4 space-y-4 xl:space-y-0"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <Radio value={1}>无异常(1)</Radio>
+                <Radio value={2}>非友好操作(2)</Radio>
+                <Radio value={3}>识别异常(3)</Radio>
+                <Radio value={4}>视频错误、画面丢失(4)</Radio>
+              </Radio.Group>
 
-            {/* 左侧视频区域 */}
-            <Content style={{ padding: '16px' }}>
-              <div className="relative bg-black aspect-video">
-                <video
-                  ref={videoRef}
-                  className="w-full h-full"
-                  controls
-                  autoPlay
-                  key={activeVideo === 1 ? video1 : video2}
-                >
-                  <source src={activeVideo === 1 ? video1 : video2} type="video/mp4" />
-                </video>
-                <div className="absolute top-2 right-2 text-white">{playbackRate.toFixed(1)}x</div>
-              </div>
+              <Button
+                type="primary"
+                onClick={() => setIsSubmitModalVisible(true)}
+                disabled={selectedStatus === 1 && Object.values(quantities).every((q) => q === 0)}
+              >
+                提交
+              </Button>
+            </div>
 
-              {/* 视频下方的选项 */}
-              <div className="flex gap-4 mt-4">
-                <Radio.Group
-                  name="videoStatus"
-                  className="xl:space-x-4 space-y-4 xl:space-y-0"
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                >
-                  <Radio value={1}>无异常(1)</Radio>
-                  <Radio value={2}>非友好操作(2)</Radio>
-                  <Radio value={3}>识别异常(3)</Radio>
-                  <Radio value={4}>视频错误、画面丢失(4)</Radio>
-                </Radio.Group>
-              </div>
+            <hr className="my-4" />
 
-              <hr />
-
-              {/* 只在选择"无异常"时显示商品列表 */}
-              {selectedStatus === 1 && (
-                <div>
-                  {Object.entries(quantities).map(
-                    ([index, quantity]) =>
-                      quantity > 0 && (
-                        <div key={index} className="flex items-center justify-between p-2 border-b">
-                          <div className="flex-1">
-                            <div className="text-sm">
-                              {(() => {
-                                const product = answers.find((p: any) => p.id === index);
-                                return product
-                                  ? `${product.brandName} ${product.skuName} ${product.spec}`
-                                  : '';
-                              })()}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <InputNumber
-                              value={quantity}
-                              onChange={(value) => {
-                                const newValue = value ?? 0;
-                                const change = newValue - quantity;
-                                handleQuantityChange(index, change);
-                              }}
-                              min={0}
-                              className="w-16"
-                            />
-                            <div
-                              onClick={() => handleQuantityChange(index, -quantity)}
-                              className="text-blue-500 hover:text-blue-700 cursor-pointer"
-                            >
-                              删除
-                            </div>
+            {/* 只在选择"无异常"时显示商品列表 */}
+            {selectedStatus === 1 && (
+              <div>
+                {Object.entries(quantities).map(
+                  ([index, quantity]) =>
+                    quantity > 0 && (
+                      <div key={index} className="flex items-center justify-between p-2 border-b">
+                        <div className="flex-1">
+                          <div className="text-sm">
+                            {(() => {
+                              const product = answers.find((p: any) => p.id === index);
+                              return product
+                                ? `${product.brandName} ${product.skuName} ${product.spec}`
+                                : '';
+                            })()}
                           </div>
                         </div>
-                      ),
-                  )}
-                </div>
-              )}
-            </Content>
+                        <div className="flex items-center gap-4">
+                          <InputNumber
+                            value={quantity}
+                            onChange={(value) => {
+                              const newValue = value ?? 0;
+                              const change = newValue - quantity;
+                              handleQuantityChange(index, change);
+                            }}
+                            min={0}
+                            className="w-16"
+                          />
+                          <div
+                            onClick={() => handleQuantityChange(index, -quantity)}
+                            className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                          >
+                            删除
+                          </div>
+                        </div>
+                      </div>
+                    ),
+                )}
+              </div>
+            )}
           </Sider>
         </Col>
 
