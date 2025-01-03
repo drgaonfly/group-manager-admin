@@ -125,9 +125,16 @@ export default [
     component: './Employee',
   },
   {
+    path: '/instructions',
+    name: 'list.instructions',
+    icon: 'BookOutlined',
+    component: './Instruction',
+  },
+  {
     path: '/withdraw',
     name: 'list.withdraw',
     icon: 'WalletOutlined',
     component: './withdraw',
-  },
+
+  }
 ];

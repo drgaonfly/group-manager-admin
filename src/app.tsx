@@ -1,3 +1,4 @@
+import 'react-quill/dist/quill.snow.css';
 import { Footer, SelectLang, AvatarDropdown, AvatarName } from '@/components';
 import {
   DatabaseOutlined,

@@ -98,6 +98,7 @@ export default {
 
   'menu.list.answers': 'Answer management',
   'menu.题目管理': 'Answer management',
+  'menu.使用说明': 'Instructions',
   'answers.brandName': 'Brand Name',
   'answers.skuName': 'Product Name',
   'answers.image': 'Package Image',
@@ -154,4 +155,7 @@ export default {
   createdAt: 'Created At',
   'menu.list.topic': 'Topic',
   'menu.list.record': 'Record',
+  'menu.instructions': 'Instructions',
+  'instruction.title': 'Title',
+  'instruction.content': 'Content',
 };
