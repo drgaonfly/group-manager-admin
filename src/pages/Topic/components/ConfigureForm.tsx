@@ -8,6 +8,7 @@ import AnswerSelect from '@/components/AnswerSelect';
 type menuItem = {
   _id: string;
   answer?: string;
+  skuName?: string;
 };
 
 export type FormValueType = Partial<API.ItemData>;
@@ -22,6 +23,11 @@ export type UpdateFormProps = {
   } & Partial<API.ItemData>;
 };
 
+interface Answer {
+  brandName: string;
+  skuName: string;
+}
+
 const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
@@ -33,8 +39,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       title: intl.formatMessage({ id: 'answer', defaultMessage: '答案' }),
       dataIndex: 'answer',
       renderFormItem: () => <AnswerSelect />,
-      render: (answer: { brandName: string }) => {
-        return answer ? answer.brandName : '无'; // 显示 brandName 或者 '无'
+      render: (answer: Answer) => {
+        return answer ? answer.skuName : '无';
       },
     },
     {

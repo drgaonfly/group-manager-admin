@@ -159,4 +159,10 @@ export default {
   'menu.instructions': '使用说明',
   'instruction.title': '标题',
   'instruction.content': '内容',
+  skuName: '商品名称',
+  spec: '规格',
+  sn: '条形码',
+  topicCount: '题目数量',
+  'platform.online': '在线',
+  'platform.offline': '离线',
 };

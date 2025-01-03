@@ -158,4 +158,8 @@ export default {
   'menu.instructions': 'Instructions',
   'instruction.title': 'Title',
   'instruction.content': 'Content',
+  skuName: 'product name',
+  spec: 'spec',
+  sn: 'Sn',
+  topicCount: 'topic count',
 };

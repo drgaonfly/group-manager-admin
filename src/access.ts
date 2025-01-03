@@ -78,15 +78,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/permission-groups', 'GET')),
 
-    canCreateResume:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/resumes', 'POST')),
-    canDeleteResume:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/resumes', 'DELETE')),
-    canUpdateResume:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/resumes/:id', 'PUT')),
-    canGetResume:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/resumes', 'GET')),
-
     canCreateWithdrawal:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals', 'POST')),
     canDeleteWithdrawal:
@@ -139,25 +130,25 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/records', 'GET')),
 
     //Answers权限
-    canCreateAnswers:
+    canCreateAnswer:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'POST')),
-    canDeleteAnswers:
+    canDeleteAnswer:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'DELETE')),
-    canUpdateAnswers:
+    canUpdateAnswer:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers/:id', 'PUT')),
-    canGetAnswers:
+    canGetAnswer:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'GET')),
 
     // Instructions权限
-    canCreateInstructions:
+    canCreateInstruction:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'POST')),
-    canDeleteInstructions:
+    canDeleteInstruction:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'DELETE')),
-    canUpdateInstructions:
+    canUpdateInstruction:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/instructions/:id', 'PUT')),
-    canGetInstructions:
+    canGetInstruction:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'GET')),
   };
 }
