@@ -130,4 +130,11 @@ export default [
     icon: 'BookOutlined',
     component: './Instruction',
   },
+  {
+    path: '/withdraw',
+    name: 'list.withdraw',
+    icon: 'WalletOutlined',
+    component: './withdraw',
+
+  }
 ];

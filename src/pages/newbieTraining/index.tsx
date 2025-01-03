@@ -1,8 +1,15 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Layout, Button, Input, Radio, Row, Col, InputNumber, Modal, message } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleOutlined,
+  QuestionCircleOutlined,
+  PlayCircleOutlined,
+  TrophyOutlined,
+  WalletOutlined,
+} from '@ant-design/icons';
 import { queryList, addItem } from '@/services/ant-design-pro/api';
+import { history } from '@umijs/max';
 
 const { Header, Content, Sider } = Layout;
 
@@ -29,7 +36,7 @@ export default function NewbieTraining() {
   const [video2, setVideo2] = useState<string>('');
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [topicId, setTopicId] = useState<string>('');
-  const [expectedCount, setExpectedCount] = useState<number>();
+  // const [expectedCount, setExpectedCount] = useState<number>();
   const [issue, setIssue] = useState<string>();
   const [topicNumber, setTopicNumber] = useState<string>('');
 
@@ -50,7 +57,7 @@ export default function NewbieTraining() {
         setTopicId(currentTopic._id);
         setVideo1(currentTopic.video1 || '');
         setVideo2(currentTopic.video2 || '');
-        setExpectedCount(currentTopic.expectedCount);
+        // setExpectedCount(currentTopic.expectedCount);
         setTopicNumber(currentTopic.topicNumber || '');
         setIssue(currentTopic.issue);
         setAnswers(
@@ -107,26 +114,24 @@ export default function NewbieTraining() {
         message.success('提交成功');
         setIsSubmitModalVisible(false);
 
-        const { currentTopic } = response.data as any;
-
-        // 分别更新各个状态
-        setTopicId(currentTopic._id);
-        setVideo1(currentTopic.video1 || '');
-        setVideo2(currentTopic.video2 || '');
-        setExpectedCount(currentTopic.expectedCount);
-        setIssue(currentTopic.issue);
-        setAnswers(currentTopic.answers || []);
-
         // 重置状态
         setQuantities({});
         setSelectedStatus(1);
 
-        // 切换到新题目的第一个有效视频
-        if (currentTopic.video1) {
-          setActiveVideo(1);
-        } else if (currentTopic.video2) {
-          setActiveVideo(2);
-        }
+        // 获取新题目数据
+        await fetchNewbieTraining();
+
+        // // 使用返回的记录ID获取记录详情
+        // if (response.data?.recordId) {
+        //   const recordResponse = await queryList(`/records/${response.data.recordId}`);
+        //   if (recordResponse?.success) {
+        //     setAnswerHistory([{
+        //       topicNumber: recordResponse.data.topic?.topicNumber || '',
+        //       status: recordResponse.data.status || 'pending',
+        //       createdAt: recordResponse.data.createdAt || '',
+        //     }, ...answerHistory]);
+        //   }
+        // }
       } else {
         message.error(response?.message || '提交失败');
       }
@@ -213,7 +218,7 @@ export default function NewbieTraining() {
   };
 
   // 监听视频播放速度变化
-  React.useEffect(() => {
+  useEffect(() => {
     const video = videoRef.current;
     const handleRateChange = () => {
       if (video) {
@@ -352,9 +357,9 @@ export default function NewbieTraining() {
                   >
                     视频二{!video2 && '(无)'}
                   </div>
-                  <div className="text-gray-500 text-md">
+                  {/* <div className="text-gray-500 text-md">
                     {expectedCount ? `预计到达${expectedCount}单` : ''}
-                  </div>
+                  </div> */}
                   {issue && <div className="text-gray-500 text-md">问题：{issue}</div>}
                   <div
                     className="text-xs rounded-md px-2 py-1"
@@ -618,7 +623,7 @@ export default function NewbieTraining() {
                   ●
                 </span>
                 <span className="text-gray-600 hover:text-blue-500 cursor-pointer truncate">
-                  {item.topicNumber || ''}
+                  {item.topicNumber}
                 </span>
               </div>
             ))}
@@ -673,6 +678,40 @@ export default function NewbieTraining() {
           </div>
         ) : null}
       </Modal>
+
+      {/* 移动端底部导航栏 */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
+        <div className="grid grid-cols-4 py-2">
+          <div
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => history.push('/guide')}
+          >
+            <QuestionCircleOutlined className="text-xl" />
+            <span className="text-xs mt-1">使用说明</span>
+          </div>
+          <div
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => history.push('/newbie-training')}
+          >
+            <PlayCircleOutlined className="text-xl" />
+            <span className="text-xs mt-1">测试</span>
+          </div>
+          <div
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => history.push('/exam')}
+          >
+            <TrophyOutlined className="text-xl" />
+            <span className="text-xs mt-1">考场</span>
+          </div>
+          <div
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => history.push('/withdraw')}
+          >
+            <WalletOutlined className="text-xl" />
+            <span className="text-xs mt-1">提现</span>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

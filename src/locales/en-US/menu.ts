@@ -89,4 +89,6 @@ export default {
   'menu.material-categories': 'Material Categories',
   'menu.auth.data-permissions': 'Data Permissions',
   'menu.list.instruction': 'Instruction',
+  'menu.list.withdraw': 'Withdraw',
+  'menu.withdraw': 'Withdraw',
 };
