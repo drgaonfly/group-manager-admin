@@ -66,7 +66,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
         <ProFormTreeSelect
           name="permission"
-          rules={[{ required: false }]}
+          rules={[{ required: true }]}
           width="md"
           label={intl.formatMessage({ id: 'permission_choose' })}
           allowClear
