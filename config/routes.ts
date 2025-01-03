@@ -124,4 +124,10 @@ export default [
     icon: 'UsergroupAddOutlined',
     component: './Employee',
   },
+  {
+    path: '/instructions',
+    name: 'list.instructions',
+    icon: 'BookOutlined',
+    component: './Instruction',
+  },
 ];

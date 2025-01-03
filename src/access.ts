@@ -147,5 +147,17 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers/:id', 'PUT')),
     canGetAnswers:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/answers', 'GET')),
+
+    // Instructions权限
+    canCreateInstructions:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'POST')),
+    canDeleteInstructions:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'DELETE')),
+    canUpdateInstructions:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/instructions/:id', 'PUT')),
+    canGetInstructions:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'GET')),
   };
 }
