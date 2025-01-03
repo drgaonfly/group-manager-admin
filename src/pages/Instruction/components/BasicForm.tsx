@@ -13,12 +13,10 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const [form] = Form.useForm();
   //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
 
   return (
     <ProForm
-      form={form}
       initialValues={{
         ...values,
       }}
