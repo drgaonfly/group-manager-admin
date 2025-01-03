@@ -113,6 +113,18 @@ export default function NewbieTraining() {
 
         // 获取新题目数据
         await fetchNewbieTraining();
+
+        // // 使用返回的记录ID获取记录详情
+        // if (response.data?.recordId) {
+        //   const recordResponse = await queryList(`/records/${response.data.recordId}`);
+        //   if (recordResponse?.success) {
+        //     setAnswerHistory([{
+        //       topicNumber: recordResponse.data.topic?.topicNumber || '',
+        //       status: recordResponse.data.status || 'pending',
+        //       createdAt: recordResponse.data.createdAt || '',
+        //     }, ...answerHistory]);
+        //   }
+        // }
       } else {
         message.error(response?.message || '提交失败');
       }
@@ -604,7 +616,7 @@ export default function NewbieTraining() {
                   ●
                 </span>
                 <span className="text-gray-600 hover:text-blue-500 cursor-pointer truncate">
-                  {item.topicNumber || ''}
+                  {item.topicNumber}
                 </span>
               </div>
             ))}
