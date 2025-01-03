@@ -321,4 +321,11 @@ export default {
   'app.preview.down.block': '下载此页面到本地项目',
   'app.welcome.link.fetch-blocks': '获取全部区块',
   'app.welcome.link.block-list': '基于 block 开发，快速构建标准页面',
+  'issue.noIssue': '无问题',
+  'issue.unfriendly': '不友好操作',
+  'issue.recognitionError': '识别错误',
+  'issue.videoError': '视频错误/帧丢失',
+  'status.pending': '待处理',
+  'status.success': '成功',
+  'status.fail': '失败',
 };

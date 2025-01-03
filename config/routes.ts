@@ -127,7 +127,7 @@ export default [
   {
     path: '/instructions',
     name: 'list.instructions',
-    icon: 'BookOutlined',
+    icon: 'QuestionCircleOutlined',
     component: './Instruction',
   },
   {
@@ -135,6 +135,5 @@ export default [
     name: 'list.withdraw',
     icon: 'WalletOutlined',
     component: './withdraw',
-
-  }
+  },
 ];

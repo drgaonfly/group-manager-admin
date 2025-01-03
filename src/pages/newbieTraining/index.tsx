@@ -20,15 +20,17 @@ interface Answer {
   brandName: string | null;
   spec: string | null;
   image: string;
-  category?: number;
+  rowNumber?: number;
 }
 
 export default function NewbieTraining() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [playbackRate, setPlaybackRate] = useState(1);
-  const [activeVideo, setActiveVideo] = useState(1);
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [selectedStatus, setSelectedStatus] = useState<number>(1);
+  // 创建一个用于存储视频元素的引用
+  const videoRef = useRef<HTMLVideoElement>(null); // 存储视频元素的引用
+  const [playbackRate, setPlaybackRate] = useState(1); // 视频播放速度的状态
+  const [activeVideo, setActiveVideo] = useState(1); // 当前激活的视频的状态
+
+  const [quantities, setQuantities] = useState<Record<string, number>>({}); // 商品数量的状态
+  const [selectedStatus, setSelectedStatus] = useState<number>(1); // 当前选中的状态的状态
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -67,7 +69,7 @@ export default function NewbieTraining() {
             brandName: answer.brandName,
             spec: answer.spec,
             image: answer.image,
-            category: 1,
+            rowNumber: answer.rowNumber,
           })),
         );
       }
@@ -298,7 +300,7 @@ export default function NewbieTraining() {
   // 获取所有不重复的分类
   const categories = useMemo(() => {
     if (!answers) return [];
-    return [...new Set(answers.map((product) => product.category))].sort();
+    return [...new Set(answers.map((product) => product.rowNumber))].sort();
   }, [answers]);
 
   return (
@@ -520,7 +522,7 @@ export default function NewbieTraining() {
                       <div className="flex-1">
                         <div className="grid grid-cols-4">
                           {filteredProducts
-                            .filter((product) => product.category === category)
+                            .filter((product) => product.rowNumber === category)
                             .map((product) => {
                               const uniqueIndex = product.id;
                               return (
@@ -684,7 +686,7 @@ export default function NewbieTraining() {
         <div className="grid grid-cols-4 py-2">
           <div
             className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/guide')}
+            onClick={() => history.push('/instructions')}
           >
             <QuestionCircleOutlined className="text-xl" />
             <span className="text-xs mt-1">使用说明</span>

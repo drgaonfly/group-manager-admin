@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -211,106 +211,108 @@ const WithdrawPage: React.FC = () => {
     },
   ];
 
-  return (
-    <>
-      <PageContainer>
-        <Card style={{ marginBottom: 24 }}>
-          <Row gutter={24}>
-            <Col span={8}>
-              <Statistic title="可用余额" value={0.0} precision={2} suffix="元" />
-              <Button
-                type="primary"
-                style={{ marginTop: 16 }}
-                onClick={() => handleModalOpen(true)}
-              >
-                申请提现
-              </Button>
-            </Col>
-            <Col span={8}>
-              <Statistic title="不可用余额" value={0.0} precision={2} suffix="元" />
-            </Col>
-          </Row>
-        </Card>
+  const handleWithdrawClick = () => {
+    Modal.warning({
+      title: '无法申请提现',
+      content: '您的可用余额不足，暂时无法申请提现。',
+      okText: '知道了',
+    });
+  };
 
-        <ProTable<API.ItemData, API.PageParams>
-          headerTitle="提现记录"
-          actionRef={actionRef}
-          rowKey="_id"
-          search={{ labelWidth: 120 }}
-          request={async (params, sort, filter) => queryList('/withdraws', params, sort, filter)}
-          columns={columns}
-          rowSelection={
-            access.canSuperAdmin && {
-              onChange: (_, selectedRows) => {
-                setSelectedRows(selectedRows);
-              },
-            }
+  return (
+    <PageContainer>
+      <Card style={{ marginBottom: 24 }}>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Statistic title="可用余额" value={0.0} precision={2} suffix="元" />
+            <Button type="primary" style={{ marginTop: 16 }} onClick={handleWithdrawClick}>
+              申请提现
+            </Button>
+          </Col>
+          <Col span={8}>
+            <Statistic title="不可用余额" value={0.0} precision={2} suffix="元" />
+          </Col>
+        </Row>
+      </Card>
+
+      <ProTable<API.ItemData, API.PageParams>
+        headerTitle="提现记录"
+        actionRef={actionRef}
+        rowKey="_id"
+        search={{ labelWidth: 120 }}
+        request={async (params, sort, filter) => queryList('/withdraws', params, sort, filter)}
+        columns={columns}
+        rowSelection={
+          access.canSuperAdmin && {
+            onChange: (_, selectedRows) => {
+              setSelectedRows(selectedRows);
+            },
           }
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-                <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              </div>
+        }
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
+            </div>
+          }
+        >
+          {(access.canSuperAdmin || access.canDeleteMenu) && (
+            <DeleteButton
+              onOk={async () => {
+                await handleRemove(selectedRowsState?.map((item: any) => item._id!));
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              }}
+            />
+          )}
+        </FooterToolbar>
+      )}
+      {(access.canSuperAdmin || access.canCreateMenu) && (
+        <Create
+          open={createModalOpen}
+          onOpenChange={handleModalOpen}
+          onFinish={async (value) => {
+            const success = await handleAdd(value as API.ItemData);
+            if (success) {
+              handleModalOpen(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }
-          >
-            {(access.canSuperAdmin || access.canDeleteMenu) && (
-              <DeleteButton
-                onOk={async () => {
-                  await handleRemove(selectedRowsState?.map((item: any) => item._id!));
-                  setSelectedRows([]);
-                  actionRef.current?.reloadAndRest?.();
-                }}
-              />
-            )}
-          </FooterToolbar>
-        )}
-        {(access.canSuperAdmin || access.canCreateMenu) && (
-          <Create
-            open={createModalOpen}
-            onOpenChange={handleModalOpen}
-            onFinish={async (value) => {
-              const success = await handleAdd(value as API.ItemData);
-              if (success) {
-                handleModalOpen(false);
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
-          />
-        )}
-        {(access.canSuperAdmin || access.canUpdateMenu) && (
-          <Update
-            onSubmit={async (value) => {
-              const success = await handleUpdate(value);
-              if (success) {
-                handleUpdateModalOpen(false);
-                setCurrentRow(undefined);
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
-            onCancel={handleUpdateModalOpen}
-            updateModalOpen={updateModalOpen}
-            values={currentRow || {}}
-          />
-        )}
-        <Show
-          open={showDetail}
-          currentRow={currentRow as API.ItemData}
-          columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
-          onClose={() => {
-            setCurrentRow(undefined);
-            setShowDetail(false);
           }}
         />
-      </PageContainer>
-    </>
+      )}
+      {(access.canSuperAdmin || access.canUpdateMenu) && (
+        <Update
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalOpen(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+          onCancel={handleUpdateModalOpen}
+          updateModalOpen={updateModalOpen}
+          values={currentRow || {}}
+        />
+      )}
+      <Show
+        open={showDetail}
+        currentRow={currentRow as API.ItemData}
+        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+      />
+    </PageContainer>
   );
 };
 

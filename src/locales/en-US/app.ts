@@ -315,4 +315,11 @@ export default {
   'app.welcome.link.fetch-blocks': 'Get all block',
   'app.welcome.link.block-list': 'Quickly build standard, pages based on `block` development',
   'pages.comment.proxy': 'proxys',
+  'issue.noIssue': 'No Issue',
+  'issue.unfriendly': 'Unfriendly Operation',
+  'issue.recognitionError': 'Recognition Error',
+  'issue.videoError': 'Video Error/Frame Loss',
+  'status.pending': 'Pending',
+  'status.success': 'Success',
+  'status.fail': 'Failed',
 };

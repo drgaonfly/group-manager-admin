@@ -128,15 +128,26 @@ const TableList: React.FC = () => {
       dataIndex: 'issue',
       valueType: 'select',
       valueEnum: {
-        normal: { text: intl.formatMessage({ id: 'issue.normal', defaultMessage: 'Normal' }) },
-        unfriendly: {
-          text: intl.formatMessage({ id: 'issue.unfriendly', defaultMessage: 'Unfriendly' }),
+        'No Issue': {
+          text: intl.formatMessage({ id: 'issue.noIssue', defaultMessage: 'No Issue' }),
         },
-        recogError: {
-          text: intl.formatMessage({ id: 'issue.recogError', defaultMessage: 'Recognition Error' }),
+        'Unfriendly Operation': {
+          text: intl.formatMessage({
+            id: 'issue.unfriendly',
+            defaultMessage: 'Unfriendly Operation',
+          }),
         },
-        videoError: {
-          text: intl.formatMessage({ id: 'issue.videoError', defaultMessage: 'Video Error' }),
+        'Recognition Error': {
+          text: intl.formatMessage({
+            id: 'issue.recognitionError',
+            defaultMessage: 'Recognition Error',
+          }),
+        },
+        'Video Error/Frame Loss': {
+          text: intl.formatMessage({
+            id: 'issue.videoError',
+            defaultMessage: 'Video Error/Frame Loss',
+          }),
         },
       },
     },
@@ -148,7 +159,21 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'status',
-      hideInSearch: true,
+      valueType: 'select',
+      valueEnum: {
+        pending: {
+          text: intl.formatMessage({ id: 'status.pending', defaultMessage: 'Pending' }),
+          status: 'default',
+        },
+        success: {
+          text: intl.formatMessage({ id: 'status.success', defaultMessage: 'Success' }),
+          status: 'success',
+        },
+        fail: {
+          text: intl.formatMessage({ id: 'status.fail', defaultMessage: 'Failed' }),
+          status: 'error',
+        },
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
