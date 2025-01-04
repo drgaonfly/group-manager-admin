@@ -140,6 +140,6 @@ export default [
     path: '/examination-rooms',
     name: 'list.examination-rooms',
     icon: 'HomeOutlined',
-    component: './ExaminationRoom',
+    component: './newbieTraining',
   },
 ];
