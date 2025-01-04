@@ -224,9 +224,6 @@ export default function NewbieTraining() {
         <div className="flex items-center justify-between">
           <div className="text-xl font-medium font-bold">新手训练</div>
           <div className="flex items-center gap-2">
-            <div className="text-sm">
-              预计剩余 {allTopics.filter((topic) => topic.status === 'pending').length} 单
-            </div>
             <div className="flex items-center gap-2" style={{ width: '300px' }}>
               <Progress
                 percent={calculateProgress}
@@ -258,7 +255,8 @@ export default function NewbieTraining() {
               issue={issue}
               selectedStatus={selectedStatus}
               quantities={quantities}
-              onSubmit={handleSubmit}
+              onSubmit={() => setIsSubmitModalVisible(true)}
+              remainingCount={allTopics.filter((topic) => topic.status === 'pending').length}
             />
 
             {/* 视频下方的选项和提交按钮 */}
@@ -345,86 +343,88 @@ export default function NewbieTraining() {
                 </div>
 
                 {/* 动态渲染分类和商品 */}
-                {categories.map((category) => (
-                  <React.Fragment key={category}>
-                    <div className="flex">
-                      {/* 左侧分类号 */}
-                      <div className="flex items-center text-sm font-medium mr-4">
-                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                          {category}
+                <div className="h-[calc(105vh-400px)] overflow-y-auto">
+                  {categories.map((category) => (
+                    <React.Fragment key={category}>
+                      <div className="flex">
+                        {/* 左侧分类号 */}
+                        <div className="flex items-center text-sm font-medium mr-4">
+                          <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                            {category}
+                          </div>
                         </div>
-                      </div>
-                      {/* 右侧商品网格 */}
-                      <div className="flex-1">
-                        <div className="grid grid-cols-4">
-                          {filteredProducts
-                            .filter((product) => product.rowNumber === category)
-                            .map((product) => {
-                              const uniqueIndex = product.id;
-                              return (
-                                <div
-                                  key={uniqueIndex}
-                                  className="flex flex-col items-center p-2 relative"
-                                  style={{
-                                    border: '1px solid #e8e8e8',
-                                    borderRadius: '0px',
-                                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                                  }}
-                                >
+                        {/* 右侧商品网格 */}
+                        <div className="flex-1">
+                          <div className="grid grid-cols-4">
+                            {filteredProducts
+                              .filter((product) => product.rowNumber === category)
+                              .map((product) => {
+                                const uniqueIndex = product.id;
+                                return (
                                   <div
-                                    className="text-xs text-center mt-1 text-gray-600 truncate w-full"
-                                    title={`${product.brandName} ${product.skuName} ${product.spec}`}
-                                  >
-                                    {product.skuName}
-                                  </div>
-                                  <img
-                                    src={product.image}
-                                    alt="商品图片"
-                                    className="w-full aspect-square object-contain"
+                                    key={uniqueIndex}
+                                    className="flex flex-col items-center p-2 relative"
                                     style={{
-                                      cursor: selectedStatus === 1 ? 'pointer' : 'not-allowed',
+                                      border: '1px solid #e8e8e8',
+                                      borderRadius: '0px',
+                                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
                                     }}
-                                    onClick={() =>
-                                      selectedStatus === 1 && handleQuantityChange(uniqueIndex, 1)
-                                    }
-                                  />
-                                  {/* 数量控制器 */}
-                                  {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
-                                    <div className="flex items-center justify-between w-full">
-                                      <div
-                                        className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
-                                        onClick={() =>
-                                          selectedStatus === 1 &&
-                                          handleQuantityChange(uniqueIndex, -1)
-                                        }
-                                      >
-                                        -
-                                      </div>
-                                      <span className="text-sm">
-                                        {quantities[uniqueIndex] || 0}
-                                      </span>
-                                      <div
-                                        className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
-                                        onClick={() =>
-                                          selectedStatus === 1 &&
-                                          handleQuantityChange(uniqueIndex, 1)
-                                        }
-                                      >
-                                        +
-                                      </div>
+                                  >
+                                    <div
+                                      className="text-xs text-center mt-1 text-gray-600 truncate w-full"
+                                      title={`${product.brandName} ${product.skuName} ${product.spec}`}
+                                    >
+                                      {product.skuName}
                                     </div>
-                                  )}
-                                </div>
-                              );
-                            })}
+                                    <img
+                                      src={product.image}
+                                      alt="商品图片"
+                                      className="w-full aspect-square object-contain"
+                                      style={{
+                                        cursor: selectedStatus === 1 ? 'pointer' : 'not-allowed',
+                                      }}
+                                      onClick={() =>
+                                        selectedStatus === 1 && handleQuantityChange(uniqueIndex, 1)
+                                      }
+                                    />
+                                    {/* 数量控制器 */}
+                                    {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
+                                      <div className="flex items-center justify-between w-full">
+                                        <div
+                                          className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                          onClick={() =>
+                                            selectedStatus === 1 &&
+                                            handleQuantityChange(uniqueIndex, -1)
+                                          }
+                                        >
+                                          -
+                                        </div>
+                                        <span className="text-sm">
+                                          {quantities[uniqueIndex] || 0}
+                                        </span>
+                                        <div
+                                          className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                          onClick={() =>
+                                            selectedStatus === 1 &&
+                                            handleQuantityChange(uniqueIndex, 1)
+                                          }
+                                        >
+                                          +
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {categories.indexOf(category) !== categories.length - 1 && (
-                      <div className="border-t border-gray-200 my-4" />
-                    )}
-                  </React.Fragment>
-                ))}
+                      {categories.indexOf(category) !== categories.length - 1 && (
+                        <div className="border-t border-gray-200 my-4" />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
             </Content>
           </Layout>
