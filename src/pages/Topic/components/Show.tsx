@@ -39,7 +39,7 @@ const Show: React.FC<Props> = (props) => {
         <>
           <ProDescriptions<API.ItemData>
             column={2}
-            title={`${intl.formatMessage({ id: 'number' })}: ${currentRow?.topicNumber}`}
+            title={`${intl.formatMessage({ id: 'number' })}: ${currentRow?.id}`}
             request={async () => ({
               data: currentRow || {},
             })}

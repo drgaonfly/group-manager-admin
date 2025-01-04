@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Modal, message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
@@ -7,6 +7,8 @@ interface BeginProps {
 }
 
 const Begin: React.FC<BeginProps> = ({ onStart }) => {
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     Modal.confirm({
       title: '查询到历史记录，是否继续？',
@@ -20,8 +22,17 @@ const Begin: React.FC<BeginProps> = ({ onStart }) => {
     });
   }, []);
 
-  const handleStart = () => {
-    onStart(true);
+  const handleStart = async () => {
+    if (loading) return; // 如果正在加载，直接返回
+
+    setLoading(true);
+    try {
+      await onStart(true);
+    } catch (error) {
+      message.error('开始训练失败，请重试');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOverview = () => {
@@ -53,8 +64,14 @@ const Begin: React.FC<BeginProps> = ({ onStart }) => {
             }}
           />
           <h2 className="text-xl mb-4">通过新手训练，方可开始接单</h2>
-          <Button type="primary" size="large" onClick={handleStart}>
-            开始
+          <Button
+            type="primary"
+            size="large"
+            onClick={handleStart}
+            loading={loading}
+            disabled={loading}
+          >
+            {loading ? '开始训练...' : '开始训练'}
           </Button>
         </div>
       </div>

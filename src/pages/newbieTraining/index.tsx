@@ -50,14 +50,16 @@ export default function NewbieTraining() {
   const [topicId, setTopicId] = useState<string>('');
   const [issue, setIssue] = useState<string>();
 
-  const [topicNumber, setTopicNumber] = useState<string>('');
+  const [id, setId] = useState<string>('');
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [allTopics, setAllTopics] = useState<
     Array<{
-      topic: { topicNumber: string };
+      topic: { id: string };
       status: string;
     }>
   >([]);
+
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   // 获取新手训练数据
   const fetchNewbieTraining = async (resetProgress?: boolean) => {
@@ -82,7 +84,7 @@ export default function NewbieTraining() {
         setVideo1(currentTopic.video1 || '');
         setVideo2(currentTopic.video2 || '');
 
-        setTopicNumber(currentTopic.topicNumber || '');
+        setId(currentTopic.id || '');
         setIssue(currentTopic.issue);
         setAnswers(
           answers.map((answer: any) => ({
@@ -114,6 +116,9 @@ export default function NewbieTraining() {
 
   // 添加提交函数
   const handleSubmit = async () => {
+    if (submitLoading) return; // 如果正在提交，直接返回
+
+    setSubmitLoading(true);
     try {
       if (!topicId) {
         message.error('题目ID不存在');
@@ -125,7 +130,6 @@ export default function NewbieTraining() {
         answers: [] as Array<{ id: string; count: number }>,
       };
 
-      // 如果不是"无异常"状态，设置对应的issue
       if (selectedStatus !== 1) {
         const issueMap = {
           2: 'Unfriendly Operation',
@@ -134,7 +138,6 @@ export default function NewbieTraining() {
         };
         submitData.issue = issueMap[selectedStatus as keyof typeof issueMap] || 'No Issue';
       } else {
-        // 如果是"无异常"状态，收集所有数量大于0的商品
         submitData.answers = Object.entries(quantities)
           .filter(([, count]) => count > 0)
           .map(([id, count]) => ({
@@ -143,37 +146,22 @@ export default function NewbieTraining() {
           }));
       }
 
-      // 使用 addItem 发送 POST 请求
       const response = await addItem(`/records/submit-newbie-training/${topicId}`, submitData);
 
       if (response?.success) {
         message.success('提交成功');
         setIsSubmitModalVisible(false);
-
-        // 重置状态
         setQuantities({});
         setSelectedStatus(1);
-
-        // 获取新题目数据
         await fetchNewbieTraining();
-
-        // // 使用返回的记录ID获取记录详情
-        // if (response.data?.recordId) {
-        //   const recordResponse = await queryList(`/records/${response.data.recordId}`);
-        //   if (recordResponse?.success) {
-        //     setAnswerHistory([{
-        //       topicNumber: recordResponse.data.topic?.topicNumber || '',
-        //       status: recordResponse.data.status || 'pending',
-        //       createdAt: recordResponse.data.createdAt || '',
-        //     }, ...answerHistory]);
-        //   }
-        // }
       } else {
         message.error(response?.message || '提交失败');
       }
     } catch (error) {
       console.error('提交失败:', error);
       message.error('提交失败，请重试');
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -350,8 +338,8 @@ export default function NewbieTraining() {
                   <div className="bg-white p-4 rounded-md">
                     <div className="flex xl:flex-row flex-col xl:justify-between xl:items-center mb-4 xl:space-x-4 space-y-4 xl:space-y-0">
                       <div className="flex items-center space-x-1">
-                        <span>{topicNumber}</span>
-                        <CopyToClipboard text={topicNumber} />
+                        <span>{id}</span>
+                        <CopyToClipboard text={id} />
                       </div>
                       <div className="flex items-center">
                         <Input
@@ -496,7 +484,7 @@ export default function NewbieTraining() {
                       ●
                     </span>
                     <span className="text-gray-600 hover:text-blue-500 cursor-pointer truncate">
-                      {item.topic.topicNumber}
+                      {item.topic.id}
                     </span>
                   </div>
                 ))}
@@ -521,8 +509,13 @@ export default function NewbieTraining() {
             footer={
               <div className="flex justify-end gap-2">
                 <Button onClick={() => setIsSubmitModalVisible(false)}>取消</Button>
-                <Button type="primary" onClick={handleSubmit}>
-                  确认
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  loading={submitLoading}
+                  disabled={submitLoading}
+                >
+                  {submitLoading ? '提交中...' : '确认'}
                 </Button>
               </div>
             }
