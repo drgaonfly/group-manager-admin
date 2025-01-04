@@ -106,7 +106,7 @@ export default function NewbieTraining() {
 
       let submitData = {
         issue: 'No Issue',
-        answers: [] as Array<{ id: string; quantity: number }>,
+        answers: [] as Array<{ id: string; count: number }>,
       };
 
       // 如果不是"无异常"状态，设置对应的issue
@@ -120,10 +120,10 @@ export default function NewbieTraining() {
       } else {
         // 如果是"无异常"状态，收集所有数量大于0的商品
         submitData.answers = Object.entries(quantities)
-          .filter(([, quantity]) => quantity > 0)
-          .map(([id, quantity]) => ({
+          .filter(([, count]) => count > 0)
+          .map(([id, count]) => ({
             id,
-            quantity,
+            count,
           }));
       }
 
@@ -224,6 +224,9 @@ export default function NewbieTraining() {
         <div className="flex items-center justify-between">
           <div className="text-xl font-medium font-bold">新手训练</div>
           <div className="flex items-center gap-2">
+            <div>
+              <div>预计剩余 单</div>
+            </div>
             <div className="flex items-center gap-2" style={{ width: '300px' }}>
               <Progress
                 percent={calculateProgress}
@@ -280,8 +283,8 @@ export default function NewbieTraining() {
             {selectedStatus === 1 && (
               <div>
                 {Object.entries(quantities).map(
-                  ([index, quantity]) =>
-                    quantity > 0 && (
+                  ([index, count]) =>
+                    count > 0 && (
                       <div key={index} className="flex items-center justify-between p-2 border-b">
                         <div className="flex-1">
                           <div className="text-sm">
@@ -295,17 +298,17 @@ export default function NewbieTraining() {
                         </div>
                         <div className="flex items-center gap-4">
                           <InputNumber
-                            value={quantity}
+                            value={count}
                             onChange={(value) => {
                               const newValue = value ?? 0;
-                              const change = newValue - quantity;
+                              const change = newValue - count;
                               handleQuantityChange(index, change);
                             }}
                             min={0}
                             className="w-16"
                           />
                           <div
-                            onClick={() => handleQuantityChange(index, -quantity)}
+                            onClick={() => handleQuantityChange(index, -count)}
                             className="text-blue-500 hover:text-blue-700 cursor-pointer"
                           >
                             删除
@@ -501,8 +504,8 @@ export default function NewbieTraining() {
           // 显示选择的商品信息
           <div className="space-y-4">
             {Object.entries(quantities).map(
-              ([index, quantity]) =>
-                quantity > 0 && (
+              ([index, count]) =>
+                count > 0 && (
                   <div key={index} className="flex justify-between items-center">
                     <div className="text-sm">
                       {(() => {
@@ -513,7 +516,7 @@ export default function NewbieTraining() {
                           : '';
                       })()}
                     </div>
-                    <div className="text-sm">X{quantity}</div>
+                    <div className="text-sm">X{count}</div>
                   </div>
                 ),
             )}
