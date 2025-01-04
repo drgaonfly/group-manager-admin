@@ -162,6 +162,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               全屏
             </Button>
             <Button
+              type="primary"
+              onClick={onSubmit}
+              disabled={selectedStatus === 1 && Object.values(quantities).every((q) => q === 0)}
+            >
+              提交
+            </Button>
+            <Button
               onClick={() => videoControls.handleSpeedChange(-0.25)}
               className="px-1 py-1 text-sm"
             >
@@ -177,13 +184,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               className="px-1 py-1 text-sm"
             >
               加速(E)
-            </Button>
-            <Button
-              type="primary"
-              onClick={onSubmit}
-              disabled={selectedStatus === 1 && Object.values(quantities).every((q) => q === 0)}
-            >
-              提交
             </Button>
           </div>
         </div>

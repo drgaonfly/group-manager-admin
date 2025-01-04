@@ -22,6 +22,7 @@ import {
 import { queryList, addItem } from '@/services/ant-design-pro/api';
 import { history } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
+import Begin from './components/Begin';
 
 const { Content, Sider } = Layout;
 
@@ -36,6 +37,7 @@ interface Answer {
 }
 
 export default function NewbieTraining() {
+  const [hasStarted, setHasStarted] = useState(false);
   // 移除不需要的视频相关状态
   const [selectedStatus, setSelectedStatus] = useState<number>(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -55,6 +57,10 @@ export default function NewbieTraining() {
       status: string;
     }>
   >([]);
+
+  const handleStart = () => {
+    setHasStarted(true);
+  };
 
   // 获取新手训练数据
   const fetchNewbieTraining = async () => {
@@ -220,342 +226,353 @@ export default function NewbieTraining() {
 
   return (
     <>
-      <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
-        <div className="flex items-center justify-between">
-          <div className="text-xl font-medium font-bold">新手训练</div>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2" style={{ width: '300px' }}>
-              <Progress
-                percent={calculateProgress}
-                size="small"
-                format={(percent) => `${percent}%`}
-                strokeColor={{
-                  '0%': '#108ee9',
-                  '100%': '#87d068',
-                }}
-              />
-            </div>
-            <Button
-              className="text-sm rounded-md px-2 py-1"
-              onClick={() => setIsModalVisible(true)}
-            >
-              答题概况
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <Row gutter={[5, 5]}>
-        {/* 左侧区域 (3份) */}
-        <Col xs={24} sm={24} md={14} lg={14} xl={14}>
-          <Sider width="100%" style={{ background: '#fff', padding: '10px' }}>
-            <VideoPlayer
-              video1={video1}
-              video2={video2}
-              issue={issue}
-              selectedStatus={selectedStatus}
-              quantities={quantities}
-              onSubmit={() => setIsSubmitModalVisible(true)}
-              remainingCount={allTopics.filter((topic) => topic.status === 'pending').length}
-            />
-
-            {/* 视频下方的选项和提交按钮 */}
-            <div className="flex justify-between items-center mt-4">
-              <Radio.Group
-                name="videoStatus"
-                className="xl:space-x-4 space-y-4 xl:space-y-0"
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                <Radio value={1}>无异常(1)</Radio>
-                <Radio value={2}>非友好操作(2)</Radio>
-                <Radio value={3}>识别异常(3)</Radio>
-                <Radio value={4}>视频错误、画面丢失(4)</Radio>
-              </Radio.Group>
-            </div>
-
-            <hr className="my-4" />
-
-            {/* 只在选择"无异常"时显示商品列表 */}
-            {selectedStatus === 1 && (
-              <div>
-                {Object.entries(quantities).map(
-                  ([index, count]) =>
-                    count > 0 && (
-                      <div key={index} className="flex items-center justify-between p-2 border-b">
-                        <div className="flex-1">
-                          <div className="text-sm">
-                            {(() => {
-                              const product = answers.find((p: any) => p.id === index);
-                              return product
-                                ? `${product.brandName} ${product.skuName} ${product.spec}`
-                                : '';
-                            })()}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <InputNumber
-                            value={count}
-                            onChange={(value) => {
-                              const newValue = value ?? 0;
-                              const change = newValue - count;
-                              handleQuantityChange(index, change);
-                            }}
-                            min={0}
-                            className="w-16"
-                          />
-                          <div
-                            onClick={() => handleQuantityChange(index, -count)}
-                            className="text-blue-500 hover:text-blue-700 cursor-pointer"
-                          >
-                            删除
-                          </div>
-                        </div>
-                      </div>
-                    ),
-                )}
+      {!hasStarted ? (
+        <Begin onStart={handleStart} />
+      ) : (
+        <>
+          <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-medium font-bold">新手训练</div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" style={{ width: '300px' }}>
+                  <Progress
+                    percent={calculateProgress}
+                    size="small"
+                    format={(percent) => `${percent}%`}
+                    strokeColor={{
+                      '0%': '#108ee9',
+                      '100%': '#87d068',
+                    }}
+                  />
+                </div>
+                <Button
+                  className="text-sm rounded-md px-2 py-1"
+                  onClick={() => setIsModalVisible(true)}
+                >
+                  答题概况
+                </Button>
               </div>
-            )}
-          </Sider>
-        </Col>
+            </div>
+          </div>
 
-        {/* 右侧区域 (2份) */}
-        <Col xs={24} sm={24} md={10} lg={10} xl={10}>
-          <Layout style={{ background: '#f0f2f5' }}>
-            <Content style={{ padding: '0px' }}>
-              {/* 添加顶部订单号和搜索框 */}
-              <div className="bg-white p-4 rounded-md">
-                <div className="flex xl:flex-row flex-col xl:justify-between xl:items-center mb-4 xl:space-x-4 space-y-4 xl:space-y-0">
-                  <div className="flex items-center space-x-1">
-                    <span>{topicNumber}</span>
-                    <CopyToClipboard text={topicNumber} />
-                  </div>
-                  <div className="flex items-center">
-                    <Input
-                      type="text"
-                      placeholder="请输入商品名称"
-                      className="border rounded px-4 py-1 mr-2 w-48"
-                      value={searchKeyword}
-                      onChange={(e) => setSearchKeyword(e.target.value)}
-                    />
-                    <span className="text-gray-600 text-xs">商品搜索</span>
-                  </div>
+          <Row gutter={[5, 5]}>
+            {/* 左侧区域 (3份) */}
+            <Col xs={24} sm={24} md={14} lg={14} xl={14}>
+              <Sider width="100%" style={{ background: '#fff', padding: '10px' }}>
+                <VideoPlayer
+                  video1={video1}
+                  video2={video2}
+                  issue={issue}
+                  selectedStatus={selectedStatus}
+                  quantities={quantities}
+                  onSubmit={() => setIsSubmitModalVisible(true)}
+                  remainingCount={allTopics.filter((topic) => topic.status === 'pending').length}
+                />
+
+                {/* 视频下方的选项和提交按钮 */}
+                <div className="flex justify-between items-center mt-4">
+                  <Radio.Group
+                    name="videoStatus"
+                    className="xl:space-x-4 space-y-4 xl:space-y-0"
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                  >
+                    <Radio value={1}>无异常(1)</Radio>
+                    <Radio value={2}>非友好操作(2)</Radio>
+                    <Radio value={3}>识别异常(3)</Radio>
+                    <Radio value={4}>视频错误、画面丢失(4)</Radio>
+                  </Radio.Group>
                 </div>
 
-                {/* 动态渲染分类和商品 */}
-                <div className="h-[calc(105vh-400px)] overflow-y-auto">
-                  {categories.map((category) => (
-                    <React.Fragment key={category}>
-                      <div className="flex">
-                        {/* 左侧分类号 */}
-                        <div className="flex items-center text-sm font-medium mr-4">
-                          <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                            {category}
+                <hr className="my-4" />
+
+                {/* 只在选择"无异常"时显示商品列表 */}
+                {selectedStatus === 1 && (
+                  <div>
+                    {Object.entries(quantities).map(
+                      ([index, count]) =>
+                        count > 0 && (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 border-b"
+                          >
+                            <div className="flex-1">
+                              <div className="text-sm">
+                                {(() => {
+                                  const product = answers.find((p: any) => p.id === index);
+                                  return product
+                                    ? `${product.brandName} ${product.skuName} ${product.spec}`
+                                    : '';
+                                })()}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <InputNumber
+                                value={count}
+                                onChange={(value) => {
+                                  const newValue = value ?? 0;
+                                  const change = newValue - count;
+                                  handleQuantityChange(index, change);
+                                }}
+                                min={0}
+                                className="w-16"
+                              />
+                              <div
+                                onClick={() => handleQuantityChange(index, -count)}
+                                className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                              >
+                                删除
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        {/* 右侧商品网格 */}
-                        <div className="flex-1">
-                          <div className="grid grid-cols-4">
-                            {filteredProducts
-                              .filter((product) => product.rowNumber === category)
-                              .map((product) => {
-                                const uniqueIndex = product.id;
-                                return (
-                                  <div
-                                    key={uniqueIndex}
-                                    className="flex flex-col items-center p-2 relative"
-                                    style={{
-                                      border: '1px solid #e8e8e8',
-                                      borderRadius: '0px',
-                                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                                    }}
-                                  >
-                                    <div
-                                      className="text-xs text-center mt-1 text-gray-600 truncate w-full"
-                                      title={`${product.brandName} ${product.skuName} ${product.spec}`}
-                                    >
-                                      {product.skuName}
-                                    </div>
-                                    <img
-                                      src={product.image}
-                                      alt="商品图片"
-                                      className="w-full aspect-square object-contain"
-                                      style={{
-                                        cursor: selectedStatus === 1 ? 'pointer' : 'not-allowed',
-                                      }}
-                                      onClick={() =>
-                                        selectedStatus === 1 && handleQuantityChange(uniqueIndex, 1)
-                                      }
-                                    />
-                                    {/* 数量控制器 */}
-                                    {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
-                                      <div className="flex items-center justify-between w-full">
+                        ),
+                    )}
+                  </div>
+                )}
+              </Sider>
+            </Col>
+
+            {/* 右侧区域 (2份) */}
+            <Col xs={24} sm={24} md={10} lg={10} xl={10}>
+              <Layout style={{ background: '#f0f2f5' }}>
+                <Content style={{ padding: '0px' }}>
+                  {/* 添加顶部订单号和搜索框 */}
+                  <div className="bg-white p-4 rounded-md">
+                    <div className="flex xl:flex-row flex-col xl:justify-between xl:items-center mb-4 xl:space-x-4 space-y-4 xl:space-y-0">
+                      <div className="flex items-center space-x-1">
+                        <span>{topicNumber}</span>
+                        <CopyToClipboard text={topicNumber} />
+                      </div>
+                      <div className="flex items-center">
+                        <Input
+                          type="text"
+                          placeholder="请输入商品名称"
+                          className="border rounded px-4 py-1 mr-2 w-48"
+                          value={searchKeyword}
+                          onChange={(e) => setSearchKeyword(e.target.value)}
+                        />
+                        <span className="text-gray-600 text-xs">商品搜索</span>
+                      </div>
+                    </div>
+
+                    {/* 动态渲染分类和商品 */}
+                    <div className="h-[calc(105vh-400px)] overflow-y-auto">
+                      {categories.map((category) => (
+                        <React.Fragment key={category}>
+                          <div className="flex">
+                            {/* 左侧分类号 */}
+                            <div className="flex items-center text-sm font-medium mr-4">
+                              <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                                {category}
+                              </div>
+                            </div>
+                            {/* 右侧商品网格 */}
+                            <div className="flex-1">
+                              <div className="grid grid-cols-4">
+                                {filteredProducts
+                                  .filter((product) => product.rowNumber === category)
+                                  .map((product) => {
+                                    const uniqueIndex = product.id;
+                                    return (
+                                      <div
+                                        key={uniqueIndex}
+                                        className="flex flex-col items-center p-2 relative"
+                                        style={{
+                                          border: '1px solid #e8e8e8',
+                                          borderRadius: '0px',
+                                          boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                                        }}
+                                      >
                                         <div
-                                          className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
-                                          onClick={() =>
-                                            selectedStatus === 1 &&
-                                            handleQuantityChange(uniqueIndex, -1)
-                                          }
+                                          className="text-xs text-center mt-1 text-gray-600 truncate w-full"
+                                          title={`${product.brandName} ${product.skuName} ${product.spec}`}
                                         >
-                                          -
+                                          {product.skuName}
                                         </div>
-                                        <span className="text-sm">
-                                          {quantities[uniqueIndex] || 0}
-                                        </span>
-                                        <div
-                                          className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                        <img
+                                          src={product.image}
+                                          alt="商品图片"
+                                          className="w-full aspect-square object-contain"
+                                          style={{
+                                            cursor:
+                                              selectedStatus === 1 ? 'pointer' : 'not-allowed',
+                                          }}
                                           onClick={() =>
                                             selectedStatus === 1 &&
                                             handleQuantityChange(uniqueIndex, 1)
                                           }
-                                        >
-                                          +
-                                        </div>
+                                        />
+                                        {/* 数量控制器 */}
+                                        {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
+                                          <div className="flex items-center justify-between w-full">
+                                            <div
+                                              className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                              onClick={() =>
+                                                selectedStatus === 1 &&
+                                                handleQuantityChange(uniqueIndex, -1)
+                                              }
+                                            >
+                                              -
+                                            </div>
+                                            <span className="text-sm">
+                                              {quantities[uniqueIndex] || 0}
+                                            </span>
+                                            <div
+                                              className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                              onClick={() =>
+                                                selectedStatus === 1 &&
+                                                handleQuantityChange(uniqueIndex, 1)
+                                              }
+                                            >
+                                              +
+                                            </div>
+                                          </div>
+                                        )}
                                       </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
+                                    );
+                                  })}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      {categories.indexOf(category) !== categories.length - 1 && (
-                        <div className="border-t border-gray-200 my-4" />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            </Content>
-          </Layout>
-        </Col>
-      </Row>
-
-      {/* 答题概况 Modal */}
-      <Modal
-        title={
-          <div className="flex items-center gap-2">
-            <ExclamationCircleOutlined style={{ color: '#1890ff' }} />
-            <span>答题概况</span>
-          </div>
-        }
-        open={isModalVisible}
-        closable={false}
-        footer={
-          <Button type="primary" onClick={() => setIsModalVisible(false)}>
-            知道了
-          </Button>
-        }
-        width={800}
-      >
-        <div className="p-4">
-          <div className="grid grid-cols-4 gap-4">
-            {allTopics.map((item, index) => (
-              <div key={index} className="flex items-center gap-1 text-xs">
-                <span
-                  style={{
-                    color:
-                      item.status === 'success'
-                        ? '#6ec283'
-                        : item.status === 'fail'
-                        ? 'red'
-                        : item.status === 'doing'
-                        ? '#1890ff'
-                        : 'gray',
-                  }}
-                >
-                  ●
-                </span>
-                <span className="text-gray-600 hover:text-blue-500 cursor-pointer truncate">
-                  {item.topic.topicNumber}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Modal>
-
-      {/* 提交 Modal */}
-      <Modal
-        title={
-          selectedStatus === 1 ? (
-            <span>确认提交</span>
-          ) : (
-            <div className="flex items-center gap-2">
-              <ExclamationCircleOutlined style={{ color: '#faad14' }} />
-              <span>确认标记订单为异常吗？</span>
-            </div>
-          )
-        }
-        open={isSubmitModalVisible}
-        closable={false}
-        footer={
-          <div className="flex justify-end gap-2">
-            <Button onClick={() => setIsSubmitModalVisible(false)}>取消</Button>
-            <Button type="primary" onClick={handleSubmit}>
-              确认
-            </Button>
-          </div>
-        }
-        width={500}
-      >
-        {selectedStatus === 1 ? (
-          // 显示选择的商品信息
-          <div className="space-y-4">
-            {Object.entries(quantities).map(
-              ([index, count]) =>
-                count > 0 && (
-                  <div key={index} className="flex justify-between items-center">
-                    <div className="text-sm">
-                      {(() => {
-                        // 获取商品信息
-                        const product = answers.find((p: any) => p.id === index);
-                        return product
-                          ? `${product.brandName} ${product.skuName} ${product.spec}`
-                          : '';
-                      })()}
+                          {categories.indexOf(category) !== categories.length - 1 && (
+                            <div className="border-t border-gray-200 my-4" />
+                          )}
+                        </React.Fragment>
+                      ))}
                     </div>
-                    <div className="text-sm">X{count}</div>
                   </div>
-                ),
-            )}
-          </div>
-        ) : null}
-      </Modal>
+                </Content>
+              </Layout>
+            </Col>
+          </Row>
 
-      {/* 移动端底部导航栏 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
-        <div className="grid grid-cols-4 py-2">
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/instructions')}
+          {/* 答题概况 Modal */}
+          <Modal
+            title={
+              <div className="flex items-center gap-2">
+                <ExclamationCircleOutlined style={{ color: '#1890ff' }} />
+                <span>答题概况</span>
+              </div>
+            }
+            open={isModalVisible}
+            closable={false}
+            footer={
+              <Button type="primary" onClick={() => setIsModalVisible(false)}>
+                知道了
+              </Button>
+            }
+            width={800}
           >
-            <QuestionCircleOutlined className="text-xl" />
-            <span className="text-xs mt-1">使用说明</span>
-          </div>
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/newbie-training')}
+            <div className="p-4">
+              <div className="grid grid-cols-4 gap-4">
+                {allTopics.map((item, index) => (
+                  <div key={index} className="flex items-center gap-1 text-xs">
+                    <span
+                      style={{
+                        color:
+                          item.status === 'success'
+                            ? '#6ec283'
+                            : item.status === 'fail'
+                            ? 'red'
+                            : item.status === 'doing'
+                            ? '#1890ff'
+                            : 'gray',
+                      }}
+                    >
+                      ●
+                    </span>
+                    <span className="text-gray-600 hover:text-blue-500 cursor-pointer truncate">
+                      {item.topic.topicNumber}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Modal>
+
+          {/* 提交 Modal */}
+          <Modal
+            title={
+              selectedStatus === 1 ? (
+                <span>确认提交</span>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <ExclamationCircleOutlined style={{ color: '#faad14' }} />
+                  <span>确认标记订单为异常吗？</span>
+                </div>
+              )
+            }
+            open={isSubmitModalVisible}
+            closable={false}
+            footer={
+              <div className="flex justify-end gap-2">
+                <Button onClick={() => setIsSubmitModalVisible(false)}>取消</Button>
+                <Button type="primary" onClick={handleSubmit}>
+                  确认
+                </Button>
+              </div>
+            }
+            width={500}
           >
-            <PlayCircleOutlined className="text-xl" />
-            <span className="text-xs mt-1">测试</span>
+            {selectedStatus === 1 ? (
+              // 显示选择的商品信息
+              <div className="space-y-4">
+                {Object.entries(quantities).map(
+                  ([index, count]) =>
+                    count > 0 && (
+                      <div key={index} className="flex justify-between items-center">
+                        <div className="text-sm">
+                          {(() => {
+                            // 获取商品信息
+                            const product = answers.find((p: any) => p.id === index);
+                            return product
+                              ? `${product.brandName} ${product.skuName} ${product.spec}`
+                              : '';
+                          })()}
+                        </div>
+                        <div className="text-sm">X{count}</div>
+                      </div>
+                    ),
+                )}
+              </div>
+            ) : null}
+          </Modal>
+
+          {/* 移动端底部导航栏 */}
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
+            <div className="grid grid-cols-4 py-2">
+              <div
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => history.push('/instructions')}
+              >
+                <QuestionCircleOutlined className="text-xl" />
+                <span className="text-xs mt-1">使用说明</span>
+              </div>
+              <div
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => history.push('/newbie-training')}
+              >
+                <PlayCircleOutlined className="text-xl" />
+                <span className="text-xs mt-1">测试</span>
+              </div>
+              <div
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => history.push('/examination-rooms')}
+              >
+                <TrophyOutlined className="text-xl" />
+                <span className="text-xs mt-1">考场</span>
+              </div>
+              <div
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => history.push('/withdraw')}
+              >
+                <WalletOutlined className="text-xl" />
+                <span className="text-xs mt-1">提现</span>
+              </div>
+            </div>
           </div>
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/examination-rooms')}
-          >
-            <TrophyOutlined className="text-xl" />
-            <span className="text-xs mt-1">考场</span>
-          </div>
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/withdraw')}
-          >
-            <WalletOutlined className="text-xl" />
-            <span className="text-xs mt-1">提现</span>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 }
