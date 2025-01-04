@@ -5,8 +5,6 @@ interface VideoPlayerProps {
   video1: string;
   video2: string;
   issue?: string;
-  selectedStatus: number;
-  quantities: Record<string, number>;
   onSubmit: () => void;
   remainingCount: number;
 }
@@ -15,8 +13,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   video1,
   video2,
   issue,
-  selectedStatus,
-  quantities,
   onSubmit,
   remainingCount,
 }) => {
@@ -161,11 +157,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <Button onClick={videoControls.handleFullScreen} className="px-1 py-1 text-sm">
               全屏
             </Button>
-            <Button
-              type="primary"
-              onClick={onSubmit}
-              disabled={selectedStatus === 1 && Object.values(quantities).every((q) => q === 0)}
-            >
+            <Button type="primary" onClick={onSubmit}>
               提交
             </Button>
             <Button

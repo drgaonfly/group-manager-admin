@@ -261,8 +261,6 @@ export default function NewbieTraining() {
                   video1={video1}
                   video2={video2}
                   issue={issue}
-                  selectedStatus={selectedStatus}
-                  quantities={quantities}
                   onSubmit={() => setIsSubmitModalVisible(true)}
                   remainingCount={allTopics.filter((topic) => topic.status === 'pending').length}
                 />
