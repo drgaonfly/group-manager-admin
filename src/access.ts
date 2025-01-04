@@ -78,16 +78,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/permission-groups', 'GET')),
 
-    canCreateWithdrawal:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals', 'POST')),
-    canDeleteWithdrawal:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals', 'DELETE')),
-    canUpdateWithdrawal:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals/:id', 'PUT')),
-    canGetWithdrawal:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdrawals', 'GET')),
+    //withdraws权限
+    canCreateWithdraw:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdraws', 'POST')),
+    canDeleteWithdraw:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdraws', 'DELETE')),
+    canUpdateWithdraw:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdraws/:id', 'PUT')),
+    canGetWithdraw:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdraws', 'GET')),
 
     // proxy权限
     canCreateProxy:

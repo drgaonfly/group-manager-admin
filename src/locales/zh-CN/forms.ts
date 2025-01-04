@@ -106,7 +106,7 @@ export default {
   please_select_status: '请选择状态',
 
   'menu.list.answers': '题目管理',
-  'menu.list.instructions': '使用说明',
+  'menu.list.instructions': '使用说明管理',
   'menu.题目管理': '题目管理',
   'answers.brandName': '品牌名称',
   'answers.image': '图片',
@@ -156,7 +156,7 @@ export default {
   'menu.代理管理': '代理管理',
   'menu.员工管理': '员工管理',
   answer: '答案',
-  'menu.instructions': '使用说明',
+  'menu.instructions': '使用说明管理',
   'instruction.title': '标题',
   'instruction.content': '内容',
   skuName: '商品名称',

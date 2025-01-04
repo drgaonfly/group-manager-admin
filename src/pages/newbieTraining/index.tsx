@@ -551,7 +551,7 @@ export default function NewbieTraining() {
                 onClick={() => history.push('/instructions')}
               >
                 <QuestionCircleOutlined className="text-xl" />
-                <span className="text-xs mt-1">使用说明</span>
+                <span className="text-xs mt-1">使用说明管理</span>
               </div>
               <div
                 className="flex flex-col items-center cursor-pointer"

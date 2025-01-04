@@ -322,4 +322,5 @@ export default {
   'status.pending': 'Pending',
   'status.success': 'Success',
   'status.fail': 'Failed',
+  'status.doing': 'Doing',
 };

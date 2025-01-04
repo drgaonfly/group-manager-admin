@@ -137,9 +137,8 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'video2' }),
       dataIndex: 'video2',
       hideInSearch: true,
-      render: (dom: React.ReactNode, entity: API.ItemData) => (
-        <VideoPlayer entity={entity} videoUrl={entity.video2} />
-      ),
+      render: (dom: React.ReactNode, entity: API.ItemData) =>
+        entity.video2 ? <VideoPlayer entity={entity} videoUrl={entity.video2} /> : <span>无</span>,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),

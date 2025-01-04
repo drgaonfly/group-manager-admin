@@ -327,6 +327,7 @@ export default {
   'issue.videoError': '视频错误、画面丢失',
   'status.pending': '待处理',
   'status.success': '成功',
+  'status.doing': '正在进行中',
   'status.fail': '失败',
   'menu.examination-rooms': '考场',
   'menu.Welcome': '欢迎',

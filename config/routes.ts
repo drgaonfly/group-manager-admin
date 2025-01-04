@@ -131,7 +131,7 @@ export default [
     component: './Instruction',
   },
   {
-    path: '/withdraw',
+    path: '/withdraws',
     name: 'list.withdraw',
     icon: 'WalletOutlined',
     component: './withdraw',
@@ -141,5 +141,11 @@ export default [
     name: 'list.examination-rooms',
     icon: 'HomeOutlined',
     component: './newbieTraining',
+  },
+  {
+    path: '/usage-instructions',
+    name: 'list.usage-instructions',
+    icon: 'QuestionCircleOutlined',
+    component: './Instruction',
   },
 ];

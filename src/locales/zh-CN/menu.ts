@@ -107,6 +107,7 @@ export default {
   'tabs.close.right': '关闭右侧标签页',
   'tabs.close.others': '关闭其他标签页',
   'tabs.refresh': '刷新当前页面',
-  'menu.list.withdraw': '提现',
-  'menu.withdraw': '提现',
+  'menu.list.withdraws': '提现',
+  'menu.withdraws': '提现管理',
+  'menu.usage-instructions': '使用说明',
 };

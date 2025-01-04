@@ -110,6 +110,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
 
   /**
    * @en-US International configuration
@@ -118,11 +119,6 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   const columns: ProColumns<API.ItemData>[] = [
-    {
-      title: intl.formatMessage({ id: 'answers.sn' }),
-      dataIndex: ['answers', 'sn'],
-      hideInSearch: true,
-    },
     {
       title: intl.formatMessage({ id: 'issue' }),
       dataIndex: 'issue',
@@ -200,20 +196,40 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="_id"
         search={{ labelWidth: 100 }}
-        toolBarRender={() => [
-          // access.canSuperAdmin && (
-          //   <Button
-          //     type="primary"
-          //     key="primary"
-          //     onClick={() => {
-          //       handleModalOpen(true);
-          //     }}
-          //   >
-          //     <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          //   </Button>
-          // ),
-        ]}
-        request={async (params, sort, filter) => queryList('/records', params, sort, filter)}
+        toolBarRender={() => []}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="platform.all" defaultMessage="所有" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="status.pending" defaultMessage="Pending" />,
+                key: 'pending', // 匹配 valueEnum 中的 pending
+              },
+              {
+                label: <FormattedMessage id="status.success" defaultMessage="Success" />,
+                key: 'success', // 匹配 valueEnum 中的 success
+              },
+              {
+                label: <FormattedMessage id="status.fail" defaultMessage="Failed" />,
+                key: 'fail', // 匹配 valueEnum 中的 fail
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
+        request={async (params, sort, filter) =>
+          queryList('/records', { ...params, status: activeKey }, sort, filter)
+        }
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {

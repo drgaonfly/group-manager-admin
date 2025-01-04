@@ -260,7 +260,7 @@ const WithdrawPage: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteMenu) && (
+          {(access.canSuperAdmin || access.canDeleteWithdraw) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -271,7 +271,7 @@ const WithdrawPage: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateMenu) && (
+      {(access.canSuperAdmin || access.canCreateWithdraw) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -286,7 +286,7 @@ const WithdrawPage: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateMenu) && (
+      {(access.canSuperAdmin || access.canUpdateWithdraw) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
