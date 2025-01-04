@@ -10,6 +10,7 @@ import {
   Modal,
   message,
   Progress,
+  Image,
 } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import {
@@ -366,7 +367,7 @@ export default function NewbieTraining() {
 
                     {/* 动态渲染分类和商品 */}
                     <div className="h-[calc(105vh-400px)] overflow-y-auto">
-                      {categories.map((category) => (
+                      {categories.map((category: any) => (
                         <React.Fragment key={category}>
                           <div className="flex">
                             {/* 左侧分类号 */}
@@ -398,18 +399,22 @@ export default function NewbieTraining() {
                                         >
                                           {product.skuName}
                                         </div>
-                                        <img
+                                        <Image
                                           src={product.image}
                                           alt="商品图片"
                                           className="w-full aspect-square object-contain"
+                                          preview={true}
                                           style={{
                                             cursor:
                                               selectedStatus === 1 ? 'pointer' : 'not-allowed',
                                           }}
-                                          onClick={() =>
-                                            selectedStatus === 1 &&
-                                            handleQuantityChange(uniqueIndex, 1)
-                                          }
+                                          onClick={(e) => {
+                                            // 阻止预览事件，只在selectedStatus为1时添加商品
+                                            e.stopPropagation();
+                                            if (selectedStatus === 1) {
+                                              handleQuantityChange(uniqueIndex, 1);
+                                            }
+                                          }}
                                         />
                                         {/* 数量控制器 */}
                                         {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
