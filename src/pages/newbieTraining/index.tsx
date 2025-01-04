@@ -224,8 +224,8 @@ export default function NewbieTraining() {
         <div className="flex items-center justify-between">
           <div className="text-xl font-medium font-bold">新手训练</div>
           <div className="flex items-center gap-2">
-            <div>
-              <div>预计剩余 单</div>
+            <div className="text-sm">
+              预计剩余 {allTopics.filter((topic) => topic.status === 'pending').length} 单
             </div>
             <div className="flex items-center gap-2" style={{ width: '300px' }}>
               <Progress
@@ -252,7 +252,14 @@ export default function NewbieTraining() {
         {/* 左侧区域 (3份) */}
         <Col xs={24} sm={24} md={14} lg={14} xl={14}>
           <Sider width="100%" style={{ background: '#fff', padding: '10px' }}>
-            <VideoPlayer video1={video1} video2={video2} issue={issue} />
+            <VideoPlayer
+              video1={video1}
+              video2={video2}
+              issue={issue}
+              selectedStatus={selectedStatus}
+              quantities={quantities}
+              onSubmit={handleSubmit}
+            />
 
             {/* 视频下方的选项和提交按钮 */}
             <div className="flex justify-between items-center mt-4">
@@ -267,14 +274,6 @@ export default function NewbieTraining() {
                 <Radio value={3}>识别异常(3)</Radio>
                 <Radio value={4}>视频错误、画面丢失(4)</Radio>
               </Radio.Group>
-
-              <Button
-                type="primary"
-                onClick={() => setIsSubmitModalVisible(true)}
-                disabled={selectedStatus === 1 && Object.values(quantities).every((q) => q === 0)}
-              >
-                提交
-              </Button>
             </div>
 
             <hr className="my-4" />

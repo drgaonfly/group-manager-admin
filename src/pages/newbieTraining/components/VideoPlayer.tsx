@@ -5,9 +5,19 @@ interface VideoPlayerProps {
   video1: string;
   video2: string;
   issue?: string;
+  selectedStatus: number;
+  quantities: Record<string, number>;
+  onSubmit: () => void;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ video1, video2, issue }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
+  video1,
+  video2,
+  issue,
+  selectedStatus,
+  quantities,
+  onSubmit,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoState, setVideoState] = useState({
     playbackRate: 1,
@@ -164,6 +174,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video1, video2, issue }) => {
               className="px-1 py-1 text-sm"
             >
               加速(E)
+            </Button>
+            <Button
+              type="primary"
+              onClick={onSubmit}
+              disabled={selectedStatus === 1 && Object.values(quantities).every((q) => q === 0)}
+            >
+              提交
             </Button>
           </div>
         </div>
