@@ -130,6 +130,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="instruction.content" />,
       dataIndex: 'content',
       hideInSearch: true,
+      width: 400,
       render: (dom) => {
         return (
           <div>
@@ -214,7 +215,6 @@ const TableList: React.FC = () => {
           }
         >
           {(access.canSuperAdmin || access.canDeleteInstruction) && (
-
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -242,7 +242,6 @@ const TableList: React.FC = () => {
         />
       )}
       {(access.canSuperAdmin || access.canUpdateInstruction) && (
-
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

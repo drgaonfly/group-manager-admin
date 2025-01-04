@@ -162,4 +162,6 @@ export default {
   spec: 'spec',
   sn: 'Sn',
   topicCount: 'topic count',
+  'menu.examination-rooms': 'Examination Rooms',
+  'menu.Welcome': 'Welcome',
 };

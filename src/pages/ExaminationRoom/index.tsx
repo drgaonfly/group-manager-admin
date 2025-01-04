@@ -12,15 +12,8 @@ import {
   Progress,
 } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import {
-  ExclamationCircleOutlined,
-  QuestionCircleOutlined,
-  PlayCircleOutlined,
-  TrophyOutlined,
-  WalletOutlined,
-} from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { queryList, addItem } from '@/services/ant-design-pro/api';
-import { history } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
 
 const { Content, Sider } = Layout;
@@ -106,7 +99,7 @@ export default function NewbieTraining() {
 
       let submitData = {
         issue: 'No Issue',
-        answers: [] as Array<{ id: string; count: number }>,
+        answers: [] as Array<{ id: string; quantity: number }>,
       };
 
       // 如果不是"无异常"状态，设置对应的issue
@@ -120,10 +113,10 @@ export default function NewbieTraining() {
       } else {
         // 如果是"无异常"状态，收集所有数量大于0的商品
         submitData.answers = Object.entries(quantities)
-          .filter(([, count]) => count > 0)
-          .map(([id, count]) => ({
+          .filter(([, quantity]) => quantity > 0)
+          .map(([id, quantity]) => ({
             id,
-            count,
+            quantity,
           }));
       }
 
@@ -224,9 +217,6 @@ export default function NewbieTraining() {
         <div className="flex items-center justify-between">
           <div className="text-xl font-medium font-bold">新手训练</div>
           <div className="flex items-center gap-2">
-            <div>
-              <div>预计剩余 单</div>
-            </div>
             <div className="flex items-center gap-2" style={{ width: '300px' }}>
               <Progress
                 percent={calculateProgress}
@@ -283,8 +273,8 @@ export default function NewbieTraining() {
             {selectedStatus === 1 && (
               <div>
                 {Object.entries(quantities).map(
-                  ([index, count]) =>
-                    count > 0 && (
+                  ([index, quantity]) =>
+                    quantity > 0 && (
                       <div key={index} className="flex items-center justify-between p-2 border-b">
                         <div className="flex-1">
                           <div className="text-sm">
@@ -298,17 +288,17 @@ export default function NewbieTraining() {
                         </div>
                         <div className="flex items-center gap-4">
                           <InputNumber
-                            value={count}
+                            value={quantity}
                             onChange={(value) => {
                               const newValue = value ?? 0;
-                              const change = newValue - count;
+                              const change = newValue - quantity;
                               handleQuantityChange(index, change);
                             }}
                             min={0}
                             className="w-16"
                           />
                           <div
-                            onClick={() => handleQuantityChange(index, -count)}
+                            onClick={() => handleQuantityChange(index, -quantity)}
                             className="text-blue-500 hover:text-blue-700 cursor-pointer"
                           >
                             删除
@@ -456,13 +446,7 @@ export default function NewbieTraining() {
                 <span
                   style={{
                     color:
-                      item.status === 'success'
-                        ? '#6ec283'
-                        : item.status === 'fail'
-                        ? 'red'
-                        : item.status === 'doing'
-                        ? '#1890ff'
-                        : 'gray',
+                      item.status === 'success' ? 'green' : item.status === 'fail' ? 'red' : 'gray',
                   }}
                 >
                   ●
@@ -504,8 +488,8 @@ export default function NewbieTraining() {
           // 显示选择的商品信息
           <div className="space-y-4">
             {Object.entries(quantities).map(
-              ([index, count]) =>
-                count > 0 && (
+              ([index, quantity]) =>
+                quantity > 0 && (
                   <div key={index} className="flex justify-between items-center">
                     <div className="text-sm">
                       {(() => {
@@ -516,47 +500,13 @@ export default function NewbieTraining() {
                           : '';
                       })()}
                     </div>
-                    <div className="text-sm">X{count}</div>
+                    <div className="text-sm">X{quantity}</div>
                   </div>
                 ),
             )}
           </div>
         ) : null}
       </Modal>
-
-      {/* 移动端底部导航栏 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
-        <div className="grid grid-cols-4 py-2">
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/instructions')}
-          >
-            <QuestionCircleOutlined className="text-xl" />
-            <span className="text-xs mt-1">使用说明</span>
-          </div>
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/newbie-training')}
-          >
-            <PlayCircleOutlined className="text-xl" />
-            <span className="text-xs mt-1">测试</span>
-          </div>
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/examination-rooms')}
-          >
-            <TrophyOutlined className="text-xl" />
-            <span className="text-xs mt-1">考场</span>
-          </div>
-          <div
-            className="flex flex-col items-center cursor-pointer"
-            onClick={() => history.push('/withdraw')}
-          >
-            <WalletOutlined className="text-xl" />
-            <span className="text-xs mt-1">提现</span>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

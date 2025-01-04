@@ -57,25 +57,34 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     >
       <ProForm.Group>
         <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_name' }) }]}
+          rules={[{ required: true }]}
           width="md"
           label={intl.formatMessage({ id: 'name' })}
           name="name"
         />
 
         <ProFormText
-          rules={[{ required: true, message: intl.formatMessage({ id: 'enter_email' }) }]}
+          rules={[{ required: true }]}
           width="md"
           label={intl.formatMessage({ id: 'email' })}
           name="email"
         />
         <ProFormText
-          rules={[{ required: newRecord, message: intl.formatMessage({ id: 'enter_password' }) }]}
+          rules={[{ required: newRecord }]}
           width="md"
           label={intl.formatMessage({ id: 'password' })}
           name="password"
         />
 
+        <ProFormText
+          rules={[{ required: newRecord }]}
+          width="md"
+          label={intl.formatMessage({ id: 'topicCount' })}
+          name="topicCount"
+        />
+      </ProForm.Group>
+
+      <ProForm.Group>
         <ProFormSwitch
           label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
           name="isOnline"

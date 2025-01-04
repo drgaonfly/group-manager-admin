@@ -28,6 +28,7 @@ import {
   WalletOutlined,
   PlayCircleOutlined,
   QuestionCircleOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -68,6 +69,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   WalletOutlined: <WalletOutlined />,
   PlayCircleOutlined: <PlayCircleOutlined />,
   QuestionCircleOutlined: <QuestionCircleOutlined />,
+  HomeOutlined: <HomeOutlined />,
 };
 
 console.log('iconEnum', iconEnum);

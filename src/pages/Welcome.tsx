@@ -1,7 +1,8 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+// import { useModel } from '@umijs/max';
 import { Card } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { queryList } from '@/services/ant-design-pro/api';
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
@@ -10,21 +11,31 @@ import React from 'react';
  */
 
 const Welcome: React.FC = () => {
-  const { initialState } = useModel('@@initialState');
+  const [instructions, setInstructions] = useState<API.ItemData[]>([]);
+
+  useEffect(() => {
+    const fetchInstructions = async () => {
+      const response = await queryList('/instructions', { current: 1, pageSize: 10 });
+
+      if (response.data) {
+        setInstructions(response.data);
+      }
+    };
+
+    fetchInstructions();
+  }, []);
+
   return (
     <PageContainer>
-      <Card
-        style={{
-          borderRadius: 8,
-        }}
-        bodyStyle={{
-          backgroundImage:
-            initialState?.settings?.navTheme === 'realDark'
-              ? 'background-image: linear-gradient(75deg, #1A1B1F 0%, #191C1F 100%)'
-              : 'background-image: linear-gradient(75deg, #FBFDFF 0%, #F5F7FF 100%)',
-        }}
-      >
-        Welcome
+      <Card>
+        <ul>
+          {instructions.map((instruction) => (
+            <li key={instruction._id}>
+              <h3>{instruction.title}</h3>
+              <div dangerouslySetInnerHTML={{ __html: instruction.content }} />
+            </li>
+          ))}
+        </ul>
       </Card>
     </PageContainer>
   );

@@ -136,4 +136,10 @@ export default [
     icon: 'WalletOutlined',
     component: './withdraw',
   },
+  {
+    path: '/examination-rooms',
+    name: 'list.examination-rooms',
+    icon: 'HomeOutlined',
+    component: './ExaminationRoom',
+  },
 ];
