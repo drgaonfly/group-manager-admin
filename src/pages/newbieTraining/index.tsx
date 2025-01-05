@@ -10,7 +10,6 @@ import {
   Modal,
   message,
   Progress,
-  Image,
 } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import {
@@ -19,6 +18,7 @@ import {
   PlayCircleOutlined,
   TrophyOutlined,
   WalletOutlined,
+  EyeOutlined,
 } from '@ant-design/icons';
 import { queryList, addItem } from '@/services/ant-design-pro/api';
 import { history } from '@umijs/max';
@@ -68,6 +68,10 @@ export default function NewbieTraining() {
   >([]);
 
   const [submitLoading, setSubmitLoading] = useState(false);
+
+  // 添加状态控制预览
+  const [previewImage, setPreviewImage] = useState<string>('');
+  const [previewVisible, setPreviewVisible] = useState(false);
 
   // 获取新手训练数据
   const fetchNewbieTraining = async (resetProgress?: boolean) => {
@@ -410,25 +414,34 @@ export default function NewbieTraining() {
                                         >
                                           {product.skuName}
                                         </div>
-                                        <Image
-                                          src={product.image}
-                                          alt="商品图片"
-                                          className="w-full aspect-square object-contain"
-                                          preview={true}
-                                          style={{
-                                            cursor:
-                                              selectedStatus === ISSUE_TYPES.NO_ISSUE
-                                                ? 'pointer'
-                                                : 'not-allowed',
-                                          }}
-                                          onClick={(e) => {
-                                            // 阻止预览事件，只在selectedStatus为1时添加商品
-                                            e.stopPropagation();
-                                            if (selectedStatus === ISSUE_TYPES.NO_ISSUE) {
-                                              handleQuantityChange(uniqueIndex, 1);
-                                            }
-                                          }}
-                                        />
+                                        <div className="relative">
+                                          <img
+                                            src={product.image}
+                                            alt="商品图片"
+                                            className="w-full aspect-square object-contain"
+                                            style={{
+                                              cursor:
+                                                selectedStatus === ISSUE_TYPES.NO_ISSUE
+                                                  ? 'pointer'
+                                                  : 'not-allowed',
+                                            }}
+                                            onClick={() => {
+                                              if (selectedStatus === ISSUE_TYPES.NO_ISSUE) {
+                                                handleQuantityChange(uniqueIndex, 1);
+                                              }
+                                            }}
+                                          />
+                                          <div
+                                            className="absolute top-2 right-2 p-1 rounded-full cursor-pointer hover:bg-white"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setPreviewImage(product.image);
+                                              setPreviewVisible(true);
+                                            }}
+                                          >
+                                            <EyeOutlined className="text-gray-600 text-sm" />
+                                          </div>
+                                        </div>
                                         {/* 数量控制器 */}
                                         {answerCounts[uniqueIndex] > 0 &&
                                           selectedStatus === ISSUE_TYPES.NO_ISSUE && (
@@ -569,6 +582,17 @@ export default function NewbieTraining() {
                 )}
               </div>
             ) : null}
+          </Modal>
+
+          {/* 添加预览 Modal */}
+          <Modal
+            open={previewVisible}
+            footer={null}
+            onCancel={() => setPreviewVisible(false)}
+            width={800}
+            centered
+          >
+            <img alt="预览图片" style={{ width: '100%' }} src={previewImage} />
           </Modal>
 
           {/* 移动端底部导航栏 */}
