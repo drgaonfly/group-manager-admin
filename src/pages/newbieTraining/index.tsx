@@ -37,10 +37,18 @@ interface Answer {
   rowNumber?: number;
 }
 
+// 定义枚举值
+const ISSUE_TYPES = {
+  NO_ISSUE: 'No Issue',
+  UNFRIENDLY_OPERATION: 'Unfriendly Operation',
+  RECOGNITION_ERROR: 'Recognition Error',
+  VIDEO_ERROR: 'Video Error',
+} as const;
+
 export default function NewbieTraining() {
   const [hasStarted, setHasStarted] = useState(false);
-  // 移除不需要的视频相关状态
-  const [selectedStatus, setSelectedStatus] = useState<number>(1);
+  // 修改状态类型
+  const [selectedStatus, setSelectedStatus] = useState<string>(ISSUE_TYPES.NO_ISSUE);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -51,7 +59,7 @@ export default function NewbieTraining() {
   const [issue, setIssue] = useState<string>();
 
   const [id, setId] = useState<string>('');
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [answerCounts, setAnswerCounts] = useState<Record<string, number>>({});
   const [allTopics, setAllTopics] = useState<
     Array<{
       topic: { id: string };
@@ -65,8 +73,6 @@ export default function NewbieTraining() {
   const fetchNewbieTraining = async (resetProgress?: boolean) => {
     try {
       const response = await queryList('/records/newbie-training', {
-        current: 1,
-        pageSize: 10,
         emptyRecordFlag: resetProgress ? 'true' : 'false', // 添加重置标志
       });
 
@@ -75,27 +81,40 @@ export default function NewbieTraining() {
         const currentTopic = data.currentTopic;
         const answers = data.answers;
         const topics = data.topics;
+        const isAllCompleted = data.isAllCompleted;
 
         // 设置所有题目信息
         setAllTopics(topics);
 
-        // 分别设置各个状态
-        setTopicId(currentTopic._id);
-        setVideo1(currentTopic.video1 || '');
-        setVideo2(currentTopic.video2 || '');
+        // 如果有当前题目，设置相关状态
+        if (currentTopic) {
+          setTopicId(currentTopic._id);
+          setVideo1(currentTopic.video1 || '');
+          setVideo2(currentTopic.video2 || '');
+          setId(currentTopic.id || '');
+          setIssue(currentTopic.issue);
+          setAnswers(
+            answers.map((answer: any) => ({
+              id: answer.id,
+              skuName: answer.skuName,
+              brandName: answer.brandName,
+              spec: answer.spec,
+              image: answer.image,
+              rowNumber: answer.rowNumber,
+            })),
+          );
+        } else if (isAllCompleted) {
+          // 如果没有当前题目且所有题目已完成
+          setTopicId('');
+          setVideo1('');
+          setVideo2('');
+          setId('');
+          setIssue('');
+          setAnswers([]);
 
-        setId(currentTopic.id || '');
-        setIssue(currentTopic.issue);
-        setAnswers(
-          answers.map((answer: any) => ({
-            id: answer.id,
-            skuName: answer.skuName,
-            brandName: answer.brandName,
-            spec: answer.spec,
-            image: answer.image,
-            rowNumber: answer.rowNumber,
-          })),
-        );
+          // 显示完成提示
+          message.success('恭喜！所有题目已完成！');
+        }
       }
     } catch (error) {
       console.error('获取数据失败:', error);
@@ -126,19 +145,19 @@ export default function NewbieTraining() {
       }
 
       let submitData = {
-        issue: 'No Issue',
+        issue: selectedStatus, // 直接使用枚举值
         answers: [] as Array<{ id: string; count: number }>,
       };
 
-      if (selectedStatus !== 1) {
+      if (selectedStatus !== ISSUE_TYPES.NO_ISSUE) {
         const issueMap = {
-          2: 'Unfriendly Operation',
-          3: 'Recognition Error',
-          4: 'Video Error',
+          UNFRIENDLY_OPERATION: 'Unfriendly Operation',
+          RECOGNITION_ERROR: 'Recognition Error',
+          VIDEO_ERROR: 'Video Error',
         };
         submitData.issue = issueMap[selectedStatus as keyof typeof issueMap] || 'No Issue';
       } else {
-        submitData.answers = Object.entries(quantities)
+        submitData.answers = Object.entries(answerCounts)
           .filter(([, count]) => count > 0)
           .map(([id, count]) => ({
             id,
@@ -149,13 +168,19 @@ export default function NewbieTraining() {
       const response = await addItem(`/records/submit-newbie-training/${topicId}`, submitData);
 
       if (response?.success) {
-        message.success('提交成功');
+        // 根据返回的 record 状态显示不同的提示
+        if (response.data.record.status === 'success') {
+          message.success('答题正确！');
+        } else {
+          message.error('答题错误，请继续努力！');
+        }
+
         setIsSubmitModalVisible(false);
-        setQuantities({});
-        setSelectedStatus(1);
+        setAnswerCounts({});
+        setSelectedStatus(ISSUE_TYPES.NO_ISSUE);
+
+        // 重新获取数据
         await fetchNewbieTraining();
-      } else {
-        message.error(response?.message || '提交失败');
       }
     } catch (error) {
       console.error('提交失败:', error);
@@ -188,7 +213,7 @@ export default function NewbieTraining() {
 
   // 处理数量变化的函数
   const handleQuantityChange = (uniqueIndex: string, change: number) => {
-    setQuantities((prev) => ({
+    setAnswerCounts((prev) => ({
       ...prev,
       [uniqueIndex]: Math.max(0, (prev[uniqueIndex] || 0) + change),
     }));
@@ -217,9 +242,9 @@ export default function NewbieTraining() {
 
     const completedTopics = allTopics.filter(
       (topic) => topic.status === 'success' || topic.status === 'fail',
-    ).length;
+    );
 
-    return Math.round((completedTopics / allTopics.length) * 100);
+    return Math.round((completedTopics.length / allTopics.length) * 100);
   }, [allTopics]);
 
   return (
@@ -273,19 +298,19 @@ export default function NewbieTraining() {
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                   >
-                    <Radio value={1}>无异常(1)</Radio>
-                    <Radio value={2}>非友好操作(2)</Radio>
-                    <Radio value={3}>识别异常(3)</Radio>
-                    <Radio value={4}>视频错误、画面丢失(4)</Radio>
+                    <Radio value={ISSUE_TYPES.NO_ISSUE}>无异常</Radio>
+                    <Radio value={ISSUE_TYPES.UNFRIENDLY_OPERATION}>非友好操作</Radio>
+                    <Radio value={ISSUE_TYPES.RECOGNITION_ERROR}>识别异常</Radio>
+                    <Radio value={ISSUE_TYPES.VIDEO_ERROR}>视频错误、画面丢失</Radio>
                   </Radio.Group>
                 </div>
 
                 <hr className="my-4" />
 
                 {/* 只在选择"无异常"时显示商品列表 */}
-                {selectedStatus === 1 && (
+                {selectedStatus === ISSUE_TYPES.NO_ISSUE && (
                   <div>
-                    {Object.entries(quantities).map(
+                    {Object.entries(answerCounts).map(
                       ([index, count]) =>
                         count > 0 && (
                           <div
@@ -392,42 +417,45 @@ export default function NewbieTraining() {
                                           preview={true}
                                           style={{
                                             cursor:
-                                              selectedStatus === 1 ? 'pointer' : 'not-allowed',
+                                              selectedStatus === ISSUE_TYPES.NO_ISSUE
+                                                ? 'pointer'
+                                                : 'not-allowed',
                                           }}
                                           onClick={(e) => {
                                             // 阻止预览事件，只在selectedStatus为1时添加商品
                                             e.stopPropagation();
-                                            if (selectedStatus === 1) {
+                                            if (selectedStatus === ISSUE_TYPES.NO_ISSUE) {
                                               handleQuantityChange(uniqueIndex, 1);
                                             }
                                           }}
                                         />
                                         {/* 数量控制器 */}
-                                        {quantities[uniqueIndex] > 0 && selectedStatus === 1 && (
-                                          <div className="flex items-center justify-between w-full">
-                                            <div
-                                              className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
-                                              onClick={() =>
-                                                selectedStatus === 1 &&
-                                                handleQuantityChange(uniqueIndex, -1)
-                                              }
-                                            >
-                                              -
+                                        {answerCounts[uniqueIndex] > 0 &&
+                                          selectedStatus === ISSUE_TYPES.NO_ISSUE && (
+                                            <div className="flex items-center justify-between w-full">
+                                              <div
+                                                className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                                onClick={() =>
+                                                  selectedStatus === ISSUE_TYPES.NO_ISSUE &&
+                                                  handleQuantityChange(uniqueIndex, -1)
+                                                }
+                                              >
+                                                -
+                                              </div>
+                                              <span className="text-sm">
+                                                {answerCounts[uniqueIndex] || 0}
+                                              </span>
+                                              <div
+                                                className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
+                                                onClick={() =>
+                                                  selectedStatus === ISSUE_TYPES.NO_ISSUE &&
+                                                  handleQuantityChange(uniqueIndex, 1)
+                                                }
+                                              >
+                                                +
+                                              </div>
                                             </div>
-                                            <span className="text-sm">
-                                              {quantities[uniqueIndex] || 0}
-                                            </span>
-                                            <div
-                                              className="text-lg font-bold flex items-center justify-center text-blue-500 cursor-pointer"
-                                              onClick={() =>
-                                                selectedStatus === 1 &&
-                                                handleQuantityChange(uniqueIndex, 1)
-                                              }
-                                            >
-                                              +
-                                            </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </div>
                                     );
                                   })}
@@ -493,7 +521,7 @@ export default function NewbieTraining() {
           {/* 提交 Modal */}
           <Modal
             title={
-              selectedStatus === 1 ? (
+              selectedStatus === ISSUE_TYPES.NO_ISSUE ? (
                 <span>确认提交</span>
               ) : (
                 <div className="flex items-center gap-2">
@@ -519,10 +547,10 @@ export default function NewbieTraining() {
             }
             width={500}
           >
-            {selectedStatus === 1 ? (
+            {selectedStatus === ISSUE_TYPES.NO_ISSUE ? (
               // 显示选择的商品信息
               <div className="space-y-4">
-                {Object.entries(quantities).map(
+                {Object.entries(answerCounts).map(
                   ([index, count]) =>
                     count > 0 && (
                       <div key={index} className="flex justify-between items-center">
