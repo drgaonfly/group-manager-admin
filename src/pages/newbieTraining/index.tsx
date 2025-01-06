@@ -25,6 +25,7 @@ import { queryList, addItem } from '@/services/ant-design-pro/api';
 import { history } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
 import Begin from './components/Begin';
+import Finished from './components/Finished';
 
 const { Content, Sider } = Layout;
 
@@ -109,7 +110,7 @@ export default function NewbieTraining() {
           setAnswers([]);
 
           // 显示完成提示
-          message.success('恭喜！所有题目已完成！');
+          message.success('所有题目已完成！');
         }
       }
     } catch (error) {
@@ -245,7 +246,9 @@ export default function NewbieTraining() {
 
   return (
     <>
-      {!hasStarted ? (
+      {!allTopics.some((topic) => topic.status === 'pending') ? (
+        <Finished onRestart={() => handleStart(true)} allTopics={allTopics} />
+      ) : !hasStarted ? (
         <Begin onStart={handleStart} />
       ) : (
         <>

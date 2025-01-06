@@ -148,7 +148,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             视频二{!video2 && '(无)'}
           </div>
           {issue && <div className="text-gray-500 text-md">问题：{issue}</div>}
-          <div className="px-1 py-1 text-sm">预计剩余 {remainingCount + 1} 单</div>
+          <div className="px-1 py-1 text-sm">
+            预计剩余 {remainingCount > 0 ? remainingCount + 1 : 0} 单
+          </div>
         </div>
 
         {/* 右侧按钮组 */}
