@@ -31,10 +31,10 @@ const Finished: React.FC<FinishedProps> = ({ onRestart, allTopics }) => {
       </div>
       <div className="bg-white">
         <div className="flex flex-col items-center justify-center">
-          <div className="bg-white p-20 rounded-lg shadow-sm flex flex-col items-center">
+          <div className="bg-white md:p-20 p-10 rounded-lg shadow-sm flex flex-col items-center">
             <CheckCircleOutlined style={{ fontSize: '96px', color: '#52c41a' }} />
-            <h2 className="mt-8 text-2xl font-medium">您已完成新手训练，可以开始接单</h2>
-            <div className="mt-10 space-x-20">
+            <h2 className="md:mt-10 mt-4 text-2xl font-medium">您已完成新手训练，可以开始接单</h2>
+            <div className="flex mt-10 space-x-20">
               <Button
                 type="primary"
                 size="large"
