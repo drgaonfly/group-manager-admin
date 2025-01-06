@@ -10,6 +10,7 @@ import {
   Modal,
   message,
   Progress,
+  FloatButton,
 } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import {
@@ -249,10 +250,13 @@ export default function NewbieTraining() {
       ) : (
         <>
           <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
               <div className="text-xl font-medium font-bold">新手训练</div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2" style={{ width: '300px' }}>
+              <div className="flex items-center gap-2" style={{ marginLeft: '8px' }}>
+                <div
+                  className="flex items-center gap-2"
+                  style={{ width: window.innerWidth >= 640 ? '300px' : '150px' }}
+                >
                   <Progress
                     percent={calculateProgress}
                     size="small"
@@ -372,7 +376,12 @@ export default function NewbieTraining() {
                     </div>
 
                     {/* 动态渲染分类和商品 */}
-                    <div className="h-[calc(105vh-400px)] overflow-y-auto">
+                    <div
+                      className="overflow-y-auto"
+                      style={{
+                        height: window.innerWidth >= 768 ? 'calc(90vh - 200px)' : 'auto',
+                      }}
+                    >
                       {categories.map((category: any) => (
                         <React.Fragment key={category}>
                           <div className="flex">
@@ -384,7 +393,7 @@ export default function NewbieTraining() {
                             </div>
                             {/* 右侧商品网格 */}
                             <div className="flex-1">
-                              <div className="grid grid-cols-4">
+                              <div className="grid sm:grid-cols-4 grid-cols-3">
                                 {filteredProducts
                                   .filter((product) => product.rowNumber === category)
                                   .map((product) => {
@@ -423,7 +432,7 @@ export default function NewbieTraining() {
                                             }}
                                           />
                                           <div
-                                            className="absolute top-2 right-2 p-1 rounded-full cursor-pointer hover:bg-white"
+                                            className="absolute top-0 left-2 rounded-full cursor-pointer hover:bg-white"
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               setPreviewImage(product.image);
@@ -619,6 +628,14 @@ export default function NewbieTraining() {
               </div>
             </div>
           </div>
+
+          {/* 添加悬浮提交按钮 */}
+          <FloatButton
+            onClick={() => setIsSubmitModalVisible(true)}
+            type="primary"
+            style={{ right: 24, padding: '4px', borderRadius: '50%', bottom: '10%' }}
+            icon={<span className="flex text-sm">提交</span>}
+          />
         </>
       )}
     </>

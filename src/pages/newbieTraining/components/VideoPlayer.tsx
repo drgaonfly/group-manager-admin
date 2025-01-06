@@ -118,7 +118,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   return (
     <div>
       {/* 顶部控制栏 */}
-      <div className="flex xl:flex-row flex-col justify-between w-full p-4 border-b">
+      <div className="flex xl:flex-row flex-col xl:space-y-0 space-y-4 justify-between w-full p-4 border-b">
         {/* 左侧视频切换和信息 */}
         <div className="flex items-center gap-2 text-sm">
           <div
