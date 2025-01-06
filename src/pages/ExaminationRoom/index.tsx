@@ -20,8 +20,8 @@ import {
   WalletOutlined,
   EyeOutlined,
 } from '@ant-design/icons';
-import { queryList, addItem } from '@/services/ant-design-pro/api';
-import { history } from '@umijs/max';
+import { queryList, addItem, currentUser } from '@/services/ant-design-pro/api';
+import { history, useModel } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
 import Begin from './components/Begin';
 import Overlay from './components/Overlayer';
@@ -69,11 +69,13 @@ export default function Examination() {
   >([]);
 
   const [submitLoading, setSubmitLoading] = useState(false);
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
 
   // 添加状态控制预览
   const [previewImage, setPreviewImage] = useState<string>('');
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [onlineVisible, setOnlineVisible] = useState<boolean>(false);
+  const [onlineVisible, setOnlineVisible] = useState<boolean>(currentUser!.isOnline);
 
   // 获取接单数据
   const fetchExamination = async (resetProgress?: boolean) => {
@@ -92,7 +94,6 @@ export default function Examination() {
 
         if (isOnline) {
           setOnlineVisible(true);
-          return; // 停止后续逻辑
         } else {
           setOnlineVisible(false);
         }
