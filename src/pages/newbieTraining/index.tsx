@@ -141,7 +141,7 @@ export default function NewbieTraining() {
 
       let submitData = {
         issue: selectedStatus, // 直接使用枚举值
-        answers: [] as Array<{ answer: string; count: number }>,
+        answers: [] as Array<{ id: string; count: number }>,
       };
 
       if (selectedStatus !== ISSUE_TYPES.NO_ISSUE) {
@@ -154,8 +154,8 @@ export default function NewbieTraining() {
       } else {
         submitData.answers = Object.entries(answerCounts)
           .filter(([, count]) => count > 0)
-          .map(([answerId, count]) => ({
-            answer: answerId,
+          .map(([id, count]) => ({
+            id,
             count,
           }));
       }
