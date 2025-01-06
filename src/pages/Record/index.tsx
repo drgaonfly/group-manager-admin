@@ -11,6 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import VideoPlayer from '@/components/VideoPlayer';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -119,6 +120,21 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   const columns: ProColumns<API.ItemData>[] = [
+    {
+      title: intl.formatMessage({ id: 'video1', defaultMessage: '视频' }),
+      dataIndex: 'video1',
+      hideInSearch: true,
+      render: (dom: React.ReactNode, entity: API.ItemData) => (
+        <VideoPlayer entity={entity} videoUrl={entity.video1} />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'video2' }),
+      dataIndex: 'video2',
+      hideInSearch: true,
+      render: (dom: React.ReactNode, entity: API.ItemData) =>
+        entity.video2 ? <VideoPlayer entity={entity} videoUrl={entity.video2} /> : <span>无</span>,
+    },
     {
       title: intl.formatMessage({ id: 'issue' }),
       dataIndex: 'issue',
