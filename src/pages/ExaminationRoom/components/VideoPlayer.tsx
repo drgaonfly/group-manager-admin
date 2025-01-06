@@ -157,7 +157,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <Button onClick={videoControls.handleFullScreen} className="px-1 py-1 text-sm">
               全屏
             </Button>
-            <Button type="primary" onClick={onSubmit}>
+            <Button type="primary" onClick={onSubmit} className="hidden sm:block">
               提交
             </Button>
             <Button

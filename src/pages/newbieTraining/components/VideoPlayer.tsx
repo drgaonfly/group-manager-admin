@@ -118,7 +118,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   return (
     <div>
       {/* 顶部控制栏 */}
-      <div className="flex xl:flex-row flex-col xl:space-y-0 space-y-4 justify-between w-full p-4 border-b">
+      <div className="flex xl:flex-row flex-col xl:space-y-0 space-y-4 justify-between w-full p-2 border-b">
         {/* 左侧视频切换和信息 */}
         <div className="flex items-center gap-2 text-sm">
           <div
@@ -154,12 +154,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         </div>
 
         {/* 右侧按钮组 */}
-        <div className="sm:flex flex-col sm:flex-row gap-2 text-sm">
+        <div className="flex flex-row gap-2 text-sm">
           <div className="flex gap-2">
             <Button onClick={videoControls.handleFullScreen} className="px-1 py-1 text-sm">
               全屏
             </Button>
-            <Button type="primary" onClick={onSubmit}>
+            <Button type="primary" onClick={onSubmit} className="hidden sm:block">
               提交
             </Button>
             <Button
@@ -169,7 +169,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               减速(W)
             </Button>
           </div>
-          <div className="flex gap-2 mt-2 sm:mt-0">
+          <div className="flex gap-2 sm:mt-0">
             <Button onClick={videoControls.handlePlayPause} className="px-1 py-1 text-sm">
               暂停/播放(S)
             </Button>

@@ -245,7 +245,7 @@ export default function NewbieTraining() {
       ) : (
         <>
           <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
-            <div className="flex flex-col sm:flex-row items-center justify-between">
+            <div className="flex flex-col sm:flex-row justify-between">
               <div className="text-xl font-medium font-bold">新手训练</div>
               <div className="flex items-center gap-2" style={{ marginLeft: '8px' }}>
                 <div
@@ -381,7 +381,7 @@ export default function NewbieTraining() {
                         <React.Fragment key={category}>
                           <div className="flex">
                             {/* 左侧分类号 */}
-                            <div className="flex items-center text-sm font-medium mr-4">
+                            <div className="hidden sm:flex items-center text-sm font-medium mr-4">
                               <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                                 {category}
                               </div>
