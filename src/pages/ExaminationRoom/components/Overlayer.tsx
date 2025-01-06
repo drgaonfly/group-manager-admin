@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { FormattedMessage } from '@umijs/max';
 
 const Overlay: React.FC = () => {
   return (
@@ -19,8 +20,18 @@ const Overlay: React.FC = () => {
           marginBottom: '32px',
         }}
       />
-      <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>你没有通过测试，不可接单</h2>
-      <p style={{ fontSize: '18px', marginBottom: '20px' }}>请完成测试后再尝试接单。</p>
+      <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>
+        <FormattedMessage 
+          id="pages.examination.notPassed" 
+          defaultMessage="你没有通过测试，不可接单" 
+        />
+      </h2>
+      <p style={{ fontSize: '18px', marginBottom: '20px' }}>
+        <FormattedMessage 
+          id="pages.examination.pleaseComplete" 
+          defaultMessage="请完成测试后再尝试接单。" 
+        />
+      </p>
     </div>
   );
 };
