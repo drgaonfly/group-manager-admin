@@ -26,9 +26,9 @@ const Welcome: React.FC = () => {
   }, []);
 
   return (
-    <PageContainer>
-      <Card>
-        <ul>
+    <PageContainer ghost>
+      <Card bordered={false}>
+        <ul className="m-0 p-0 list-none">
           {instructions.map((instruction) => (
             <li key={instruction._id}>
               <h3>{instruction.title}</h3>

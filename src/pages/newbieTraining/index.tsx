@@ -13,16 +13,8 @@ import {
   FloatButton,
 } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import {
-  ExclamationCircleOutlined,
-  QuestionCircleOutlined,
-  PlayCircleOutlined,
-  TrophyOutlined,
-  WalletOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
+import { ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import { queryList, addItem } from '@/services/ant-design-pro/api';
-import { history } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
 import Begin from './components/Begin';
 import Finished from './components/Finished';
@@ -597,40 +589,6 @@ export default function NewbieTraining() {
           >
             <img alt="预览图片" style={{ width: '100%' }} src={previewImage} />
           </Modal>
-
-          {/* 移动端底部导航栏 */}
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
-            <div className="grid grid-cols-4 py-2">
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/instructions')}
-              >
-                <QuestionCircleOutlined className="text-xl" />
-                <span className="text-xs mt-1">使用说明管理</span>
-              </div>
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/newbie-training')}
-              >
-                <PlayCircleOutlined className="text-xl" />
-                <span className="text-xs mt-1">测试</span>
-              </div>
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/examination-rooms')}
-              >
-                <TrophyOutlined className="text-xl" />
-                <span className="text-xs mt-1">考场</span>
-              </div>
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/withdraw')}
-              >
-                <WalletOutlined className="text-xl" />
-                <span className="text-xs mt-1">提现</span>
-              </div>
-            </div>
-          </div>
 
           {/* 添加悬浮提交按钮 */}
           <FloatButton

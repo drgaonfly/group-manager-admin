@@ -10,18 +10,12 @@ import {
   Modal,
   message,
   Progress,
+  FloatButton,
 } from 'antd';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import {
-  ExclamationCircleOutlined,
-  QuestionCircleOutlined,
-  PlayCircleOutlined,
-  TrophyOutlined,
-  WalletOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
-import { queryList, addItem, currentUser } from '@/services/ant-design-pro/api';
-import { history, useModel } from '@umijs/max';
+import { ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
+import { queryList, addItem } from '@/services/ant-design-pro/api';
+import { useModel } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
 import Begin from './components/Begin';
 import Overlay from './components/Overlayer';
@@ -118,7 +112,7 @@ export default function Examination() {
           setAnswers([]);
 
           // 显示完成提示
-          message.success('恭喜！所有题目已完成！');
+          message.success('所有题目已完成！');
         }
       }
     } catch (error) {
@@ -263,10 +257,13 @@ export default function Examination() {
       ) : (
         <>
           <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
               <div className="text-xl font-medium font-bold">接单</div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2" style={{ width: '300px' }}>
+              <div className="flex items-center gap-2" style={{ marginLeft: '8px' }}>
+                <div
+                  className="flex items-center gap-2"
+                  style={{ width: window.innerWidth >= 640 ? '300px' : '150px' }}
+                >
                   <Progress
                     percent={calculateProgress}
                     size="small"
@@ -386,7 +383,12 @@ export default function Examination() {
                     </div>
 
                     {/* 动态渲染分类和商品 */}
-                    <div className="h-[calc(105vh-400px)] overflow-y-auto">
+                    <div
+                      className="overflow-y-auto"
+                      style={{
+                        height: window.innerWidth >= 768 ? 'calc(90vh - 200px)' : 'auto',
+                      }}
+                    >
                       {categories.map((category: any) => (
                         <React.Fragment key={category}>
                           <div className="flex">
@@ -398,7 +400,7 @@ export default function Examination() {
                             </div>
                             {/* 右侧商品网格 */}
                             <div className="flex-1">
-                              <div className="grid grid-cols-4">
+                              <div className="grid sm:grid-cols-4 grid-cols-3">
                                 {filteredProducts
                                   .filter((product) => product.rowNumber === category)
                                   .map((product) => {
@@ -437,7 +439,7 @@ export default function Examination() {
                                             }}
                                           />
                                           <div
-                                            className="absolute top-2 right-2 p-1 rounded-full cursor-pointer hover:bg-white"
+                                            className="absolute top-0 left-2 rounded-full cursor-pointer hover:bg-white"
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               setPreviewImage(product.image);
@@ -600,39 +602,13 @@ export default function Examination() {
             <img alt="预览图片" style={{ width: '100%' }} src={previewImage} />
           </Modal>
 
-          {/* 移动端底部导航栏 */}
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
-            <div className="grid grid-cols-4 py-2">
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/instructions')}
-              >
-                <QuestionCircleOutlined className="text-xl" />
-                <span className="text-xs mt-1">使用说明管理</span>
-              </div>
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/exam')}
-              >
-                <PlayCircleOutlined className="text-xl" />
-                <span className="text-xs mt-1">接单</span>
-              </div>
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/examination-rooms')}
-              >
-                <TrophyOutlined className="text-xl" />
-                <span className="text-xs mt-1">考场</span>
-              </div>
-              <div
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => history.push('/withdraw')}
-              >
-                <WalletOutlined className="text-xl" />
-                <span className="text-xs mt-1">提现</span>
-              </div>
-            </div>
-          </div>
+          {/* 添加悬浮提交按钮 */}
+          <FloatButton
+            onClick={() => setIsSubmitModalVisible(true)}
+            type="primary"
+            style={{ right: 24, padding: '4px', borderRadius: '50%', bottom: '10%' }}
+            icon={<span className="flex text-sm">提交</span>}
+          />
         </>
       )}
     </>

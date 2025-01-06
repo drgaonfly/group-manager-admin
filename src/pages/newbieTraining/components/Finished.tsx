@@ -13,6 +13,17 @@ interface FinishedProps {
 
 const Finished: React.FC<FinishedProps> = ({ onRestart, allTopics }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
+
+  const handleRestart = async () => {
+    if (isRestarting) return;
+    setIsRestarting(true);
+    try {
+      await onRestart?.();
+    } finally {
+      setIsRestarting(false);
+    }
+  };
 
   return (
     <>
@@ -43,7 +54,7 @@ const Finished: React.FC<FinishedProps> = ({ onRestart, allTopics }) => {
                 前往接单
               </Button>
               {onRestart && (
-                <Button size="large" onClick={onRestart}>
+                <Button size="large" onClick={handleRestart} loading={isRestarting}>
                   重新训练
                 </Button>
               )}
