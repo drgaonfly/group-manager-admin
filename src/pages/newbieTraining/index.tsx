@@ -97,16 +97,7 @@ export default function NewbieTraining() {
           setVideo2(currentTopic.video2 || '');
           setId(currentTopic.id || '');
           setIssue(currentTopic.issue);
-          setAnswers(
-            answers.map((answer: any) => ({
-              id: answer.id,
-              skuName: answer.skuName,
-              brandName: answer.brandName,
-              spec: answer.spec,
-              image: answer.image,
-              rowNumber: answer.rowNumber,
-            })),
-          );
+          setAnswers(answers);
         } else if (isAllCompleted) {
           // 如果没有当前题目且所有题目已完成
           setTopicId('');
@@ -150,7 +141,7 @@ export default function NewbieTraining() {
 
       let submitData = {
         issue: selectedStatus, // 直接使用枚举值
-        answers: [] as Array<{ id: string; count: number }>,
+        answers: [] as Array<{ answer: string; count: number }>,
       };
 
       if (selectedStatus !== ISSUE_TYPES.NO_ISSUE) {
@@ -163,8 +154,8 @@ export default function NewbieTraining() {
       } else {
         submitData.answers = Object.entries(answerCounts)
           .filter(([, count]) => count > 0)
-          .map(([id, count]) => ({
-            id,
+          .map(([answerId, count]) => ({
+            answer: answerId,
             count,
           }));
       }
