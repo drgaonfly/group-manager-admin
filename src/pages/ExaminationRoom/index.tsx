@@ -24,6 +24,7 @@ import { queryList, addItem } from '@/services/ant-design-pro/api';
 import { history } from '@umijs/max';
 import VideoPlayer from './components/VideoPlayer';
 import Begin from './components/Begin';
+import Overlay from './components/Overlayer';
 
 const { Content, Sider } = Layout;
 
@@ -72,7 +73,7 @@ export default function NewbieTraining() {
   // 添加状态控制预览
   const [previewImage, setPreviewImage] = useState<string>('');
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [onlineVisible, setOnlineVisible] = useState(false);
+  const [onlineVisible, setOnlineVisible] = useState<boolean>(false);
 
   // 获取接单数据
   const fetchNewbieTraining = async (resetProgress?: boolean) => {
@@ -88,12 +89,12 @@ export default function NewbieTraining() {
         const examTopics = data.examTopics;
         const isAllCompleted = data.isAllCompleted;
         const isOnline = data.isOnline;
-        console.log('isOnline',isOnline)
+        console.log('isOnline', isOnline);
 
-        if(!isOnline){
+        if (!isOnline) {
           setOnlineVisible(true);
           return; // 停止后续逻辑
-        }else{
+        } else {
           setOnlineVisible(false);
         }
         // 设置所有题目信息
@@ -203,8 +204,6 @@ export default function NewbieTraining() {
     initPage();
   }, []); // 仅在组件挂载时执行
 
-  
-
   // 键盘事件处理 - 只保留 ENTER 键的处理
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -257,6 +256,8 @@ export default function NewbieTraining() {
     <>
       {!hasStarted ? (
         <Begin onStart={handleStart} />
+      ) : onlineVisible ? (  // 添加 !isOnline 条件
+        <Overlay />
       ) : (
         <>
           <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
@@ -595,17 +596,6 @@ export default function NewbieTraining() {
             centered
           >
             <img alt="预览图片" style={{ width: '100%' }} src={previewImage} />
-          </Modal>
-
-        {/* 判断是否通过新手训练 Modal */}
-          <Modal
-            open={onlineVisible}
-            footer={null}
-            onCancel={() => setPreviewVisible(false)}
-            width={800}
-            centered
-          >
-                 <p>你没有通过训练，无法接单</p>
           </Modal>
 
           {/* 移动端底部导航栏 */}
