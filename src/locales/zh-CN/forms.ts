@@ -170,4 +170,7 @@ export default {
   'menu.提现管理': '提现管理', // Added missing translation
   'menu.考场': '考场',
   'menu.list.usage-instructions': '使用说明',
+  'menu.使用说明管理': '使用说明管理',
+  'upload.text': '上传文件', // Added missing translation
+  'upload.hint': '请拖拽文件到此区域，或点击上传', // Added missing translation
 };

@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import Upload from '@/components/Upload';
 
 interface Props {
   newRecord?: boolean;
@@ -80,7 +80,7 @@ const BasicForm: React.FC<Props> = ({
     >
       <ProForm.Group>
         <Form.Item required label={intl.formatMessage({ id: 'video1' })}>
-          <AliyunOSSUpload
+          <Upload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
               setvideo1(url);
@@ -91,7 +91,7 @@ const BasicForm: React.FC<Props> = ({
         </Form.Item>
 
         <Form.Item label={intl.formatMessage({ id: 'video2' })}>
-          <AliyunOSSUpload
+          <Upload
             onFileUpload={(url: string) => {
               setvideo2(url);
             }}

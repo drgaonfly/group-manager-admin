@@ -165,6 +165,9 @@ export default {
   'menu.examination-rooms': 'Examination Rooms',
   'menu.Welcome': 'Welcome',
   'topic.id': 'number',
-  'menu.提现管理': 'Withdrawal Management', // Added missing translation
+  'menu.提现管理': 'Withdrawal Management',
   'menu.考场': 'Examination Rooms',
+  'menu.使用说明管理': 'Instructions Management',
+  'upload.text': 'Upload File',
+  'upload.hint': 'Drag files here, or click to upload',
 };

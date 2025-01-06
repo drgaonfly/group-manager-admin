@@ -3,7 +3,7 @@ import React from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input, message } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
-import AliyunS3Upload from '@/components/AliyunS3Upload';
+import Upload from '@/components/Upload';
 import TopicSelect from '@/components/topicSelect';
 
 interface Props {
@@ -75,7 +75,7 @@ const BasicForm: React.FC<Props> = ({
       }}
     >
       <Form.Item required label={intl.formatMessage({ id: 'image' })}>
-        <AliyunS3Upload
+        <Upload
           onFileUpload={(url: string) => {
             console.log('Uploaded file URL:', url);
             setImageUrl(url);

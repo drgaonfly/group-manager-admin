@@ -121,6 +121,12 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      title: intl.formatMessage({ id: 'topic.id' }),
+      dataIndex: ['topic', 'id'],
+      hideInSearch: true,
+      copyable: true,
+    },
+    {
       title: intl.formatMessage({ id: 'video1', defaultMessage: '视频' }),
       dataIndex: 'video1',
       hideInSearch: true,

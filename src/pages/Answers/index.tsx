@@ -148,7 +148,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'topic.id' }),
-      dataIndex: ['topic', 'id'],
+      dataIndex: 'id',
       hideInSearch: false,
       copyable: true,
     },
