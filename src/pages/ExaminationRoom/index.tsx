@@ -73,7 +73,7 @@ export default function NewbieTraining() {
   const [previewImage, setPreviewImage] = useState<string>('');
   const [previewVisible, setPreviewVisible] = useState(false);
 
-  // 获取测试数据
+  // 获取接单数据
   const fetchNewbieTraining = async (resetProgress?: boolean) => {
     try {
       const response = await queryList('/records/newbie-training', {
@@ -117,14 +117,14 @@ export default function NewbieTraining() {
     }
   };
 
-  // 重置测试数据
+  // 重置接单数据
   const handleStart = async (resetProgress?: boolean) => {
     try {
       await fetchNewbieTraining(resetProgress);
       setHasStarted(true);
     } catch (error) {
-      console.error('获取测试数据失败:', error);
-      message.error('获取测试数据失败，请重试');
+      console.error('获取接单数据失败:', error);
+      message.error('获取接单数据失败，请重试');
     }
   };
 
@@ -250,7 +250,7 @@ export default function NewbieTraining() {
         <>
           <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
             <div className="flex items-center justify-between">
-              <div className="text-xl font-medium font-bold">测试</div>
+              <div className="text-xl font-medium font-bold">接单</div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2" style={{ width: '300px' }}>
                   <Progress
@@ -601,7 +601,7 @@ export default function NewbieTraining() {
                 onClick={() => history.push('/newbie-training')}
               >
                 <PlayCircleOutlined className="text-xl" />
-                <span className="text-xs mt-1">测试</span>
+                <span className="text-xs mt-1">接单</span>
               </div>
               <div
                 className="flex flex-col items-center cursor-pointer"

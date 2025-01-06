@@ -13,7 +13,7 @@ const Begin: React.FC<BeginProps> = ({ onStart }) => {
     Modal.confirm({
       title: '查询到历史记录，是否继续？',
       icon: <ExclamationCircleOutlined style={{ color: '#faad14' }} />,
-      okText: '继续测试',
+      okText: '继续接单',
       cancelText: '取消',
       onOk: () => onStart(false),
       onCancel: () => {
@@ -29,21 +29,21 @@ const Begin: React.FC<BeginProps> = ({ onStart }) => {
     try {
       await onStart(true);
     } catch (error) {
-      message.error('开始测试失败，请重试');
+      message.error('开始接单失败，请重试');
     } finally {
       setLoading(false);
     }
   };
 
   const handleOverview = () => {
-    message.info('暂无测试内容');
+    message.info('暂无接单内容');
   };
 
   return (
     <>
       <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">
         <div className="flex items-center justify-between">
-          <div className="text-xl font-medium font-bold">测试</div>
+          <div className="text-xl font-medium font-bold">接单</div>
           <div className="flex items-center gap-2">
             <Button className="text-sm rounded-md px-2 py-1" onClick={handleOverview}>
               答题概况
@@ -63,7 +63,7 @@ const Begin: React.FC<BeginProps> = ({ onStart }) => {
               marginBottom: '24px',
             }}
           />
-          <h2 className="text-xl mb-4">通过测试，方可开始接单</h2>
+          <h2 className="text-xl mb-4">通过接单，方可开始接单</h2>
           <Button
             type="primary"
             size="large"
@@ -71,7 +71,7 @@ const Begin: React.FC<BeginProps> = ({ onStart }) => {
             loading={loading}
             disabled={loading}
           >
-            {loading ? '开始测试...' : '开始测试'}
+            {loading ? '开始接单...' : '开始接单'}
           </Button>
         </div>
       </div>
