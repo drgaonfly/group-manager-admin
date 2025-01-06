@@ -140,7 +140,7 @@ export default [
     path: '/examination-rooms',
     name: 'list.examination-rooms',
     icon: 'HomeOutlined',
-    component: './newbieTraining',
+    component: './ExaminationRoom',
   },
   {
     path: '/usage-instructions',
