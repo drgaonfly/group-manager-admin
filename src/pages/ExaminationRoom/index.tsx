@@ -46,7 +46,7 @@ const ISSUE_TYPES = {
   VIDEO_ERROR: 'Video Error',
 } as const;
 
-export default function NewbieTraining() {
+export default function Examination() {
   const [hasStarted, setHasStarted] = useState(false);
   // 修改状态类型
   const [selectedStatus, setSelectedStatus] = useState<string>(ISSUE_TYPES.NO_ISSUE);
@@ -76,7 +76,7 @@ export default function NewbieTraining() {
   const [onlineVisible, setOnlineVisible] = useState<boolean>(false);
 
   // 获取接单数据
-  const fetchNewbieTraining = async (resetProgress?: boolean) => {
+  const fetchExamination = async (resetProgress?: boolean) => {
     try {
       const response = await queryList('/records/exam', {
         emptyRecordFlag: resetProgress ? 'true' : 'false', // 添加重置标志
@@ -89,9 +89,8 @@ export default function NewbieTraining() {
         const examTopics = data.examTopics;
         const isAllCompleted = data.isAllCompleted;
         const isOnline = data.isOnline;
-        console.log('isOnline', isOnline);
 
-        if (!isOnline) {
+        if (isOnline) {
           setOnlineVisible(true);
           return; // 停止后续逻辑
         } else {
@@ -130,7 +129,7 @@ export default function NewbieTraining() {
   // 重置接单数据
   const handleStart = async (resetProgress?: boolean) => {
     try {
-      await fetchNewbieTraining(resetProgress);
+      await fetchExamination(resetProgress);
       setHasStarted(true);
     } catch (error) {
       console.error('获取接单数据失败:', error);
@@ -185,7 +184,7 @@ export default function NewbieTraining() {
         setSelectedStatus(ISSUE_TYPES.NO_ISSUE);
 
         // 重新获取数据
-        await fetchNewbieTraining();
+        await fetchExamination();
       }
     } catch (error) {
       console.error('提交失败:', error);
@@ -198,7 +197,7 @@ export default function NewbieTraining() {
   // 在组件加载时获取数据
   useEffect(() => {
     const initPage = async () => {
-      await fetchNewbieTraining();
+      await fetchExamination();
     };
 
     initPage();
@@ -252,12 +251,14 @@ export default function NewbieTraining() {
     return Math.round((completedTopics.length / allTopics.length) * 100);
   }, [allTopics]);
 
+  if (!onlineVisible) {
+    return <Overlay />;
+  }
+
   return (
     <>
       {!hasStarted ? (
         <Begin onStart={handleStart} />
-      ) : onlineVisible ? (  // 添加 !isOnline 条件
-        <Overlay />
       ) : (
         <>
           <div className="mb-4 text-xl font-medium pl-4 pr-8 py-4 bg-white">

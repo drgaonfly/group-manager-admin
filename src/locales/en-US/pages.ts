@@ -119,4 +119,6 @@ export default {
   'pages.bills.item': 'items',
   'pages.bills.batchDelete': 'Batch Delete',
   'pages.bills.batchDeletion': 'Batch Deletion',
+  'pages.examination.notPassed': 'You are not passed the examination , cant not take order',
+  'pages.examination.pleaseComplete': 'TO take order after the examination passed'
 };

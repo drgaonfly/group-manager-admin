@@ -117,4 +117,6 @@ export default {
   'pages.bills.item': '项',
   'pages.bills.batchDelete': '批量删除',
   'pages.bills.batchDeletion': '批量删除',
+  'pages.examination.notPassed' : '你没有通过测试，不可接单',
+  'pages.examination.pleaseComplete' : '请完成测试后再尝试接单'
 };
