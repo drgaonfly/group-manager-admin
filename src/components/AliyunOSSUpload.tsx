@@ -35,7 +35,7 @@ const AliyunOSSUpload = ({
   // Fetch OSS Data from Backend API
   const fetchOSSData = async () => {
     try {
-      const data = await request('/upload/get-oss-credentials'); // Adjust the endpoint as necessary
+      const data = await request('/upload/get-credentials'); // Adjust the endpoint as necessary
       setOSSData(data);
     } catch (error: any) {
       message.error(`Failed to get OSS data: ${error.message}`);
