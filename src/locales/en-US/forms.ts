@@ -81,6 +81,10 @@ export default {
   'menu.认证管理.权限组管理': 'Permission Groups',
   'menu.认证管理.数据权限管理': 'Data Permissions',
   'menu.代理管理': 'Proxy Management',
+  'menu.员工管理': 'Employee Management',
+  'menu.会员管理': 'Customer Management',
+  'menu.提现管理': 'Withdraw Management',
+  'menu.常见问题管理': 'Common Problem Management',
   'tabs.close.left': 'Close Tabs to the Left',
   'tabs.close.right': 'Close Tabs to the Right',
   'tabs.close.others': 'Close Other Tabs',
@@ -90,4 +94,5 @@ export default {
   'platform.online': 'Online',
   'platform.offline': 'Offline',
   'proxy.employee': 'Proxied Employee',
+  content: 'Content',
 };

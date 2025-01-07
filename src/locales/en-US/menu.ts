@@ -76,4 +76,8 @@ export default {
   'menu.auth.permissions': 'Permissions',
   'menu.auth.data-permissions': 'Data Permissions',
   'menu.proxies': 'Proxies',
+  'menu.withdraws': 'Withdraws',
+  'menu.employees': 'Employees',
+  'menu.instructions': 'Common Problems',
+  'menu.customers': 'Customers'
 };
