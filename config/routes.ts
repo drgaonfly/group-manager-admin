@@ -84,4 +84,16 @@ export default [
       },
     ],
   },
+  {
+    path: '/proxies',
+    name: 'list.proxies',
+    icon: 'GlobalOutlined',
+    component: './Proxy',
+  },
+  {
+    path: '/employees',
+    name: 'list.employees',
+    icon: 'UsergroupAddOutlined',
+    component: './Employee',
+  },
 ];

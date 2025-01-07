@@ -68,4 +68,10 @@ export default {
   delete_failed: '删除失败，请重试',
   upload_failed: '上传失败，请重试',
   please_select_status: '请选择状态',
+  'platforms.detail': '详情',
+  'platform.online': '在线',
+  'platform.offline': '离线',
+
+  inviteCode: '邀请码',
+  'proxy.employee': '代理用户',
 };
