@@ -113,5 +113,5 @@ export default [
     name: 'list.customers',
     icon: 'UserOutlined',
     component: './Customer',
-  },
+  }
 ];
