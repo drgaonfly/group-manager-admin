@@ -74,4 +74,5 @@ export default {
 
   inviteCode: '邀请码',
   'proxy.employee': '代理用户',
+  content: '内容',
 };

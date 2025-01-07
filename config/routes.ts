@@ -96,4 +96,22 @@ export default [
     icon: 'UsergroupAddOutlined',
     component: './Employee',
   },
+  {
+    path: '/withdraws',
+    name: 'list.withdraw',
+    icon: 'WalletOutlined',
+    component: './Withdraw',
+  },
+  {
+    path: '/instructions',
+    name: 'list.instructions',
+    icon: 'QuestionCircleOutlined',
+    component: './Instruction',
+  },
+  {
+    path: '/customers',
+    name: 'list.customers',
+    icon: 'UserOutlined',
+    component: './Customer',
+  },
 ];

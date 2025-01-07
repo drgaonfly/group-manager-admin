@@ -91,4 +91,8 @@ export default {
   'tabs.close.right': '关闭右侧标签页',
   'tabs.close.others': '关闭其他标签页',
   'menu.proxies': '代理',
+  'menu.withdraws': '提现',
+  'menu.employees': '员工',
+  'menu.customers': '会员',
+  'menu.instructions': '常见问题',
 };
