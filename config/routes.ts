@@ -26,6 +26,9 @@ export default [
     ],
   },
   {
+    redirect: '/auth',
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'SmileOutlined',
@@ -125,5 +128,11 @@ export default [
     name: 'list.transactions',
     icon: 'TransactionOutlined',
     component: './Transaction',
+  },
+  {
+    path: '/carousels',
+    name: 'list.carousels',
+    icon: 'PictureOutlined',
+    component: './Carousel',
   },
 ];

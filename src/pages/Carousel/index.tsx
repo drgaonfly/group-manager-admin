@@ -10,6 +10,7 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
+import { Image } from 'antd';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -20,9 +21,8 @@ import DeleteLink from '@/components/DeleteLink';
  */
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
-
   try {
-    await addItem('/transactions', { ...fields });
+    await addItem('/carousels', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -46,7 +46,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/transactions/${fields._id}`, fields);
+    await updateItem(`/carousels/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -72,7 +72,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/transactions', {
+    await removeItem('/carousels', {
       ids,
     });
     hide();
@@ -113,7 +113,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [activeKey] = useState<string | undefined>('');
   const access = useAccess();
 
   /**
@@ -124,72 +123,47 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['wallet', 'user', 'name'],
-    },
-    {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: ['wallet', 'address'],
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: '_id',
       copyable: true,
-      hideInSearch: true,
+      hideInSearch: false,
     },
     {
-      title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['wallet', 'network'],
-      valueType: 'select',
-      valueEnum: {
-        TRX: { text: 'TRX' },
-        BSC: { text: 'BSC' },
-        ETH: { text: 'ETH' },
-      },
+      title: intl.formatMessage({ id: 'image' }),
+      dataIndex: 'image',
+      hideInSearch: true,
+      valueType: 'image',
+      render: (_, record) => (
+        <Image
+          src={record.image}
+          alt="image"
+          width={45}
+          height={45}
+          style={{
+            objectFit: 'cover',
+          }}
+          preview={true}
+        />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'status' }),
+      dataIndex: 'status',
+      hideInSearch: false,
       copyable: true,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'walletType' }),
-      dataIndex: ['wallet', 'type'],
-      valueType: 'select',
+      render: (status) => {
+        // 根据布尔值渲染启用/禁用状态
+        return status ? (
+          <span style={{ color: 'green' }}>{intl.formatMessage({ id: 'enabled' })}</span>
+        ) : (
+          <span style={{ color: 'red' }}>{intl.formatMessage({ id: 'disabled' })}</span>
+        );
+      },
+      valueType: 'select', // 如果需要搜索条件
       valueEnum: {
-        USDT: { text: 'USDT' },
-        PledgeBalance: { text: '质押余额' },
+        true: { text: intl.formatMessage({ id: 'enabled' }) },
+        false: { text: intl.formatMessage({ id: 'disabled' }) },
       },
-      copyable: true,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'transactionType' }),
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: {
-        WithdrawalFailed: { text: '提现失败' },
-        Pledge: { text: '质押' },
-        StaticIncome: { text: '静态收益' },
-        LotteryReward: { text: '抽奖奖励' },
-        TransferOut: { text: '转出' },
-        TransferIn: { text: '转入' },
-      },
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'transactedBalance' }),
-      dataIndex: 'transactedBalance',
-      hideInSearch: true,
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'currentBalance' }),
-      dataIndex: 'currentBalance',
-      hideInSearch: true,
-      search: false,
-      render: (text, record) => {
-        return (record.wallet.balance || 0) + (record.transactedBalance || 0);
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'previousBalance' }),
-      dataIndex: ['wallet', 'balance'],
-      hideInSearch: true,
-      search: false,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -235,12 +209,9 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        search={{
-          labelWidth: 120,
-          collapsed: false,
-        }}
+        search={{ labelWidth: 120 }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateTransaction) && (
+          access.canSuperAdmin && (
             <Button
               type="primary"
               key="primary"
@@ -252,9 +223,7 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) =>
-          queryList('/transactions', { ...params, isOnline: activeKey }, sort, filter)
-        }
+        request={async (params, sort, filter) => queryList('/carousels', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
@@ -274,7 +243,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteTransaction) && (
+          {(access.canSuperAdmin || access.canDeleteCarousel) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -285,7 +254,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateTransaction) && (
+      {(access.canSuperAdmin || access.canCreateCarousel) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -300,7 +269,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateTransaction) && (
+      {(access.canSuperAdmin || access.canUpdateCarousel) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

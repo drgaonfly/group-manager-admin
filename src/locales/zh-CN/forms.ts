@@ -8,6 +8,7 @@ export default {
   modify: '修改',
   edit: '编辑',
   delete: '删除',
+  detail: '详情',
 
   // 提示信息
   'please.enter': '请输入',
@@ -84,4 +85,5 @@ export default {
   transactedBalance: '交易数量',
   currentBalance: '当前数量',
   previousBalance: '之前数量',
+  wallet: '钱包',
 };

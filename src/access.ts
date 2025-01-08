@@ -160,7 +160,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetInstruction:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/instructions', 'GET')),
 
-    canCareateWallet:
+    canCreateWallet:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'POST')),
     canDeleteWallet:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'DELETE')),
@@ -168,5 +168,27 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets/:id', 'PUT')),
     canGetWallet:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'GET')),
+
+    // transaction权限
+    canCreateTransaction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'POST')),
+    canDeleteTransaction:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'DELETE')),
+    canUpdateTransaction:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/transactions/:id', 'PUT')),
+    canGetTransaction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'GET')),
+
+    //轮播图权限
+    canCreateCarousel:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel', 'POST')),
+    canDeleteCarousel:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel', 'DELETE')),
+    canUpdateCarousel:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel/:id', 'PUT')),
+    canGetCarousel:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel', 'GET')),
   };
 }
