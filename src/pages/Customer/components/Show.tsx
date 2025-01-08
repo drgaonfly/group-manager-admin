@@ -1,5 +1,4 @@
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
-// import { FormattedMessage } from '@umijs/max';
 import { Modal } from 'antd';
 import React from 'react';
 
@@ -11,44 +10,46 @@ interface Props {
 }
 
 const Show: React.FC<Props> = (props) => {
-  const { onClose, open, currentRow, columns: cols } = props;
-  const filteredColumns = cols.filter((col) => col.dataIndex !== 'option');
+  const { onClose, open, currentRow, columns } = props;
+  const filteredColumns = columns.filter((col) => col.dataIndex !== 'option');
 
   return (
     <Modal
       open={open}
       onCancel={onClose}
       footer={null}
-      width="60%"
+      width="50%"
       centered
       className="rounded-lg overflow-hidden"
     >
-      {currentRow?._id && (
-        <ProDescriptions<API.ItemData>
-          column={2}
-          title={currentRow?.phoneNumber}
-          request={async () => ({
-            data: currentRow || {},
-          })}
-          params={{
-            id: currentRow?._id,
-          }}
-          columns={filteredColumns as ProDescriptionsItemProps<API.ItemData>[]}
-          style={{ marginTop: '20px' }}
-          bordered
-          labelStyle={{
-            width: '10%',
-            justifyContent: 'flex-end',
-            padding: '8px 16px',
-            backgroundColor: '#f0f0f0',
-          }}
-          contentStyle={{
-            width: '50%',
-            padding: '8px 16px',
-          }}
-          size="small"
-          className="custom-descriptions"
-        />
+      {currentRow?.email && (
+        <>
+          <ProDescriptions<API.ItemData>
+            column={2}
+            title={currentRow?.email}
+            request={async () => ({
+              data: currentRow || {},
+            })}
+            params={{
+              id: currentRow?._id,
+            }}
+            columns={filteredColumns as ProDescriptionsItemProps<API.ItemData>[]}
+            style={{ marginTop: '20px' }}
+            bordered
+            labelStyle={{
+              width: '10%',
+              justifyContent: 'flex-end',
+              padding: '8px 16px',
+              backgroundColor: '#f0f0f0',
+            }}
+            contentStyle={{
+              width: '50%',
+              padding: '8px 16px',
+            }}
+            size="small"
+            className="custom-descriptions"
+          />
+        </>
       )}
     </Modal>
   );

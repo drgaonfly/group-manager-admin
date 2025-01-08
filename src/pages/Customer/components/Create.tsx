@@ -11,7 +11,6 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { open, onOpenChange, onFinish } = props;
-
   return (
     <Modal
       title={intl.formatMessage({ id: 'add_new' })}

@@ -1,15 +1,16 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, Switch } from 'antd';
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
+import { Role } from '@/apiDataStructures/ApiDataStructure';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -18,7 +19,7 @@ import DeleteLink from '@/components/DeleteLink';
  * @zh-CN 添加节点
  * @param fields
  */
-const handleAdd = async (fields: any) => {
+const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
@@ -108,12 +109,13 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
-  const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<any>();
-  const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
+
+  const actionRef = useRef<ActionType>();
+  const [currentRow, setCurrentRow] = useState<API.ItemData>();
+  const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   /**
    * @en-US International configuration
@@ -121,72 +123,38 @@ const TableList: React.FC = () => {
    * */
   // Define roles object with index signature
 
-  const columns: ProColumns<any>[] = [
+  const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' }),
-      dataIndex: 'phoneNumber',
+      title: intl.formatMessage({ id: 'name' }),
+      dataIndex: 'name',
       copyable: true,
-      hideInSearch: false,
-      width: 250,
     },
     {
-      title: intl.formatMessage({ id: 'certification', defaultMessage: '验证码' }),
-      dataIndex: 'phoneCode',
-      hideInSearch: false,
-      width: 200,
-    },
-    {
-      title: intl.formatMessage({ id: 'password', defaultMessage: '密码' }),
-      dataIndex: 'password',
-      hideInSearch: true,
-      width: 200,
-    },
-    {
-      title: intl.formatMessage({ id: 'user_path', defaultMessage: '用户链接' }),
-      width: 200,
-      hideInSearch: true,
-      render: (_, record) => {
-        const link = `${process.env.UMI_APP_LOGIN_URL}?key=${record._id}`;
+      title: intl.formatMessage({ id: 'email' }),
+      dataIndex: 'email',
+      copyable: true,
+
+      render: (dom, entity) => {
         return (
-          <span>
-            <Button
-              type="link"
-              onClick={() => {
-                navigator.clipboard.writeText(link);
-                message.success(
-                  <FormattedMessage id="copy_success" defaultMessage="Copied to clipboard!" />,
-                );
-              }}
-            >
-              <CopyOutlined />
-            </Button>
-          </span>
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
         );
       },
     },
     {
-      title: intl.formatMessage({ id: 'pages.customer.proxy', defaultMessage: '邀请人' }),
-      dataIndex: ['user', 'name'],
-      hideInSearch: false,
+      title: intl.formatMessage({ id: 'inviteCode' }),
+      dataIndex: 'inviteCode',
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' }),
-      dataIndex: 'ip',
-      hideInSearch: false,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' }),
-      dataIndex: 'localStorage',
-      hideInSearch: true,
-      hideInTable: true,
-      hideInDescriptions: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
-      dataIndex: 'remarks',
-      hideInSearch: false,
+      title: intl.formatMessage({ id: 'proxy.employee' }),
+      dataIndex: ['proxy', 'name'],
     },
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
@@ -196,6 +164,7 @@ const TableList: React.FC = () => {
         true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
       },
+      width: 200,
       render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'platform.online' })}
@@ -211,19 +180,18 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      title: intl.formatMessage({ id: 'role' }),
+      dataIndex: 'roles',
+      hideInSearch: true,
+      renderText: (_, record: any) => {
+        return record.roles?.map((role: Role) => role.name)?.join(', ');
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
-      fixed: 'right',
       render: (_, record) => [
-        <a
-          key="login"
-          onClick={() => {
-            window.open(`${process.env.UMI_APP_LOGIN_URL}?key=${record._id}`);
-          }}
-        >
-          <FormattedMessage id="login" defaultMessage="Login" />
-        </a>,
         <a
           key="detail"
           onClick={() => {
@@ -233,11 +201,11 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </a>,
-        access.canSuperAdmin && (
+        access.canUpdateCustomer && (
           <a
             key="edit"
             onClick={() => {
-              console.log();
+              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
@@ -245,7 +213,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canDeleteCustomer && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -260,25 +228,16 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<any, any>
+      <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2500 }}
         search={{
           labelWidth: 120,
           collapsed: false,
-          span: {
-            xs: 24, // 手机端占满
-            sm: 24, // 平板端占满
-            md: 6, // 电脑端
-            lg: 6, // 大屏幕
-            xl: 6, // 超大屏幕
-            xxl: 6, // 超超大屏幕
-          },
         }}
         toolBarRender={() => [
-          access.canSuperAdmin && (
+          (access.canSuperAdmin || access.canCreateCustomer) && (
             <Button
               type="primary"
               key="primary"
@@ -290,7 +249,35 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('/customers', params, sort, filter)}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="platform.all" defaultMessage="所有" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="platform.online" defaultMessage="Online" />,
+                key: 'true',
+              },
+              {
+                label: <FormattedMessage id="platform.offline" defaultMessage="Offline" />,
+                key: 'false',
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
+        request={async (params, sort, filter) =>
+          queryList('/customers', { ...params, isOnline: activeKey }, sort, filter)
+        }
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
@@ -310,7 +297,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteMenu) && (
+          {(access.canSuperAdmin || access.canDeleteCustomer) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -321,14 +308,12 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateMenu) && (
+      {(access.canSuperAdmin || access.canCreateCustomer) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
           onFinish={async (value) => {
-            const success = await handleAdd({
-              ...value,
-            });
+            const success = await handleAdd(value as API.ItemData);
             if (success) {
               handleModalOpen(false);
               if (actionRef.current) {
@@ -338,7 +323,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateMenu) && (
+      {(access.canSuperAdmin || access.canUpdateCustomer) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
@@ -355,22 +340,16 @@ const TableList: React.FC = () => {
           values={currentRow || {}}
         />
       )}
+
       <Show
         open={showDetail}
-        currentRow={currentRow}
-        columns={columns as ProDescriptionsItemProps<any>[]}
+        currentRow={currentRow as API.ItemData}
+        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
       />
-      <Modal
-        title={intl.formatMessage({ id: 'video_player', defaultMessage: '视频播放' })}
-        open={videoModalOpen}
-        onCancel={() => setVideoModalOpen(false)}
-        footer={null}
-        width={800}
-      ></Modal>
     </PageContainer>
   );
 };

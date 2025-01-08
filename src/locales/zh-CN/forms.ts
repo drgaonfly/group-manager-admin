@@ -79,4 +79,9 @@ export default {
   walletType: '钱包类型',
   network: '归属网络',
   balance: '数量',
+  customer: '会员',
+  transactionType: '交易类型',
+  transactedBalance: '交易数量',
+  currentBalance: '当前数量',
+  previousBalance: '之前数量',
 };

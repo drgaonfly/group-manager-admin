@@ -95,4 +95,5 @@ export default {
   'platform.offline': 'Offline',
   'proxy.employee': 'Proxied Employee',
   content: 'Content',
+  customer: 'Customer',
 };

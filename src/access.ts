@@ -108,6 +108,16 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetEmployee:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/employees', 'GET')),
 
+    // customer权限
+    canCreateCustomer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/customers', 'POST')),
+    canDeleteCustomer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/customers', 'DELETE')),
+    canUpdateCustomer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/customers/:id', 'PUT')),
+    canGetCustomer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/customers', 'GET')),
+
     //Topic权限
     canCreateTopic:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/topics', 'POST')),

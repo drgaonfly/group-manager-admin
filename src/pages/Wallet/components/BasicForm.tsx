@@ -68,7 +68,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormSelect
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'Network' })}
+          label={intl.formatMessage({ id: 'network' })}
           name="network"
           options={[
             { label: 'TBX', value: 'TBX' },
@@ -79,7 +79,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormSelect
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'Type' })}
+          label={intl.formatMessage({ id: 'walletType' })}
           name="type"
           options={[
             { label: 'USDT', value: 'USDT' },

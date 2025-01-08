@@ -95,4 +95,6 @@ export default {
   'menu.employees': '员工',
   'menu.customers': '会员',
   'menu.instructions': '常见问题',
+  'menu.wallets': '钱包',
+  'menu.transactions': '交易账单',
 };

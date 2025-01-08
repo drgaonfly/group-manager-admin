@@ -1,8 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
-import ProxySelect from '@/components/proxySelect';
+import { ProForm, ProFormText, ProFormCheckbox, ProFormSwitch } from '@ant-design/pro-components';
+import { Form, Input, Spin } from 'antd';
+import useQueryList from '@/hooks/useQueryList';
 
 interface Props {
   newRecord?: boolean;
@@ -13,16 +13,31 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
+  const { items: roles, loading } = useQueryList('/roles');
+  const filteredRoles = roles?.filter((role: { name: string }) => role.name === '客户'); // 只筛选出名称为客户的角色
+  const filteredRolesIds = filteredRoles?.map((role: { _id: string }) => role._id);
+
+  const [form] = Form.useForm();
+  //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
+  React.useEffect(() => {
+    if (filteredRoles) {
+      form.setFieldsValue({
+        roles: filteredRolesIds,
+      });
+    }
+  }, [filteredRoles]);
+
   return (
     <ProForm
+      form={form}
       initialValues={{
         ...values,
-        user: values?.user?._id,
-        bot: values?.bot?._id,
+        roles: filteredRolesIds,
       }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
+          roles: filteredRolesIds,
         });
       }}
       submitter={{
@@ -40,45 +55,28 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <ProxySelect />
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'name' })}
+          name="name"
+        />
 
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'phoneNumber', defaultMessage: '电话号码' })}
-          name="phoneNumber"
-          initialValue="" // 设置默认值为空
+          label={intl.formatMessage({ id: 'email' })}
+          name="email"
         />
-
-        <ProFormText.Password
+        <ProFormText
+          rules={[{ required: newRecord }]}
           width="md"
-          label={intl.formatMessage({ id: 'password', defaultMessage: '密码' })}
+          label={intl.formatMessage({ id: 'password' })}
           name="password"
         />
+      </ProForm.Group>
 
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'ip', defaultMessage: 'IP 地址' })}
-          name="ip"
-        />
-
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'certification', defaultMessage: '验证码' })}
-          name="phoneCode"
-        />
-
-        <ProFormTextArea
-          width="md"
-          label={intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' })}
-          name="localStorage"
-        />
-
-        <ProFormTextArea
-          width="md"
-          label={intl.formatMessage({ id: 'remarks', defaultMessage: '备注' })}
-          name="remarks"
-        />
+      <ProForm.Group>
         <ProFormSwitch
           label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
           name="isOnline"
@@ -86,6 +84,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           checkedChildren={intl.formatMessage({ id: 'platform.online' })}
           unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
         />
+
+        {newRecord &&
+          (loading ? (
+            <Spin spinning={loading} />
+          ) : (
+            <ProFormCheckbox.Group
+              name="roles"
+              layout="horizontal"
+              label={intl.formatMessage({ id: 'role_choose' })}
+              options={filteredRoles?.map((role: { name: string; _id: string }) => ({
+                label: role.name,
+                value: role._id,
+              }))}
+              fieldProps={{
+                disabled: true, // 确保在 loading 时禁用复选框
+              }}
+            />
+          ))}
       </ProForm.Group>
 
       {!newRecord && (

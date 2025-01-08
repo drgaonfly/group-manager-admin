@@ -125,12 +125,17 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['wallet', 'customer', 'user', 'name'],
+      dataIndex: ['wallet', 'user', 'name'],
     },
     {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: ['wallet', 'address'],
       copyable: true,
+      valueType: 'select',
+      valueEnum: {
+        USDT: { text: 'USDT' },
+        PledgeBalance: { text: '质押余额' },
+      },
       hideInSearch: true,
     },
     {
@@ -171,7 +176,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       search: false,
       render: (text, record) => {
-        return record.wallet.balance + record.transactedBalance;
+        return (record.wallet?.balance || 0) + (record.transactedBalance || 0);
       },
     },
     {

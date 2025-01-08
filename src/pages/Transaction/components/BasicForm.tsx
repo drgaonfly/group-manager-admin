@@ -20,6 +20,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const filteredRolesIds = filteredRoles?.map((role: { _id: string }) => role._id);
 
   const [form] = Form.useForm();
+
   //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
   React.useEffect(() => {
     if (filteredRoles) {
@@ -60,37 +61,61 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <CustomerSelect />
 
         <ProFormText
-          rules={[{ required: true }]}
-          width="md"
+          name={['wallet', 'address']}
           label={intl.formatMessage({ id: 'walletAddress' })}
-          name="address"
-        />
-        <ProFormSelect
-          rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'Network' })}
-          name="network"
-          options={[
-            { label: 'TBX', value: 'TBX' },
-            { label: 'BSC', value: 'BSC' },
-            { label: 'ETH', value: 'ETH' },
-          ]}
         />
-        <ProFormSelect
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'Type' })}
-          name="type"
-          options={[
-            { label: 'USDT', value: 'USDT' },
-            { label: '质押余额', value: 'PledgeBalance' },
-          ]}
-        />
+
         <ProFormText
-          rules={[{ required: true }]}
+          name={['wallet', 'network']}
+          label={intl.formatMessage({ id: 'network' })}
           width="md"
-          label={intl.formatMessage({ id: 'Balance' })}
-          name="balance"
+        />
+      </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormText
+          name={['wallet', 'type']}
+          label={intl.formatMessage({ id: 'walletType' })}
+          width="md"
+        />
+
+        <ProFormSelect
+          name="type"
+          label={intl.formatMessage({ id: 'transactionType' })}
+          width="md"
+          options={[
+            { label: '提现失败', value: 'WithdrawalFailed' },
+            { label: '质押', value: 'Pledge' },
+            { label: '静态收益', value: 'StaticIncome' },
+            { label: '抽奖奖励', value: 'LotteryReward' },
+            { label: '转出', value: 'TransferOut' },
+            { label: '转入', value: 'TransferIn' },
+          ]}
+          rules={[{ required: true }]}
+        />
+
+        <ProFormText
+          name="transactedBalance"
+          label={intl.formatMessage({ id: 'transactedBalance' })}
+          width="md"
+          rules={[{ required: true }]}
+        />
+      </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormText
+          name={['wallet', 'balance']}
+          label={intl.formatMessage({ id: 'previousBalance' })}
+          width="md"
+          disabled
+        />
+
+        <ProFormText
+          name="currentBalance"
+          label={intl.formatMessage({ id: 'currentBalance' })}
+          width="md"
+          disabled
         />
       </ProForm.Group>
 
