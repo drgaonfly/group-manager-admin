@@ -26,6 +26,10 @@ export default [
     ],
   },
   {
+    path: '/',
+    redirect: '/welcome', // 默认重定向到 /welcome
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'SmileOutlined',
