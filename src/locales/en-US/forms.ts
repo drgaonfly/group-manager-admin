@@ -99,4 +99,7 @@ export default {
   investBalance: 'Invest Balance',
   rateOfReturn: 'Rate of Return',
   profit: 'Profit',
+  usdt: 'USDT',
+  beInviteds: 'Be Invited People',
+  toInvites: 'To Invite People',
 };

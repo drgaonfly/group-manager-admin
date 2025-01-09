@@ -148,4 +148,10 @@ export default [
     icon: 'MoneyCollectOutlined',
     component: './StackingConfiguration',
   },
+  {
+    path: '/lottery-records',
+    name: 'list.lottery-records',
+    icon: 'TrophyOutlined',
+    component: './LotteryRecord',
+  },
 ];

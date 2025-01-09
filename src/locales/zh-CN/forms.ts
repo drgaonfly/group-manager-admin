@@ -92,4 +92,7 @@ export default {
   investBalance: '投资数量',
   rateOfReturn: '回报率',
   profit: '利润',
+  usdt: 'USDT',
+  beInviteds: '已邀请人数',
+  toInvites: '须邀请人数',
 };

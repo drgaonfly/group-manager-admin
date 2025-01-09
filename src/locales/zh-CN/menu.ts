@@ -100,4 +100,5 @@ export default {
   'menu.transactions': '交易账单',
   'menu.carousels': '轮播图',
   'menu.stacking-configurations': '质押配置',
+  'menu.lottery-records': '抽奖记录',
 };
