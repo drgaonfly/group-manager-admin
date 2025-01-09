@@ -89,4 +89,7 @@ export default {
   wallet: '钱包',
   phoneNumber: '手机号码',
   localStorage: '本地存储',
+  investBalance: '投资数量',
+  rateOfReturn: '回报率',
+  profit: '利润',
 };

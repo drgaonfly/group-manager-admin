@@ -139,7 +139,13 @@ export default [
   {
     path: '/carousels',
     name: 'list.carousels',
-    icon: 'CircleOutlined',
+    icon: 'PictureOutlined',
     component: './Carousel',
+  },
+  {
+    path: '/stacking-configurations',
+    name: 'list.stacking-configurations',
+    icon: 'MoneyCollectOutlined',
+    component: './StackingConfiguration',
   },
 ];

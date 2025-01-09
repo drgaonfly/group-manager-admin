@@ -30,6 +30,8 @@ import {
   QuestionCircleOutlined,
   HomeOutlined,
   InfoCircleOutlined,
+  PictureOutlined,
+  MoneyCollectOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -72,6 +74,8 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   QuestionCircleOutlined: <QuestionCircleOutlined />,
   HomeOutlined: <HomeOutlined />,
   InfoCircleOutlined: <InfoCircleOutlined />,
+  PictureOutlined: <PictureOutlined />,
+  MoneyCollectOutlined: <MoneyCollectOutlined />,
 };
 
 console.log('iconEnum', iconEnum);

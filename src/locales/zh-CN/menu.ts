@@ -99,4 +99,5 @@ export default {
   'menu.wallets': '钱包',
   'menu.transactions': '交易账单',
   'menu.carousels': '轮播图',
+  'menu.stacking-configurations': '质押配置',
 };

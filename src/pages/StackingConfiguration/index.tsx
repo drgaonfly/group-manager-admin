@@ -22,7 +22,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/wallets', { ...fields });
+    await addItem('/stacking-configurations', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -46,7 +46,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/wallets/${fields._id}`, fields);
+    await updateItem(`/stacking-configurations/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -72,7 +72,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/wallets', {
+    await removeItem('/stacking-configurations', {
       ids,
     });
     hide();
@@ -124,39 +124,16 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['user', 'name'],
+      title: intl.formatMessage({ id: 'investBalance' }),
+      dataIndex: 'investBalance',
     },
     {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: 'address',
-      copyable: true,
-      hideInSearch: true,
+      title: intl.formatMessage({ id: 'rateOfReturn' }),
+      dataIndex: 'rateOfReturn',
     },
     {
-      title: intl.formatMessage({ id: 'network' }),
-      dataIndex: 'network',
-      valueType: 'select',
-      valueEnum: {
-        TBX: { text: 'TBX' },
-        BSC: { text: 'BSC' },
-        ETH: { text: 'ETH' },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'walletType' }),
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: {
-        USDT: { text: 'USDT' },
-        PledgeBalance: { text: '质押余额' },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'balance' }),
-      dataIndex: 'balance',
-      hideInSearch: true,
-      search: false,
+      title: intl.formatMessage({ id: 'profit' }),
+      dataIndex: 'profit',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -221,7 +198,7 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/wallets', { ...params, isOnline: activeKey }, sort, filter)
+          queryList('/stacking-configurations', { ...params, isOnline: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={

@@ -1,9 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
-import CustomerSelect from '@/components/customerSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -57,40 +56,25 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <CustomerSelect />
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'investBalance' })}
+          name="investBalance"
+        />
 
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'walletAddress' })}
-          name="address"
+          label={intl.formatMessage({ id: 'rateOfReturn' })}
+          name="rateOfReturn"
         />
-        <ProFormSelect
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'network' })}
-          name="network"
-          options={[
-            { label: 'TBX', value: 'TBX' },
-            { label: 'BSC', value: 'BSC' },
-            { label: 'ETH', value: 'ETH' },
-          ]}
-        />
-        <ProFormSelect
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'walletType' })}
-          name="type"
-          options={[
-            { label: 'USDT', value: 'USDT' },
-            { label: '质押余额', value: 'PledgeBalance' },
-          ]}
-        />
+
         <ProFormText
           rules={[{ required: true }]}
           width="md"
-          label={intl.formatMessage({ id: 'transactedBalance' })}
-          name="balance"
+          label={intl.formatMessage({ id: 'profit' })}
+          name="profit"
         />
       </ProForm.Group>
 

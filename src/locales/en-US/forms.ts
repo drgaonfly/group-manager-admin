@@ -96,4 +96,7 @@ export default {
   'proxy.employee': 'Proxied Employee',
   content: 'Content',
   customer: 'Customer',
+  investBalance: 'Invest Balance',
+  rateOfReturn: 'Rate of Return',
+  profit: 'Profit',
 };

@@ -84,4 +84,5 @@ export default {
   'menu.wallets': 'Wallets',
   'menu.transactions': 'Transactions',
   'menu.carousels': 'Carousels',
+  'menu.stacking-configurations': 'Stacking Configurations',
 };
