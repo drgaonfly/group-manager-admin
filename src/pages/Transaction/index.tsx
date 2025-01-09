@@ -192,6 +192,11 @@ const TableList: React.FC = () => {
       search: false,
     },
     {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

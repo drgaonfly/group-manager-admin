@@ -102,4 +102,6 @@ export default {
   usdt: 'USDT',
   beInviteds: 'Be Invited People',
   toInvites: 'To Invite People',
+  paymentAddress: 'Payment Address',
+  hash: 'Hash',
 };

@@ -154,4 +154,10 @@ export default [
     icon: 'TrophyOutlined',
     component: './LotteryRecord',
   },
+  {
+    path: '/proxy-commission-records',
+    name: 'list.proxy-commission-records',
+    icon: 'PieChartOutlined',
+    component: './ProxyCommissionRecord',
+  },
 ];

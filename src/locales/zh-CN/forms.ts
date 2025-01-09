@@ -95,4 +95,6 @@ export default {
   usdt: 'USDT',
   beInviteds: '已邀请人数',
   toInvites: '须邀请人数',
+  paymentAddress: '收款地址',
+  hash: '哈希值',
 };

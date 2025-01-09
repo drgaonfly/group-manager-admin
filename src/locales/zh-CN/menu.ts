@@ -101,4 +101,5 @@ export default {
   'menu.carousels': '轮播图',
   'menu.stacking-configurations': '质押配置',
   'menu.lottery-records': '抽奖记录',
+  'menu.proxy-commission-records': '代理分佣记录',
 };

@@ -86,4 +86,5 @@ export default {
   'menu.carousels': 'Carousels',
   'menu.stacking-configurations': 'Stacking Configurations',
   'menu.lottery-records': 'Lottery Records',
+  'menu.proxy-commission-records': 'Proxy Commission Records',
 };

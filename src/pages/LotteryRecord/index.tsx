@@ -158,6 +158,11 @@ const TableList: React.FC = () => {
       dataIndex: 'toInvites',
     },
     {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
@@ -200,13 +205,14 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
+        scroll={{ x: 2000 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateTransaction) && (
+          (access.canSuperAdmin || access.canCreateLotteryRecord) && (
             <Button
               type="primary"
               key="primary"
@@ -240,7 +246,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteTransaction) && (
+          {(access.canSuperAdmin || access.canDeleteLotteryRecord) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -251,7 +257,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateTransaction) && (
+      {(access.canSuperAdmin || access.canCreateLotteryRecord) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}

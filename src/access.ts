@@ -183,12 +183,54 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
     //轮播图权限
     canCreateCarousel:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel', 'POST')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousels', 'POST')),
     canDeleteCarousel:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousels', 'DELETE')),
     canUpdateCarousel:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel/:id', 'PUT')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousels/:id', 'PUT')),
     canGetCarousel:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousel', 'GET')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousels', 'GET')),
+
+    // stacking configurations 权限
+    canCreateStackingConfiguration:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations', 'POST')),
+    canDeleteStackingConfiguration:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations', 'DELETE')),
+    canUpdateStackingConfiguration:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations/:id', 'PUT')),
+    canGetStackingConfiguration:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations', 'GET')),
+
+    // lottery records权限
+    canCreateLotteryRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/lottery-records', 'POST')),
+    canDeleteLotteryRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/lottery-records', 'DELETE')),
+    canUpdateLotteryRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/lottery-records/:id', 'PUT')),
+    canGetLotteryRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/lottery-records', 'GET')),
+
+    // proxy commission records权限
+    canCreateProxyCommissionRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/proxy-commission-records', 'POST')),
+    canDeleteProxyCommissionRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/proxy-commission-records', 'DELETE')),
+    canUpdateProxyCommissionRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/proxy-commission-records/:id', 'PUT')),
+    canGetProxyCommissionRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/proxy-commission-records', 'GET')),
   };
 }

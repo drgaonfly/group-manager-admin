@@ -22,7 +22,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/stacking-configurations', { ...fields });
+    await addItem('/proxy-commission-records', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -46,7 +46,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/stacking-configurations/${fields._id}`, fields);
+    await updateItem(`/proxy-commission-records/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -72,7 +72,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/stacking-configurations', {
+    await removeItem('/proxy-commission-records', {
       ids,
     });
     hide();
@@ -124,16 +124,43 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'investBalance' }),
-      dataIndex: 'investBalance',
+      title: intl.formatMessage({ id: 'customer' }),
+      dataIndex: ['wallet', 'user', 'name'],
     },
     {
-      title: intl.formatMessage({ id: 'rateOfReturn' }),
-      dataIndex: 'rateOfReturn',
+      title: intl.formatMessage({ id: 'walletAddress' }),
+      dataIndex: ['wallet', 'address'],
+      copyable: true,
+      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'profit' }),
-      dataIndex: 'profit',
+      title: intl.formatMessage({ id: 'network' }),
+      dataIndex: ['wallet', 'network'],
+      valueType: 'select',
+      valueEnum: {
+        TRX: { text: 'TRX' },
+        BSC: { text: 'BSC' },
+        ETH: { text: 'ETH' },
+      },
+      copyable: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'paymentAddress' }),
+      dataIndex: 'paymentAddress',
+    },
+    {
+      title: intl.formatMessage({ id: 'balance' }),
+      dataIndex: 'balance',
+    },
+    {
+      title: intl.formatMessage({ id: 'hash' }),
+      dataIndex: 'hash',
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -147,13 +174,12 @@ const TableList: React.FC = () => {
             setShowDetail(true);
           }}
         >
-          <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
+          <FormattedMessage id="detail" />
         </a>,
-        access.canUpdateStackingConfiguration && (
+        access.canSuperAdmin && (
           <a
             key="edit"
             onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
@@ -161,7 +187,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canDeleteStackingConfiguration && (
+        access.canSuperAdmin && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -179,13 +205,14 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
+        scroll={{ x: 2500 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateStackingConfiguration) && (
+          (access.canSuperAdmin || access.canCreateProxyCommissionRecord) && (
             <Button
               type="primary"
               key="primary"
@@ -198,7 +225,7 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/stacking-configurations', { ...params, isOnline: activeKey }, sort, filter)
+          queryList('/proxy-commission-records', { ...params, isOnline: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={
@@ -219,7 +246,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteStackingConfiguration) && (
+          {(access.canSuperAdmin || access.canDeleteProxyCommissionRecord) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -230,7 +257,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateStackingConfiguration) && (
+      {(access.canSuperAdmin || access.canCreateProxyCommissionRecord) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -245,7 +272,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateStackingConfiguration) && (
+      {(access.canSuperAdmin || access.canUpdateProxyCommissionRecord) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
