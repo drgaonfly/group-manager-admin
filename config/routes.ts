@@ -131,6 +131,12 @@ export default [
     component: './Wallet',
   },
   {
+    path: '/wallet-deal-records',
+    name: 'list.walletDealRecords',
+    icon: 'TransactionOutlined',
+    component: './WalletDealRecord',
+  },
+  {
     path: '/transactions',
     name: 'list.transactions',
     icon: 'TransactionOutlined',

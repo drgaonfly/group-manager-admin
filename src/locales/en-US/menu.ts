@@ -87,4 +87,5 @@ export default {
   'menu.stacking-configurations': 'Stacking Configurations',
   'menu.lottery-records': 'Lottery Records',
   'menu.proxy-commission-records': 'Proxy Commission Records',
+  'menu.wallet-deal-records': 'Wallet Deal Records',
 };

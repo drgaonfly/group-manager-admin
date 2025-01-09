@@ -97,4 +97,12 @@ export default {
   toInvites: '须邀请人数',
   paymentAddress: '收款地址',
   hash: '哈希值',
+  isOperativeOnAdmin: '后台操作',
+  walletDealType: '类型',
+  pending: '待收款',
+  success: '已成功',
+  fail: '已失败',
+  collection: '归集',
+  stacking: '质押',
+  withdraw: '提现',
 };

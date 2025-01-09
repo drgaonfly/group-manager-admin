@@ -232,5 +232,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetProxyCommissionRecord:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/proxy-commission-records', 'GET')),
+
+    // wallet deal records权限
+    canCreateWalletDealRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/wallet-deal-records', 'POST')),
+    canDeleteWalletDealRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/wallet-deal-records', 'DELETE')),
+    canUpdateWalletDealRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/wallet-deal-records/:id', 'PUT')),
+    canGetWalletDealRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/wallet-deal-records', 'GET')),
   };
 }

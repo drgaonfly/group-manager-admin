@@ -102,4 +102,5 @@ export default {
   'menu.stacking-configurations': '质押配置',
   'menu.lottery-records': '抽奖记录',
   'menu.proxy-commission-records': '代理分佣记录',
+  'menu.wallet-deal-records': '钱包交易记录',
 };
