@@ -112,4 +112,10 @@ export default {
   aggragedBalance: '归集金额',
   stackedBalance: '质押金额',
   withdrawalBalance: '提现金额',
+  widthdrawalId: '提现编号',
+  applyTime: '申请时间',
+  widthdrawalMethods: '提现方式',
+  moderatationStatus: '审核状态',
+  fundStatus: '打款状态',
+  userInfo: '用户信息',
 };

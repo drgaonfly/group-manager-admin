@@ -95,4 +95,8 @@ export default {
   'pages.role.confirm': '确认',
   'pages.role.cancel': '取消',
   'pages.role.batchDeletion': '批量删除',
+  'pages.withdraw.availableBalance': '可用余额',
+  'pages.withdraw.unavailableBalance': '不可用余额',
+  'pages.withdraw.applyWithdraw': '申请提现',
+  'pages.withdraw.withdrawList': '提现记录',
 };

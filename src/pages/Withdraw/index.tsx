@@ -121,13 +121,13 @@ const WithdrawPage: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: '提现编号',
+      title: intl.formatMessage({ id: 'widthdrawalId' }),
       dataIndex: 'withdrawalNumber',
       copyable: true,
       hideInSearch: true,
     },
     {
-      title: '会员备注',
+      title: intl.formatMessage({ id: 'member' }),
       dataIndex: ['wallet', 'user', 'name'],
       hideInSearch: true,
     },
@@ -140,7 +140,7 @@ const WithdrawPage: React.FC = () => {
       dataIndex: ['wallet', 'address'],
     },
     {
-      title: '申请时间',
+      title: intl.formatMessage({ id: 'applyTime' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       hideInSearch: false,
@@ -154,7 +154,7 @@ const WithdrawPage: React.FC = () => {
       },
     },
     {
-      title: '提现方式',
+      title: intl.formatMessage({ id: 'widthdrawalMethods' }),
       dataIndex: 'withdrawalMethod',
       valueType: 'select',
       valueEnum: {
@@ -165,7 +165,7 @@ const WithdrawPage: React.FC = () => {
       },
     },
     {
-      title: '审核状态',
+      title: intl.formatMessage({ id: 'moderatationStatus' }),
       dataIndex: 'reviewStatus',
       valueType: 'select',
       valueEnum: {
@@ -174,7 +174,7 @@ const WithdrawPage: React.FC = () => {
       },
     },
     {
-      title: '打款状态',
+      title: intl.formatMessage({ id: 'fundStatus' }),
       dataIndex: 'paymentStatus',
       valueType: 'select',
       valueEnum: {
@@ -183,14 +183,14 @@ const WithdrawPage: React.FC = () => {
       },
     },
     {
-      title: '提现金额(元)',
+      title: intl.formatMessage({ id: 'withdrawalBalance' }),
       dataIndex: 'amount',
       valueType: 'money',
       hideInSearch: true,
       search: false,
     },
     {
-      title: '用户信息',
+      title: intl.formatMessage({ id: 'userInfo' }),
       dataIndex: ['user', 'username'],
       hideInSearch: true,
       render: (_, record) => <span>{record.user?.username || '-'}</span>,
@@ -238,19 +238,29 @@ const WithdrawPage: React.FC = () => {
       <Card style={{ marginBottom: 24 }}>
         <Row gutter={24}>
           <Col span={8}>
-            <Statistic title="可用余额" value={0.0} precision={2} suffix="元" />
+            <Statistic
+              title={intl.formatMessage({ id: 'pages.withdraw.availableBalance' })}
+              value={0.0}
+              precision={2}
+              suffix="元"
+            />
             <Button type="primary" style={{ marginTop: 16 }} onClick={handleWithdrawClick}>
-              申请提现
+              {intl.formatMessage({ id: 'pages.withdraw.applyWithdraw' })}
             </Button>
           </Col>
           <Col span={8}>
-            <Statistic title="不可用余额" value={0.0} precision={2} suffix="元" />
+            <Statistic
+              title={intl.formatMessage({ id: 'pages.withdraw.unavailableBalance' })}
+              value={0.0}
+              precision={2}
+              suffix="元"
+            />
           </Col>
         </Row>
       </Card>
 
       <ProTable<API.ItemData, API.PageParams>
-        headerTitle="提现记录"
+        headerTitle={intl.formatMessage({ id: 'pages.withdraw.withdrawList' })}
         actionRef={actionRef}
         rowKey="_id"
         search={{ labelWidth: 120 }}

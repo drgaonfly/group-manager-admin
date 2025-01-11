@@ -97,4 +97,8 @@ export default {
   'pages.role.confirm': 'Confirm',
   'pages.role.cancel': 'Cancel',
   'pages.role.batchDeletion': 'Batch Deletion',
+  'pages.withdraw.availableBalance': 'Withdrawable Balance',
+  'pages.withdraw.unavailableBalance': 'Unwithdrawable Balance',
+  'pages.withdraw.applyWithdraw': 'Apply for Withdraw',
+  'pages.withdraw.withdrawList': 'Withdraw List',
 };
