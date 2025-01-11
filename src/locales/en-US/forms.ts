@@ -72,6 +72,8 @@ export default {
   delete_failed: 'Delete failed, please try again',
   upload_failed: 'Upload failed, please try again',
   please_select_status: 'Please select status',
+  phoneNumber: 'Phone Number',
+  remarks: 'Remarks',
   'menu.用户管理': 'User Management',
   'menu.认证管理': 'Authentication',
   'menu.认证管理.用户管理': 'Users',
@@ -139,4 +141,8 @@ export default {
   'got it': 'Got it',
   ip: 'Ip Address',
   certification: 'Certification',
+  please_enter_title: 'Please enter title',
+  please_enter_content: 'Please enter content',
+  normal: 'Normal',
+  abnormal: 'Abnormal',
 };

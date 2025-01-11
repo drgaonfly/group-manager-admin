@@ -27,9 +27,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       submitter={{
         render: (props, dom) => {
           return (
-            <div style={{ textAlign: 'right' }}>
+            <div className="text-right">
               {dom.map((button, index) => (
-                <span key={index} style={{ marginLeft: 8 }}>
+                <span key={index} className="ml-2">
                   {button}
                 </span>
               ))}
@@ -65,12 +65,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'certification', defaultMessage: '验证码' })}
           name="phoneCode"
-        />
-
-        <ProFormTextArea
-          width="md"
-          label={intl.formatMessage({ id: 'localstorage', defaultMessage: '本地存储' })}
-          name="localStorage"
         />
 
         <ProFormTextArea

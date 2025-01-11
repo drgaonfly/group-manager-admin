@@ -80,7 +80,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       submitter={{
         render: (props, dom) => {
           return (
-            <div style={{ textAlign: 'right' }}>
+            <div className="text-right">
               {dom.map((button, index) => (
                 <span key={index}>{button}</span>
               ))}
@@ -93,19 +93,27 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormText
           rules={[{ required: false }]}
           width="md"
-          label={<FormattedMessage id="instruction.title" defaultMessage="标题" />}
+          label={<FormattedMessage id="title" defaultMessage="标题" />}
           name="title"
           placeholder={intl.formatMessage({
-            id: 'instruction.title',
+            id: 'please_enter_title',
             defaultMessage: '请输入标题',
           })}
         />
 
         <ProForm.Item
-          label={<FormattedMessage id="instruction.content" defaultMessage="内容" />}
+          label={<FormattedMessage id="content" defaultMessage="内容" />}
           name="content"
+          className="w-96 h-96"
         >
-          <Editor value={content} onChange={handleEditorChange} placeholder="请输入内容" />
+          <Editor
+            value={content}
+            onChange={handleEditorChange}
+            placeholder={intl.formatMessage({
+              id: 'please_enter_content',
+              defaultMessage: '请输入内容',
+            })}
+          />
         </ProForm.Item>
       </ProForm.Group>
 

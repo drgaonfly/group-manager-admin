@@ -141,8 +141,8 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'localStorage', defaultMessage: '本地存储' }),
-      dataIndex: 'localStorage',
+      title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
+      dataIndex: 'remark',
       copyable: true,
       hideInSearch: true,
     },

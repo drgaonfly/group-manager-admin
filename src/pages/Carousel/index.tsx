@@ -149,7 +149,8 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'status',
-      render: (status) => (status ? '正常' : '异常'),
+      render: (status) =>
+        status ? intl.formatMessage({ id: 'normal' }) : intl.formatMessage({ id: 'abnormal' }),
       valueType: 'select',
       valueEnum: {
         true: { text: '正常' },
