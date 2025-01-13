@@ -95,6 +95,7 @@ export default {
   'menu.抽奖记录管理': 'Lottery Record Management',
   'menu.代理分佣记录管理': 'Proxy Commission Record Management',
   'menu.钱包交易记录管理': 'Wallet Transaction Record Management',
+  'menu.工作台管理': 'Dashboard Management',
   'tabs.close.left': 'Close Tabs to the Left',
   'tabs.close.right': 'Close Tabs to the Right',
   'tabs.close.others': 'Close Other Tabs',
@@ -151,4 +152,9 @@ export default {
   LotteryReward: 'Lottery Reward',
   transferIn: 'transfer In',
   transferOut: 'Transfer Out',
+  totalUsers: 'Total Users',
+  recentRegistrations: 'New Users in the Last {days} Days',
+  recentRegistrationsWarning: 'Failed to fetch new user data',
+  recentRegistrationsError: 'Failed to fetch new user data',
+  todayLogin: 'Today Login',
 };
