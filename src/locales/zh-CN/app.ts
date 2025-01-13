@@ -331,4 +331,12 @@ export default {
   'status.fail': '失败',
   'menu.examination-rooms': '考场',
   'menu.Welcome': '欢迎',
+  'langue.image': '图片',
+  'langue.code': '语言代码',
+  'langue.name': '语言名称',
+  'langue.title': '语言标题',
+  'langue.isDefault': '是否默认',
+  'platform.online': '在线',
+  'platform.offline': '离线',
+  isOnline: '是否在线',
 };

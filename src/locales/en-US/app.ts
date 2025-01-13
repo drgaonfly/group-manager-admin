@@ -323,4 +323,12 @@ export default {
   'status.success': 'Success',
   'status.fail': 'Failed',
   'status.doing': 'Doing',
+  'langue.image': 'Image',
+  'langue.code': 'Language Code',
+  'langue.name': 'Language Name',
+  'langue.title': 'Language Title',
+  'langue.isDefault': 'Is Default',
+  'platform.online': 'Online',
+  'platform.offline': 'Offline',
+  isOnline: 'Is Online',
 };

@@ -89,10 +89,23 @@ export default [
     ],
   },
   {
+
     path: '/dashboard',
     name: 'list.dashboard',
     icon: 'DashboardOutlined',
     component: './Dashboard',
+  },
+    path: '/multilingual-management',
+    name: 'list.multilingual-management',
+    icon: 'TranslationOutlined',
+    routes: [
+      {
+        path: '/multilingual-management/languages',
+        name: 'list.languages',
+        component: './MultilingualManagement/Langue',
+        icon: 'TranslationOutlined',
+      },
+    ],
   },
   {
     path: '/proxies',
