@@ -128,4 +128,5 @@ export default {
   LotteryReward: '抽奖奖励',
   transferIn: '转入',
   transferOut: '转出',
+  totalUsers: '总用户数',
 };

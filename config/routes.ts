@@ -89,6 +89,12 @@ export default [
     ],
   },
   {
+    path: '/dashboard',
+    name: 'list.dashboard',
+    icon: 'DashboardOutlined',
+    component: './Dashboard',
+  },
+  {
     path: '/proxies',
     name: 'list.proxies',
     icon: 'GlobalOutlined',

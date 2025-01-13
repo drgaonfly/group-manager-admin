@@ -33,6 +33,7 @@ import {
   PictureOutlined,
   MoneyCollectOutlined,
   PieChartOutlined,
+  DashboardOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -78,6 +79,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   PictureOutlined: <PictureOutlined />,
   MoneyCollectOutlined: <MoneyCollectOutlined />,
   PieChartOutlined: <PieChartOutlined />,
+  DashboardOutlined: <DashboardOutlined />,
 };
 
 console.log('iconEnum', iconEnum);

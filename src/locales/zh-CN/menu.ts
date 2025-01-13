@@ -87,6 +87,7 @@ export default {
   'menu.认证管理.权限管理': '权限管理',
   'menu.认证管理.权限组管理': '权限组管理',
   'menu.认证管理.数据权限管理': '数据权限管理',
+  'menu.工作台管理': '工作台管理',
   'tabs.close.left': '关闭左侧标签页',
   'tabs.close.right': '关闭右侧标签页',
   'tabs.close.others': '关闭其他标签页',
