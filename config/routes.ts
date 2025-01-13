@@ -89,6 +89,19 @@ export default [
     ],
   },
   {
+    path: '/multilingual-management',
+    name: 'list.multilingual-management',
+    icon: 'TranslationOutlined',
+    routes: [
+      {
+        path: '/multilingual-management/languages',
+        name: 'list.languages',
+        component: './MultilingualManagement/Langue',
+        icon: 'TranslationOutlined',
+      },
+    ],
+  },
+  {
     path: '/proxies',
     name: 'list.proxies',
     icon: 'GlobalOutlined',
