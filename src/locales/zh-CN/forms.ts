@@ -138,6 +138,7 @@ export default {
   'menu.notices': '通知管理',
   activityType: '活动类型',
   ethEarnings: 'ETH收益',
+  usdtEarnings: 'USDT收益',
   lockDays: '锁仓天数',
   startAt: '开始时间',
   endAt: '结束时间',
@@ -153,4 +154,7 @@ export default {
   exchangeBalance: '兑换余额',
   targetBalance: '目标余额',
   uniPrice: '单价',
+  incomeType: '收益类型',
+  remark: '备注',
+  sharedCustomer: '分享客户',
 };

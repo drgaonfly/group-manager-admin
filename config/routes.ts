@@ -240,4 +240,16 @@ export default [
     Icon: 'SwapOutlined',
     component: './Exchange',
   },
+  {
+    path: '/incomes',
+    name: 'list.incomes',
+    icon: 'MoneyCollectOutlined',
+    component: './Income',
+  },
+  {
+    path: '/transfers',
+    name: 'list.transfers',
+    icon: 'TransactionOutlined',
+    component: './Transfer',
+  },
 ];

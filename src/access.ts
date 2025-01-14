@@ -294,5 +294,27 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'PUT')),
     canGetExchange:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'GET')),
+
+    // income 权限
+    canCreateIncome:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/incomes', 'POST')),
+    canDeleteIncome:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/incomes/:id', 'DELETE')),
+    canUpdateIncome:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/incomes/:id', 'PUT')),
+    canGetIncome:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/incomes', 'GET')),
+
+    // transfer 权限
+    canCreateTransfer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transfers', 'POST')),
+    canDeleteTransfer:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/transfers/:id', 'DELETE')),
+    canUpdateTransfer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transfers/:id', 'PUT')),
+    canGetTransfer:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transfers', 'GET')),
   };
 }
