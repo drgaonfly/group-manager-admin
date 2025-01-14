@@ -35,6 +35,7 @@ import {
   PieChartOutlined,
   DashboardOutlined,
   TranslationOutlined,
+  WechatOutlined,
   NotificationOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
@@ -83,6 +84,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   PieChartOutlined: <PieChartOutlined />,
   DashboardOutlined: <DashboardOutlined />,
   TranslationOutlined: <TranslationOutlined />,
+  WechatOutlined: <WechatOutlined />,
   NotificationOutlined: <NotificationOutlined />,
 };
 

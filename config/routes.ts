@@ -192,9 +192,36 @@ export default [
     component: './ProxyCommissionRecord',
   },
   {
+
+    path: '/questions',
+    name: 'list.questions',
+    icon: 'WechatOutlined',
+    component: './Question',
+  },
+  {
+    path: '/activities',
+    name: 'list.activities',
+    icon: 'TranslationOutlined',
+    routes: [
+      {
+        path: '/activities/index',
+        name: 'list.activities',
+        component: './Activity/Activity',
+        icon: 'TranslationOutlined',
+      },
+      {
+        path: '/activities/release-records',
+        name: 'list.release-records',
+        component: './Activity/ReleaseRecord',
+        icon: 'TranslationOutlined',
+      },
+    ],
+  },
+   {
     path: '/notices',
     name: 'list.notices',
     icon: 'NotificationOutlined',
     component: './Notice',
-  },
+
+  }
 ];

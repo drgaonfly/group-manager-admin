@@ -246,5 +246,42 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetWalletDealRecord:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/wallet-deal-records', 'GET')),
+
+    // questions 权限
+    canCreateQuestion:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/questions', 'POST')),
+    canDeleteQuestion:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/questions/:id', 'DELETE')),
+    canUpdateQuestion:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/questions/:id', 'PUT')),
+    canGetQuestion:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/questions', 'GET')),
+
+    // activity  权限
+    canCreateActivity:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/activities', 'POST')),
+    canDeleteActivity:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/activities/:id', 'DELETE')),
+    canUpdateActivity:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/activities/:id', 'PUT')),
+    canGetActivity:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/activities', 'GET')),
+
+    // release-records权限
+    canCreateReleaseRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/release-records', 'POST')),
+    canDeleteReleaseRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/release-records/:id', 'DELETE')),
+    canUpdateReleaseRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/release-records/:id', 'PUT')),
+    canGetReleaseRecord:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/release-records', 'GET')),
   };
 }
