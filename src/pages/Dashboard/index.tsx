@@ -2,7 +2,7 @@ import React from 'react';
 import RegistrationStatsChart from './components/Dashboard';
 import { PageContainer } from '@ant-design/pro-components';
 import TotalUsers from './components/TotalUser';
-import TodayLogin from './components/TodayLogin';
+import TodayRegister from './components/TodayRegister';
 import { Row, Col } from 'antd';
 import RecentRegistrations from './components/RecentNewUsers';
 
@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
           <TotalUsers />
         </Col>
         <Col flex={1}>
-          <TodayLogin />
+          <TodayRegister />
         </Col>
         <Col flex={1}>
           <RecentRegistrations days={7} /> {/* 最近 7 天新增 */}

@@ -8,11 +8,11 @@ interface ListItem {
   count: number;
 }
 
-const TodayLogin: React.FC = () => {
-  const [todayLogin, setTodayLogin] = useState<number>(0);
+const TodayRegister: React.FC = () => {
+  const [todayRegister, settodayRegister] = useState<number>(0);
   const intl = useIntl();
 
-  const fetchTodayLogin = async () => {
+  const fetchRegister = async () => {
     try {
       const today = new Date().toISOString().split('T')[0]; // 获取今天日期
       const response = (await queryList('/users?stats=true', {})) as {
@@ -23,35 +23,38 @@ const TodayLogin: React.FC = () => {
       if (response.success && Array.isArray(response.data)) {
         const todayData = response.data.find((item) => item.date === today);
         if (todayData) {
-          setTodayLogin(todayData.count); // 使用 count 属性
+          settodayRegister(todayData.count); // 使用 count 属性
         } else {
-          setTodayLogin(0); // 没有数据时设置为 0
+          settodayRegister(0); // 没有数据时设置为 0
         }
       } else {
         message.warning(
           intl.formatMessage({
-            id: 'todayLoginFetchWarning',
+            id: 'todayRegisterFetchWarning',
             defaultMessage: '未能获取今日注册人数',
           }),
         );
       }
     } catch (error) {
       message.error(
-        intl.formatMessage({ id: 'todayLoginFetchError', defaultMessage: '获取今日注册人数失败' }),
+        intl.formatMessage({
+          id: 'todayRegisterFetchError',
+          defaultMessage: '获取今日注册人数失败',
+        }),
       );
       console.error('Error fetching today register users:', error);
     }
   };
 
   useEffect(() => {
-    fetchTodayLogin();
+    fetchRegister();
   }, []);
 
   return (
     <Card className="mb-10 text-center ">
       <Statistic
         title={intl.formatMessage({ id: 'todayRegister', defaultMessage: '今日注册人数' })}
-        value={todayLogin}
+        value={todayRegister}
         precision={0}
         valueStyle={{ color: '#3f8600' }}
         suffix={intl.formatMessage({ id: 'peopleSuffix', defaultMessage: '人' })}
@@ -60,4 +63,4 @@ const TodayLogin: React.FC = () => {
   );
 };
 
-export default TodayLogin;
+export default TodayRegister;
