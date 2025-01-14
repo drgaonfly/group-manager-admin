@@ -192,6 +192,7 @@ export default [
     component: './ProxyCommissionRecord',
   },
   {
+
     path: '/questions',
     name: 'list.questions',
     icon: 'WechatOutlined',
@@ -216,4 +217,11 @@ export default [
       },
     ],
   },
+   {
+    path: '/notices',
+    name: 'list.notices',
+    icon: 'NotificationOutlined',
+    component: './Notice',
+
+  }
 ];
