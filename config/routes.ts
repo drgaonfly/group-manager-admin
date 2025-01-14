@@ -11,6 +11,7 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 
+import Icon from '@ant-design/icons/lib/components/Icon';
 import route from 'mock/route';
 
 export default [
@@ -232,5 +233,11 @@ export default [
     name: 'list.notices',
     icon: 'NotificationOutlined',
     component: './Notice',
+  },
+  {
+    path: '/exchanges',
+    name: 'list.exchanges',
+    Icon: 'SwapOutlined',
+    component: './Exchange',
   },
 ];
