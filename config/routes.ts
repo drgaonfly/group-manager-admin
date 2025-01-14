@@ -191,4 +191,10 @@ export default [
     icon: 'PieChartOutlined',
     component: './ProxyCommissionRecord',
   },
+  {
+    path: '/notices',
+    name: 'list.notices',
+    icon: 'NotificationOutlined',
+    component: './Notice',
+  },
 ];

@@ -129,4 +129,11 @@ export default {
   transferIn: '转入',
   transferOut: '转出',
   totalUsers: '总用户数',
+  noticeTitle: '通知标题',
+  noticeType: '通知类型',
+  'pages.searchTable.notice': '通知',
+  'pages.searchTable.announcement': '公告',
+  'pages.creator': '创建者',
+  'pages.user': '用户',
+  'menu.notices': '通知管理',
 };
