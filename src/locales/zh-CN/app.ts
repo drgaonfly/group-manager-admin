@@ -339,4 +339,8 @@ export default {
   'platform.online': '在线',
   'platform.offline': '离线',
   isOnline: '是否在线',
+  'menu.translates': '语言翻译',
+  'menu.languages': '语言管理',
+  'menu.multilingual-management.languages': '语言管理',
+  'menu.multilingual-management.translates': '语言翻译',
 };

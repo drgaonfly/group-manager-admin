@@ -331,4 +331,6 @@ export default {
   'platform.online': 'Online',
   'platform.offline': 'Offline',
   isOnline: 'Is Online',
+  'menu.multilingual-management.languages': 'Language Management',
+  'menu.multilingual-management.translates': 'Language Translation',
 };

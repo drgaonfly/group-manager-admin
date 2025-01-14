@@ -105,6 +105,12 @@ export default [
         component: './MultilingualManagement/Langue',
         icon: 'TranslationOutlined',
       },
+      {
+        path: '/multilingual-management/translates',
+        name: 'list.translates',
+        component: './MultilingualManagement/Translate',
+        icon: 'TranslationOutlined',
+      },
     ],
   },
   {
