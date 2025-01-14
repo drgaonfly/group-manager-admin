@@ -22,7 +22,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/release-records', { ...fields });
+    await addItem('/exchanges', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -46,7 +46,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/release-records/${fields._id}`, fields);
+    await updateItem(`/exchanges/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -72,7 +72,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/release-records', {
+    await removeItem('/exchanges', {
       ids,
     });
     hide();
@@ -125,12 +125,7 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['wallet', 'user', '_id'],
-    },
-    {
-      title: intl.formatMessage({ id: 'activity' }),
-      dataIndex: ['activity', '_id'],
-      copyable: true,
+      dataIndex: ['wallet', 'user', 'name'],
     },
     {
       title: intl.formatMessage({ id: 'network' }),
@@ -148,27 +143,56 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: ['wallet', 'address'],
       copyable: true,
+      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'proxy.employee' }),
-      dataIndex: ['wallet', 'user', 'proxy', 'name'],
+      title: intl.formatMessage({ id: 'usdtBalanceOnPlatform' }),
+      dataIndex: 'usdtBalanceOnPlatform',
     },
     {
-      title: intl.formatMessage({ id: 'applyingAt' }),
-      dataIndex: 'applyingAt',
+      title: intl.formatMessage({ id: 'ethBalanceOnPlatform' }),
+      dataIndex: 'ethBalanceOnPlatform',
+    },
+    {
+      title: intl.formatMessage({ id: 'exchangeBalance' }),
+      dataIndex: 'balance',
+    },
+    {
+      title: intl.formatMessage({ id: 'targetBalance' }),
+      dataIndex: 'targetBalance',
+    },
+    {
+      title: intl.formatMessage({ id: 'uniPrice' }),
+      dataIndex: 'uniPrice',
+    },
+    {
+      // startAt
+      title: intl.formatMessage({ id: 'startAt' }),
+      dataIndex: 'startAt',
       valueType: 'dateTime',
     },
     {
-      title: intl.formatMessage({ id: 'stackedUsdtBalance' }),
-      dataIndex: 'stackedUsdtBalance',
+      //completedAt
+      title: intl.formatMessage({ id: 'completedAt' }),
+      dataIndex: 'completedAt',
+      valueType: 'dateTime',
     },
     {
-      title: intl.formatMessage({ id: 'rewardingEthBalance' }),
-      dataIndex: 'rewardingEthBalance',
+      title: intl.formatMessage({ id: 'status' }),
+      dataIndex: 'status',
+      valueType: 'select',
+      valueEnum: {
+        pending: { text: intl.formatMessage({ id: 'pending' }) },
+        success: { text: intl.formatMessage({ id: 'success' }) },
+        fail: { text: intl.formatMessage({ id: 'fail' }) },
+      },
+      copyable: true,
+      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'lockDays' }),
-      dataIndex: ['activity', 'lockDays'],
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -220,7 +244,7 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateReleaseRecord) && (
+          (access.canSuperAdmin || access.canCreateExchange) && (
             <Button
               type="primary"
               key="primary"
@@ -233,7 +257,7 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/release-records', { ...params, isOnline: activeKey }, sort, filter)
+          queryList('/exchanges', { ...params, isOnline: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={
@@ -254,7 +278,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteReleaseRecord) && (
+          {(access.canSuperAdmin || access.canDeleteExchange) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -265,7 +289,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateReleaseRecord) && (
+      {(access.canSuperAdmin || access.canCreateExchange) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -280,7 +304,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateReleaseRecord) && (
+      {(access.canSuperAdmin || access.canUpdateExchange) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

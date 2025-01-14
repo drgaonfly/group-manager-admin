@@ -283,5 +283,16 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetReleaseRecord:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/release-records', 'GET')),
+
+    // exchange 权限
+    canCreateExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'POST')),
+    canDeleteExchange:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'DELETE')),
+    canUpdateExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'PUT')),
+    canGetExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'GET')),
   };
 }

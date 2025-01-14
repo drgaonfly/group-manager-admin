@@ -149,18 +149,18 @@ const TableList: React.FC = () => {
       dataIndex: 'lockDays',
     },
     {
-      title: intl.formatMessage({ id: 'startTime' }),
-      dataIndex: 'startTime',
+      title: intl.formatMessage({ id: 'startAt' }),
+      dataIndex: 'startAt',
       valueType: 'dateTime',
     },
     {
-      title: intl.formatMessage({ id: 'endTime' }),
-      dataIndex: 'endTime',
+      title: intl.formatMessage({ id: 'endAt' }),
+      dataIndex: 'endAt',
       valueType: 'dateTime',
     },
     {
-      title: intl.formatMessage({ id: 'joinTime' }),
-      dataIndex: 'joinTime',
+      title: intl.formatMessage({ id: 'joinAt' }),
+      dataIndex: 'joinAt',
       valueType: 'dateTime',
     },
     {

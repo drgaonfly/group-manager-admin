@@ -37,6 +37,7 @@ import {
   TranslationOutlined,
   WechatOutlined,
   NotificationOutlined,
+  SwapOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -86,6 +87,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   TranslationOutlined: <TranslationOutlined />,
   WechatOutlined: <WechatOutlined />,
   NotificationOutlined: <NotificationOutlined />,
+  SwapOutlined: <SwapOutlined />,
 };
 
 console.log('iconEnum', iconEnum);
