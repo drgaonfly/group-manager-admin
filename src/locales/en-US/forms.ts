@@ -156,5 +156,5 @@ export default {
   recentRegistrations: 'New Users in the Last {days} Days',
   recentRegistrationsWarning: 'Failed to fetch new user data',
   recentRegistrationsError: 'Failed to fetch new user data',
-  todayLogin: 'Today Login',
+  todayLogin: 'Today Register',
 };

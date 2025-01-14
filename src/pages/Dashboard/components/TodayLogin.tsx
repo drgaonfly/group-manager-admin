@@ -31,15 +31,15 @@ const TodayLogin: React.FC = () => {
         message.warning(
           intl.formatMessage({
             id: 'todayLoginFetchWarning',
-            defaultMessage: '未能获取今日登录人数',
+            defaultMessage: '未能获取今日注册人数',
           }),
         );
       }
     } catch (error) {
       message.error(
-        intl.formatMessage({ id: 'todayLoginFetchError', defaultMessage: '获取今日登录人数失败' }),
+        intl.formatMessage({ id: 'todayLoginFetchError', defaultMessage: '获取今日注册人数失败' }),
       );
-      console.error('Error fetching today login users:', error);
+      console.error('Error fetching today register users:', error);
     }
   };
 
@@ -50,7 +50,7 @@ const TodayLogin: React.FC = () => {
   return (
     <Card className="mb-10 text-center ">
       <Statistic
-        title={intl.formatMessage({ id: 'todayLogin', defaultMessage: '今日登录人数' })}
+        title={intl.formatMessage({ id: 'todayRegister', defaultMessage: '今日注册人数' })}
         value={todayLogin}
         precision={0}
         valueStyle={{ color: '#3f8600' }}
