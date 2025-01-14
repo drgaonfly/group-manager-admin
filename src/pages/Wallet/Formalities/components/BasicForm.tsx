@@ -1,9 +1,8 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
-import WalletSelect from '@/components/walletCustomerSelect';
+import UserSelect from '@/components/usersSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -14,33 +13,18 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: roles } = useQueryList('/roles');
-  const filteredRoles = roles?.filter((role: { name: string }) => role.name === '客户'); // 只筛选出名称为员工的角色
-
-  const filteredRolesIds = filteredRoles?.map((role: { _id: string }) => role._id);
-
   const [form] = Form.useForm();
-
   //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
-  React.useEffect(() => {
-    if (filteredRoles) {
-      form.setFieldsValue({
-        roles: filteredRolesIds,
-      });
-    }
-  }, [filteredRoles]);
 
   return (
     <ProForm
       form={form}
       initialValues={{
         ...values,
-        roles: filteredRolesIds,
       }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
-          roles: filteredRolesIds,
         });
       }}
       submitter={{
@@ -58,14 +42,26 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <WalletSelect />
-      </ProForm.Group>
+        <UserSelect />
 
-      <ProFormSwitch
-        width="md"
-        label={intl.formatMessage({ id: 'isOperativeOnAdmin' })}
-        name="isOperativeOnAdmin"
-      />
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'walletAddress' })}
+          name="address"
+        />
+        <ProFormSelect
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'network' })}
+          name="network"
+          options={[
+            { label: 'TRX', value: 'TRX' },
+            { label: 'BSC', value: 'BSC' },
+            { label: 'ETH', value: 'ETH' },
+          ]}
+        />
+      </ProForm.Group>
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>

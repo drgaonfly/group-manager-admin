@@ -153,7 +153,18 @@ export default [
     path: '/wallets',
     name: 'list.wallets',
     icon: 'WalletOutlined',
-    component: './Wallet',
+    routes: [
+      {
+        path: '/wallets/share',
+        name: 'list.wallets-share',
+        component: './Wallet/Wallet',
+      },
+      {
+        path: '/wallets/index',
+        name: 'list.wallets-formalities',
+        component: './Wallet/Formalities',
+      },
+    ],
   },
   {
     path: '/wallet-deal-records',
@@ -192,7 +203,6 @@ export default [
     component: './ProxyCommissionRecord',
   },
   {
-
     path: '/questions',
     name: 'list.questions',
     icon: 'WechatOutlined',
@@ -217,11 +227,10 @@ export default [
       },
     ],
   },
-   {
+  {
     path: '/notices',
     name: 'list.notices',
     icon: 'NotificationOutlined',
     component: './Notice',
-
-  }
+  },
 ];
