@@ -66,7 +66,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'paymentAddress' })}
           name="receivingAddress"
         />
-
+        
         <ProFormSelect
           width="md"
           label={intl.formatMessage({ id: 'currency' })}
