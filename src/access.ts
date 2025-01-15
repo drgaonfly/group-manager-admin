@@ -251,8 +251,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateQuestion:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/questions', 'POST')),
     canDeleteQuestion:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/questions/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/questions', 'DELETE')),
     canUpdateQuestion:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/questions/:id', 'PUT')),
     canGetQuestion:
@@ -262,8 +261,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateActivity:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/activities', 'POST')),
     canDeleteActivity:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/activities/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/activities', 'DELETE')),
     canUpdateActivity:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/activities/:id', 'PUT')),
@@ -276,7 +274,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/release-records', 'POST')),
     canDeleteReleaseRecord:
       currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/release-records/:id', 'DELETE')),
+      (currentUser.isAdmin || checkPermission(currentUser, '/release-records', 'DELETE')),
     canUpdateReleaseRecord:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/release-records/:id', 'PUT')),
@@ -288,8 +286,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateExchange:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'POST')),
     canDeleteExchange:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'DELETE')),
     canUpdateExchange:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'PUT')),
     canGetExchange:
@@ -299,8 +296,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateIncome:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/incomes', 'POST')),
     canDeleteIncome:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/incomes/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/incomes', 'DELETE')),
     canUpdateIncome:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/incomes/:id', 'PUT')),
     canGetIncome:
@@ -310,8 +306,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateTransfer:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transfers', 'POST')),
     canDeleteTransfer:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/transfers/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transfers', 'DELETE')),
     canUpdateTransfer:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transfers/:id', 'PUT')),
     canGetTransfer:
@@ -321,8 +316,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateChannel:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channels', 'POST')),
     canDeleteChannel:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/channels/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channels', 'DELETE')),
     canUpdateChannel:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channels/:id', 'PUT')),
     canGetChannel:
@@ -332,8 +326,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canCreateNotice:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notices', 'POST')),
     canDeleteNotice:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/notices/:id', 'DELETE')),
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notices', 'DELETE')),
     canUpdateNotice:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notices/:id', 'PUT')),
     canGetNotice:

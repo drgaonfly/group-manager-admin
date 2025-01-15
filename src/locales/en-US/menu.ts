@@ -88,4 +88,10 @@ export default {
   'menu.lottery-records': 'Lottery Records',
   'menu.proxy-commission-records': 'Proxy Commission Records',
   'menu.wallet-deal-records': 'Wallet Deal Records',
+  'menu.questions': 'Q&A',
+  'menu.notification': 'Notification',
+  'menu.exchange': 'Exchange',
+  'menu.income': 'Income',
+  'menu.transfer': 'Transfer',
+  'menu.channel': 'Channel',
 };
