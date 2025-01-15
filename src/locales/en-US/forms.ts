@@ -104,6 +104,7 @@ export default {
   inviteCode: 'Invite Code',
   'platform.online': 'Online',
   'platform.offline': 'Offline',
+  'platforms.showSecretKey': 'Show Secret Key',
   'proxy.employee': 'Proxied Employee',
   content: 'Content',
   customer: 'Customer',
