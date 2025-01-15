@@ -101,14 +101,14 @@ const TableList: React.FC = () => {
    * @zh-CN 新建窗口的弹窗
    *  */
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**2024fc.xyz
+  /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [secretKeyVisibility, setSecretKeyVisibility] = useState<Record<string, boolean>>({});
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -120,11 +120,10 @@ const TableList: React.FC = () => {
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
-  // Define roles object with index signature
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'proxy.name' }),
+      title: intl.formatMessage({ id: 'proxy.employee' }),
       dataIndex: ['user', 'proxy', 'name'],
     },
     {
@@ -146,9 +145,10 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'secretKey' }),
       dataIndex: 'secretKey',
+      render: (_, record) =>
+        secretKeyVisibility[record._id || ''] ? record.secretKey : '******************************',
     },
     {
-      // createAd
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
@@ -167,11 +167,21 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </a>,
+        <a
+          key="showSecretKey"
+          onClick={() => {
+            setSecretKeyVisibility((prev) => ({
+              ...prev,
+              [record._id || '']: !prev[record._id || ''],
+            }));
+          }}
+        >
+          <FormattedMessage id="platforms.showSecretKey" defaultMessage="platforms.showSecretKey" />
+        </a>,
         access.canUpdateWallet && (
           <a
             key="edit"
             onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}

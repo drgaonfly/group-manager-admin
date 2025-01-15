@@ -73,6 +73,7 @@ export default {
   'platforms.detail': '详情',
   'platform.online': '在线',
   'platform.offline': '离线',
+  'platforms.showSecretKey': '显示密钥',
 
   inviteCode: '邀请码',
   'proxy.employee': '代理用户',
