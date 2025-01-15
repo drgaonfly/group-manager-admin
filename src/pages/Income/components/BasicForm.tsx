@@ -71,12 +71,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       <ProForm.Group>
         <ProFormSelect
           width="md"
-          label={intl.formatMessage({ id: 'type' })}
+          label={intl.formatMessage({ id: 'incomeType' })}
           name="type"
           options={[
-            { label: intl.formatMessage({ id: 'flowing' }), value: 'flowing' },
-            { label: intl.formatMessage({ id: 'stacking' }), value: 'staking' },
-            { label: intl.formatMessage({ id: 'teamworking' }), value: 'teamworking' },
+            { label: intl.formatMessage({ id: 'income.flowing' }), value: 'flowing' },
+            { label: intl.formatMessage({ id: 'income.stacking' }), value: 'staking' },
+            { label: intl.formatMessage({ id: 'income.teamworking' }), value: 'teamworking' },
           ]}
         />
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
 import { DatePicker, Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
+import UserSelect from '@/components/UserSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -57,28 +58,28 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
+        <UserSelect />
+
         <ProFormSelect
           name="type"
           label={intl.formatMessage({ id: 'activityType' })}
           options={[
-            { label: 'stacking', value: 'stacking' },
-            { label: 'rewards', value: 'rewards' },
+            { label: intl.formatMessage({ id: 'stacking' }), value: 'stacking' },
+            { label: intl.formatMessage({ id: 'rewardActivity' }), value: 'rewards' },
           ]}
-          placeholder={intl.formatMessage({ id: 'selectActivityType' })}
-          rules={[{ required: true, message: intl.formatMessage({ id: 'typeRequired' }) }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
         />
 
         <ProFormSelect
           name="status"
           label={intl.formatMessage({ id: 'status' })}
           options={[
-            { label: 'pending', value: 'pending' },
-            { label: 'joined', value: 'joined' },
-            { label: 'finished', value: 'finished' },
-            { label: 'expired', value: 'expired' },
+            { label: intl.formatMessage({ id: 'activity.pending' }), value: 'pending' },
+            { label: intl.formatMessage({ id: 'activity.joined' }), value: 'joined' },
+            { label: intl.formatMessage({ id: 'activity.finished' }), value: 'finished' },
+            { label: intl.formatMessage({ id: 'activity.expired' }), value: 'expired' },
           ]}
-          placeholder={intl.formatMessage({ id: 'selectStatusType' })}
-          rules={[{ required: true, message: intl.formatMessage({ id: 'statusRequired' }) }]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
         />
 
         <ProFormText
@@ -96,7 +97,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
       </ProForm.Group>
 
-      <DatePicker name="endTime" width="md" />
+      <Form.Item name="endAt" label={intl.formatMessage({ id: 'endAt' })}>
+        <DatePicker width="md" />
+      </Form.Item>
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>

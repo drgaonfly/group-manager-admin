@@ -104,4 +104,7 @@ export default {
   'menu.lottery-records': '抽奖记录',
   'menu.proxy-commission-records': '代理分佣记录',
   'menu.wallet-deal-records': '钱包交易记录',
+  'menu.questions': '问答管理',
+  'menu.activities': '活动管理',
+  'menu.release-records': '解押记录管理',
 };

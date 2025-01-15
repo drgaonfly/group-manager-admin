@@ -132,12 +132,12 @@ export default [
     icon: 'WalletOutlined',
     component: './Withdraw',
   },
-  {
-    path: '/instructions',
-    name: 'list.instructions',
-    icon: 'QuestionCircleOutlined',
-    component: './Instruction',
-  },
+  // {
+  //   path: '/instructions',
+  //   name: 'list.instructions',
+  //   icon: 'QuestionCircleOutlined',
+  //   component: './Instruction',
+  // },
   {
     path: '/members',
     name: 'list.members',

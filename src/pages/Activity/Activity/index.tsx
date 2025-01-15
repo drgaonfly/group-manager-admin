@@ -164,6 +164,22 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
     },
     {
+      title: intl.formatMessage({ id: 'activitySatus' }),
+      dataIndex: 'status',
+      valueType: 'select',
+      valueEnum: {
+        pending: intl.formatMessage({ id: 'activity.pending' }),
+        joined: intl.formatMessage({ id: 'activity.joined' }),
+        finished: intl.formatMessage({ id: 'activity.finished' }),
+        expired: intl.formatMessage({ id: 'activity.expired' }),
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

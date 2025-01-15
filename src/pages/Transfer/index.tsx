@@ -169,7 +169,7 @@ const TableList: React.FC = () => {
       dataIndex: 'balance',
     },
     {
-      title: intl.formatMessage({ id: 'Type' }),
+      title: intl.formatMessage({ id: 'transferType' }),
       dataIndex: 'type',
       valueType: 'select',
       valueEnum: {

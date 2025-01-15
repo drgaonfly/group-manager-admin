@@ -327,5 +327,16 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channels/:id', 'PUT')),
     canGetChannel:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channels', 'GET')),
+
+    // notice 权限
+    canCreateNotice:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notices', 'POST')),
+    canDeleteNotice:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/notices/:id', 'DELETE')),
+    canUpdateNotice:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notices/:id', 'PUT')),
+    canGetNotice:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notices', 'GET')),
   };
 }

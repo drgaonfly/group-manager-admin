@@ -158,9 +158,9 @@ const TableList: React.FC = () => {
       dataIndex: 'type',
       valueType: 'select',
       valueEnum: {
-        flowing: { text: intl.formatMessage({ id: 'flowing' }) },
-        staking: { text: intl.formatMessage({ id: 'staking' }) },
-        teamworking: { text: intl.formatMessage({ id: 'teamworking' }) },
+        flowing: { text: intl.formatMessage({ id: 'income.flowing' }) },
+        staking: { text: intl.formatMessage({ id: 'income.stacking' }) },
+        teamworking: { text: intl.formatMessage({ id: 'income.teamworking' }) },
       },
       copyable: true,
       hideInSearch: true,
