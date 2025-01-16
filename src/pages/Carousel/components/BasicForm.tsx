@@ -28,7 +28,7 @@ const BasicForm: React.FC<Props> = ({
     ? [
         {
           uid: '1',
-          name: 'packageImage',
+          name: 'image',
           status: 'done' as UploadFile['status'],
           url: packgeImageUrl,
         },

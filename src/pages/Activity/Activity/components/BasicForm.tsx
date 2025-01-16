@@ -63,6 +63,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormSelect
           name="type"
           label={intl.formatMessage({ id: 'activityType' })}
+          width="md"
           options={[
             { label: intl.formatMessage({ id: 'stacking' }), value: 'stacking' },
             { label: intl.formatMessage({ id: 'rewardActivity' }), value: 'rewards' },
@@ -73,6 +74,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormSelect
           name="status"
           label={intl.formatMessage({ id: 'status' })}
+          width="md"
           options={[
             { label: intl.formatMessage({ id: 'activity.pending' }), value: 'pending' },
             { label: intl.formatMessage({ id: 'activity.joined' }), value: 'joined' },
