@@ -157,12 +157,12 @@ export default [
     routes: [
       {
         path: '/wallets/share',
-        name: 'list.wallets-share',
+        name: 'list.wallets.share',
         component: './Wallet/Wallet',
       },
       {
         path: '/wallets/index',
-        name: 'list.wallets-formalities',
+        name: 'list.wallets.formalities',
         component: './Wallet/Formalities',
       },
     ],
@@ -216,13 +216,13 @@ export default [
     routes: [
       {
         path: '/activities/index',
-        name: 'list.activities',
+        name: 'list.activities.index',
         component: './Activity/Activity',
         icon: 'TranslationOutlined',
       },
       {
         path: '/activities/release-records',
-        name: 'list.release-records',
+        name: 'list.activities.release-records',
         component: './Activity/ReleaseRecord',
         icon: 'TranslationOutlined',
       },

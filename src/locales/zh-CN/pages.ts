@@ -64,6 +64,8 @@ export default {
   'pages.searchTable.tenThousand': '万',
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
+  'pages.searchTable.translate': '翻译',
+  'pages.searchTable.langue': `语言`,
   'password.changed.successfully': '密码修改成功',
   'current.password': '当前密码',
   'new.password': '新密码',

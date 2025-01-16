@@ -177,4 +177,7 @@ export default {
   'income.teamworking': '团队收益',
   questionType: '问题类型',
   pledgeBalance: '质押余额',
+  language: '语言',
+  QuestionType: '问题类型',
+  selectLanguage: '选择语言',
 };

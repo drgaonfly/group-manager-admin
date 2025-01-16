@@ -25,6 +25,7 @@ const Editor: React.FC<EditorProps> & { modules: any; formats: string[] } = ({
       modules={Editor.modules} // Access static property
       formats={Editor.formats} // Access static property
       placeholder={placeholder}
+      className="h-72 w-96"
     />
   );
 };
@@ -108,7 +109,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             { label: 'serve', value: 'serve' },
             { label: 'exchange', value: 'exchange' },
           ]}
-          placeholder={intl.formatMessage({ id: 'selectQuestionType' })}
+          placeholder={intl.formatMessage({ id: 'QuestionType' })}
           rules={[{ required: true, message: intl.formatMessage({ id: 'typeRequired' }) }]}
         />
 
@@ -126,7 +127,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProForm.Item
           label={<FormattedMessage id="content" defaultMessage="内容" />}
           name="content"
-          className="w-96 h-96"
         >
           <Editor
             value={content}
