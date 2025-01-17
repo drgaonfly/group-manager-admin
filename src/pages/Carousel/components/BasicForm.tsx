@@ -3,7 +3,7 @@ import React from 'react';
 import { ProForm } from '@ant-design/pro-components';
 import { Form, Input, message } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
-import Upload from '@/components/Upload';
+import Upload from '@/components/AliyunOSSUpload';
 
 interface Props {
   newRecord?: boolean;
