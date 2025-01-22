@@ -130,6 +130,21 @@ const TableList: React.FC = () => {
       dataIndex: 'id',
     },
     {
+      title: intl.formatMessage({ id: 'channelId' }),
+      dataIndex: 'wallets',
+      key: 'wallets',
+      render: (wallets) => {
+        if (Array.isArray(wallets)) {
+          return wallets.length > 0
+            ? wallets.map((wallet) => (
+                <div key={wallet.channel.id}>{wallet.channel.id}</div> // 每个地址占一行
+              ))
+            : null;
+        }
+        return null;
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'email' }),
       dataIndex: 'email',
       copyable: true,
@@ -183,6 +198,38 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'liquidRate' }), // 投资倍率
+      dataIndex: 'liquidRate',
+    },
+    {
+      title: intl.formatMessage({ id: 'stakeRate' }), // 投资倍率
+      dataIndex: 'stakeRate',
+    },
+    {
+      title: intl.formatMessage({ id: 'accountType' }),
+      dataIndex: 'roles',
+      hideInSearch: true,
+      renderText: (_, record: any) => {
+        return record.roles?.map((role: Role) => role.name)?.join(', ');
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'isSpied' }),
+      dataIndex: 'isSpied',
+      hideInSearch: true,
+      render: (text) => (
+        <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'isAuthorized' }),
+      dataIndex: 'isAuthorized',
+      hideInSearch: true,
+      render: (text) => (
+        <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'inviteCode' }),
       dataIndex: 'inviteCode',
       copyable: true,
@@ -213,13 +260,28 @@ const TableList: React.FC = () => {
         />
       ),
     },
+    // add createAt
     {
-      title: intl.formatMessage({ id: 'role' }),
-      dataIndex: 'roles',
-      hideInSearch: true,
-      renderText: (_, record: any) => {
-        return record.roles?.map((role: Role) => role.name)?.join(', ');
-      },
+      title: intl.formatMessage({ id: 'customerOverview' }),
+      dataIndex: 'overview', // 只是占位符，不需要真正的数据库字段
+      render: (_, record) => (
+        <div>
+          <div>
+            <strong>{intl.formatMessage({ id: 'registeredAt' })} :</strong>{' '}
+            {record.createdAt || '-'}
+          </div>
+          <div>
+            <strong>{intl.formatMessage({ id: 'logedinAt' })} :</strong> {record.logedinAt || '-'}
+          </div>
+          <div>
+            <strong>{intl.formatMessage({ id: 'registeredIP' })} :</strong>{' '}
+            {record.createdIP || '-'}
+          </div>
+          <div>
+            <strong>{intl.formatMessage({ id: 'LogedinIP' })} :</strong> {record.LogedinIP || '-'}
+          </div>
+        </div>
+      ),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -265,6 +327,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
+        scroll={{ x: 2500 }}
         rowKey="_id"
         search={{
           labelWidth: 120,

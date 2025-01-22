@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormCheckbox, ProFormDigit } from '@ant-design/pro-components';
 import { Form, Input, Spin } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 
@@ -72,6 +72,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'password' })}
           name="password"
+        />
+        <ProFormDigit
+          label={intl.formatMessage({ id: 'liquidRate' })} // 投资倍率
+          name="liquidRate"
+          min={0} // 最小值
+          fieldProps={{
+            precision: 2, // 保留两位小数
+          }}
+          rules={[{ required: true, message: '请输入投资倍率' }]}
+        />
+        <ProFormDigit
+          label={intl.formatMessage({ id: 'stakeRate' })} // 投资倍率
+          name="stakeRate"
+          min={0}
+          fieldProps={{
+            precision: 2,
+          }}
+          rules={[{ required: true, message: '请输入投资倍率' }]}
         />
 
         {newRecord &&

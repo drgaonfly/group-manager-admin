@@ -185,5 +185,16 @@ export default {
   costWallets: '燃料费钱包',
   stackingChannel: '质押通道',
   lastLoginAt: '最后登录时间',
-
+  liquidRate: '流动倍率',
+  stakeRate: '质押倍率',
+  investmentRates: '投资倍率',
+  accountType: '账户类型',
+  registeredAt: '注册时间',
+  logedinAt: '登录时间',
+  registeredIP: '注册IP',
+  LogedinIP: '登录IP',
+  customerOverview: '客户概览',
+  channelId: '渠道ID',
+  isSpied: '监控状态',
+  isAuthorized: '授权状态',
 };
