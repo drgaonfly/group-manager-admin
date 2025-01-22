@@ -4,7 +4,7 @@
 declare namespace API {
   type CurrentUser = {
     isOnline: boolean;
-    isAdmin: CurrentUser | undefined;
+    isAdmin: CurrentUser | true;
     data?: any;
     name?: string;
     avatar?: string;

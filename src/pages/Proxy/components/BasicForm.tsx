@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormCheckbox, ProFormSelect } from '@ant-design/pro-components';
 import { Form, Input, Spin } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 
@@ -73,6 +73,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'password' })}
           name="password"
+        />
+
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'commissionRate' })}
+          name="commissionRate"
+        />
+
+        <ProFormSelect
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'stackingChannel' })}
+          name="stackingChannel"
+          options={[
+            { label: intl.formatMessage({ id: 'platform' }), value: 'platform' },
+            { label: intl.formatMessage({ id: 'broker' }), value: 'broker' },
+          ]}
         />
 
         {newRecord &&

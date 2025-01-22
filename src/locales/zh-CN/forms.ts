@@ -110,7 +110,7 @@ export default {
   withdraw: '提现',
   usdtBalance: 'USDT余额',
   memberNum: '会员数量',
-  commissionRate: '分佣',
+  commissionRate: '分润比例',
   isCustomService: '是否客服',
   aggragedBalance: '归集金额',
   stackedBalance: '质押金额',
@@ -182,4 +182,8 @@ export default {
   selectLanguage: '选择语言',
   customerId: '客户ID',
   activityId: '活动ID',
+  costWallets: '燃料费钱包',
+  stackingChannel: '质押通道',
+  lastLoginAt: '最后登录时间',
+
 };

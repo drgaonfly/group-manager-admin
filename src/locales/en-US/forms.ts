@@ -180,4 +180,9 @@ export default {
   'pages.user': 'User',
   'menu.notices': 'Notice Management',
   todayRegister: 'Today Register',
+  customerId: 'Customer ID',
+  activityId: 'Activity ID',
+  costWallets: ' Cost Wallets',
+  stackingChannel: ' Stacking Channel',
+  lastLoginAt: 'Last Login At',
 };
