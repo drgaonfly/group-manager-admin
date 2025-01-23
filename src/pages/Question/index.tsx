@@ -164,7 +164,11 @@ const TableList: React.FC = () => {
         );
       },
     },
-
+    {
+      // add createdAt column
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+    },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',

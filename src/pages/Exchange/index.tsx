@@ -182,23 +182,6 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
     },
     {
-      title: intl.formatMessage({ id: 'status' }),
-      dataIndex: 'status',
-      valueType: 'select',
-      valueEnum: {
-        pending: { text: intl.formatMessage({ id: 'pending' }) },
-        success: { text: intl.formatMessage({ id: 'success' }) },
-        fail: { text: intl.formatMessage({ id: 'fail' }) },
-      },
-      copyable: true,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt' }),
-      dataIndex: 'createdAt',
-      valueType: 'dateTime',
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

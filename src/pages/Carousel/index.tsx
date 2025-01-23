@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Switch } from 'antd';
+import { Button, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -123,10 +123,9 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'id' }),
-      dataIndex: '_id',
-      copyable: true,
-      hideInSearch: false,
+      title: intl.formatMessage({ id: 'alt' }),
+      dataIndex: 'alt',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'image' }),
@@ -137,8 +136,8 @@ const TableList: React.FC = () => {
         <Image
           src={record.image}
           alt="image"
-          width={45}
-          height={45}
+          width={90}
+          height={90}
           style={{
             objectFit: 'cover',
           }}
@@ -147,26 +146,40 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'status' }),
-      dataIndex: 'isOnline',
-      hideInSearch: false,
+      title: intl.formatMessage({ id: 'language' }),
+      dataIndex: 'lan',
+      valueType: 'select',
       valueEnum: {
-        true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
+        en: { text: 'en' },
+        zh: { text: 'zh' },
       },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-          checked={record.isOnline}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
+      copyable: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'size' }),
+      dataIndex: 'size',
+    },
+    {
+      title: intl.formatMessage({ id: 'imageType' }),
+      dataIndex: 'type',
+      valueType: 'select',
+      valueEnum: {
+        jpg: { text: 'jpg' },
+        png: { text: 'png' },
+        jpeg: { text: 'jpeg' },
+      },
+      copyable: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'imagePath' }),
+      dataIndex: 'path',
+    },
+    {
+      // add createdAt column
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -211,6 +224,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
+        scroll={{ x: 2500 }}
         rowKey="_id"
         search={{ labelWidth: 120 }}
         toolBarRender={() => [

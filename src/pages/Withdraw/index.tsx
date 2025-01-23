@@ -125,7 +125,7 @@ const WithdrawPage: React.FC = () => {
       dataIndex: ['wallet', 'user', 'name'],
     },
     {
-      title: intl.formatMessage({ id: 'member' }),
+      title: intl.formatMessage({ id: 'customer' }),
       dataIndex: ['wallet', 'user', 'name'],
       hideInSearch: true,
     },
@@ -136,6 +136,30 @@ const WithdrawPage: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: ['wallet', 'address'],
+    },
+    {
+      title: intl.formatMessage({ id: 'applyBalance' }),
+      dataIndex: 'amount',
+      valueType: 'money',
+      hideInSearch: true,
+      search: false,
+    },
+    {
+      title: intl.formatMessage({ id: 'fee' }),
+      dataIndex: 'fee',
+      valueType: 'money',
+      hideInSearch: true,
+      search: false,
+    },
+    {
+      title: intl.formatMessage({ id: 'actualBalance' }),
+      dataIndex: 'actualNumber',
+      valueType: 'money',
+      hideInSearch: true,
+      search: false,
+      render: (_, record) => {
+        return <span>{record.amount - record.fee}</span>;
+      },
     },
     {
       title: intl.formatMessage({ id: 'applyTime' }),
@@ -179,13 +203,6 @@ const WithdrawPage: React.FC = () => {
         unpaid: { text: '待打款', status: 'default' },
         paid: { text: '已打款', status: 'success' },
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'withdrawalBalance' }),
-      dataIndex: 'amount',
-      valueType: 'money',
-      hideInSearch: true,
-      search: false,
     },
     {
       title: intl.formatMessage({ id: 'userInfo' }),

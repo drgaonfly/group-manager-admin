@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Form, Input, message } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import Upload from '@/components/AliyunOSSUpload';
@@ -70,6 +70,27 @@ const BasicForm: React.FC<Props> = ({
           defaultFileList={defaultFileList}
         />
       </Form.Item>
+
+      <ProFormText
+        name="alt"
+        label={intl.formatMessage({ id: 'alt' })}
+        placeholder={intl.formatMessage({ id: 'alt.placeholder' })}
+      />
+
+      <ProFormSelect
+        name="lan"
+        label={intl.formatMessage({ id: 'lan' })}
+        options={[
+          {
+            label: intl.formatMessage({ id: 'en' }),
+            value: 'en',
+          },
+          {
+            label: intl.formatMessage({ id: 'zh' }),
+            value: 'zh',
+          },
+        ]}
+      />
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>

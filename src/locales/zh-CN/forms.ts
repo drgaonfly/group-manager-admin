@@ -197,4 +197,11 @@ export default {
   channelId: '渠道ID',
   isSpied: '监控状态',
   isAuthorized: '授权状态',
+  alt: '文件名',
+  size: '文件大小',
+  imageType: '文件类型',
+  imagePath: '文件路径',
+  applyBalance: '申请数量',
+  fee: '手续费',
+  actualBalance: '实际数量',
 };
