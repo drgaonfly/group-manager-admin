@@ -204,4 +204,5 @@ export default {
   applyBalance: '申请数量',
   fee: '手续费',
   actualBalance: '实际数量',
+  readAt: '已读时间',
 };

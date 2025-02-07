@@ -28,7 +28,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome', // 默认重定向到 /welcome
+    component: './RootRedirect',
   },
   {
     path: '/welcome',

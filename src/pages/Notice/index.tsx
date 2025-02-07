@@ -1,9 +1,10 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { Button, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -11,7 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-
+import ReactQuill from 'react-quill';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -127,11 +128,11 @@ const TableList: React.FC = () => {
     },
     {
       title: <FormattedMessage id="noticeTitle" defaultMessage="Notice Title" />,
-      dataIndex: 'noticeTitle',
+      dataIndex: 'title',
     },
     {
       title: <FormattedMessage id="noticeType" defaultMessage="Notice Type" />,
-      dataIndex: 'noticeType',
+      dataIndex: 'type',
       valueEnum: {
         notice: {
           text: <FormattedMessage id="pages.searchTable.notice" />,
@@ -142,8 +143,32 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: <FormattedMessage id="content" />,
+      dataIndex: 'content',
+      hideInSearch: true,
+      render: (dom) => {
+        return (
+          <div>
+            <ReactQuill
+              value={dom as string} // 使用 ReactQuill 显示内容
+              readOnly={true} // 设置为只读模式
+              theme="bubble" // 使用轻量的 Bubble 主题
+            />
+          </div>
+        );
+      },
+    },
+    {
       title: <FormattedMessage id="pages.creator" />,
       dataIndex: 'creator',
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+    },
+    {
+      title: intl.formatMessage({ id: 'readAt' }),
+      dataIndex: 'readAt',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -195,18 +220,18 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          // (access.canSuperAdmin || access.canCreateNotice) && (
-          //   <Button
-          //     type="primary"
-          //     key="primary"
-          //     onClick={() => {
-          //       handleModalOpen(true);
-          //     }}
-          //   >
-          //     <PlusOutlined />
-          //     <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          //   </Button>
-          // ),
+          (access.canSuperAdmin || access.canCreateNotice) && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined />
+              <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            </Button>
+          ),
         ]}
         toolbar={{}}
         request={async (params, sort, filter) => queryList('/notices', params, sort, filter)}

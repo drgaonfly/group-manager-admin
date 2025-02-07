@@ -185,4 +185,5 @@ export default {
   costWallets: ' Cost Wallets',
   stackingChannel: ' Stacking Channel',
   lastLoginAt: 'Last Login At',
+  readAt: 'Read At',
 };

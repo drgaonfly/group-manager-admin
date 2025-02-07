@@ -2,8 +2,6 @@ import { PageContainer } from '@ant-design/pro-components';
 // import { useModel } from '@umijs/max';
 import { Card } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { queryList } from '@/services/ant-design-pro/api';
-
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
  * @param param0
@@ -11,16 +9,10 @@ import { queryList } from '@/services/ant-design-pro/api';
  */
 
 const Welcome: React.FC = () => {
-  const [instructions, setInstructions] = useState<API.ItemData[]>([]);
+  const [instructions] = useState<API.ItemData[]>([]);
 
   useEffect(() => {
-    const fetchInstructions = async () => {
-      const response = await queryList('/instructions', { current: 1, pageSize: 10 });
-
-      if (response.data) {
-        setInstructions(response.data);
-      }
-    };
+    const fetchInstructions = async () => {};
 
     fetchInstructions();
   }, []);
