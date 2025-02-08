@@ -4,6 +4,7 @@ import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components'
 import { DatePicker, Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 import UserSelect from '@/components/UserSelect';
+import dayjs from 'dayjs';
 
 interface Props {
   newRecord?: boolean;
@@ -38,10 +39,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         roles: filteredRolesIds,
       }}
       onFinish={async (values) => {
-        await onFinish({
+        const formData = {
           ...values,
+          endAt: values.endAt ? dayjs(values.endAt).format('YYYY-MM-DD HH:mm:ss') : undefined,
           roles: filteredRolesIds,
-        });
+        };
+        await onFinish(formData);
       }}
       submitter={{
         render: (props, dom) => {
@@ -99,8 +102,15 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
       </ProForm.Group>
 
-      <Form.Item name="endAt" label={intl.formatMessage({ id: 'endAt' })}>
-        <DatePicker width="md" />
+      <Form.Item
+        name="endAt"
+        label={intl.formatMessage({ id: 'endAt' })}
+        getValueProps={(value) => ({
+          value: value ? dayjs(value) : undefined,
+        })}
+        normalize={(value) => (value ? value.format('YYYY-MM-DD HH:mm:ss') : undefined)}
+      >
+        <DatePicker width="md" format="YYYY-MM-DD HH:mm:ss" showTime />
       </Form.Item>
 
       {!newRecord && (

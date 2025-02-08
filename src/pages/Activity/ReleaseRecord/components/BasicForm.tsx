@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 import ActivitySelect from '@/components/activitySelect';
@@ -93,12 +93,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           ]}
         />
       </ProForm.Group>
-
-      <ProFormSwitch
-        width="md"
-        label={intl.formatMessage({ id: 'isOperativeOnAdmin' })}
-        name="isOperativeOnAdmin"
-      />
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>

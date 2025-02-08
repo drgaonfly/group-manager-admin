@@ -129,7 +129,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'activityId' }),
-      dataIndex: 'id',
+      dataIndex: ['activity', 'id'],
     },
     {
       title: intl.formatMessage({ id: 'network' }),
@@ -199,7 +199,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" />
         </a>,
-        access.canSuperAdmin && (
+        access.canUpdateReleaseRecord && (
           <a
             key="edit"
             onClick={() => {

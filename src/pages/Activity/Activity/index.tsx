@@ -201,7 +201,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" />
         </a>,
-        access.canSuperAdmin && (
+        access.canUpdateActivity && (
           <a
             key="edit"
             onClick={() => {
