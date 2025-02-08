@@ -208,4 +208,9 @@ export default {
   notice: '通知',
   propaganda: '公告',
   operationStatus: '操作状态',
+  estateOverview: '资产概览',
+  usdtOfwallet: 'USDT余额',
+  usdtOfstake: 'USDT质押',
+  usdtOfplatform: 'USDT平台',
+  ethOfplatform: 'ETH平台',
 };

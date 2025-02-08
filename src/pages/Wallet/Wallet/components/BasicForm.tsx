@@ -61,22 +61,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             { label: 'ETH', value: 'ETH' },
           ]}
         />
-        <ProFormSelect
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'walletType' })}
-          name="type"
-          options={[
-            { label: 'USDT', value: 'USDT' },
-            { label: '质押余额', value: 'PledgeBalance' },
-          ]}
-        />
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'transactedBalance' })}
-          name="balance"
-        />
       </ProForm.Group>
 
       {!newRecord && (

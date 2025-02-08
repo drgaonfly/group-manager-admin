@@ -148,21 +148,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'walletType' }),
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: {
-        USDT: { text: intl.formatMessage({ id: 'usdt' }) },
-        PledgeBalance: { text: intl.formatMessage({ id: 'pledgeBalance' }) },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'balance' }),
-      dataIndex: 'balance',
-      hideInSearch: true,
-      search: false,
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

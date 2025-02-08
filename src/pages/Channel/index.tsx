@@ -136,7 +136,7 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'proxy.empolyee' }),
+      title: intl.formatMessage({ id: 'agent' }),
       dataIndex: ['user', 'name'],
     },
     {

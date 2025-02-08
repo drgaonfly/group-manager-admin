@@ -189,4 +189,9 @@ export default {
   notice: 'Notice',
   propaganda: 'propaganda',
   operationStatus: 'Operation Status',
+  estateOverview: 'Estate Overview',
+  usdtOfwallet: 'USDT of Wallet',
+  usdtOfstake: 'USDT of Staking',
+  usdtOfplatform: 'USDT of Platform',
+  ethOfplatform: 'ETH of Platform',
 };

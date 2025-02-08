@@ -131,18 +131,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'channelId' }),
-      dataIndex: 'wallets',
-      key: 'wallets',
-      render: (wallets) => {
-        if (Array.isArray(wallets)) {
-          return wallets.length > 0
-            ? wallets.map((wallet) => (
-                <div key={wallet.channel?.id}>{wallet.channel?.id}</div> // 每个地址占一行
-              ))
-            : null;
-        }
-        return null;
-      },
+      dataIndex: ['channel', 'id'],
     },
     {
       title: intl.formatMessage({ id: 'email' }),
@@ -169,33 +158,30 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'network' }),
-      dataIndex: 'wallets',
-      key: 'wallets',
-      render: (wallets) => {
-        if (Array.isArray(wallets)) {
-          return wallets.length > 0
-            ? wallets.map((wallet) => (
-                <div key={wallet.network}>{wallet.network}</div> // 每个地址占一行
-              ))
-            : null;
-        }
-        return null;
-      },
+      dataIndex: ['wallet', 'network'],
     },
     {
       title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: 'wallets',
-      key: 'wallets',
-      render: (wallets) => {
-        if (Array.isArray(wallets)) {
-          return wallets.length > 0
-            ? wallets.map((wallet) => (
-                <div key={wallet.address}>{wallet.address}</div> // 每个地址占一行
-              ))
-            : null;
-        }
-        return null;
-      },
+      dataIndex: ['wallet', 'address'],
+    },
+    {
+      title: intl.formatMessage({ id: 'estateOverview' }),
+      render: (_, record) => (
+        <React.Fragment>
+          <p>
+            {intl.formatMessage({ id: 'usdtOfwallet' })} : {record.wallet?.usdtOfwallet}
+          </p>
+          <p>
+            {intl.formatMessage({ id: 'usdtOfstake' })} : {record.wallet?.usdtOfstake}
+          </p>
+          <p>
+            {intl.formatMessage({ id: 'usdtOfplatform' })} : {record.wallet?.usdtOfplatform}
+          </p>
+          <p>
+            {intl.formatMessage({ id: 'ethOfplatform' })} : {record.wallet?.ethOfplatform}
+          </p>
+        </React.Fragment>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'liquidRate' }), // 投资倍率
