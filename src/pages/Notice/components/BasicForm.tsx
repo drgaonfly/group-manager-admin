@@ -93,17 +93,28 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProFormText name="title" width="md" label={intl.formatMessage({ id: 'noticeTitle' })} />
 
         <ProFormSelect
-          name="type"
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'please_select_notice_type' }),
+            },
+          ]}
           width="md"
           label={intl.formatMessage({ id: 'noticeType' })}
-          valueEnum={{
-            notice: {
-              text: intl.formatMessage({ id: 'pages.searchTable.notice' }),
+          name="type"
+          initialValue="notice" // Add default value
+          options={[
+            {
+              label: intl.formatMessage({ id: 'notice' }),
+              value: 'notice',
+              disabled: false,
             },
-            announcement: {
-              text: intl.formatMessage({ id: 'pages.searchTable.announcement' }),
+            {
+              label: intl.formatMessage({ id: 'propaganda' }),
+              value: 'propaganda',
+              disabled: false,
             },
-          }}
+          ]}
         />
 
         <ProForm.Item

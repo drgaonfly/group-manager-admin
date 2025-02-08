@@ -123,27 +123,29 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: <FormattedMessage id="pages.user" />,
-      dataIndex: ['user', 'id'],
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: 'id',
     },
     {
-      title: <FormattedMessage id="noticeTitle" defaultMessage="Notice Title" />,
+      title: intl.formatMessage({ id: 'noticeTitle' }),
       dataIndex: 'title',
     },
     {
-      title: <FormattedMessage id="noticeType" defaultMessage="Notice Type" />,
+      title: intl.formatMessage({ id: 'noticeType' }),
       dataIndex: 'type',
+      valueType: 'select',
       valueEnum: {
         notice: {
-          text: <FormattedMessage id="pages.searchTable.notice" />,
+          text: intl.formatMessage({ id: 'notice' }),
         },
-        announcement: {
-          text: <FormattedMessage id="pages.searchTable.announcement" />,
+        propaganda: {
+          text: intl.formatMessage({ id: 'propaganda' }),
         },
       },
     },
+
     {
-      title: <FormattedMessage id="content" />,
+      title: intl.formatMessage({ id: 'content' }),
       dataIndex: 'content',
       hideInSearch: true,
       render: (dom) => {

@@ -186,4 +186,6 @@ export default {
   stackingChannel: ' Stacking Channel',
   lastLoginAt: 'Last Login At',
   readAt: 'Read At',
+  notice: 'Notice',
+  propaganda: 'propaganda',
 };

@@ -205,4 +205,6 @@ export default {
   fee: '手续费',
   actualBalance: '实际数量',
   readAt: '已读时间',
+  notice: '通知',
+  propaganda: '公告',
 };
