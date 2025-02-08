@@ -207,4 +207,5 @@ export default {
   readAt: '已读时间',
   notice: '通知',
   propaganda: '公告',
+  operationStatus: '操作状态',
 };

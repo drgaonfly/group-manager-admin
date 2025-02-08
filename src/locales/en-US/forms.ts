@@ -188,4 +188,5 @@ export default {
   readAt: 'Read At',
   notice: 'Notice',
   propaganda: 'propaganda',
+  operationStatus: 'Operation Status',
 };

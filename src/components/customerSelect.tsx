@@ -3,9 +3,9 @@ import React from 'react';
 import { useIntl } from '@umijs/max';
 import useQueryList from '@/hooks/useQueryList';
 
-const UserSelect: React.FC = () => {
+const MemberSelect: React.FC = () => {
   const intl = useIntl();
-  const { items: users, loading } = useQueryList('/customers');
+  const { items: users, loading } = useQueryList('/members');
 
   const filteredUsers = users.filter(
     (user: any) =>
@@ -28,4 +28,4 @@ const UserSelect: React.FC = () => {
   );
 };
 
-export default UserSelect;
+export default MemberSelect;

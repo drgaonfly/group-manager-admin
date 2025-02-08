@@ -1,9 +1,10 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
-import WalletSelect from '@/components/walletCustomerSelect';
+import ActivitySelect from '@/components/activitySelect';
+import MemberSelect from '@/components/customerSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -58,7 +59,39 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <WalletSelect />
+        <MemberSelect />
+
+        <ActivitySelect />
+
+        <ProFormSelect
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'please_select_notice_type' }),
+            },
+          ]}
+          width="md"
+          label={intl.formatMessage({ id: 'operationStatus' })}
+          name="status"
+          initialValue="pending" // Add default value
+          options={[
+            {
+              label: intl.formatMessage({ id: 'pending' }),
+              value: 'pending',
+              disabled: false,
+            },
+            {
+              label: intl.formatMessage({ id: 'success' }),
+              value: 'success',
+              disabled: false,
+            },
+            {
+              label: intl.formatMessage({ id: 'refused' }),
+              value: 'refused',
+              disabled: false,
+            },
+          ]}
+        />
       </ProForm.Group>
 
       <ProFormSwitch

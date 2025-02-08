@@ -132,15 +132,6 @@ const TableList: React.FC = () => {
       dataIndex: 'id',
     },
     {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['wallet', 'user', '_id'],
-    },
-    {
-      title: intl.formatMessage({ id: 'activity' }),
-      dataIndex: ['activity', '_id'],
-      copyable: true,
-    },
-    {
       title: intl.formatMessage({ id: 'network' }),
       dataIndex: ['wallet', 'network'],
       valueType: 'select',
@@ -165,6 +156,22 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'applyingAt' }),
       dataIndex: 'applyingAt',
       valueType: 'dateTime',
+    },
+    {
+      title: intl.formatMessage({ id: 'operationStatus' }),
+      dataIndex: 'status',
+      valueType: 'select',
+      valueEnum: {
+        pending: {
+          text: intl.formatMessage({ id: 'pending' }),
+        },
+        success: {
+          text: intl.formatMessage({ id: 'success' }),
+        },
+        refused: {
+          text: intl.formatMessage({ id: 'refused' }),
+        },
+      },
     },
     {
       title: intl.formatMessage({ id: 'stackedUsdtBalance' }),
