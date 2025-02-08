@@ -125,7 +125,7 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'customerId' }),
-      dataIndex: ['user', 'id'],
+      dataIndex: ['activity', 'user', 'id'],
     },
     {
       title: intl.formatMessage({ id: 'activityId' }),
@@ -133,7 +133,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['wallet', 'network'],
+      dataIndex: ['activity', 'user', 'wallet', 'network'],
       valueType: 'select',
       valueEnum: {
         TRX: { text: 'TRX' },
@@ -150,7 +150,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'proxy.employee' }),
-      dataIndex: ['wallet', 'user', 'proxy', 'name'],
+      dataIndex: ['activity', 'user', 'proxy', 'name'],
     },
     {
       title: intl.formatMessage({ id: 'applyingAt' }),

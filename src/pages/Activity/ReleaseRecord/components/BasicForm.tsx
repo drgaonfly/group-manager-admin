@@ -4,7 +4,6 @@ import { ProForm, ProFormSelect } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 import ActivitySelect from '@/components/activitySelect';
-import MemberSelect from '@/components/customerSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -59,7 +58,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <MemberSelect />
+        {/* <MemberSelect /> */}
 
         <ActivitySelect />
 
