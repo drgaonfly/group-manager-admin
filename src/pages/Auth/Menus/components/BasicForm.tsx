@@ -113,6 +113,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             loading: menusLoading,
           }}
         />
+
+        <ProFormText
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'weight' })}
+          name="weight"
+        />
       </ProForm.Group>
 
       {!newRecord && (

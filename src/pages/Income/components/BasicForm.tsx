@@ -90,6 +90,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             { label: intl.formatMessage({ id: 'fail' }), value: 'fail' },
           ]}
         />
+
+        <ProFormText
+          rules={[{ required: false }]}
+          width="md"
+          label={intl.formatMessage({ id: 'remark' })}
+          name="remark"
+        />
       </ProForm.Group>
 
       {!newRecord && (

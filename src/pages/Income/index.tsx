@@ -157,6 +157,9 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'ethEarnings' }),
       dataIndex: 'ethEarnings',
+      render: (_, record) => {
+        return <span>{record.wallet?.ethOfwallet || 0}</span>;
+      },
     },
     {
       title: intl.formatMessage({ id: 'incomeType' }),

@@ -167,6 +167,10 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'weight' }),
+      dataIndex: 'weight',
+    },
+    {
       title: intl.formatMessage({ id: 'path' }),
       dataIndex: 'path',
     },
