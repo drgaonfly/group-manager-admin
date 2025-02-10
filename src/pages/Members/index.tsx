@@ -249,7 +249,7 @@ const TableList: React.FC = () => {
     // add createAt
     {
       title: intl.formatMessage({ id: 'customerOverview' }),
-      dataIndex: 'overview', // 只是占位符，不需要真正的数据库字段
+      dataIndex: 'overview',
       render: (_, record) => (
         <div>
           <div>
