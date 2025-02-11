@@ -214,5 +214,4 @@ export default {
   usdtOfplatform: 'USDT平台',
   ethOfplatform: 'ETH平台',
   altPlaceholder: '请输入文件名',
-  'menu.wallets.formal': '手续钱包',
 };

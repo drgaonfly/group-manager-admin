@@ -99,7 +99,7 @@ export default {
   'menu.instructions': '常见问题',
   'menu.wallets': '钱包',
   'menu.wallets.share': '分润钱包',
-  'menu.wallets.formalities': '手续钱包',
+  'menu.wallets.index': '手续钱包',
   'menu.transactions': '交易账单',
   'menu.carousels': '轮播图',
   'menu.stacking-configurations': '质押配置',
