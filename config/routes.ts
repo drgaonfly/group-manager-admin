@@ -162,7 +162,7 @@ export default [
       },
       {
         path: '/wallets/index',
-        name: 'list.wallets.formalities',
+        name: 'list.wallets.formal',
         component: './Wallet/Formalities',
       },
     ],

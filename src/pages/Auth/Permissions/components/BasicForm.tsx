@@ -3,6 +3,7 @@ import React from 'react';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import PermissionGroupSelect from '@/components/PermissionGroupSelect';
+import useQueryList from '@/hooks/useQueryList'; // Assuming this hook is available for loading
 
 interface Props {
   newRecord?: boolean;
@@ -12,6 +13,7 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
+  const { loading: permissionGroupsLoading } = useQueryList('/permission-groups'); // Fetching permissions
 
   return (
     <ProForm
@@ -37,6 +39,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           );
         },
       }}
+      loading={permissionGroupsLoading} // Added loading prop
     >
       <ProForm.Group>
         <ProFormText

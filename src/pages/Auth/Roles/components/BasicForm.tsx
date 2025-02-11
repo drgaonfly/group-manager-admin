@@ -15,7 +15,8 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const { items: permissionGroups, loading } = useQueryList('/permission-groups/list');
+  const { items: permissionGroups, loading: permissionGroupsLoading } =
+    useQueryList('/permission-groups/list');
   const { items: dataPermissionGroups, loading: dataPermissionLoading } =
     useQueryList('/data-permissions');
 
@@ -77,6 +78,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           );
         },
       }}
+      loading={dataPermissionLoading && permissionGroupsLoading}
     >
       <ProForm.Group>
         <ProFormText
@@ -88,7 +90,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
 
         <ProForm.Item name="permissions" label={intl.formatMessage({ id: 'permission_choose' })}>
-          <Spin spinning={loading}>
+          <Spin spinning={permissionGroupsLoading}>
             <Tree
               checkable
               onExpand={onExpand}

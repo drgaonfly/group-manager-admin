@@ -53,6 +53,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           );
         },
       }}
+      loading={loading}
     >
       <ProForm.Group>
         <ProFormText

@@ -74,7 +74,7 @@ const BasicForm: React.FC<Props> = ({
       <ProFormText
         name="alt"
         label={intl.formatMessage({ id: 'alt' })}
-        placeholder={intl.formatMessage({ id: 'alt.placeholder' })}
+        placeholder={intl.formatMessage({ id: 'altPlaceholder' })}
       />
 
       <ProFormSelect
