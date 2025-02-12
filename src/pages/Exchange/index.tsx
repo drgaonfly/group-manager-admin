@@ -1,10 +1,9 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -174,6 +173,17 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'status' }),
+      dataIndex: 'status',
+      valueType: 'select',
+      valueEnum: {
+        pending: { text: intl.formatMessage({ id: 'pending' }) },
+        success: { text: intl.formatMessage({ id: 'success' }) },
+        fail: { text: intl.formatMessage({ id: 'fail' }) },
+      },
+      hideInSearch: true,
+    },
+    {
       // startAt
       title: intl.formatMessage({ id: 'startAt' }),
       dataIndex: 'startAt',
@@ -241,19 +251,19 @@ const TableList: React.FC = () => {
           labelWidth: 120,
           collapsed: false,
         }}
-        toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateExchange) && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-        ]}
+        // toolBarRender={() => [
+        //   (access.canSuperAdmin || access.canCreateExchange) && (
+        //     <Button
+        //       type="primary"
+        //       key="primary"
+        //       onClick={() => {
+        //         handleModalOpen(true);
+        //       }}
+        //     >
+        //       <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+        //     </Button>
+        //   ),
+        // ]}
         request={async (params, sort, filter) =>
           queryList('/exchanges', { ...params, isOnline: activeKey }, sort, filter)
         }
