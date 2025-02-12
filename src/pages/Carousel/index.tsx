@@ -146,17 +146,6 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'language' }),
-      dataIndex: 'lan',
-      valueType: 'select',
-      valueEnum: {
-        en: { text: 'en' },
-        zh: { text: 'zh' },
-      },
-      copyable: true,
-      hideInSearch: true,
-    },
-    {
       title: intl.formatMessage({ id: 'size' }),
       dataIndex: 'size',
     },
@@ -172,10 +161,10 @@ const TableList: React.FC = () => {
       copyable: true,
       hideInSearch: true,
     },
-    {
-      title: intl.formatMessage({ id: 'imagePath' }),
-      dataIndex: 'path',
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'imagePath' }),
+    //   dataIndex: 'path',
+    // },
     {
       // add createdAt column
       title: intl.formatMessage({ id: 'createdAt' }),
@@ -224,7 +213,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 2500 }}
+        // scroll={{ x: 2500 }}
         rowKey="_id"
         search={{ labelWidth: 120 }}
         toolBarRender={() => [
