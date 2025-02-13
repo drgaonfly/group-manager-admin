@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Switch } from 'antd';
+import { Button, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -167,12 +167,6 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'username' }),
-      dataIndex: 'name',
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
       title: intl.formatMessage({ id: 'network' }),
       dataIndex: ['wallet', 'network'],
     },
@@ -239,38 +233,9 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'inviteCode' }),
-      dataIndex: 'inviteCode',
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
       title: intl.formatMessage({ id: 'proxy.employee' }),
       dataIndex: ['proxy', 'name'],
     },
-    {
-      title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
-      dataIndex: 'isOnline',
-      hideInSearch: false,
-      valueEnum: {
-        true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
-      },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-          checked={record?.isOnline}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    // add createAt
     {
       title: intl.formatMessage({ id: 'customerOverview' }),
       dataIndex: 'overview',
