@@ -1,10 +1,9 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -315,19 +314,6 @@ const TableList: React.FC = () => {
           labelWidth: 120,
           collapsed: false,
         }}
-        toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateMember) && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-        ]}
         toolbar={{
           menu: {
             type: 'tab',
