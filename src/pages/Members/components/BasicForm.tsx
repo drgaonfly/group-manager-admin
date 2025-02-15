@@ -59,7 +59,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
       </ProForm.Group>
 
-      <ProForm.Group title="资产信息">
+      <ProForm.Group>
         <ProFormDigit
           label={intl.formatMessage({ id: 'usdtBalance', defaultMessage: 'USDT余额' })}
           name="usdtBalance"
@@ -94,7 +94,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
       </ProForm.Group>
 
-      <ProForm.Group title="账户状态">
+      <ProForm.Group>
         <ProFormRadio.Group
           name="isDemo"
           label={intl.formatMessage({ id: 'accountType', defaultMessage: '账户类型' })}

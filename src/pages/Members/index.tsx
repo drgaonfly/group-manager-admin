@@ -223,11 +223,11 @@ const TableList: React.FC = () => {
             <strong>{intl.formatMessage({ id: 'logedinAt' })} :</strong> {record?.logedinAt || '-'}
           </div>
           <div>
-            <strong>{intl.formatMessage({ id: 'registeredIP' })} :</strong>{' '}
-            {record?.createdIP || '-'}
+            <strong>{intl.formatMessage({ id: 'registeredIP' })} :</strong>
+            {record?.registerIP}
           </div>
           <div>
-            <strong>{intl.formatMessage({ id: 'LogedinIP' })} :</strong> {record?.LogedinIP || '-'}
+            <strong>{intl.formatMessage({ id: 'LogedinIP' })} :</strong> {record?.loginIP}
           </div>
         </div>
       ),
