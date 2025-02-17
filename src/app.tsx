@@ -40,6 +40,7 @@ import {
   SwapOutlined,
   PieChartFilled,
   QrcodeOutlined,
+  FundOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -92,6 +93,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   SwapOutlined: <SwapOutlined />,
   PieChartFilled: <PieChartFilled />,
   QrcodeOutlined: <QrcodeOutlined />,
+  FundOutlined: <FundOutlined />,
 };
 
 console.log('iconEnum', iconEnum);

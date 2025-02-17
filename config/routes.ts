@@ -258,4 +258,10 @@ export default [
     icon: 'AppstoreOutlined',
     component: './Channel',
   },
+  {
+    path: '/mining-data',
+    name: 'list.mining-data',
+    icon: 'FundOutlined',
+    component: './MiningData',
+  },
 ];

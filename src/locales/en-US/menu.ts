@@ -94,4 +94,6 @@ export default {
   'menu.income': 'Income',
   'menu.transfer': 'Transfer',
   'menu.channel': 'Channel',
+  'menu.mining-data': 'Mining Data Management',
+  'list.mining-data': 'Mining Data Management',
 };
