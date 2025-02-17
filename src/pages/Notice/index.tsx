@@ -12,7 +12,6 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import ReactQuill from 'react-quill';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -150,17 +149,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'content' }),
       dataIndex: 'content',
       hideInSearch: true,
-      render: (dom) => {
-        return (
-          <div>
-            <ReactQuill
-              value={dom as string} // 使用 ReactQuill 显示内容
-              readOnly={true} // 设置为只读模式
-              theme="bubble" // 使用轻量的 Bubble 主题
-            />
-          </div>
-        );
-      },
     },
     {
       title: <FormattedMessage id="pages.creator" />,
