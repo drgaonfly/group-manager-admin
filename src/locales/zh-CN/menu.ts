@@ -88,6 +88,7 @@ export default {
   'menu.认证管理.权限组管理': '权限组管理',
   'menu.认证管理.数据权限管理': '数据权限管理',
   'menu.工作台管理': '工作台管理',
+  'menu.监管机构': '监管机构',
   'tabs.close.left': '关闭左侧标签页',
   'tabs.close.right': '关闭右侧标签页',
   'tabs.close.others': '关闭其他标签页',
@@ -118,5 +119,5 @@ export default {
   'list.mining-data': '采矿数据管理',
   'list.mining-output': '采矿产出管理',
   'menu.mining-output': '采矿产出管理',
-
+  'list.regulation-agencies': '监管机构',
 };

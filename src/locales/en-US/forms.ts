@@ -111,6 +111,7 @@ export default {
   'menu.钱包管理.分润钱包管理': 'Profit Share Wallet',
   'menu.钱包管理.手续钱包管理': 'Fee Wallet ',
   'menu.合作伙伴管理': 'Partnerships',
+  'menu.监管机构管理': 'Regulation Agencies',
   'tabs.close.left': 'Close Tabs to the Left',
   'tabs.close.right': 'Close Tabs to the Right',
   'tabs.close.others': 'Close Other Tabs',

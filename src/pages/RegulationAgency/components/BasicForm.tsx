@@ -1,7 +1,7 @@
 // Start of Selection
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { ProForm } from '@ant-design/pro-components';
 import { Form, Input, message, UploadFile } from 'antd';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 
@@ -49,7 +49,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
       initialValues={{
         ...values,
         name: values?.name || '', // Ensure `name` is initialized
-        description: values?.description || '', // Ensure `description` is initialized
         website: values?.website || '', // Ensure `website` is initialized
         logoUrl: imageUrl,
       }}
@@ -67,21 +66,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
       }}
     >
       <ProForm.Group>
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'name', defaultMessage: '名称' })}
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_enter_name',
-                defaultMessage: '请输入名称',
-              }),
-            },
-          ]}
-        />
-
         <Form.Item
           label={intl.formatMessage({ id: 'logoUrl' })}
           name="logoUrl"
@@ -101,28 +85,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
             defaultFileList={defaultFileList}
           />
         </Form.Item>
-
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'website', defaultMessage: '官网' })}
-          name="website"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_enter_website',
-                defaultMessage: '请输入官网',
-              }),
-            },
-            {
-              type: 'url',
-              message: intl.formatMessage({
-                id: 'please_enter_valid_website_url',
-                defaultMessage: '请输入有效的官网 URL',
-              }),
-            },
-          ]}
-        />
       </ProForm.Group>
 
       {!newRecord && (

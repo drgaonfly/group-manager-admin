@@ -353,5 +353,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/partnerships/:id', 'PUT')),
     canGetPartnership:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/partnerships', 'GET')),
+
+    // regulation-agencicy 权限
+    canCreateRegulationAgency:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/regulation-agencies', 'POST')),
+    canDeleteRegulationAgency:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/regulation-agencies', 'DELETE')),
+    canUpdateRegulationAgency:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/regulation-agencies/:id', 'PUT')),
+    canGetRegulationAgency:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/regulation-agencies', 'GET')),
   };
 }

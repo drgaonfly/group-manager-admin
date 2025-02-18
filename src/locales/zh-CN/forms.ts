@@ -218,4 +218,5 @@ export default {
   agent: '代理',
   isOnline: '是否在线',
   lan: '语言',
+  logoUrl: 'Logo',
 };

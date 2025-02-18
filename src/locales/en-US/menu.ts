@@ -99,5 +99,5 @@ export default {
   'list.mining-data': 'Mining Data Management',
   'list.mining-output': 'Mining Output Management',
   'menu.mining-output': 'Mining Output Management',
-
+  'list.regulation-agencies': 'Regulation Agencies',
 };
