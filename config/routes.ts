@@ -264,4 +264,10 @@ export default [
     icon: 'FundOutlined',
     component: './MiningData',
   },
+  {
+    path: '/mining-output',
+    name: 'list.mining-output',
+    icon: 'LineChartOutlined',
+    component: './MiningOutput',
+  },
 ];

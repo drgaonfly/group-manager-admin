@@ -41,6 +41,7 @@ import {
   PieChartFilled,
   QrcodeOutlined,
   FundOutlined,
+  LineChartOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -94,6 +95,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   PieChartFilled: <PieChartFilled />,
   QrcodeOutlined: <QrcodeOutlined />,
   FundOutlined: <FundOutlined />,
+  LineChartOutlined: <LineChartOutlined />,
 };
 
 console.log('iconEnum', iconEnum);
