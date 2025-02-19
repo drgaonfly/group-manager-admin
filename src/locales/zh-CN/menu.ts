@@ -116,10 +116,8 @@ export default {
   'menu.incomes': '收益',
   'menu.mining-data': '采矿数据管理',
   'menu.partnerships': '合作伙伴',
-  'list.mining-data': '采矿数据管理',
-  'list.mining-output': '采矿产出管理',
   'menu.mining-output': '采矿产出管理',
-  'list.regulation-agencies': '监管机构',
+  'menu.regulation-agencies': '监管机构',
   'menu.settings': '设置',
   'menu.notifications': '通知',
 };
