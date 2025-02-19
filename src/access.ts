@@ -377,5 +377,43 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/settings/:id', 'PUT')),
     canGetSetting:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/settings', 'GET')),
+
+    // mining-data 权限
+    canCreateMiningData:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/mining-data', 'POST')),
+    canDeleteMiningData:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/mining-data', 'DELETE')),
+    canUpdateMiningData:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/mining-data/:id', 'PUT')),
+    canGetMiningData:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/mining-data', 'GET')),
+
+    // mining-output 权限
+    canCreateMiningOutput:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/mining-output', 'POST')),
+    canDeleteMiningOutput:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/mining-output', 'DELETE')),
+    canUpdateMiningOutput:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/mining-output/:id', 'PUT')),
+    canGetMiningOutput:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/mining-output', 'GET')),
+
+    // notification 权限
+    canCreateNotification:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/notifications', 'POST')),
+    canDeleteNotification:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/notifications', 'DELETE')),
+    canUpdateNotification:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/notifications/:id', 'PUT')),
+    canGetNotification:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notifications', 'GET')),
   };
 }

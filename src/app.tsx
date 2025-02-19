@@ -43,6 +43,7 @@ import {
   FundOutlined,
   LineChartOutlined,
   SettingOutlined,
+  BellOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -98,6 +99,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   FundOutlined: <FundOutlined />,
   LineChartOutlined: <LineChartOutlined />,
   SettingOutlined: <SettingOutlined />,
+  BellOutlined: <BellOutlined />,
 };
 
 console.log('iconEnum', iconEnum);

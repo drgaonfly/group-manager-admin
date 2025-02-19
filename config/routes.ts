@@ -288,4 +288,10 @@ export default [
     icon: 'SettingOutlined',
     component: './Setting',
   },
+  {
+    path: '/notifications',
+    name: 'list.notifications',
+    icon: 'BellOutlined',
+    component: './Notification',
+  },
 ];

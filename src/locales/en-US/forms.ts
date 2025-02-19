@@ -115,6 +115,7 @@ export default {
   'menu.设置管理': 'Settings',
   'menu.采矿数据管理': 'Mining Data Management',
   'menu.采矿产出管理': 'Mining Output Management',
+  'menu.私信管理': 'Notifications',
   'tabs.close.left': 'Close Tabs to the Left',
   'tabs.close.right': 'Close Tabs to the Right',
   'tabs.close.others': 'Close Other Tabs',

@@ -99,4 +99,5 @@ export default {
   'menu.partnerships': 'Partnerships',
   'menu.regulation-agencies': 'Regulation Agencies',
   'menu.settings': 'Settings',
+  'menu.notifications': 'Notifications',
 };

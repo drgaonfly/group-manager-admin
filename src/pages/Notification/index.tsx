@@ -1,18 +1,17 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-// import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Button, message } from 'antd';
+import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
-// import DeleteLink from '@/components/DeleteLink';
-import useQueryList from '@/hooks/useQueryList';
+import DeleteLink from '@/components/DeleteLink';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -22,12 +21,9 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/mining-data', { ...fields });
+    await addItem('/notifications', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
-    setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
-    }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
     hide();
@@ -49,13 +45,10 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/mining-data/${fields._id}`, fields);
+    await updateItem(`/notifications/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
-    }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
     hide();
@@ -78,7 +71,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/mining-data', {
+    await removeItem('/notifications', {
       ids,
     });
     hide();
@@ -88,9 +81,6 @@ const handleRemove = async (ids: string[]) => {
         defaultMessage="Deleted successfully and will refresh soon"
       />,
     );
-    setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
-    }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
     hide();
@@ -101,21 +91,6 @@ const handleRemove = async (ids: string[]) => {
     );
     return false;
   }
-};
-
-const processData = (users: any[]) => {
-  return users.flatMap((user) => {
-    // 如果用户没有钱包，则直接返回一个条目
-    if (!user.wallets || user.wallets.length === 0) {
-      return [{ ...user, wallet: null }];
-    }
-
-    // 如果有钱包，则为每个钱包创建一行数据
-    return user.wallets.map((wallet: any) => ({
-      ...user, // 保留用户的基本信息
-      wallet, // 只保留当前钱包信息
-    }));
-  });
 };
 
 const TableList: React.FC = () => {
@@ -137,16 +112,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  // const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
-
-  const { items: users, loading } = useQueryList('/mining-data');
-  const [dataSource, setDataSource] = useState<any[]>([]);
-
-  useEffect(() => {
-    const flattenedData = processData(users);
-    setDataSource(flattenedData);
-  }, [users, loading]);
 
   /**
    * @en-US International configuration
@@ -156,23 +122,33 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'totalOutput', defaultMessage: '总产量' }),
-      dataIndex: 'totalOutput',
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'validNodes', defaultMessage: '有效节点' }),
-      dataIndex: 'validNodes',
+      title: intl.formatMessage({ id: 'title' }),
+      dataIndex: 'title',
+    },
+    {
+      title: intl.formatMessage({ id: 'content' }),
+      dataIndex: 'content',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'participants', defaultMessage: '参加人数' }),
-      dataIndex: 'participants',
+      title: intl.formatMessage({ id: 'sender' }),
+      dataIndex: ['sender', 'name'],
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'userEarnings', defaultMessage: '用户收益' }),
-      dataIndex: 'userEarnings',
+      title: intl.formatMessage({ id: 'receiver' }),
+      dataIndex: ['receiver', 'name'],
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
       hideInSearch: true,
     },
     {
@@ -189,7 +165,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </a>,
-        access.canUpdateMember && (
+        access.canUpdateNotice && (
           <a
             key="edit"
             onClick={() => {
@@ -201,15 +177,15 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        // access.canDeleteMember && (
-        //   <DeleteLink
-        //     onOk={async () => {
-        //       await handleRemove([record._id!]);
-        //       setSelectedRows([]);
-        //       actionRef.current?.reloadAndRest?.();
-        //     }}
-        //   />
-        // ),
+        access.canDeleteNotice && (
+          <DeleteLink
+            onOk={async () => {
+              await handleRemove([record._id!]);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          />
+        ),
       ],
     },
   ];
@@ -217,33 +193,30 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.ItemData, API.PageParams>
-        // toolBarRender={() => [
-        //   (access.canSuperAdmin || access.canCreateIncome) && (
-        //     <Button
-        //       type="primary"
-        //       key="primary"
-        //       onClick={() => {
-        //         handleModalOpen(true);
-        //       }}
-        //     >
-        //       <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-        //     </Button>
-        //   ),
-        // ]}
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        // scroll={{ x: 2300 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
           collapsed: false,
         }}
-        request={async (params, sort, filter) =>
-          queryList('/mining-data', { ...params }, sort, filter)
-        }
+        toolBarRender={() => [
+          (access.canSuperAdmin || access.canCreateNotice) && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined />
+              <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            </Button>
+          ),
+        ]}
+        toolbar={{}}
+        request={async (params, sort, filter) => queryList('/notifications', params, sort, filter)}
         columns={columns}
-        dataSource={dataSource} // 设置处理后的数据
-        loading-={loading}
         rowSelection={
           access.canSuperAdmin && {
             onChange: (_, selectedRows) => {
@@ -262,7 +235,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteMiningData) && (
+          {(access.canSuperAdmin || access.canDeleteNotification) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -273,7 +246,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateMiningData) && (
+      {(access.canSuperAdmin || access.canCreateNotification) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -288,7 +261,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateMiningData) && (
+      {(access.canSuperAdmin || access.canUpdateNotification) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

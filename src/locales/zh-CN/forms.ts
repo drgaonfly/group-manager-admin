@@ -225,4 +225,6 @@ export default {
   isVisible: '是否可见',
   yes: '是',
   no: '否',
+  sender: '发送者',
+  receiver: '接收者',
 };

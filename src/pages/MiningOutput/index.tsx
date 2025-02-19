@@ -159,13 +159,11 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'address', defaultMessage: '地址' }),
       dataIndex: 'address',
       hideInSearch: true,
-      width: '45%',
     },
     {
       title: intl.formatMessage({ id: 'usdtNumber', defaultMessage: 'USDT数量' }),
       dataIndex: 'usdtNumber',
       hideInSearch: true,
-      width: '30%',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -224,7 +222,7 @@ const TableList: React.FC = () => {
         ]}
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        // scroll={{ x: 2300 }}
+        scroll={{ x: 2300 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
@@ -254,7 +252,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteMember) && (
+          {(access.canSuperAdmin || access.canDeleteMiningOutput) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -265,7 +263,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateMember) && (
+      {(access.canSuperAdmin || access.canCreateMiningOutput) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -280,7 +278,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateMember) && (
+      {(access.canSuperAdmin || access.canUpdateMiningOutput) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
