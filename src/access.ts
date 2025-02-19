@@ -367,5 +367,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetRegulationAgency:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/regulation-agencies', 'GET')),
+
+    // setting 权限
+    canCreateSetting:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/settings', 'POST')),
+    canDeleteSetting:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/settings', 'DELETE')),
+    canUpdateSetting:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/settings/:id', 'PUT')),
+    canGetSetting:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/settings', 'GET')),
   };
 }

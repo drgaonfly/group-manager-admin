@@ -282,4 +282,10 @@ export default [
     icon: 'TeamOutlined',
     component: './RegulationAgency',
   },
+  {
+    path: '/settings',
+    name: 'list.settings',
+    icon: 'SettingOutlined',
+    component: './Setting',
+  },
 ];

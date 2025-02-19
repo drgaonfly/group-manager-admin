@@ -120,4 +120,5 @@ export default {
   'list.mining-output': '采矿产出管理',
   'menu.mining-output': '采矿产出管理',
   'list.regulation-agencies': '监管机构',
+  'menu.settings': '设置',
 };

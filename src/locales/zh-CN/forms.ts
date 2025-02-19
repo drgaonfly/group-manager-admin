@@ -219,4 +219,10 @@ export default {
   isOnline: '是否在线',
   lan: '语言',
   logoUrl: 'Logo',
+  parameter: '参数',
+  key: '键',
+  value: '值',
+  isVisible: '是否可见',
+  yes: '是',
+  no: '否',
 };
