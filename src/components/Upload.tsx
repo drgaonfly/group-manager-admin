@@ -42,7 +42,7 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, defaultFileLi
         if (onSuccess) {
           onSuccess(response);
         }
-        const httpUrl = response.data.signedURL; // 假设返回的signedURL就在data字段中
+        const httpUrl = response.data.file;
         onFileUpload(httpUrl);
       } else {
         message.error('上传失败');

@@ -3,7 +3,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Input, message, UploadFile } from 'antd';
-import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import AliyunOSSUpload from '@/components/Upload';
 
 interface Props {
   newRecord?: boolean;
@@ -82,16 +82,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
           ]}
         />
 
-        <Form.Item
-          label={intl.formatMessage({ id: 'logoUrl' })}
-          name="logoUrl"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({ id: 'logoUrl.required', defaultMessage: '请上传Logo' }),
-            },
-          ]}
-        >
+        <Form.Item label={intl.formatMessage({ id: 'logoUrl' })} name="logoUrl">
           <AliyunOSSUpload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
