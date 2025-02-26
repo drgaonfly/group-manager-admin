@@ -40,6 +40,9 @@ export default {
   'modal.cancelText': '取消',
 
   'pages.searchTable.form.required': '此项为必填项',
+  'tabs.close.left': '关闭左侧标签页',
+  'tabs.close.right': '关闭右侧标签页',
+  'tabs.close.others': '关闭其他标签页',
 
   // 客户管理相关
   username: '用户名',
