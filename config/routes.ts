@@ -127,33 +127,10 @@ export default [
     component: './Employee',
   },
   {
-    path: '/withdraws',
-    name: 'list.withdraw',
-    icon: 'WalletOutlined',
-    component: './Withdraw',
-  },
-  {
     path: '/customers',
     name: 'list.customers',
     icon: 'UserOutlined',
     component: './Customer',
-  },
-  {
-    path: '/wallets',
-    name: 'list.wallets',
-    icon: 'WalletOutlined',
-    routes: [
-      {
-        path: '/wallets/share',
-        name: 'list.wallets.share',
-        component: './Wallet/Wallet',
-      },
-      {
-        path: '/wallets/index',
-        name: 'list.wallets.formal',
-        component: './Wallet/Formalities',
-      },
-    ],
   },
   {
     path: '/wallet-deal-records',
@@ -203,24 +180,6 @@ export default [
         icon: 'TranslationOutlined',
       },
     ],
-  },
-  {
-    path: '/exchanges',
-    name: 'list.exchanges',
-    Icon: 'SwapOutlined',
-    component: './Exchange',
-  },
-  {
-    path: '/incomes',
-    name: 'list.incomes',
-    icon: 'MoneyCollectOutlined',
-    component: './Income',
-  },
-  {
-    path: '/transfers',
-    name: 'list.transfers',
-    icon: 'TransactionOutlined',
-    component: './Transfer',
   },
   {
     path: '/channels',
@@ -288,6 +247,56 @@ export default [
         name: 'list.regulation-agencies',
         icon: 'TeamOutlined',
         component: './Content/RegulationAgency',
+      },
+    ],
+  },
+
+  // 财务管理
+  {
+    path: '/finance',
+    name: 'list.finance',
+    icon: 'WalletOutlined',
+    routes: [
+      {
+        path: '/finance/wallets',
+        name: 'list.wallets',
+        icon: 'WalletOutlined',
+        routes: [
+          {
+            path: '/finance/wallets/share',
+            name: 'list.wallets.share',
+            component: './Finance/Wallet/Wallet',
+          },
+          {
+            path: '/finance/wallets/index',
+            name: 'list.wallets.formal',
+            component: './Finance/Wallet/Formalities',
+          },
+        ],
+      },
+      {
+        path: '/finance/exchanges',
+        name: 'list.exchanges',
+        Icon: 'SwapOutlined',
+        component: './Finance/Exchange',
+      },
+      {
+        path: '/finance/withdraws',
+        name: 'list.withdraw',
+        icon: 'WalletOutlined',
+        component: './Finance/Withdraw',
+      },
+      {
+        path: '/finance/transfers',
+        name: 'list.transfers',
+        icon: 'TransactionOutlined',
+        component: './Finance/Transfer',
+      },
+      {
+        path: '/finance/incomes',
+        name: 'list.incomes',
+        icon: 'MoneyCollectOutlined',
+        component: './Finance/Income',
       },
     ],
   },
