@@ -115,24 +115,6 @@ export default [
     ],
   },
   {
-    path: '/proxies',
-    name: 'list.proxies',
-    icon: 'GlobalOutlined',
-    component: './Proxy',
-  },
-  {
-    path: '/employees',
-    name: 'list.employees',
-    icon: 'UsergroupAddOutlined',
-    component: './Employee',
-  },
-  {
-    path: '/customers',
-    name: 'list.customers',
-    icon: 'UserOutlined',
-    component: './Customer',
-  },
-  {
     path: '/wallet-deal-records',
     name: 'list.walletDealRecords',
     icon: 'TransactionOutlined',
@@ -297,6 +279,33 @@ export default [
         name: 'list.incomes',
         icon: 'MoneyCollectOutlined',
         component: './Finance/Income',
+      },
+    ],
+  },
+
+  // 用户管理
+  {
+    path: '/user-type',
+    name: 'list.user-types',
+    icon: 'UserOutlined',
+    routes: [
+      {
+        path: '/user-type/proxies',
+        name: 'list.proxies',
+        icon: 'GlobalOutlined',
+        component: './UserType/Proxy',
+      },
+      {
+        path: '/user-type/employees',
+        name: 'list.employees',
+        icon: 'UsergroupAddOutlined',
+        component: './UserType/Employee',
+      },
+      {
+        path: '/user-type/customers',
+        name: 'list.customers',
+        icon: 'UserOutlined',
+        component: './UserType/Customer',
       },
     ],
   },

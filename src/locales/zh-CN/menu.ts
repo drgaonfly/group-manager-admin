@@ -27,6 +27,11 @@ export default {
   'menu.mining-output': '采矿产出管理',
   'menu.settings': '设置',
 
+  'menu.user-type': '用户类型',
+  'menu.user-type.proxies': '代理',
+  'menu.user-type.employees': '员工',
+  'menu.user-type.customers': '客户',
+
   'menu.content': '内容管理',
   'menu.content.carousels': '轮播图',
   'menu.content.partnerships': '合作伙伴',
@@ -45,7 +50,6 @@ export default {
   'menu.finance.incomes': '收益',
 
   'menu.工作台管理': '工作台管理',
-  'menu.用户管理': '用户管理',
   'menu.认证管理': '认证管理',
   'menu.认证管理.用户管理': '用户管理',
   'menu.认证管理.菜单管理': '菜单管理',
@@ -68,6 +72,11 @@ export default {
   'menu.设置管理': '设置管理',
   'menu.采矿数据管理': '采矿数据管理',
   'menu.采矿产出管理': '采矿产出管理',
+
+  'menu.用户管理': '用户管理',
+  'menu.用户管理.代理管理': '代理管理',
+  'menu.用户管理.员工管理': '员工管理',
+  'menu.用户管理.客户管理': '客户管理',
 
   'menu.内容管理': '内容管理',
   'menu.内容管理.轮播图管理': '轮播图管理',

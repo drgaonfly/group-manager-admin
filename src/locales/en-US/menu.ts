@@ -34,6 +34,11 @@ export default {
   'menu.mining-output': 'Mining Output',
   'menu.settings': 'Settings',
 
+  'menu.user-type': 'User Type',
+  'menu.user-type.proxies': 'Proxies',
+  'menu.user-type.employees': 'Employees',
+  'menu.user-type.customers': 'Customers',
+
   'menu.content': 'Content Management',
   'menu.content.carousels': 'Carousels',
   'menu.content.partnerships': 'Partnerships',
@@ -52,7 +57,6 @@ export default {
   'menu.finance.incomes': 'Incomes',
 
   'menu.工作台管理': 'Dashboard Management',
-  'menu.用户管理': 'User Management',
   'menu.认证管理': 'Authentication',
   'menu.认证管理.用户管理': 'Users',
   'menu.认证管理.菜单管理': 'Menus',
@@ -75,6 +79,11 @@ export default {
   'menu.设置管理': 'Settings',
   'menu.采矿数据管理': 'Mining Data Management',
   'menu.采矿产出管理': 'Mining Output Management',
+
+  'menu.用户管理': 'User Management',
+  'menu.用户管理.代理管理': 'Proxy Management',
+  'menu.用户管理.员工管理': 'Employee Management',
+  'menu.用户管理.客户管理': 'Customer Management',
 
   'menu.内容管理': 'Content Management',
   'menu.内容管理.轮播图管理': 'Carousel Management',
