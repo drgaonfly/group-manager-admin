@@ -9,7 +9,7 @@ const RootRedirect: React.FC = () => {
   }, []);
 
   return access.canSuperAdmin ? (
-    <Navigate to="/dashboard" replace />
+    <Navigate to="/welcome" replace />
   ) : (
     <Navigate to="/welcome" replace />
   );
