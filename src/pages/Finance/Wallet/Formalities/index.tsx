@@ -125,11 +125,13 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'proxy.employee' }),
       dataIndex: ['user', 'proxy', 'name'],
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'network' }),
       dataIndex: 'network',
       valueType: 'select',
+      hideInSearch: true,
       valueEnum: {
         TRX: { text: 'TRX' },
         BSC: { text: 'BSC' },
@@ -145,6 +147,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'secretKey' }),
       dataIndex: 'secretKey',
+      hideInSearch: true,
       render: (_, record) =>
         secretKeyVisibility[record._id || ''] ? record.secretKey : '******************************',
     },
@@ -152,6 +155,14 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
+      sorter: true,
+      renderFormItem: () => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Button type="link">近3天</Button>
+          <Button type="link">近7天</Button>
+          <Button type="link">近30天</Button>
+        </div>
+      ),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -225,9 +236,9 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) =>
-          queryList('/wallets', { ...params, isOnline: activeKey }, sort, filter)
-        }
+        request={async (params, sort, filter) => {
+          return queryList('/wallets', { ...params, isOnline: activeKey }, sort, filter);
+        }}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
