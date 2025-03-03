@@ -110,6 +110,20 @@ const handleGenerateEthWallet = async () => {
     return false;
   }
 };
+//生成bnb钱包
+const handleGenerateBnbWallet = async () => {
+  const hide = message.loading('生成中...');
+  try {
+    await addItem(`/wallets/generate-bnb-wallet`, {});
+    hide();
+    message.success('生成成功');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? '生成失败');
+    return false;
+  }
+};
 
 const TableList: React.FC = () => {
   const intl = useIntl();
@@ -158,6 +172,12 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: 'address',
+      copyable: true,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'wallets.balance', defaultMessage: '余额' }),
+      dataIndex: 'balance',
       copyable: true,
       hideInSearch: true,
     },
@@ -225,7 +245,7 @@ const TableList: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-center items-center gap-16 p-6 bg-white rounded-lg shadow-sm mb-6">
+      <div className="flex justify-center items-center gap-32 p-6 bg-white rounded-lg shadow-sm mb-6">
         {/* ETH Wallet */}
         <div className="flex flex-col items-center">
           <div className="w-30 h-30 bg-blue-100 rounded-full flex items-center justify-center mb-8">
@@ -238,9 +258,9 @@ const TableList: React.FC = () => {
               }}
             />
           </div>
-          <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
+          {/* <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
             0x565b2e29e47864a132693e4ed88a2a5b58542434
-          </div>
+          </div> */}
           <button
             type="button"
             className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
@@ -262,12 +282,16 @@ const TableList: React.FC = () => {
               }}
             />
           </div>
-          <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
+          {/* <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
             0x104ebc25d87d6b4ab48f588e1e74479c07c3ab3
-          </div>
-          <div className="mt-4 px-5 py-1 bg-green-50 text-green-600 text-xs rounded-full">
-            BNB: 获取余额中
-          </div>
+          </div> */}
+          <button
+            type="button"
+            className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
+            onClick={handleGenerateBnbWallet}
+          >
+            生成
+          </button>
         </div>
 
         {/* TRX Wallet */}
@@ -282,9 +306,9 @@ const TableList: React.FC = () => {
               }}
             />
           </div>
-          <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
+          {/* <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
             TMQ8QsUEvaT2KgiE2da3NDsYYCk6FzCgkZ
-          </div>
+          </div> */}
           <div className="mt-4 px-5 py-1 bg-green-50 text-green-600 text-xs rounded-full">
             TRX: 0
           </div>
