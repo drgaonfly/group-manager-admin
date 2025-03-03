@@ -172,4 +172,5 @@ export default {
   no: 'No',
   'menu.wallets.share': 'Share Wallet',
   'menu.wallets.index': 'Index Wallet',
+  'proxy.user': 'Parent Proxy',
 };

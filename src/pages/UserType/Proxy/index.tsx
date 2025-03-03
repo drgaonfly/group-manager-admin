@@ -180,6 +180,12 @@ const TableList: React.FC = () => {
       hideInForm: true,
     },
     {
+      title: intl.formatMessage({ id: 'proxy.user' }),
+      dataIndex: ['proxy', 'name'],
+      hideInSearch: true,
+      hideInForm: true,
+    },
+    {
       title: intl.formatMessage({ id: 'lastLoginAt' }),
       dataIndex: 'lastLoginAt',
       valueType: 'dateTime',

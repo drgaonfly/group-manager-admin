@@ -232,4 +232,5 @@ export default {
   receiver: '接收者',
   'menu.wallets.share': '分润钱包',
   'menu.wallets.index': '手续费钱包',
+  'proxy.user': '父级代理',
 };
