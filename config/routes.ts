@@ -234,23 +234,6 @@ export default [
     icon: 'WalletOutlined',
     routes: [
       {
-        path: '/finance/wallets',
-        name: 'list.wallets',
-        icon: 'WalletOutlined',
-        routes: [
-          {
-            path: '/finance/wallets/share',
-            name: 'list.wallets.share',
-            component: './Finance/Wallet/Wallet',
-          },
-          {
-            path: '/finance/wallets/index',
-            name: 'list.wallets.formal',
-            component: './Finance/Wallet/Formalities',
-          },
-        ],
-      },
-      {
         path: '/finance/exchanges',
         name: 'list.exchanges',
         Icon: 'SwapOutlined',
@@ -273,6 +256,23 @@ export default [
         name: 'list.incomes',
         icon: 'MoneyCollectOutlined',
         component: './Finance/Income',
+      },
+    ],
+  },
+  {
+    path: '/wallets',
+    name: 'list.wallets',
+    icon: 'WalletOutlined',
+    routes: [
+      {
+        path: '/wallets/share',
+        name: 'list.wallets.share',
+        component: './Wallet/Wallet',
+      },
+      {
+        path: '/wallets/index',
+        name: 'list.wallets.formal',
+        component: './Wallet/Formalities',
       },
     ],
   },

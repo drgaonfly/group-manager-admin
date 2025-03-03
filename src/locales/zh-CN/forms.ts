@@ -230,4 +230,6 @@ export default {
   no: '否',
   sender: '发送者',
   receiver: '接收者',
+  'menu.wallets.share': '分润钱包',
+  'menu.wallets.index': '手续费钱包',
 };

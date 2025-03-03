@@ -170,4 +170,6 @@ export default {
   isVisible: 'Is Visible',
   yes: 'Yes',
   no: 'No',
+  'menu.wallets.share': 'Share Wallet',
+  'menu.wallets.index': 'Index Wallet',
 };
