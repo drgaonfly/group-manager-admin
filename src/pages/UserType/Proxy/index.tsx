@@ -174,7 +174,6 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       hideInForm: true,
     },
-    // add last loginAt
     {
       title: intl.formatMessage({ id: 'lastLoginAt' }),
       dataIndex: 'lastLoginAt',

@@ -48,7 +48,6 @@ const handleUpdate = async (fields: FormValueType) => {
   try {
     await updateItem(`/wallets/${fields._id}`, fields);
     hide();
-
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
     return true;
   } catch (error: any) {
@@ -101,7 +100,7 @@ const handleRemove = async (ids: string[]) => {
 const handleGenerateEthWallet = async () => {
   const hide = message.loading('生成中...');
   try {
-    await addItem('/wallets/generate-eth-wallet', {});
+    await addItem(`/wallets/generate-eth-wallet`, {});
     hide();
     message.success('生成成功');
     return true;
@@ -142,7 +141,7 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'proxy.employee' }),
-      dataIndex: ['user', 'proxy', 'name'],
+      dataIndex: ['user', 'name'],
       hideInSearch: true,
     },
     {
