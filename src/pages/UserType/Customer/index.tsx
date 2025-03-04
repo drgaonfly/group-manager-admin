@@ -12,11 +12,13 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import useQueryList from '@/hooks/useQueryList';
+import { Switch, Modal } from 'antd';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
  * @param fields
  */
+
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
@@ -153,6 +155,33 @@ const TableList: React.FC = () => {
    * */
   // Define roles object with index signature
 
+  const handleToggleDemo = async (record: API.ItemData) => {
+    Modal.confirm({
+      title: intl.formatMessage({
+        id: record.isDemo ? 'switchToCustomer' : 'switchToDemo',
+        defaultMessage: record.isDemo ? '切换到普通账户' : '切换到演示账户',
+      }),
+      content: intl.formatMessage({
+        id: 'switchAccountConfirm',
+        defaultMessage: '确定要切换账户类型吗？',
+      }),
+      onOk: async () => {
+        try {
+          await updateItem(`/customers/${record._id}`, {
+            ...record,
+            isDemo: !record.isDemo,
+          });
+          message.success(intl.formatMessage({ id: 'update_successful' }));
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } catch (error) {
+          message.error(intl.formatMessage({ id: 'update_failed' }));
+        }
+      },
+    });
+  };
+
   const columns: ProColumns<API.ItemData>[] = [
     {
       // add id column
@@ -245,14 +274,15 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'accountType' }),
-      dataIndex: 'isDemo', //账户类型
+      dataIndex: 'isDemo',
       hideInSearch: true,
-      render: (text) => (
-        <span>
-          {text
-            ? intl.formatMessage({ id: 'demoAccount' })
-            : intl.formatMessage({ id: 'customer' })}
-        </span>
+      render: (_, record) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
+          unCheckedChildren={intl.formatMessage({ id: 'customer' })}
+          checked={record.isDemo}
+          onChange={() => handleToggleDemo(record)}
+        />
       ),
     },
     {
