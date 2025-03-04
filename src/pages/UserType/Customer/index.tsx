@@ -211,6 +211,17 @@ const TableList: React.FC = () => {
       ),
     },
     {
+      title: intl.formatMessage({ id: 'inviter', defaultMessage: '邀请人' }),
+      dataIndex: ['inviter', 'email'],
+      hideInSearch: true,
+      render: (_, record) => {
+        if (record.inviter) {
+          return `${record.inviter.email}`;
+        }
+        return '-';
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'customerOverview' }),
       dataIndex: 'overview',
       render: (_, record) => (
