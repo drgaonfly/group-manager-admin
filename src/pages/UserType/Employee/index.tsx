@@ -23,7 +23,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/employees', { ...fields });
+    await addItem('/employees', { ...fields, live: false });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -133,7 +133,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'email' }),
       dataIndex: 'email',
       copyable: true,
-
       render: (dom, entity) => {
         return (
           <a
@@ -145,36 +144,6 @@ const TableList: React.FC = () => {
             {dom}
           </a>
         );
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'network' }),
-      dataIndex: 'wallets',
-      key: 'wallets',
-      render: (wallets) => {
-        if (Array.isArray(wallets)) {
-          return wallets.length > 0
-            ? wallets.map((wallet) => (
-                <div key={wallet.network}>{wallet.network}</div> // 每个地址占一行
-              ))
-            : null;
-        }
-        return null;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: 'wallets',
-      key: 'wallets',
-      render: (wallets) => {
-        if (Array.isArray(wallets)) {
-          return wallets.length > 0
-            ? wallets.map((wallet) => (
-                <div key={wallet.address}>{wallet.address}</div> // 每个地址占一行
-              ))
-            : null;
-        }
-        return null;
       },
     },
     {
