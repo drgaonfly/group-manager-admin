@@ -4,8 +4,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, message, Typography } from 'antd';
+import React, { useRef, useState, useEffect } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
@@ -93,38 +93,6 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
-/**
- * @en-US Generate ETH wallet
- * @zh-CN 生成ETH钱包
- */
-const handleGenerateEthWallet = async () => {
-  const hide = message.loading('生成中...');
-  try {
-    await addItem(`/wallets/generate-eth-wallet`, {});
-    hide();
-    message.success('生成成功');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '生成失败');
-    return false;
-  }
-};
-//生成bnb钱包
-const handleGenerateBnbWallet = async () => {
-  const hide = message.loading('生成中...');
-  try {
-    await addItem(`/wallets/generate-bnb-wallet`, {});
-    hide();
-    message.success('生成成功');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.message ?? '生成失败');
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const intl = useIntl();
   /**
@@ -146,6 +114,29 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [activeKey] = useState<string | undefined>('');
   const access = useAccess();
+  const [userWallets, setUserWallets] = useState<Record<string, any>>({});
+
+  // 获取用户钱包信息
+  const fetchUserWallets = async (network: string) => {
+    try {
+      const response = await queryList('/wallets/get-current-user-wallet', { network });
+      if (response?.data) {
+        setUserWallets((prev) => ({
+          ...prev,
+          [network]: response.data,
+        }));
+      }
+    } catch (error) {
+      console.error(`Failed to fetch ${network} wallet:`, error);
+    }
+  };
+
+  useEffect(() => {
+    // 分别获取各个网络的钱包信息
+    fetchUserWallets('ETH');
+    fetchUserWallets('BSC');
+    fetchUserWallets('TRX');
+  }, []);
 
   /**
    * @en-US International configuration
@@ -243,6 +234,37 @@ const TableList: React.FC = () => {
     },
   ];
 
+  // 生成钱包后重新获取对应网络的钱包信息
+  const handleGenerateEthWallet = async () => {
+    const hide = message.loading('生成中...');
+    try {
+      await addItem(`/wallets/generate-eth-wallet`, {});
+      hide();
+      message.success('生成成功');
+      fetchUserWallets('ETH'); // 重新获取ETH钱包信息
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error(error?.response?.data?.message ?? '生成失败');
+      return false;
+    }
+  };
+
+  const handleGenerateBnbWallet = async () => {
+    const hide = message.loading('生成中...');
+    try {
+      await addItem(`/wallets/generate-bnb-wallet`, {});
+      hide();
+      message.success('生成成功');
+      fetchUserWallets('BSC'); // 重新获取BSC钱包信息
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error(error?.response?.data?.message ?? '生成失败');
+      return false;
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-center items-center gap-32 p-6 bg-white rounded-lg shadow-sm mb-6">
@@ -258,16 +280,24 @@ const TableList: React.FC = () => {
               }}
             />
           </div>
-          {/* <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
-            0x565b2e29e47864a132693e4ed88a2a5b58542434
-          </div> */}
-          <button
-            type="button"
-            className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
-            onClick={handleGenerateEthWallet}
-          >
-            生成
-          </button>
+          {userWallets['ETH'] ? (
+            <>
+              <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
+                <Typography.Text>{userWallets['ETH'].address}</Typography.Text>
+              </div>
+              <div className="mt-4 px-5 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">
+                ETH: {userWallets['ETH'].balance || '0'}
+              </div>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
+              onClick={handleGenerateEthWallet}
+            >
+              生成
+            </button>
+          )}
         </div>
 
         {/* BNB Wallet */}
@@ -282,16 +312,24 @@ const TableList: React.FC = () => {
               }}
             />
           </div>
-          {/* <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
-            0x104ebc25d87d6b4ab48f588e1e74479c07c3ab3
-          </div> */}
-          <button
-            type="button"
-            className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
-            onClick={handleGenerateBnbWallet}
-          >
-            生成
-          </button>
+          {userWallets['BSC'] ? (
+            <>
+              <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
+                <Typography.Text>{userWallets['BSC'].address}</Typography.Text>
+              </div>
+              <div className="mt-4 px-5 py-1 bg-yellow-50 text-yellow-600 text-xs rounded-full">
+                BNB: {userWallets['BSC'].balance || '0'}
+              </div>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
+              onClick={handleGenerateBnbWallet}
+            >
+              生成
+            </button>
+          )}
         </div>
 
         {/* TRX Wallet */}
@@ -306,12 +344,18 @@ const TableList: React.FC = () => {
               }}
             />
           </div>
-          {/* <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
-            TMQ8QsUEvaT2KgiE2da3NDsYYCk6FzCgkZ
-          </div> */}
-          <div className="mt-4 px-5 py-1 bg-green-50 text-green-600 text-xs rounded-full">
-            TRX: 0
-          </div>
+          {userWallets['TRX'] ? (
+            <>
+              <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
+                <Typography.Text copyable>{userWallets['TRX'].address}</Typography.Text>
+              </div>
+              <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">
+                TRX: {userWallets['TRX'].balance || '0'}
+              </div>
+            </>
+          ) : (
+            <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">TRX: 0</div>
+          )}
         </div>
       </div>
       <PageContainer>
