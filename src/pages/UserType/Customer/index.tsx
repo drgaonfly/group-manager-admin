@@ -12,7 +12,7 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import useQueryList from '@/hooks/useQueryList';
-import { Switch, Modal } from 'antd';
+import { Switch } from 'antd';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -155,33 +155,6 @@ const TableList: React.FC = () => {
    * */
   // Define roles object with index signature
 
-  const handleToggleDemo = async (record: API.ItemData) => {
-    Modal.confirm({
-      title: intl.formatMessage({
-        id: record.isDemo ? 'switchToCustomer' : 'switchToDemo',
-        defaultMessage: record.isDemo ? '切换到普通账户' : '切换到演示账户',
-      }),
-      content: intl.formatMessage({
-        id: 'switchAccountConfirm',
-        defaultMessage: '确定要切换账户类型吗？',
-      }),
-      onOk: async () => {
-        try {
-          await updateItem(`/customers/${record._id}`, {
-            ...record,
-            isDemo: !record.isDemo,
-          });
-          message.success(intl.formatMessage({ id: 'update_successful' }));
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-        } catch (error) {
-          message.error(intl.formatMessage({ id: 'update_failed' }));
-        }
-      },
-    });
-  };
-
   const columns: ProColumns<API.ItemData>[] = [
     {
       // add id column
@@ -275,13 +248,22 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'accountType' }),
       dataIndex: 'isVerified',
-      hideInSearch: true,
-      render: (_, record) => (
+      hideInSearch: false,
+      valueEnum: {
+        true: { text: intl.formatMessage({ id: 'demoAccount' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'customer' }), status: 'Error' },
+      },
+      render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
           unCheckedChildren={intl.formatMessage({ id: 'customer' })}
-          checked={record.isDemo}
-          onChange={() => handleToggleDemo(record)}
+          checked={record.isVerified}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isVerified: !record.isVerified });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
         />
       ),
     },
