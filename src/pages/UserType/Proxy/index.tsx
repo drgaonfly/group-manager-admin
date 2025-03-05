@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { Button, message, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -150,7 +150,7 @@ const TableList: React.FC = () => {
       render: (inviteCode, record) => {
         if (!inviteCode) return '-';
         const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?${record.inviteCode}`;
-        return fullUrl;
+        return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
     },
     // add createAt

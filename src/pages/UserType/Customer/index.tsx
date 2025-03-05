@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -284,6 +284,15 @@ const TableList: React.FC = () => {
           onChange={() => handleToggleDemo(record)}
         />
       ),
+    },
+    {
+      title: intl.formatMessage({ id: 'inviteCode' }),
+      dataIndex: 'ownInviteCode',
+      render: (ownInviteCode, record) => {
+        if (!ownInviteCode) return '-';
+        const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?${record.ownInviteCode}`;
+        return <Typography.Text copyable>{fullUrl}</Typography.Text>;
+      },
     },
     {
       title: intl.formatMessage({ id: 'isSpied' }),
