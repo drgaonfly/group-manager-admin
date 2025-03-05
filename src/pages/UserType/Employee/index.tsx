@@ -149,7 +149,11 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'inviteCode' }),
       dataIndex: 'inviteCode',
-      copyable: true,
+      render: (inviteCode, record) => {
+        if (!inviteCode) return '-';
+        const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?${record.inviteCode}`;
+        return fullUrl;
+      },
     },
     {
       title: intl.formatMessage({ id: 'proxy.employee' }),
