@@ -287,9 +287,35 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'isAuthorized' }),
       dataIndex: 'isAuthorized',
-      hideInSearch: true,
-      render: (text) => (
-        <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
+      hideInSearch: false,
+      valueEnum: {
+        true: {
+          text: intl.formatMessage({ id: 'isAuthorized.authorized', defaultMessage: '已授权' }),
+          status: 'Success',
+        },
+        false: {
+          text: intl.formatMessage({ id: 'isAuthorized.unauthorized', defaultMessage: '未授权' }),
+          status: 'Error',
+        },
+      },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({
+            id: 'isAuthorized.authorized',
+            defaultMessage: '已授权',
+          })}
+          unCheckedChildren={intl.formatMessage({
+            id: 'isAuthorized.unauthorized',
+            defaultMessage: '未授权',
+          })}
+          checked={record.isAuthorized}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isAuthorized: !record.isAuthorized });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
       ),
     },
     {
