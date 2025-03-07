@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -108,7 +108,6 @@ const TableList: React.FC = () => {
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [secretKeyVisibility, setSecretKeyVisibility] = useState<Record<string, boolean>>({});
-  const [dataVisibility, setDataVisibility] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -268,14 +267,7 @@ const TableList: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-center items-center gap-32 p-6 bg-white rounded-full shadow-sm mb-6">
-        <div className="absolute top-8 right-8">
-          <Button
-            type="text"
-            icon={dataVisibility ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-            onClick={() => setDataVisibility(!dataVisibility)}
-          />
-        </div>
+      <div className="flex justify-center items-center gap-32 p-6 bg-white rounded-lg shadow-sm mb-6">
         {/* ETH Wallet */}
         <div className="flex flex-col items-center">
           <div className="w-30 h-30 bg-blue-100 rounded-full flex items-center justify-center mb-8">
@@ -291,12 +283,10 @@ const TableList: React.FC = () => {
           {userWallets['ETH'] ? (
             <>
               <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
-                <Typography.Text copyable={dataVisibility}>
-                  {dataVisibility ? userWallets['ETH'].address : '************************'}
-                </Typography.Text>
+                <Typography.Text>{userWallets['ETH'].address}</Typography.Text>
               </div>
               <div className="mt-4 px-5 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">
-                ETH: {dataVisibility ? userWallets['ETH'].balance || '0' : '*****'}
+                ETH: {userWallets['ETH'].balance || '0'}
               </div>
             </>
           ) : (
@@ -325,12 +315,10 @@ const TableList: React.FC = () => {
           {userWallets['BSC'] ? (
             <>
               <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
-                <Typography.Text copyable={dataVisibility}>
-                  {dataVisibility ? userWallets['BSC'].address : '************************'}
-                </Typography.Text>
+                <Typography.Text>{userWallets['BSC'].address}</Typography.Text>
               </div>
               <div className="mt-4 px-5 py-1 bg-yellow-50 text-yellow-600 text-xs rounded-full">
-                BNB: {dataVisibility ? userWallets['BSC'].balance || '0' : '*****'}
+                BNB: {userWallets['BSC'].balance || '0'}
               </div>
             </>
           ) : (
@@ -359,18 +347,14 @@ const TableList: React.FC = () => {
           {userWallets['TRX'] ? (
             <>
               <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
-                <Typography.Text copyable={dataVisibility}>
-                  {dataVisibility ? userWallets['TRX'].address : '************************'}
-                </Typography.Text>
+                <Typography.Text copyable>{userWallets['TRX'].address}</Typography.Text>
               </div>
               <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">
-                TRX: {dataVisibility ? userWallets['TRX'].balance || '0' : '*****'}
+                TRX: {userWallets['TRX'].balance || '0'}
               </div>
             </>
           ) : (
-            <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">
-              TRX: *****
-            </div>
+            <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">TRX: 0</div>
           )}
         </div>
       </div>
