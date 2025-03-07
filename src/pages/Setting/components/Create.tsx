@@ -21,7 +21,7 @@ const Create: React.FC<Props> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <BasicForm onFinish={onFinish} />
+      <BasicForm onFinish={onFinish} newRecord={true} />
     </Modal>
   );
 };

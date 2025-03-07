@@ -4,14 +4,14 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Switch } from 'antd';
+import { Button, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
-import DeleteLink from '@/components/DeleteLink';
+// import DeleteLink from '@/components/DeleteLink';
 
 /**
  * @en-US Add node
@@ -110,16 +110,10 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'parameter', defaultMessage: '设置参数' }),
-      dataIndex: 'parameter',
-    },
-    {
       title: intl.formatMessage({ id: 'key', defaultMessage: '键' }),
       dataIndex: 'key',
-    },
-    {
-      title: intl.formatMessage({ id: 'value', defaultMessage: '值' }),
-      dataIndex: 'value',
+      hideInTable: true,
+      search: false,
     },
     {
       title: intl.formatMessage({ id: 'revenuePool', defaultMessage: '收益池' }),
@@ -134,30 +128,13 @@ const TableList: React.FC = () => {
       dataIndex: 'StakingApy',
     },
     {
-      title: intl.formatMessage({ id: 'isVisible', defaultMessage: '是否可见' }),
-      dataIndex: 'isVisible',
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'yes', defaultMessage: '是' })}
-          unCheckedChildren={intl.formatMessage({ id: 'no', defaultMessage: '否' })}
-          checked={record.isVisible}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isVisible: !record.isVisible });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
       dataIndex: 'remark',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
+      title: intl.formatMessage({ id: 'updatedAt', defaultMessage: '更新时间' }),
+      dataIndex: 'updatedAt',
       valueType: 'dateTime',
       hideInForm: true,
       hideInSearch: true,
@@ -185,15 +162,15 @@ const TableList: React.FC = () => {
         >
           {intl.formatMessage({ id: 'edit' })}
         </a>,
-        access.canSuperAdmin && (
-          <DeleteLink
-            key="delete"
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          />
-        ),
+        // access.canSuperAdmin && (
+        //   <DeleteLink
+        //     key="delete"
+        //     onOk={async () => {
+        //       await handleRemove([record._id!]);
+        //       actionRef.current?.reloadAndRest?.();
+        //     }}
+        //   />
+        // ),
       ],
     },
   ];

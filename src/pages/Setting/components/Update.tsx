@@ -27,7 +27,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       footer={false}
       onCancel={() => onCancel(false)}
     >
-      <BasicForm values={values} onFinish={onSubmit} />
+      <BasicForm values={values} onFinish={onSubmit} newRecord={false} />
     </Modal>
   );
 };

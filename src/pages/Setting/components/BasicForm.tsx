@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 
 interface Props {
@@ -37,48 +37,22 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'parameter', defaultMessage: '设置参数' })}
-          name="parameter"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_enter_parameter',
-                defaultMessage: '请输入设置参数',
-              }),
-            },
-          ]}
-        />
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'key', defaultMessage: '键' })}
-          name="key"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_enter_key',
-                defaultMessage: '请输入键',
-              }),
-            },
-          ]}
-        />
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'value', defaultMessage: '值' })}
-          name="value"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_enter_value',
-                defaultMessage: '请输入值',
-              }),
-            },
-          ]}
-        />
+        {newRecord && (
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'key', defaultMessage: '键' })}
+            name="key"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'please_enter_key',
+                  defaultMessage: '请输入键',
+                }),
+              },
+            ]}
+          />
+        )}
         <ProFormText
           width="md"
           label={intl.formatMessage({ id: 'revenuePool', defaultMessage: '收益池' })}
@@ -93,11 +67,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'StakingApy', defaultMessage: '质押APY' })}
           name="StakingApy"
-        />
-        <ProFormSwitch
-          width="md"
-          label={intl.formatMessage({ id: 'isVisible', defaultMessage: '是否可见' })}
-          name="isVisible"
         />
         <ProFormTextArea
           width="md"
