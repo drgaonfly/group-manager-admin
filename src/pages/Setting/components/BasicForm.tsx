@@ -68,6 +68,30 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'StakingApy', defaultMessage: '质押APY' })}
           name="StakingApy"
         />
+
+        <ProForm.Group>
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'totalOutput', defaultMessage: '总产量' })}
+            name="totalOutput"
+          />
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'validNodes', defaultMessage: '有效节点' })}
+            name="validNodes"
+          />
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'participants', defaultMessage: '参加人数' })}
+            name="participants"
+          />
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'userEarnings', defaultMessage: '用户收益' })}
+            name="userEarnings"
+          />
+        </ProForm.Group>
+
         <ProFormTextArea
           width="md"
           label={intl.formatMessage({ id: 'remark', defaultMessage: '备注' })}

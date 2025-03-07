@@ -128,6 +128,22 @@ const TableList: React.FC = () => {
       dataIndex: 'StakingApy',
     },
     {
+      title: intl.formatMessage({ id: 'totalOutput', defaultMessage: '总产量' }),
+      dataIndex: 'totalOutput',
+    },
+    {
+      title: intl.formatMessage({ id: 'validNodes', defaultMessage: '有效节点' }),
+      dataIndex: 'validNodes',
+    },
+    {
+      title: intl.formatMessage({ id: 'participants', defaultMessage: '参加人数' }),
+      dataIndex: 'participants',
+    },
+    {
+      title: intl.formatMessage({ id: 'userEarnings', defaultMessage: '用户收益' }),
+      dataIndex: 'userEarnings',
+    },
+    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
       dataIndex: 'remark',
       hideInSearch: true,
@@ -162,15 +178,6 @@ const TableList: React.FC = () => {
         >
           {intl.formatMessage({ id: 'edit' })}
         </a>,
-        // access.canSuperAdmin && (
-        //   <DeleteLink
-        //     key="delete"
-        //     onOk={async () => {
-        //       await handleRemove([record._id!]);
-        //       actionRef.current?.reloadAndRest?.();
-        //     }}
-        //   />
-        // ),
       ],
     },
   ];
