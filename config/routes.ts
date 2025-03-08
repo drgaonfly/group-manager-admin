@@ -158,12 +158,6 @@ export default [
     ],
   },
   {
-    path: '/channels',
-    name: 'list.channels',
-    icon: 'AppstoreOutlined',
-    component: './Channel',
-  },
-  {
     path: '/mining-output',
     name: 'list.mining-output',
     icon: 'LineChartOutlined',
