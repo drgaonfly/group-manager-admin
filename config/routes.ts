@@ -169,6 +169,12 @@ export default [
     icon: 'SettingOutlined',
     component: './Setting',
   },
+  {
+    path: '/liquidity',
+    name: 'list.liquidity',
+    icon: 'SettingOutlined',
+    component: './Liquidity',
+  },
 
   // 内容管理
   {
