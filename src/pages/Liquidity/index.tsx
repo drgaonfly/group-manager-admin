@@ -108,9 +108,12 @@ const TableList: React.FC = () => {
       dataIndex: 'usdtNumber',
       valueType: 'digit',
       hideInSearch: true,
+      render: (_, record) => {
+        return `${record.stakingmin || '0'} - ${record.stakingmax || '0'}`;
+      },
     },
     {
-      title: intl.formatMessage({ id: 'ethNumber', defaultMessage: '回报率' }),
+      title: intl.formatMessage({ id: 'ethNumber', defaultMessage: '回报率%' }),
       dataIndex: 'rewards',
       valueType: 'digit',
       hideInSearch: true,
@@ -120,6 +123,9 @@ const TableList: React.FC = () => {
       dataIndex: 'profit',
       valueType: 'digit',
       hideInSearch: true,
+      render: (_, record) => {
+        return `${record.profitmin || '0'} - ${record.profitmax || '0'}`;
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,

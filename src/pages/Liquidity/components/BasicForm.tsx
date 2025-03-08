@@ -37,25 +37,40 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        {newRecord && (
+        <div className="flex items-center">
           <ProFormText
             width="md"
-            label={intl.formatMessage({ id: 'usdtNumber', defaultMessage: '质押数量' })}
-            name="usdtNumber"
+            label={intl.formatMessage({ id: 'usdtNumber', defaultMessage: '最小质押数量' })}
+            name="stakingmin"
             rules={[
               {
                 required: true,
                 message: intl.formatMessage({
                   id: 'please_enter_usdtNumber',
-                  defaultMessage: '请输入质押数量',
+                  defaultMessage: '请输入最小质押数量',
                 }),
               },
             ]}
           />
-        )}
+          <div className="mx-2">-</div>
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'usdtNumber', defaultMessage: '最大质押数量' })}
+            name="stakingmax"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'please_enter_usdtNumber',
+                  defaultMessage: '请输入最大质押数量',
+                }),
+              },
+            ]}
+          />
+        </div>
         <ProFormText
           width="md"
-          label={intl.formatMessage({ id: 'rewards1', defaultMessage: '回报率' })}
+          label={intl.formatMessage({ id: 'rewards1', defaultMessage: '回报率%' })}
           name="rewards"
           rules={[
             {
@@ -67,20 +82,37 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             },
           ]}
         />
-        <ProFormText
-          width="md"
-          label={intl.formatMessage({ id: 'profit', defaultMessage: '利润' })}
-          name="profit"
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_enter_profit',
-                defaultMessage: '请输入利润',
-              }),
-            },
-          ]}
-        />
+        <div className="flex items-center">
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'profit_min', defaultMessage: '最小利润' })}
+            name="profitmin"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'please_enter_profit_min',
+                  defaultMessage: '请输入最小利润',
+                }),
+              },
+            ]}
+          />
+          <div className="mx-2">-</div>
+          <ProFormText
+            width="md"
+            label={intl.formatMessage({ id: 'profit_max', defaultMessage: '最大利润' })}
+            name="profitmax"
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'please_enter_profit_max',
+                  defaultMessage: '请输入最大利润',
+                }),
+              },
+            ]}
+          />
+        </div>
       </ProForm.Group>
 
       {!newRecord && (

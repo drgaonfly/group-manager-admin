@@ -345,4 +345,5 @@ export default {
   'menu.multilingual-management.translates': '语言翻译',
   'upload.text': '上传',
   'upload.hint': '只能上传.jpg,.jpeg,.png,.pdf文件,且不超过500kb',
+  'menu.liquidity': '流动收益率管理',
 };
