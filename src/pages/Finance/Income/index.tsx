@@ -130,13 +130,13 @@ const TableList: React.FC = () => {
       width: '10%',
     },
     {
-      title: intl.formatMessage({ id: 'customer', defaultMessage: '钱包地址' }),
+      title: intl.formatMessage({ id: 'customer.address', defaultMessage: '钱包地址' }),
       dataIndex: ['customer', 'address'],
       hideInSearch: true,
       width: '25%',
     },
     {
-      title: intl.formatMessage({ id: 'customer', defaultMessage: '钱包网络' }),
+      title: intl.formatMessage({ id: 'customer.network', defaultMessage: '钱包网络' }),
       dataIndex: ['customer', 'network'],
       hideInSearch: true,
       width: '10%',
