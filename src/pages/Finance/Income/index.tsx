@@ -1,10 +1,10 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+// import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -124,69 +124,36 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      // add id column
-      title: intl.formatMessage({ id: 'customerId' }),
-      dataIndex: ['wallet', 'user', 'id'],
-    },
-    {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['wallet', 'user', 'name'],
+      title: intl.formatMessage({ id: 'usdtIncome', defaultMessage: 'USDT收益' }),
+      dataIndex: 'usdtIncome',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: ['wallet', 'address'],
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['wallet', 'network'],
-      valueType: 'select',
-      valueEnum: {
-        TRX: { text: 'TRX' },
-        BSC: { text: 'BSC' },
-        ETH: { text: 'ETH' },
-      },
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'usdtEarnings' }),
-      dataIndex: 'usdtEarnings',
+      title: intl.formatMessage({ id: 'customer', defaultMessage: '钱包地址' }),
+      dataIndex: ['customer', 'address'],
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'ethEarnings' }),
-      dataIndex: 'ethEarnings',
+      title: intl.formatMessage({ id: 'customer', defaultMessage: '钱包网络' }),
+      dataIndex: ['customer', 'network'],
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'status' }),
+      dataIndex: 'status',
       render: (_, record) => {
-        return <span>{record.wallet?.ethOfwallet || 0}</span>;
+        if (record.isAuthorized) {
+          return intl.formatMessage({ id: 'isAuthorized', defaultMessage: '授权收益' });
+        }
+        if (record.isVerified) {
+          return intl.formatMessage({ id: 'isVerified', defaultMessage: '验证收益' });
+        }
+        return '-';
       },
     },
     {
-      title: intl.formatMessage({ id: 'incomeType' }),
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: {
-        flowing: { text: intl.formatMessage({ id: 'income.flowing' }) },
-        staking: { text: intl.formatMessage({ id: 'income.stacking' }) },
-        teamworking: { text: intl.formatMessage({ id: 'income.teamworking' }) },
-      },
-      copyable: true,
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'remark' }),
-      dataIndex: 'remark',
-    },
-    {
-      title: intl.formatMessage({ id: 'sharedCustomerId' }),
-      dataIndex: ['sharedCustomer', 'id'],
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt' }),
-      dataIndex: 'createdAt',
-      valueType: 'dateTime',
+      title: intl.formatMessage({ id: 'remarks', defaultMessage: '备注' }),
+      dataIndex: 'remarks',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -237,19 +204,19 @@ const TableList: React.FC = () => {
           labelWidth: 120,
           collapsed: false,
         }}
-        toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateIncome) && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-        ]}
+        // toolBarRender={() => [
+        //   (access.canSuperAdmin || access.canCreateIncome) && (
+        //     <Button
+        //       type="primary"
+        //       key="primary"
+        //       onClick={() => {
+        //         handleModalOpen(true);
+        //       }}
+        //     >
+        //       <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+        //     </Button>
+        //   ),
+        // ]}
         request={async (params, sort, filter) =>
           queryList('/incomes', { ...params, isOnline: activeKey }, sort, filter)
         }
