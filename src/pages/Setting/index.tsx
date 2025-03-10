@@ -129,6 +129,9 @@ const TableList: React.FC = () => {
       hideInForm: true,
       hideInSearch: true,
       render: (_, record) => {
+        if ((record.min === 0 || !record.min) && (record.max === 0 || !record.max)) {
+          return '-';
+        }
         return `${record.min || '0'} - ${record.max || '0'}`;
       },
     },
