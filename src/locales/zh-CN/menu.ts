@@ -10,7 +10,6 @@ export default {
   'menu.channels': '渠道',
   'menu.instructions': '常见问题',
   'menu.transactions': '交易账单',
-  'menu.stacking-configurations': '质押配置',
   'menu.lottery-records': '抽奖记录',
   'menu.proxy-commission-records': '代理分佣记录',
   'menu.wallet-deal-records': '钱包交易记录',
@@ -35,12 +34,11 @@ export default {
 
   'menu.finance': '财务管理',
   'menu.finance.wallets': '钱包',
-  'menu.finance.wallets.share': '分润钱包',
-  'menu.finance.wallets.index': '手续钱包',
   'menu.finance.exchanges': '兑换',
   'menu.finance.withdraws': '提现',
   'menu.finance.transfers': '划转',
   'menu.finance.incomes': '收益',
+  'menu.finance.stackings': '质押',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
@@ -80,11 +78,9 @@ export default {
   'menu.内容管理.通知管理': '通知管理',
 
   'menu.财务管理': '财务管理',
-  'menu.财务管理.钱包': '钱包管理',
-  'menu.财务管理.分润钱包': '分润钱包管理',
-  'menu.财务管理.手续钱包': '手续钱包管理',
-  'menu.财务管理.兑换': '兑换管理',
-  'menu.财务管理.提现': '提现管理',
-  'menu.财务管理.划转': '划转管理',
-  'menu.财务管理.收益': '收益管理',
+  'menu.财务管理.兑换管理': '兑换管理',
+  'menu.财务管理.提现管理': '提现管理',
+  'menu.财务管理.划转管理': '划转管理',
+  'menu.财务管理.收益管理': '收益管理',
+  'menu.财务管理.质押管理': '质押管理',
 };

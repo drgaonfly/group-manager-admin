@@ -22,7 +22,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/stacking-configurations', { ...fields });
+    await addItem('/stackings', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -46,7 +46,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/stacking-configurations/${fields._id}`, fields);
+    await updateItem(`/stackings/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -72,7 +72,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/stacking-configurations', {
+    await removeItem('/stackings', {
       ids,
     });
     hide();
@@ -86,7 +86,7 @@ const handleRemove = async (ids: string[]) => {
   } catch (error: any) {
     hide();
     message.error(
-      error.response.data.message ?? (
+      error?.response?.data?.message ?? (
         <FormattedMessage id="delete_failed" defaultMessage="Delete failed, please try again" />
       ),
     );
@@ -149,7 +149,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </a>,
-        access.canUpdateStackingConfiguration && (
+        access.canUpdateStacking && (
           <a
             key="edit"
             onClick={() => {
@@ -161,7 +161,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canDeleteStackingConfiguration && (
+        access.canDeleteStacking && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -185,7 +185,7 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateStackingConfiguration) && (
+          (access.canSuperAdmin || access.canCreateStacking) && (
             <Button
               type="primary"
               key="primary"
@@ -198,7 +198,7 @@ const TableList: React.FC = () => {
           ),
         ]}
         request={async (params, sort, filter) =>
-          queryList('/stacking-configurations', { ...params, isOnline: activeKey }, sort, filter)
+          queryList('/stackings', { ...params, isOnline: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={
@@ -219,7 +219,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteStackingConfiguration) && (
+          {(access.canSuperAdmin || access.canDeleteStacking) && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -230,7 +230,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateStackingConfiguration) && (
+      {(access.canSuperAdmin || access.canCreateStacking) && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -245,7 +245,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateStackingConfiguration) && (
+      {(access.canSuperAdmin || access.canUpdateStacking) && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

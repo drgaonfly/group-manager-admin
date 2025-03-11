@@ -121,12 +121,6 @@ export default [
     component: './Transaction',
   },
   {
-    path: '/stacking-configurations',
-    name: 'list.stacking-configurations',
-    icon: 'MoneyCollectOutlined',
-    component: './StackingConfiguration',
-  },
-  {
     path: '/lottery-records',
     name: 'list.lottery-records',
     icon: 'TrophyOutlined',
@@ -250,6 +244,12 @@ export default [
         name: 'list.incomes',
         icon: 'MoneyCollectOutlined',
         component: './Finance/Income',
+      },
+      {
+        path: '/finance/stackings',
+        name: 'list.stackings',
+        icon: 'MoneyCollectOutlined',
+        component: './Finance/Stacking',
       },
     ],
   },

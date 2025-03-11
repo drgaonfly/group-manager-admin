@@ -201,19 +201,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetCarousel:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousels', 'GET')),
 
-    // stacking configurations 权限
-    canCreateStackingConfiguration:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations', 'POST')),
-    canDeleteStackingConfiguration:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations', 'DELETE')),
-    canUpdateStackingConfiguration:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations/:id', 'PUT')),
-    canGetStackingConfiguration:
-      currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/stacking-configurations', 'GET')),
+    // stacking 权限
+    canCreateStacking:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/stackings', 'POST')),
+    canDeleteStacking:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/stackings', 'DELETE')),
+    canUpdateStacking:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/stackings/:id', 'PUT')),
+    canGetStacking:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/stackings', 'GET')),
 
     // lottery records权限
     canCreateLotteryRecord:
