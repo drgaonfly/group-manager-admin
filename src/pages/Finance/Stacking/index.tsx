@@ -124,16 +124,24 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'investBalance' }),
-      dataIndex: 'investBalance',
+      title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '来源地址' }),
+      dataIndex: 'fromAddress',
     },
     {
-      title: intl.formatMessage({ id: 'rateOfReturn' }),
-      dataIndex: 'rateOfReturn',
+      title: intl.formatMessage({ id: 'fromNetwork', defaultMessage: '网络' }),
+      dataIndex: 'fromNetwork',
     },
     {
-      title: intl.formatMessage({ id: 'profit' }),
-      dataIndex: 'profit',
+      title: intl.formatMessage({ id: 'toAddress', defaultMessage: '转入地址' }),
+      dataIndex: 'toAddress',
+    },
+    {
+      title: intl.formatMessage({ id: 'toNetwork', defaultMessage: '转入网络' }),
+      dataIndex: 'toNetwork',
+    },
+    {
+      title: intl.formatMessage({ id: 'amount', defaultMessage: '质押金额' }),
+      dataIndex: 'amount',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
