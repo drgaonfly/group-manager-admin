@@ -1,10 +1,9 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormDigit } from '@ant-design/pro-components';
 import { DatePicker, Form, Input } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
-import UserSelect from '@/components/UserSelect';
 import dayjs from 'dayjs';
+import CustomerSelect from '@/components/customerSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -15,34 +14,20 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: roles } = useQueryList('/roles');
-  const filteredRoles = roles?.filter((role: { name: string }) => role.name === '客户'); // 只筛选出名称为员工的角色
-
-  const filteredRolesIds = filteredRoles?.map((role: { _id: string }) => role._id);
-
   const [form] = Form.useForm();
-
-  //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
-  React.useEffect(() => {
-    if (filteredRoles) {
-      form.setFieldsValue({
-        roles: filteredRolesIds,
-      });
-    }
-  }, [filteredRoles]);
 
   return (
     <ProForm
       form={form}
       initialValues={{
         ...values,
-        roles: filteredRolesIds,
       }}
       onFinish={async (values) => {
         const formData = {
           ...values,
-          endAt: values.endAt ? dayjs(values.endAt).format('YYYY-MM-DD HH:mm:ss') : undefined,
-          roles: filteredRolesIds,
+          activityEndTime: values.activityEndTime
+            ? dayjs(values.activityEndTime).format('YYYY-MM-DD HH:mm:ss')
+            : undefined,
         };
         await onFinish(formData);
       }}
@@ -61,50 +46,54 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <UserSelect />
+        <CustomerSelect />
 
-        <ProFormSelect
-          name="type"
-          label={intl.formatMessage({ id: 'activityType' })}
+        <ProFormDigit
+          name="usdtAmount"
+          label={intl.formatMessage({ id: 'usdtAmount', defaultMessage: 'USDT数量' })}
           width="md"
-          options={[
-            { label: intl.formatMessage({ id: 'stacking' }), value: 'stacking' },
-            { label: intl.formatMessage({ id: 'rewardActivity' }), value: 'rewards' },
-          ]}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
+        />
+
+        <ProFormDigit
+          name="ethProfit"
+          label={intl.formatMessage({ id: 'ethProfit', defaultMessage: 'ETH收益' })}
+          width="md"
+          rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
+        />
+
+        <ProFormDigit
+          name="lockDuration"
+          label={intl.formatMessage({ id: 'lockDuration', defaultMessage: '锁定天数' })}
+          width="md"
           rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
         />
 
         <ProFormSelect
           name="status"
-          label={intl.formatMessage({ id: 'status' })}
+          label={intl.formatMessage({ id: 'status', defaultMessage: '状态' })}
           width="md"
           options={[
-            { label: intl.formatMessage({ id: 'activity.pending' }), value: 'pending' },
-            { label: intl.formatMessage({ id: 'activity.joined' }), value: 'joined' },
-            { label: intl.formatMessage({ id: 'activity.finished' }), value: 'finished' },
-            { label: intl.formatMessage({ id: 'activity.expired' }), value: 'expired' },
+            {
+              label: intl.formatMessage({ id: 'activity.pending', defaultMessage: '待开始' }),
+              value: 'pending',
+            },
+            {
+              label: intl.formatMessage({ id: 'activity.active', defaultMessage: '进行中' }),
+              value: 'active',
+            },
+            {
+              label: intl.formatMessage({ id: 'activity.completed', defaultMessage: '已完成' }),
+              value: 'completed',
+            },
           ]}
-          rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
-        />
-
-        <ProFormText
-          name="usdtBalance"
-          label={intl.formatMessage({ id: 'usdtBalance' })}
-          width="md"
-          rules={[{ required: false }]}
-        />
-
-        <ProFormText
-          name="ethEarnings"
-          label={intl.formatMessage({ id: 'ethEarnings' })}
-          width="md"
-          rules={[{ required: false }]}
         />
       </ProForm.Group>
 
       <Form.Item
-        name="endAt"
-        label={intl.formatMessage({ id: 'endAt' })}
+        name="activityEndTime"
+        label={intl.formatMessage({ id: 'activityEndTime', defaultMessage: '活动结束时间' })}
+        rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
         getValueProps={(value) => ({
           value: value ? dayjs(value) : undefined,
         })}

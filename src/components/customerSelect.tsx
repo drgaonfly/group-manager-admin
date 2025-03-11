@@ -16,10 +16,10 @@ const CustomerSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
     <ProFormSelect
       rules={[{ required: true }]}
       options={customers.map((customer: any) => ({
-        label: customer.id,
+        label: `${customer.address} - ${customer.network} - 客户ID:${customer.id}`,
         value: customer._id,
       }))}
-      width="md"
+      width="xl"
       name="customer"
       label={intl.formatMessage({ id: 'user' })}
       showSearch

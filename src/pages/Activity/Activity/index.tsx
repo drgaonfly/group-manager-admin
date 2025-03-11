@@ -124,74 +124,50 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'customerId' }),
-      dataIndex: ['user', 'id'],
-    },
-    {
-      title: intl.formatMessage({ id: 'activityId' }),
+      title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
     },
     {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['user', 'name'],
+      title: intl.formatMessage({ id: 'address', defaultMessage: '钱包地址' }),
+      dataIndex: ['customer', 'address'],
+    },
+    {
+      title: intl.formatMessage({ id: 'network', defaultMessage: '网络' }),
+      dataIndex: ['customer', 'network'],
+    },
+    {
+      title: intl.formatMessage({ id: 'usdtAmount', defaultMessage: 'USDT数量' }),
+      dataIndex: 'usdtAmount',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'activityType' }),
-      dataIndex: 'type',
-      valueType: 'select',
-      hideInSearch: true,
-      valueEnum: {
-        stacking: { text: intl.formatMessage({ id: 'stacking' }) },
-        rewards: { text: intl.formatMessage({ id: 'rewardActivity' }) },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'usdtBalance' }),
-      dataIndex: 'usdtBalance',
+      title: intl.formatMessage({ id: 'ethProfit', defaultMessage: 'ETH收益' }),
+      dataIndex: 'ethProfit',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'ethEarnings' }),
-      dataIndex: 'ethEarnings',
+      title: intl.formatMessage({ id: 'lockDuration', defaultMessage: '锁定天数' }),
+      dataIndex: 'lockDuration',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'lockDays' }),
-      dataIndex: 'lockDays',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'startAt' }),
-      dataIndex: 'startAt',
+      title: intl.formatMessage({ id: 'activityEndTime', defaultMessage: '活动结束时间' }),
+      dataIndex: 'activityEndTime',
       valueType: 'dateTime',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'endAt' }),
-      dataIndex: 'endAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'joinAt' }),
-      dataIndex: 'joinAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'activitySatus' }),
+      title: intl.formatMessage({ id: 'status', defaultMessage: '状态' }),
       dataIndex: 'status',
       valueType: 'select',
       valueEnum: {
         pending: intl.formatMessage({ id: 'activity.pending' }),
-        joined: intl.formatMessage({ id: 'activity.joined' }),
-        finished: intl.formatMessage({ id: 'activity.finished' }),
-        expired: intl.formatMessage({ id: 'activity.expired' }),
+        active: intl.formatMessage({ id: 'activity.active' }),
+        completed: intl.formatMessage({ id: 'activity.completed' }),
       },
     },
     {
-      title: intl.formatMessage({ id: 'createdAt' }),
+      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
     },
