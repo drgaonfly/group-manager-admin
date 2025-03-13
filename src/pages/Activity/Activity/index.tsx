@@ -161,9 +161,9 @@ const TableList: React.FC = () => {
       dataIndex: 'status',
       valueType: 'select',
       valueEnum: {
-        pending: intl.formatMessage({ id: 'activity.pending' }),
-        active: intl.formatMessage({ id: 'activity.active' }),
-        completed: intl.formatMessage({ id: 'activity.completed' }),
+        pending: intl.formatMessage({ id: 'activity.pending', defaultMessage: '待开始' }),
+        active: intl.formatMessage({ id: 'activity.active', defaultMessage: '进行中' }),
+        completed: intl.formatMessage({ id: 'activity.completed', defaultMessage: '已参与' }),
       },
     },
     {

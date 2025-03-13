@@ -125,15 +125,15 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'customerId' }),
-      dataIndex: ['activity', 'user', 'id'],
+      dataIndex: ['customerId'],
     },
     {
       title: intl.formatMessage({ id: 'activityId' }),
-      dataIndex: ['activity', 'id'],
+      dataIndex: ['activityId'],
     },
     {
       title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['activity', 'user', 'wallet', 'network'],
+      dataIndex: 'chainName',
       valueType: 'select',
       valueEnum: {
         TRX: { text: 'TRX' },
@@ -144,17 +144,17 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: ['wallet', 'address'],
+      dataIndex: 'walletAddress',
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'proxy.employee' }),
-      dataIndex: ['activity', 'user', 'proxy', 'name'],
+      dataIndex: 'agentUser',
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'applyingAt' }),
-      dataIndex: 'applyingAt',
+      dataIndex: 'applyTime',
       valueType: 'dateTime',
       hideInSearch: true,
     },
@@ -177,17 +177,17 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'stackedUsdtBalance' }),
-      dataIndex: 'stackedUsdtBalance',
+      dataIndex: 'stakedUsdt',
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'rewardingEthBalance' }),
-      dataIndex: 'rewardingEthBalance',
+      dataIndex: 'rewardEth',
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'lockDays' }),
-      dataIndex: ['activity', 'lockDays'],
+      dataIndex: 'lockDays',
       hideInSearch: true,
     },
     {
