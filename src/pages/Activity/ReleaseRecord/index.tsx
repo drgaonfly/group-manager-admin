@@ -125,11 +125,13 @@ const TableList: React.FC = () => {
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'customerId' }),
-      dataIndex: ['customerId'],
+      dataIndex: ['customer', 'id'],
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'activityId' }),
-      dataIndex: ['activityId'],
+      dataIndex: ['activity', 'id'],
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'network' }),
@@ -162,7 +164,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'operationStatus' }),
       dataIndex: 'status',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         pending: {
           text: intl.formatMessage({ id: 'pending' }),
@@ -233,7 +234,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 2500 }}
+        // scroll={{ x: 2500 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
