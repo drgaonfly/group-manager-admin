@@ -13,6 +13,8 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import useQueryList from '@/hooks/useQueryList';
 import { Switch } from 'antd';
+import Withdraw from './components/Withdraw';
+
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -143,6 +145,9 @@ const TableList: React.FC = () => {
 
   const { items: users, loading } = useQueryList('/customers');
   const [dataSource, setDataSource] = useState<any[]>([]);
+
+  // Add state for withdraw modal
+  const [withdrawModalOpen, setWithdrawModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const flattenedData = processData(users);
@@ -340,7 +345,6 @@ const TableList: React.FC = () => {
           <a
             key="edit"
             onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
@@ -348,6 +352,16 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
+        // Add withdraw action
+        <a
+          key="withdraw"
+          onClick={() => {
+            setCurrentRow(record);
+            setWithdrawModalOpen(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'withdraw', defaultMessage: 'Withdraw' })}
+        </a>,
         access.canDeleteMember && (
           <DeleteLink
             onOk={async () => {
@@ -448,6 +462,16 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+
+      {/* Add Withdraw modal */}
+      <Withdraw
+        open={withdrawModalOpen}
+        onClose={() => {
+          setWithdrawModalOpen(false);
+          setCurrentRow(undefined);
+        }}
+        currentRow={currentRow}
       />
     </PageContainer>
   );

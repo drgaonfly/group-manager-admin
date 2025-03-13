@@ -12,6 +12,7 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import { Card, Row, Col, Button, Statistic } from 'antd';
+
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -94,18 +95,16 @@ const handleRemove = async (ids: string[]) => {
 
 const WithdrawPage: React.FC = () => {
   const intl = useIntl();
-  // const intl = useIntl();
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
    *  */
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**2024fc.xyz
+  /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -113,56 +112,44 @@ const WithdrawPage: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  // Define roles object with index signature
-
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'customerId' }),
-      dataIndex: ['wallet', 'user', 'name'],
-    },
-    {
-      title: intl.formatMessage({ id: 'customer' }),
-      dataIndex: ['wallet', 'user', 'name'],
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: 'id',
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['wallet', 'network'],
+      dataIndex: ['customer', 'network'],
+      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: ['wallet', 'address'],
+      title: intl.formatMessage({ id: 'address' }),
+      dataIndex: ['customer', 'address'],
+      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'applyBalance' }),
+      title: intl.formatMessage({ id: 'amount' }),
       dataIndex: 'amount',
       valueType: 'money',
       hideInSearch: true,
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'fee' }),
-      dataIndex: 'fee',
-      valueType: 'money',
-      hideInSearch: true,
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'actualBalance' }),
-      dataIndex: 'actualNumber',
-      valueType: 'money',
-      hideInSearch: true,
-      search: false,
+      // show as dollar
       render: (_, record) => {
-        return <span>{record.amount - record.fee}</span>;
+        return `$${record.amount}`;
       },
     },
     {
-      title: intl.formatMessage({ id: 'applyTime' }),
+      title: intl.formatMessage({ id: 'status' }),
+      dataIndex: 'status',
+      valueType: 'select',
+      valueEnum: {
+        pending: { text: '待审核', status: 'default' },
+        approved: { text: '已通过', status: 'success' },
+        rejected: { text: '已拒绝', status: 'error' },
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       hideInSearch: false,
@@ -174,41 +161,6 @@ const WithdrawPage: React.FC = () => {
           };
         },
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'widthdrawalMethods' }),
-      dataIndex: 'withdrawalMethod',
-      valueType: 'select',
-      valueEnum: {
-        WeChat: { text: '微信' },
-        Alipay: { text: '支付宝' },
-        Cash: { text: '现金' },
-        Other: { text: '其他' },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'moderatationStatus' }),
-      dataIndex: 'reviewStatus',
-      valueType: 'select',
-      valueEnum: {
-        unreviewed: { text: '待审核', status: 'default' },
-        reviewed: { text: '已审核', status: 'success' },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'fundStatus' }),
-      dataIndex: 'paymentStatus',
-      valueType: 'select',
-      valueEnum: {
-        unpaid: { text: '待打款', status: 'default' },
-        paid: { text: '已打款', status: 'success' },
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'userInfo' }),
-      dataIndex: ['user', 'username'],
-      hideInSearch: true,
-      render: (_, record) => <span>{record.user?.username || '-'}</span>,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
