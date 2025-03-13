@@ -399,5 +399,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/notifications/:id', 'PUT')),
     canGetNotification:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/notifications', 'GET')),
+
+    // video 权限
+    canCreateVideo:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/videos', 'POST')),
+    canDeleteVideo:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/videos', 'DELETE')),
+    canUpdateVideo:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/videos/:id', 'PUT')),
+    canGetVideo:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/videos', 'GET')),
   };
 }

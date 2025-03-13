@@ -32,6 +32,7 @@ export default {
   'menu.content.notifications': '私信',
   'menu.content.questions': '问答',
   'menu.content.notices': '通知',
+  'menu.content.videos': '视频',
 
   'menu.finance': '财务管理',
   'menu.finance.wallets': '钱包',

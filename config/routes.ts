@@ -212,6 +212,12 @@ export default [
         icon: 'TeamOutlined',
         component: './Content/RegulationAgency',
       },
+      {
+        path: '/content/videos',
+        name: 'list.videos',
+        icon: 'VideoCameraOutlined',
+        component: './Content/Video',
+      },
     ],
   },
 
@@ -297,7 +303,6 @@ export default [
       },
     ],
   },
-
   {
     path: '/records',
     name: 'list.records',
