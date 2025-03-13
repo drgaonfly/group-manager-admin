@@ -167,6 +167,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'participateTime', defaultMessage: '活动参与时间' }),
+      dataIndex: 'participateTime',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',

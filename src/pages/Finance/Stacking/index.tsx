@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { Button, message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -148,6 +148,37 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'amount', defaultMessage: '质押金额' }),
       dataIndex: 'amount',
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认收款' }),
+      dataIndex: 'isFrozen',
+      hideInSearch: false,
+      valueEnum: {
+        true: {
+          text: intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' }),
+          status: 'Success',
+        },
+        false: {
+          text: intl.formatMessage({ id: 'platform.unfrozen', defaultMessage: '未确认' }),
+          status: 'Error',
+        },
+      },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' })}
+          unCheckedChildren={intl.formatMessage({
+            id: 'platform.unfrozen',
+            defaultMessage: '未确认',
+          })}
+          checked={record.isFrozen}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isFrozen: !record.isFrozen });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
