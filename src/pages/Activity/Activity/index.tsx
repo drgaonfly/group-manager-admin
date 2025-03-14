@@ -164,6 +164,7 @@ const TableList: React.FC = () => {
         pending: intl.formatMessage({ id: 'activity.pending', defaultMessage: '待开始' }),
         active: intl.formatMessage({ id: 'activity.active', defaultMessage: '进行中' }),
         completed: intl.formatMessage({ id: 'activity.completed', defaultMessage: '已参与' }),
+        ended: intl.formatMessage({ id: 'activity.ended', defaultMessage: '已结束' }),
       },
     },
     {
