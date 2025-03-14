@@ -1,6 +1,8 @@
+import { queryList } from '@/services/ant-design-pro/api';
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { Modal } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import CustomerTable from '../../Proxy/components/CustomerTable';
 
 interface Props {
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -12,6 +14,34 @@ interface Props {
 const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns } = props;
   const filteredColumns = columns.filter((col) => col.dataIndex !== 'option');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [customers, setCustomers] = useState<any[]>([]);
+
+  // 添加分页状态
+  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
+    current: 1,
+    pageSize: 5,
+  });
+
+  const query = async () => {
+    setLoading(true);
+
+    const response = (await queryList(`/users/${currentRow?._id}`, {}, {})) as any;
+
+    if (response?.success) {
+      const customersData = response.data.customers || [];
+
+      setCustomers(customersData);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (currentRow) {
+      query().catch(console.error);
+    }
+  }, [currentRow]);
 
   return (
     <Modal
@@ -48,6 +78,12 @@ const Show: React.FC<Props> = (props) => {
             }}
             size="small"
             className="custom-descriptions"
+          />
+          <CustomerTable
+            customers={customers}
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
           />
         </>
       )}
