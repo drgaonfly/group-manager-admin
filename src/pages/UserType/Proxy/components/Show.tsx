@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 // import { Role } from '@/apiDataStructures/ApiDataStructure';
 // import moment from 'moment';
 import EmployeeTable from './EmployeeTable'; // 导入员工表格组件
+import ProxyTable from './ProxyTable';
+import CustomerTable from './CustomerTable';
 
 interface Props {
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -18,6 +20,8 @@ const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns } = props;
   const filteredColumns = columns.filter((col) => col.dataIndex !== 'option');
   const [employees, setEmployees] = useState<any[]>(currentRow?.employees || []);
+  const [proxies, setProxies] = useState<any[]>(currentRow?.proxies || []);
+  const [customers, setCustomers] = useState<any[]>(currentRow?.customers || []);
   const [loading, setLoading] = useState<boolean>(false);
 
   // 添加分页状态
@@ -28,13 +32,21 @@ const Show: React.FC<Props> = (props) => {
 
   const query = async () => {
     setLoading(true);
+
     const response = (await queryList(`/users/${currentRow?._id}`, {}, {})) as any;
-    console.log(response);
+
     if (response?.success) {
-      // 确保 employees 是数组
       const employeesData = response.data.employees || [];
+      const proxiesData = response.data.proxies || [];
+      const customersData = response.data.customers || [];
+
       setEmployees(employeesData);
+      setProxies(proxiesData);
+      setCustomers(customersData);
     }
+
+    console.log('proxies', proxies);
+
     setLoading(false);
   };
 
@@ -82,6 +94,18 @@ const Show: React.FC<Props> = (props) => {
           />
           <EmployeeTable
             employees={employees}
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
+          />
+          <ProxyTable
+            proxies={proxies}
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
+          />
+          <CustomerTable
+            customers={customers}
             loading={loading}
             pagination={pagination}
             setPagination={setPagination}

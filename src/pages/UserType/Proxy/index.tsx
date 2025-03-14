@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Typography } from 'antd';
+import { Button, message, Switch, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -161,6 +161,22 @@ const TableList: React.FC = () => {
       dataIndex: ['proxy', 'name'],
       hideInSearch: true,
       hideInForm: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'live', defaultMessage: '是否允许登录' }),
+      dataIndex: 'live',
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.live}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, live: !record.live });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'lastLoginAt' }),

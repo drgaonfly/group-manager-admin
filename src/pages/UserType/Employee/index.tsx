@@ -162,6 +162,22 @@ const TableList: React.FC = () => {
       dataIndex: ['proxy', 'name'],
     },
     {
+      title: intl.formatMessage({ id: 'live', defaultMessage: '是否允许登录' }),
+      dataIndex: 'live',
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.live}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, live: !record.live });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
       dataIndex: 'isOnline',
       hideInSearch: true,
