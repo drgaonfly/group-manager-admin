@@ -3,7 +3,11 @@ import React from 'react';
 import { useIntl } from '@umijs/max';
 import useQueryList from '@/hooks/useQueryList';
 
-const ActivitySelect: React.FC = () => {
+interface ActivitySelectProps {
+  disabled?: boolean;
+}
+
+const ActivitySelect: React.FC<ActivitySelectProps> = ({ disabled }) => {
   const intl = useIntl();
   const { items: activities, loading } = useQueryList('/activities');
 
@@ -19,6 +23,7 @@ const ActivitySelect: React.FC = () => {
       label={intl.formatMessage({ id: 'activity' })}
       showSearch
       fieldProps={{ loading }}
+      disabled={disabled}
     />
   );
 };

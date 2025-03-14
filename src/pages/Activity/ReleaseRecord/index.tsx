@@ -1,10 +1,10 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+// import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -172,13 +172,13 @@ const TableList: React.FC = () => {
       valueType: 'select',
       valueEnum: {
         pending: {
-          text: intl.formatMessage({ id: 'pending' }),
+          text: intl.formatMessage({ id: 'pending', defaultMessage: '待解押' }),
         },
         success: {
-          text: intl.formatMessage({ id: 'success' }),
+          text: intl.formatMessage({ id: 'success', defaultMessage: '已解押' }),
         },
         refused: {
-          text: intl.formatMessage({ id: 'refused' }),
+          text: intl.formatMessage({ id: 'refused', defaultMessage: '拒绝' }),
         },
       },
     },
@@ -246,19 +246,19 @@ const TableList: React.FC = () => {
           labelWidth: 120,
           collapsed: false,
         }}
-        toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateReleaseRecord) && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-        ]}
+        // toolBarRender={() => [
+        //   (access.canSuperAdmin || access.canCreateReleaseRecord) && (
+        //     <Button
+        //       type="primary"
+        //       key="primary"
+        //       onClick={() => {
+        //         handleModalOpen(true);
+        //       }}
+        //     >
+        //       <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+        //     </Button>
+        //   ),
+        // ]}
         request={async (params, sort, filter) =>
           queryList('/release-records', { ...params, isOnline: activeKey }, sort, filter)
         }

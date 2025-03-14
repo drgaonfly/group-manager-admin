@@ -41,4 +41,5 @@ export default {
   'menu.finance.transfers': '划转',
   'menu.finance.incomes': '收益',
   'menu.finance.stackings': '质押',
+  refused: '已拒绝',
 };

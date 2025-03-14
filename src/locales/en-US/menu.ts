@@ -85,4 +85,5 @@ export default {
   'menu.财务管理.划转管理': 'Transfers',
   'menu.财务管理.收益管理': 'Incomes',
   'menu.财务管理.质押管理': 'Stacking',
+  refused: 'Refused',
 };

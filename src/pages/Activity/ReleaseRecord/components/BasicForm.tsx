@@ -1,8 +1,13 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+  ProFormDigit,
+  ProFormDateTimePicker,
+} from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import useQueryList from '@/hooks/useQueryList';
 import ActivitySelect from '@/components/activitySelect';
 
 interface Props {
@@ -14,33 +19,18 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: roles } = useQueryList('/roles');
-  const filteredRoles = roles?.filter((role: { name: string }) => role.name === '客户'); // 只筛选出名称为员工的角色
-
-  const filteredRolesIds = filteredRoles?.map((role: { _id: string }) => role._id);
-
   const [form] = Form.useForm();
-
-  //表单初始化filteredRoles数据更新时，确保表单中的角色选择能加载出来
-  React.useEffect(() => {
-    if (filteredRoles) {
-      form.setFieldsValue({
-        roles: filteredRolesIds,
-      });
-    }
-  }, [filteredRoles]);
 
   return (
     <ProForm
       form={form}
       initialValues={{
         ...values,
-        roles: filteredRolesIds,
+        activity: values?.activity?.id,
       }}
       onFinish={async (values) => {
         await onFinish({
           ...values,
-          roles: filteredRolesIds,
         });
       }}
       submitter={{
@@ -58,9 +48,75 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        {/* <MemberSelect /> */}
+        {newRecord && <ActivitySelect />}
 
-        <ActivitySelect />
+        {newRecord && (
+          <ProFormText
+            width="md"
+            name="walletAddress"
+            label={intl.formatMessage({ id: 'walletAddress' })}
+            rules={[{ required: true }]}
+          />
+        )}
+
+        {newRecord && (
+          <ProFormSelect
+            width="md"
+            name="chainName"
+            label={intl.formatMessage({ id: 'network' })}
+            options={[
+              { label: 'TRX', value: 'TRX' },
+              { label: 'BSC', value: 'BSC' },
+              { label: 'ETH', value: 'ETH' },
+            ]}
+            rules={[{ required: true }]}
+          />
+        )}
+
+        {newRecord && (
+          <ProFormDigit
+            width="md"
+            name="stakedUsdt"
+            label={intl.formatMessage({ id: 'stackedUsdtBalance' })}
+            rules={[{ required: true }]}
+          />
+        )}
+
+        {newRecord && (
+          <ProFormDigit
+            width="md"
+            name="rewardEth"
+            label={intl.formatMessage({ id: 'rewardingEthBalance' })}
+            rules={[{ required: true }]}
+          />
+        )}
+
+        {newRecord && (
+          <ProFormDigit
+            width="md"
+            name="lockDays"
+            label={intl.formatMessage({ id: 'lockDays' })}
+            rules={[{ required: true }]}
+          />
+        )}
+
+        {newRecord && (
+          <ProFormDateTimePicker
+            width="md"
+            name="applyTime"
+            label={intl.formatMessage({ id: 'applyingAt' })}
+            rules={[{ required: true }]}
+          />
+        )}
+
+        {newRecord && (
+          <ProFormDateTimePicker
+            width="md"
+            name="releaseTime"
+            label={intl.formatMessage({ id: 'releaseTime' })}
+            rules={[{ required: true }]}
+          />
+        )}
 
         <ProFormSelect
           rules={[
@@ -72,7 +128,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'operationStatus' })}
           name="status"
-          initialValue="pending" // Add default value
+          initialValue="pending"
           options={[
             {
               label: intl.formatMessage({ id: 'pending' }),
@@ -85,7 +141,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               disabled: false,
             },
             {
-              label: intl.formatMessage({ id: 'refused' }),
+              label: intl.formatMessage({ id: 'refused', defaultMessage: '已拒绝' }),
               value: 'refused',
               disabled: false,
             },
