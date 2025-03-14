@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormSelect, ProFormDigit } from '@ant-design/pro-components';
+import { ProForm, ProFormDigit } from '@ant-design/pro-components';
 import { DatePicker, Form, Input } from 'antd';
 import dayjs from 'dayjs';
 import CustomerSelect from '@/components/customerSelect';
@@ -69,38 +69,18 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
         />
 
-        <ProFormSelect
-          name="status"
-          label={intl.formatMessage({ id: 'status', defaultMessage: '状态' })}
-          width="md"
-          options={[
-            {
-              label: intl.formatMessage({ id: 'activity.pending', defaultMessage: '待开始' }),
-              value: 'pending',
-            },
-            {
-              label: intl.formatMessage({ id: 'activity.active', defaultMessage: '进行中' }),
-              value: 'active',
-            },
-            {
-              label: intl.formatMessage({ id: 'activity.completed', defaultMessage: '已完成' }),
-              value: 'completed',
-            },
-          ]}
-        />
+        <Form.Item
+          name="activityEndTime"
+          label={intl.formatMessage({ id: 'activityEndTime', defaultMessage: '活动结束时间' })}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
+          getValueProps={(value) => ({
+            value: value ? dayjs(value) : undefined,
+          })}
+          normalize={(value) => (value ? value.format('YYYY-MM-DD HH:mm:ss') : undefined)}
+        >
+          <DatePicker width="md" format="YYYY-MM-DD HH:mm:ss" showTime />
+        </Form.Item>
       </ProForm.Group>
-
-      <Form.Item
-        name="activityEndTime"
-        label={intl.formatMessage({ id: 'activityEndTime', defaultMessage: '活动结束时间' })}
-        rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
-        getValueProps={(value) => ({
-          value: value ? dayjs(value) : undefined,
-        })}
-        normalize={(value) => (value ? value.format('YYYY-MM-DD HH:mm:ss') : undefined)}
-      >
-        <DatePicker width="md" format="YYYY-MM-DD HH:mm:ss" showTime />
-      </Form.Item>
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>

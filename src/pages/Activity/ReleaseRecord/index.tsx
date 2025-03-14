@@ -150,13 +150,19 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'proxy.employee' }),
-      dataIndex: 'agentUser',
+      title: intl.formatMessage({ id: 'user.proxy', defaultMessage: '代理用户' }),
+      dataIndex: ['user', 'name'],
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'applyingAt' }),
       dataIndex: 'applyTime',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'releaseTime', defaultMessage: '解押时间' }),
+      dataIndex: 'releaseTime',
       valueType: 'dateTime',
       hideInSearch: true,
     },
