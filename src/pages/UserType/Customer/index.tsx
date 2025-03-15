@@ -298,11 +298,6 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'proxy.employee' }),
-      dataIndex: ['proxy', 'name'],
-      hideInSearch: true,
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
@@ -327,16 +322,6 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        // Add withdraw action
-        <a
-          key="withdraw"
-          onClick={() => {
-            setCurrentRow(record);
-            setWithdrawModalOpen(true);
-          }}
-        >
-          {intl.formatMessage({ id: 'withdraw', defaultMessage: 'Withdraw' })}
-        </a>,
         access.canDeleteMember && (
           <DeleteLink
             onOk={async () => {
