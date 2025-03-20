@@ -152,6 +152,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: 'address',
       hideInSearch: true,
+      width: 400,
     },
     {
       title: intl.formatMessage({ id: 'interestRate', defaultMessage: '收益倍率' }),
@@ -301,6 +302,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="withdraw"
@@ -349,7 +351,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 2300 }}
+        scroll={{ x: 3000 }}
         rowKey="_id"
         search={{
           labelWidth: 120,

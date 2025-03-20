@@ -75,6 +75,18 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'password' })}
           name="password"
         />
+        <ProFormText
+          rules={[{ required: newRecord }]}
+          width="md"
+          label={intl.formatMessage({ id: 'profitSharingRate' })}
+          name="profitSharingRate"
+          fieldProps={{
+            defaultValue: 0,
+            addonAfter: '%',
+            min: 0,
+            max: 100,
+          }}
+        />
 
         {newRecord &&
           (loading ? (
