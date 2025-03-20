@@ -101,5 +101,5 @@ export default {
   'pages.withdraw.unavailableBalance': 'Unwithdrawable Balance',
   'pages.withdraw.applyWithdraw': 'Apply for Withdraw',
   'pages.withdraw.withdrawList': 'Withdraw List',
-  profitSharingRate: 'Profit Sharing Rate',
+  profitSharingRate: 'Profit Sharing Rate %',
 };

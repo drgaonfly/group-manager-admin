@@ -155,7 +155,11 @@ const TableList: React.FC = () => {
         return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
     },
-
+    {
+      title: intl.formatMessage({ id: 'profitSharingRate' }),
+      dataIndex: 'profitSharingRate',
+      hideInSearch: true,
+    },
     {
       title: intl.formatMessage({ id: 'proxy.user' }),
       dataIndex: ['proxy', 'name'],
