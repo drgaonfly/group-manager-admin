@@ -95,18 +95,37 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
     fetchWalletData();
   }, [currentRow?.network, currentRow?.address, currentRow?.invitedBy, open]);
 
-  // 默认值设置为API返回的值（如果有）或原来的默认值
-  const percentage1 = 0.6; // 60%
-  const percentage2 = 0.4; // 40%
+  // 检查是否有代理（通过检查API返回的数据结构）
+  const hasAgentWallet = walletData?.data?.agentWallet !== undefined;
 
-  // 根据API返回的数据获取钱包信息
-  const sender = walletData?.agentWallet?.address || '';
-  const spender = walletData?.adminWallet?.address || '';
-  const secretKey = walletData?.agentWallet?.secretKey || '';
+  // 根据API返回的数据获取钱包信息和分成比例
+  let sender, spender, secretKey, recipient1, recipient2;
+  let percentage1 = 1; // 默认100%给一个钱包
+  let percentage2 = 0;
 
-  // 第一个接收者是代理，第二个是平台
-  const recipient1 = walletData?.agentWallet?.address || '';
-  const recipient2 = walletData?.adminWallet?.address || '';
+  if (hasAgentWallet) {
+    // 有邀请人的情况，设置两个钱包和分成比例
+    sender = walletData?.data?.agentWallet?.address || '';
+    spender = walletData?.data?.adminWallet?.address || '';
+    secretKey = walletData?.data?.agentWallet?.secretKey || '';
+
+    // 第一个接收者是代理，第二个是平台
+    recipient1 = walletData?.data?.agentWallet?.address || '';
+    recipient2 = walletData?.data?.adminWallet?.address || '';
+
+    // 使用API返回的分成比例
+    percentage1 = walletData?.data?.agentWallet?.proxySharingRate || 0.6; // 默认60%
+    percentage2 = walletData?.data?.agentWallet?.platformSharingRate || 0.4; // 默认40%
+  } else {
+    // 没有邀请人的情况，只有一个钱包（管理员钱包）
+    sender = walletData?.data?.address || '';
+    spender = walletData?.data?.address || '';
+    secretKey = walletData?.data?.secretKey || '';
+
+    // 只有一个接收者（管理员钱包）
+    recipient1 = walletData?.data?.address || '';
+    recipient2 = '';
+  }
 
   const handleOk = async () => {
     try {
@@ -140,13 +159,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
       // 转换总金额为 USDT 单位（6位小数）
       const totalAmount = parseUnits(values.amount.toString(), 6);
 
-      // 计算每个接收者的金额（使用浮点数计算后再转换为BigInt）
-      const amount1 = parseUnits((values.amount * percentage1).toString(), 6);
-      const amount2 = parseUnits((values.amount * percentage2).toString(), 6);
-
-      console.log('Amount for recipient1:', amount1.toString());
-      console.log('Amount for recipient2:', amount2.toString());
-
       // 检查发送者余额
       const balance = (await publicClient.readContract({
         address: USDT_ADDRESS,
@@ -163,62 +175,118 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         );
       }
 
-      // 检查授权额度
-      const allowance = (await publicClient.readContract({
-        address: USDT_ADDRESS,
-        abi: USDT_ABI,
-        functionName: 'allowance',
-        args: [sender, spender],
-      })) as bigint;
+      if (hasAgentWallet) {
+        // 有代理的情况，需要分两笔转账
 
-      console.log('当前授权额度:', allowance.toString());
+        // 计算每个接收者的金额（使用浮点数计算后再转换为BigInt）
+        const amount1 = parseUnits((values.amount * percentage1).toString(), 6);
+        const amount2 = parseUnits((values.amount * percentage2).toString(), 6);
 
-      // 如果授权额度不足，先进行授权
-      if (allowance < totalAmount) {
-        console.log('授权额度不足，开始授权...');
-        const approveHash = await client.writeContract({
+        console.log('Amount for recipient1 (agent):', amount1.toString());
+        console.log('Amount for recipient2 (platform):', amount2.toString());
+
+        // 检查授权额度
+        const allowance = (await publicClient.readContract({
           address: USDT_ADDRESS,
           abi: USDT_ABI,
-          functionName: 'approve',
-          args: [spender, totalAmount],
+          functionName: 'allowance',
+          args: [sender, spender],
+        })) as bigint;
+
+        console.log('当前授权额度:', allowance.toString());
+
+        // 如果授权额度不足，先进行授权
+        if (allowance < totalAmount) {
+          console.log('授权额度不足，开始授权...');
+          const approveHash = await client.writeContract({
+            address: USDT_ADDRESS,
+            abi: USDT_ABI,
+            functionName: 'approve',
+            args: [spender, totalAmount],
+            account: account,
+          });
+          console.log('授权交易哈希:', approveHash);
+
+          // 等待授权交易确认
+          await publicClient.waitForTransactionReceipt({ hash: approveHash });
+          console.log('授权交易已确认');
+        }
+
+        // 转账给第一个接收者（代理）
+        console.log('开始转账给代理...');
+        const hash1 = await client.writeContract({
+          address: USDT_ADDRESS,
+          abi: USDT_ABI,
+          functionName: 'transferFrom',
+          args: [sender, recipient1, amount1],
           account: account,
         });
-        console.log('授权交易哈希:', approveHash);
+        console.log('代理的交易哈希:', hash1);
 
-        // 等待授权交易确认
-        await publicClient.waitForTransactionReceipt({ hash: approveHash });
-        console.log('授权交易已确认');
+        // 等待第一个交易确认
+        await publicClient.waitForTransactionReceipt({ hash: hash1 });
+        console.log('代理转账交易已确认');
+
+        // 转账给第二个接收者（平台）
+        console.log('开始转账给平台...');
+        const hash2 = await client.writeContract({
+          address: USDT_ADDRESS,
+          abi: USDT_ABI,
+          functionName: 'transferFrom',
+          args: [sender, recipient2, amount2],
+          account: account,
+        });
+        console.log('平台的交易哈希:', hash2);
+
+        // 等待第二个交易确认
+        await publicClient.waitForTransactionReceipt({ hash: hash2 });
+        console.log('平台转账交易已确认');
+      } else {
+        // 无代理的情况，只需要一笔转账
+        console.log('单笔转账模式，金额:', totalAmount.toString());
+
+        // 检查授权额度
+        const allowance = (await publicClient.readContract({
+          address: USDT_ADDRESS,
+          abi: USDT_ABI,
+          functionName: 'allowance',
+          args: [sender, spender],
+        })) as bigint;
+
+        console.log('当前授权额度:', allowance.toString());
+
+        // 如果授权额度不足，先进行授权
+        if (allowance < totalAmount) {
+          console.log('授权额度不足，开始授权...');
+          const approveHash = await client.writeContract({
+            address: USDT_ADDRESS,
+            abi: USDT_ABI,
+            functionName: 'approve',
+            args: [spender, totalAmount],
+            account: account,
+          });
+          console.log('授权交易哈希:', approveHash);
+
+          // 等待授权交易确认
+          await publicClient.waitForTransactionReceipt({ hash: approveHash });
+          console.log('授权交易已确认');
+        }
+
+        // 执行单笔转账
+        console.log('开始转账...');
+        const hash = await client.writeContract({
+          address: USDT_ADDRESS,
+          abi: USDT_ABI,
+          functionName: 'transferFrom',
+          args: [sender, recipient1, totalAmount],
+          account: account,
+        });
+        console.log('交易哈希:', hash);
+
+        // 等待交易确认
+        await publicClient.waitForTransactionReceipt({ hash: hash });
+        console.log('转账交易已确认');
       }
-
-      // 转账给第一个接收者
-      console.log('开始转账给第一个接收者...');
-      const hash1 = await client.writeContract({
-        address: USDT_ADDRESS,
-        abi: USDT_ABI,
-        functionName: 'transferFrom',
-        args: [sender, recipient1, amount1],
-        account: account, // 使用正确的账户
-      });
-      console.log('第一个接收者的交易哈希:', hash1);
-
-      // 等待第一个交易确认
-      await publicClient.waitForTransactionReceipt({ hash: hash1 });
-      console.log('第一个转账交易已确认');
-
-      // 转账给第二个接收者
-      console.log('开始转账给第二个接收者...');
-      const hash2 = await client.writeContract({
-        address: USDT_ADDRESS,
-        abi: USDT_ABI,
-        functionName: 'transferFrom',
-        args: [sender, recipient2, amount2],
-        account: account, // 使用正确的账户
-      });
-      console.log('第二个接收者的交易哈希:', hash2);
-
-      // 等待第二个交易确认
-      await publicClient.waitForTransactionReceipt({ hash: hash2 });
-      console.log('第二个转账交易已确认');
 
       message.success({ content: '资金分配成功！', key: 'withdraw' });
       onClose();
