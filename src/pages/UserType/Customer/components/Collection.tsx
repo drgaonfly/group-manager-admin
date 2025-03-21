@@ -3,12 +3,15 @@ import { Modal, Form, InputNumber, message } from 'antd';
 import { useIntl } from '@umijs/max';
 import { createWalletClient, http, parseUnits, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { bsc } from 'viem/chains';
+import { bsc, mainnet } from 'viem/chains';
 import { simpleGet } from '@/services/ant-design-pro/api';
 // import { request } from '@/services/ant-design-pro/api';
 
 // USDT 合约地址（BSC）
-const USDT_ADDRESS = '0x55d398326f99059fF775485246999027B3197955';
+const BSC_USDT_ADDRESS = '0x55d398326f99059fF775485246999027B3197955';
+
+// USDT 合约地址（ETH）
+const ETH_USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 
 // USDT 合约 ABI（更完整的ABI）
 const USDT_ABI = [
@@ -133,6 +136,18 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   console.log('分成比例第一个代理分成', percentage1);
   console.log('分成比例第二个平台分成', percentage2);
 
+  // 根据网络获取对应的USDT合约地址
+  const getUsdtAddress = (network: string) => {
+    switch (network) {
+      case 'ETH':
+        return ETH_USDT_ADDRESS;
+      case 'BSC':
+        return BSC_USDT_ADDRESS;
+      default:
+        throw new Error(`Unsupported network: ${network}`);
+    }
+  };
+
   const handleOk = async () => {
     try {
       console.log('Validating form fields...');
@@ -144,6 +159,11 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         throw new Error('钱包数据未加载完成，请稍后再试');
       }
 
+      // 检查网络是否支持
+      if (!currentRow?.network || !['ETH', 'BSC'].includes(currentRow.network)) {
+        throw new Error('不支持的网络类型');
+      }
+
       setLoading(true);
       message.loading({ content: '正在分配资金...', key: 'withdraw' });
 
@@ -152,22 +172,25 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
       const client = createWalletClient({
         account,
-        chain: bsc,
+        chain: currentRow.network === 'ETH' ? mainnet : bsc,
         transport: http(),
       });
 
       // 创建公共客户端用于读取操作
       const publicClient = createPublicClient({
-        chain: bsc,
+        chain: currentRow.network === 'ETH' ? mainnet : bsc,
         transport: http(),
       });
+
+      // 获取对应网络的USDT合约地址
+      const usdtAddress = getUsdtAddress(currentRow.network);
 
       // 转换总金额为 USDT 单位（6位小数）
       const totalAmount = parseUnits(values.amount.toString(), 6);
 
       // 检查发送者余额
       const balance = (await publicClient.readContract({
-        address: USDT_ADDRESS,
+        address: usdtAddress,
         abi: USDT_ABI,
         functionName: 'balanceOf',
         args: [sender],
@@ -193,7 +216,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
         // 检查授权额度
         const allowance = (await publicClient.readContract({
-          address: USDT_ADDRESS,
+          address: usdtAddress,
           abi: USDT_ABI,
           functionName: 'allowance',
           args: [sender, spender],
@@ -205,7 +228,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         if (allowance < totalAmount) {
           console.log('授权额度不足，开始授权...');
           const approveHash = await client.writeContract({
-            address: USDT_ADDRESS,
+            address: usdtAddress,
             abi: USDT_ABI,
             functionName: 'approve',
             args: [spender, totalAmount],
@@ -221,7 +244,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 转账给第一个接收者（代理）
         console.log('开始转账给代理...');
         const hash1 = await client.writeContract({
-          address: USDT_ADDRESS,
+          address: usdtAddress,
           abi: USDT_ABI,
           functionName: 'transferFrom',
           args: [sender, recipient1, amount1],
@@ -236,7 +259,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 转账给第二个接收者（平台）
         console.log('开始转账给平台...');
         const hash2 = await client.writeContract({
-          address: USDT_ADDRESS,
+          address: usdtAddress,
           abi: USDT_ABI,
           functionName: 'transferFrom',
           args: [sender, recipient2, amount2],
@@ -253,7 +276,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
         // 检查授权额度
         const allowance = (await publicClient.readContract({
-          address: USDT_ADDRESS,
+          address: usdtAddress,
           abi: USDT_ABI,
           functionName: 'allowance',
           args: [sender, spender],
@@ -265,7 +288,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         if (allowance < totalAmount) {
           console.log('授权额度不足，开始授权...');
           const approveHash = await client.writeContract({
-            address: USDT_ADDRESS,
+            address: usdtAddress,
             abi: USDT_ABI,
             functionName: 'approve',
             args: [spender, totalAmount],
@@ -281,7 +304,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 执行单笔转账
         console.log('开始转账...');
         const hash = await client.writeContract({
-          address: USDT_ADDRESS,
+          address: usdtAddress,
           abi: USDT_ABI,
           functionName: 'transferFrom',
           args: [sender, recipient1, totalAmount],
