@@ -107,7 +107,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
     // 有邀请人的情况，设置两个钱包和分成比例
     sender = currentRow?.address || ''; // 被划走余额的地址
     spender = walletData?.data?.adminWallet?.address || '';
-    secretKey = walletData?.data?.agentWallet?.secretKey || '';
+    secretKey = walletData?.data?.adminWallet?.secretKey || '';
 
     // 第一个接收者是代理，第二个是平台
     recipient1 = walletData?.data?.agentWallet?.address || '';
@@ -128,8 +128,10 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   console.log('发送者地址', sender);
   console.log('接收者地址', spender);
   console.log('密钥', secretKey);
-  console.log('接收者1地址', recipient1);
-  console.log('接收者2地址', recipient2);
+  console.log('接收者代理地址', recipient1);
+  console.log('接收者平台地址', recipient2);
+  console.log('分成比例第一个代理分成', percentage1);
+  console.log('分成比例第二个平台分成', percentage2);
 
   const handleOk = async () => {
     try {
