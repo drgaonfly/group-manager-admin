@@ -157,7 +157,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'profitSharingRate' }),
-      dataIndex: 'profitSharingRate',
+      dataIndex: 'proxySharingRate',
       hideInSearch: true,
     },
     {

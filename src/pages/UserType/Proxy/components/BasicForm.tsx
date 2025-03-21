@@ -79,7 +79,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           rules={[{ required: newRecord }]}
           width="md"
           label={intl.formatMessage({ id: 'profitSharingRate' })}
-          name="profitSharingRate"
+          name="proxySharingRate"
           fieldProps={{
             defaultValue: 0,
             addonAfter: '%',

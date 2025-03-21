@@ -80,7 +80,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         const response = await simpleGet('/customers/wallet', {
           network: currentRow.network,
           address: currentRow.address,
-          inviteCode: currentRow.inviteCode,
+          inviteCode: currentRow.invitedBy,
         });
 
         setWalletData(response);
@@ -93,7 +93,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
     };
 
     fetchWalletData();
-  }, [currentRow?.network, currentRow?.address, currentRow?.inviteCode, open]);
+  }, [currentRow?.network, currentRow?.address, currentRow?.invitedBy, open]);
 
   // 默认值设置为API返回的值（如果有）或原来的默认值
   const percentage1 = 0.6; // 60%
