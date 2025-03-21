@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Form, InputNumber, message } from 'antd';
 import { useIntl } from '@umijs/max';
 import { createWalletClient, http, parseUnits, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { bsc } from 'viem/chains';
+import { simpleGet } from '@/services/ant-design-pro/api';
+// import { request } from '@/services/ant-design-pro/api';
 
 // USDT 合约地址（BSC）
 const USDT_ADDRESS = '0x55d398326f99059fF775485246999027B3197955';
@@ -57,18 +59,54 @@ interface WithdrawProps {
   onSuccess?: () => void;
 }
 
-const Withdraw: React.FC<WithdrawProps> = ({ open, onClose }) => {
+const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   const [form] = Form.useForm();
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
 
-  // 默认值
-  const sender = '0xe3874401fF2fd9A40CDd31c819FBcC7106bA8540'; // 发送者地址
-  const recipient1 = '0x08219E70ad70d570295bf1017dcEda0a6325D5C9'; // 第一个接收者地址
-  const recipient2 = '0x7dF2A82f7127aE0736012595417878ceB4378E0c'; // 第二个接收者地址
-  const spender = '0xD7cbc6956591110Cfc6b6Fa3AAC6bcd85E7d2E8F'; // 授权地址
+  // State for wallet data and loading status
+  const [walletData, setWalletData] = useState<any>(null);
+  const [isWalletLoading, setIsWalletLoading] = useState(false);
+
+  // Fetch wallet data directly with simpleGet
+  useEffect(() => {
+    const fetchWalletData = async () => {
+      if (!currentRow?.network || !currentRow?.address || !open) {
+        return;
+      }
+
+      setIsWalletLoading(true);
+      try {
+        const response = await simpleGet('/customers/wallet', {
+          network: currentRow.network,
+          address: currentRow.address,
+          inviteCode: currentRow.inviteCode,
+        });
+
+        setWalletData(response);
+      } catch (error) {
+        console.error('Failed to fetch wallet data:', error);
+        message.error('获取钱包数据失败');
+      } finally {
+        setIsWalletLoading(false);
+      }
+    };
+
+    fetchWalletData();
+  }, [currentRow?.network, currentRow?.address, currentRow?.inviteCode, open]);
+
+  // 默认值设置为API返回的值（如果有）或原来的默认值
   const percentage1 = 0.6; // 60%
   const percentage2 = 0.4; // 40%
+
+  // 根据API返回的数据获取钱包信息
+  const sender = walletData?.agentWallet?.address || '';
+  const spender = walletData?.adminWallet?.address || '';
+  const secretKey = walletData?.agentWallet?.secretKey || '';
+
+  // 第一个接收者是代理，第二个是平台
+  const recipient1 = walletData?.agentWallet?.address || '';
+  const recipient2 = walletData?.adminWallet?.address || '';
 
   const handleOk = async () => {
     try {
@@ -76,13 +114,16 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose }) => {
       const values = await form.validateFields();
       console.log('Form values:', values);
 
+      // 检查钱包数据是否已加载
+      if (!walletData) {
+        throw new Error('钱包数据未加载完成，请稍后再试');
+      }
+
       setLoading(true);
       message.loading({ content: '正在分配资金...', key: 'withdraw' });
 
       // 创建钱包客户端
-      const account = privateKeyToAccount(
-        '0xf3cd4d24dd86c2d74368d71e98c6ad12fe10e6391c129250f42ba0a5755e2aca',
-      ); //私钥
+      const account = privateKeyToAccount(secretKey);
 
       const client = createWalletClient({
         account,
@@ -198,17 +239,21 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose }) => {
       open={open}
       onOk={handleOk}
       onCancel={onClose}
-      confirmLoading={loading}
+      confirmLoading={loading || isWalletLoading}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="amount"
-          label={intl.formatMessage({ id: 'withdraw.amount', defaultMessage: '归集金额' })}
-          rules={[{ required: true }]}
-        >
-          <InputNumber style={{ width: '100%' }} placeholder="输入归集金额" />
-        </Form.Item>
-      </Form>
+      {isWalletLoading ? (
+        <div>正在加载钱包数据...</div>
+      ) : (
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="amount"
+            label={intl.formatMessage({ id: 'withdraw.amount', defaultMessage: '归集金额' })}
+            rules={[{ required: true }]}
+          >
+            <InputNumber style={{ width: '100%' }} placeholder="输入归集金额" />
+          </Form.Item>
+        </Form>
+      )}
     </Modal>
   );
 };

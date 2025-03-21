@@ -104,6 +104,18 @@ export async function queryList(
   });
 }
 
+/**
+ * Simple GET request without pagination
+ * @param url - API endpoint
+ * @param params - Request parameters
+ */
+export async function simpleGet<T = any>(url: string, params?: { [key: string]: any }) {
+  return request<T>(url, {
+    method: 'GET',
+    params,
+  });
+}
+
 export async function addItem(url: string, options?: { [key: string]: any }) {
   return request<API.ItemData>(url, {
     method: 'POST',
