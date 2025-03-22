@@ -233,7 +233,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2500 }}
+        // scroll={{ x: 2500 }}
         search={{
           labelWidth: 120,
           collapsed: false,
