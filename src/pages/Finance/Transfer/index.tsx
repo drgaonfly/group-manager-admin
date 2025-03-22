@@ -149,7 +149,10 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'adminAmount', defaultMessage: '平台接收金额/1000000' }),
+      title: intl.formatMessage({
+        id: 'adminAmount',
+        defaultMessage: '平台接收金额/1000000(USDT)',
+      }),
       dataIndex: 'adminAmount',
       valueType: 'digit',
       hideInSearch: true,
@@ -160,6 +163,8 @@ const TableList: React.FC = () => {
       copyable: true,
       ellipsis: true,
       hideInSearch: true,
+      hideInTable: true,
+      search: false,
     },
     {
       title: intl.formatMessage({ id: 'proxyWallet', defaultMessage: '代理接收钱包' }),
@@ -168,7 +173,10 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'proxyAmount', defaultMessage: '代理接收金额/1000000' }),
+      title: intl.formatMessage({
+        id: 'proxyAmount',
+        defaultMessage: '代理接收金额/1000000(USDT)',
+      }),
       dataIndex: 'proxyAmount',
       valueType: 'digit',
       hideInSearch: true,
@@ -179,6 +187,8 @@ const TableList: React.FC = () => {
       copyable: true,
       ellipsis: true,
       hideInSearch: true,
+      hideInTable: true,
+      search: false,
     },
     {
       title: intl.formatMessage({ id: 'transferType', defaultMessage: '转账类型' }),
