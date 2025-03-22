@@ -173,13 +173,13 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
       const client = createWalletClient({
         account,
         chain: currentRow.network === 'ETH' ? mainnet : bsc,
-        transport: http(),
+        transport: http('https://bsc-dataseed.binance.org/'), // 使用 BSC 官方节点
       });
 
       // 创建公共客户端用于读取操作
       const publicClient = createPublicClient({
         chain: currentRow.network === 'ETH' ? mainnet : bsc,
-        transport: http(),
+        transport: http('https://bsc-mainnet.nodereal.io'),
       });
 
       // 获取对应网络的USDT合约地址

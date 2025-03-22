@@ -1,10 +1,10 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+// import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -135,7 +135,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['wallet', 'network'],
+      dataIndex: 'network',
       valueType: 'select',
       valueEnum: {
         TRX: { text: 'TRX' },
@@ -143,44 +143,62 @@ const TableList: React.FC = () => {
         ETH: { text: 'ETH' },
       },
       copyable: true,
-      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'sendingAddress' }),
-      dataIndex: ['wallet', 'address'],
+      title: intl.formatMessage({ id: 'sender' }),
+      dataIndex: 'sender',
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'paymentAddress' }),
-      dataIndex: 'receivingAddress',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'currency' }),
-      dataIndex: 'currency',
-      valueType: 'select',
-      valueEnum: {
-        USDT: { text: intl.formatMessage({ id: 'usdt' }) },
-        PledgeBalance: { text: intl.formatMessage({ id: 'pledgeBalance' }) },
-      },
+      title: intl.formatMessage({ id: 'adminWallet' }),
+      dataIndex: 'adminWallet',
       copyable: true,
-      hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'transferBalance' }),
-      dataIndex: 'balance',
+      title: intl.formatMessage({ id: 'adminAmount' }),
+      dataIndex: 'adminAmount',
+      valueType: 'digit',
+    },
+    {
+      title: intl.formatMessage({ id: 'adminHash' }),
+      dataIndex: 'adminHash',
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'proxyWallet' }),
+      dataIndex: 'proxyWallet',
+      copyable: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'proxyAmount' }),
+      dataIndex: 'proxyAmount',
+      valueType: 'digit',
+    },
+    {
+      title: intl.formatMessage({ id: 'proxyHash' }),
+      dataIndex: 'proxyHash',
+      copyable: true,
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'transferType' }),
       dataIndex: 'type',
       valueType: 'select',
       valueEnum: {
-        collection: { text: intl.formatMessage({ id: 'collection' }) },
-        staking: { text: intl.formatMessage({ id: 'stacking' }) },
-        profitSharing: { text: intl.formatMessage({ id: 'profitSharing' }) },
+        direct: { text: intl.formatMessage({ id: 'direct' }) },
+        agent: { text: intl.formatMessage({ id: 'agent' }) },
       },
-      copyable: true,
-      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'status' }),
+      dataIndex: 'status',
+      valueType: 'select',
+      valueEnum: {
+        pending: { text: intl.formatMessage({ id: 'pending' }) },
+        completed: { text: intl.formatMessage({ id: 'completed' }) },
+        failed: { text: intl.formatMessage({ id: 'failed' }) },
+      },
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
@@ -243,17 +261,17 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateTransfer) && (
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
+          // (access.canSuperAdmin || access.canCreateTransfer) && (
+          //   <Button
+          //     type="primary"
+          //     key="primary"
+          //     onClick={() => {
+          //       handleModalOpen(true);
+          //     }}
+          //   >
+          //     <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+          //   </Button>
+          // ),
         ]}
         request={async (params, sort, filter) =>
           queryList('/transfers', { ...params, isOnline: activeKey }, sort, filter)
