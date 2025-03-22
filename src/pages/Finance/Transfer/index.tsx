@@ -134,6 +134,7 @@ const TableList: React.FC = () => {
       },
       copyable: true,
       hideInSearch: true,
+      width: 100,
     },
     {
       title: intl.formatMessage({ id: 'sender' }),
@@ -148,7 +149,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'adminAmount', defaultMessage: '平台接收金额' }),
+      title: intl.formatMessage({ id: 'adminAmount', defaultMessage: '平台接收金额/1000000' }),
       dataIndex: 'adminAmount',
       valueType: 'digit',
       hideInSearch: true,
@@ -167,7 +168,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'proxyAmount', defaultMessage: '代理接收金额' }),
+      title: intl.formatMessage({ id: 'proxyAmount', defaultMessage: '代理接收金额/1000000' }),
       dataIndex: 'proxyAmount',
       valueType: 'digit',
       hideInSearch: true,
@@ -185,7 +186,7 @@ const TableList: React.FC = () => {
       valueType: 'select',
       valueEnum: {
         direct: { text: intl.formatMessage({ id: 'direct', defaultMessage: '直接转账' }) },
-        agent: { text: intl.formatMessage({ id: 'agent', defaultMessage: '代理分润' }) },
+        agent: { text: intl.formatMessage({ id: 'proxy.agent', defaultMessage: '代理分润' }) },
       },
     },
     {
