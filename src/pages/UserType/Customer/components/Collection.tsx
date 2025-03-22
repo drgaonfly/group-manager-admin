@@ -4,7 +4,7 @@ import { useIntl } from '@umijs/max';
 import { createWalletClient, http, parseUnits, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { bsc, mainnet } from 'viem/chains';
-import { simpleGet } from '@/services/ant-design-pro/api';
+import { simpleGet, addItem } from '@/services/ant-design-pro/api';
 // import { request } from '@/services/ant-design-pro/api';
 
 // USDT 合约地址（BSC）
@@ -271,6 +271,20 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 等待第二个交易确认
         await publicClient.waitForTransactionReceipt({ hash: hash2 });
         console.log('平台转账交易已确认');
+
+        // 记录转账记录到后端
+        await addItem('/transfers/collection', {
+          network: currentRow.network, // 网络类型
+          sender, // 发送者地址
+          proxyWallet: recipient1, // 第一个接收者地址（代理）
+          adminWallet: recipient2, // 第二个接收者地址（平台）
+          proxyAmount: amount1, // 第一个接收者的金额
+          adminAmount: amount2, // 第二个接收者的金额
+          proxyHash: hash1, // 第一个交易哈希
+          adminHash: hash2, // 第二个交易哈希
+          type: 'agent', // 转账类型
+          status: 'success', // 转账状态
+        });
       } else {
         // 无代理的情况，只需要一笔转账
         console.log('单笔转账模式，金额:', totalAmount.toString());
@@ -289,6 +303,17 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 等待交易确认
         await publicClient.waitForTransactionReceipt({ hash: hash });
         console.log('转账交易已确认');
+
+        // 记录转账记录到后端
+        await addItem('/transfers/collection', {
+          network: currentRow.network, // 网络类型
+          sender, // 发送者地址
+          adminWallet: recipient1, // 接收者地址
+          adminAmount: values.amount, // 转账金额
+          adminHash: hash, // 交易哈希
+          type: 'direct', // 转账类型
+          status: 'success', // 转账状态
+        });
       }
 
       message.success({ content: '资金分配成功！', key: 'withdraw' });
