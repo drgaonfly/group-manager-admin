@@ -89,25 +89,25 @@ export default [
       },
     ],
   },
-  {
-    path: '/multilingual-management',
-    name: 'list.multilingual-management',
-    icon: 'TranslationOutlined',
-    routes: [
-      {
-        path: '/multilingual-management/languages',
-        name: 'list.languages',
-        component: './MultilingualManagement/Langue',
-        icon: 'TranslationOutlined',
-      },
-      {
-        path: '/multilingual-management/translates',
-        name: 'list.translates',
-        component: './MultilingualManagement/Translate',
-        icon: 'TranslationOutlined',
-      },
-    ],
-  },
+  // {
+  //   path: '/multilingual-management',
+  //   name: 'list.multilingual-management',
+  //   icon: 'TranslationOutlined',
+  //   routes: [
+  //     {
+  //       path: '/multilingual-management/languages',
+  //       name: 'list.languages',
+  //       component: './MultilingualManagement/Langue',
+  //       icon: 'TranslationOutlined',
+  //     },
+  //     {
+  //       path: '/multilingual-management/translates',
+  //       name: 'list.translates',
+  //       component: './MultilingualManagement/Translate',
+  //       icon: 'TranslationOutlined',
+  //     },
+  //   ],
+  // },
   {
     path: '/wallet-deal-records',
     name: 'list.walletDealRecords',
