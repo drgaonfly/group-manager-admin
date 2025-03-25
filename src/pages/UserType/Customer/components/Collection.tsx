@@ -184,7 +184,9 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
       const usdtAddress = getUsdtAddress(currentRow.network);
 
       // 转换总金额为 USDT 单位（6位小数）
-      const totalAmount = parseUnits(values.amount.toString(), 6);
+      const totalAmount =
+        parseUnits(values.amount.toString(), 6) *
+        (currentRow.network === 'ETH' ? BigInt(1) : BigInt(10 ** 12));
 
       // 检查发送者余额
       const balance = (await publicClient.readContract({
@@ -234,37 +236,41 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 有代理的情况，需要分两笔转账
 
         // 计算每个接收者的金额（使用浮点数计算后再转换为BigInt）
-        const amount1 = parseUnits((values.amount * percentage1).toString(), 6);
-        const amount2 = parseUnits((values.amount * percentage2).toString(), 6);
+        const amount1 =
+          parseUnits((values.amount * percentage1).toString(), 6) *
+          (currentRow.network === 'ETH' ? BigInt(1) : BigInt(10 ** 12));
+        const amount2 =
+          parseUnits((values.amount * percentage2).toString(), 6) *
+          (currentRow.network === 'ETH' ? BigInt(1) : BigInt(10 ** 12));
 
         console.log('Amount for recipient1 (agent):', amount1.toString());
         console.log('Amount for recipient2 (platform):', amount2.toString());
 
-        // 转账给第一个接收者（代理）
-        console.log('开始转账给代理...');
-        const hash1 = await client.writeContract({
-          address: usdtAddress,
-          abi: USDT_ABI,
-          functionName: 'transferFrom',
-          args: [sender, recipient1, amount1],
-          account: account,
-        });
-        console.log('代理的交易哈希:', hash1);
-
-        // 等待第一个交易确认
-        await publicClient.waitForTransactionReceipt({ hash: hash1 });
-        console.log('代理转账交易已确认');
-
-        // 转账给第二个接收者（平台）
+        // 转账给第一个接收者（平台）
         console.log('开始转账给平台...');
-        const hash2 = await client.writeContract({
+        const hash1 = await client.writeContract({
           address: usdtAddress,
           abi: USDT_ABI,
           functionName: 'transferFrom',
           args: [sender, recipient2, amount2],
           account: account,
         });
-        console.log('平台的交易哈希:', hash2);
+        console.log('平台的交易哈希:', hash1);
+
+        // 等待第一个交易确认
+        await publicClient.waitForTransactionReceipt({ hash: hash1 });
+        console.log('平台转账交易已确认');
+
+        // 转账给第二个接收者（代理）
+        console.log('开始转账给代理...');
+        const hash2 = await client.writeContract({
+          address: usdtAddress,
+          abi: USDT_ABI,
+          functionName: 'transferFrom',
+          args: [sender, recipient1, amount1],
+          account: account,
+        });
+        console.log('代理的交易哈希:', hash2);
 
         // 等待第二个交易确认
         await publicClient.waitForTransactionReceipt({ hash: hash2 });
