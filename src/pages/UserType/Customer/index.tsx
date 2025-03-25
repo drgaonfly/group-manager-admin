@@ -142,21 +142,25 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
       hideInSearch: true,
+      width: '5%',
+    },
+    {
+      title: intl.formatMessage({ id: 'walletAddress' }),
+      dataIndex: 'address',
+      copyable: true,
+      hideInSearch: false,
+      width: '15%',
     },
     {
       title: intl.formatMessage({ id: 'network' }),
       dataIndex: 'network',
       valueEnum: NetworkEnum,
-    },
-    {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: 'address',
-      hideInSearch: true,
-      width: 400,
+      width: '8%',
     },
     {
       title: intl.formatMessage({ id: 'interestRate', defaultMessage: '收益倍率' }),
       hideInSearch: true,
+      width: '10%',
       render: (_, record) => (
         <React.Fragment>
           <p>
@@ -173,6 +177,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'estateOverview' }),
       hideInSearch: true,
+      width: '15%',
       render: (_, record) => (
         <React.Fragment>
           <p>
@@ -194,11 +199,13 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'inviter', defaultMessage: '邀请人' }),
       dataIndex: ['employee', 'name'],
       hideInSearch: true,
+      width: '8%',
     },
     {
       title: intl.formatMessage({ id: 'customerOverview' }),
       dataIndex: 'overview',
       hideInSearch: true,
+      width: '15%',
       render: (_, record) => (
         <div>
           <div>
@@ -222,6 +229,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'accountType' }),
       dataIndex: 'isVerified',
       hideInSearch: false,
+      width: '8%',
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'demoAccount' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'customer' }), status: 'Error' },
@@ -244,6 +252,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'inviteCode' }),
       dataIndex: 'ownInviteCode',
       hideInSearch: true,
+      width: '12%',
       render: (ownInviteCode, record) => {
         if (!ownInviteCode) return '-';
         const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?${record.ownInviteCode}`;
@@ -254,6 +263,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'isSpied' }),
       dataIndex: 'isSpied',
       hideInSearch: true,
+      width: '6%',
       render: (text) => (
         <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
       ),
@@ -262,6 +272,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'isAuthorized' }),
       dataIndex: 'isAuthorized',
       hideInSearch: false,
+      width: '8%',
       valueEnum: {
         true: {
           text: intl.formatMessage({ id: 'isAuthorized.authorized', defaultMessage: '已授权' }),
