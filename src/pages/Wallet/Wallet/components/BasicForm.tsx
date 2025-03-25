@@ -53,7 +53,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'network' })}
           name="network"
           options={[
-            { label: 'TRX', value: 'TRX' },
             { label: 'BSC', value: 'BSC' },
             { label: 'ETH', value: 'ETH' },
           ]}
