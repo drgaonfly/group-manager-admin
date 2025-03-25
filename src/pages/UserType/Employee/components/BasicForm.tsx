@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormCheckbox, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-components';
 import { Form, Input, Spin } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
 
@@ -79,14 +79,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProFormSwitch
-          label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
-          name="isOnline"
-          initialValue={true}
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-        />
-
         {newRecord &&
           (loading ? (
             <Spin spinning={loading} />
