@@ -164,6 +164,18 @@ const TableList: React.FC = () => {
       dataIndex: ['proxy', 'name'],
       hideInSearch: true,
       hideInForm: true,
+      // render: (dom, entity) => {
+      //   return (
+      //     <a
+      //       onClick={() => {
+      //         setCurrentRow(entity);
+      //         setShowDetail(true);
+      //       }}
+      //     >
+      //       {dom}
+      //     </a>
+      //   );
+      // },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
