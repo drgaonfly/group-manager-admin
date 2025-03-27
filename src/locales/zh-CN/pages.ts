@@ -101,4 +101,5 @@ export default {
   'pages.withdraw.applyWithdraw': '申请提现',
   'pages.withdraw.withdrawList': '提现记录',
   profitSharingRate: '收益分成比例%',
+  'employee.inviteCode': '渠道链接',
 };

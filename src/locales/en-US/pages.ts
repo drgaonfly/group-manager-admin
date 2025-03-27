@@ -102,4 +102,5 @@ export default {
   'pages.withdraw.applyWithdraw': 'Apply for Withdraw',
   'pages.withdraw.withdrawList': 'Withdraw List',
   profitSharingRate: 'Profit Sharing Rate %',
+  'employee.inviteCode': 'Channel Link',
 };

@@ -19,7 +19,7 @@ const Show: React.FC<Props> = (props) => {
       open={open}
       onCancel={onClose}
       footer={null}
-      width="60%"
+      width="55%"
       centered
       className="rounded-lg overflow-hidden"
     >

@@ -204,7 +204,6 @@ const TableList: React.FC = () => {
         </React.Fragment>
       ),
     },
-
     {
       title: intl.formatMessage({ id: 'inviter', defaultMessage: '邀请人' }),
       dataIndex: ['employee', 'name'],
@@ -269,15 +268,15 @@ const TableList: React.FC = () => {
         return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
     },
-    {
-      title: intl.formatMessage({ id: 'isSpied' }),
-      dataIndex: 'isSpied',
-      hideInSearch: true,
-      width: '6%',
-      render: (text) => (
-        <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
-      ),
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'isSpied' }),
+    //   dataIndex: 'isSpied',
+    //   hideInSearch: true,
+    //   width: '6%',
+    //   render: (text) => (
+    //     <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
+    //   ),
+    // },
     {
       title: intl.formatMessage({ id: 'isAuthorized' }),
       dataIndex: 'isVerified',
