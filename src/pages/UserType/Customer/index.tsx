@@ -2,9 +2,9 @@ import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { FormattedMessage, useAccess } from '@umijs/max';
+import { FormattedMessage, useAccess, useModel } from '@umijs/max';
 import { message, Typography } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
@@ -28,7 +28,7 @@ const handleAdd = async (fields: API.ItemData) => {
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
+      // window.location.reload(); // 直接刷新页面
     }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
@@ -56,7 +56,7 @@ const handleUpdate = async (fields: FormValueType) => {
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
     setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
+      // window.location.reload(); // 直接刷新页面
     }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
@@ -91,7 +91,7 @@ const handleRemove = async (ids: string[]) => {
       />,
     );
     setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
+      // window.location.reload(); // 直接刷新页面
     }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
@@ -129,6 +129,15 @@ const TableList: React.FC = () => {
 
   // Add state for withdraw modal
   const [withdrawModalOpen, setWithdrawModalOpen] = useState<boolean>(false);
+  const { customerNewTimeFlag } = useModel('notificationModel');
+
+  useEffect(() => {
+    if (customerNewTimeFlag) {
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+    }
+  }, [customerNewTimeFlag]);
 
   /**
    * @en-US International configuration
@@ -239,9 +248,9 @@ const TableList: React.FC = () => {
         <Switch
           checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
           unCheckedChildren={intl.formatMessage({ id: 'customer' })}
-          checked={record.isVerified}
+          checked={record.isAuthorized}
           onChange={async () => {
-            await handleUpdate({ _id: record._id, isVerified: !record.isVerified });
+            await handleUpdate({ _id: record._id, isAuthorized: !record.isAuthorized });
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -294,9 +303,9 @@ const TableList: React.FC = () => {
             id: 'isAuthorized.unauthorized',
             defaultMessage: '未授权',
           })}
-          checked={record.isAuthorized}
+          checked={record.isVerified}
           onChange={async () => {
-            await handleUpdate({ _id: record._id, isAuthorized: !record.isAuthorized });
+            await handleUpdate({ _id: record._id, isVerified: !record.isVerified });
             if (actionRef.current) {
               actionRef.current.reload();
             }
