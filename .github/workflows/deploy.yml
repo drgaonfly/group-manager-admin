@@ -34,10 +34,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            sudo -i bash << 'EOF'
             cd /www/wwwroot/mev-bot-frontend
             git pull --rebase origin main
             /www/server/nodejs/v22.14.0/bin/pnpm install
             git checkout -f .
             npm run build
-            EOF
