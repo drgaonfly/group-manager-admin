@@ -102,4 +102,6 @@ export default {
   'pages.withdraw.withdrawList': '提现记录',
   profitSharingRate: '收益分成比例%',
   'employee.inviteCode': '渠道链接',
+  'fee(USDT)': '手续费(USDT)',
+  'amount(USDT)': '金额(USDT)',
 };

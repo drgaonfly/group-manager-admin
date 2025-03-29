@@ -131,12 +131,20 @@ const WithdrawPage: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'amount' }),
+      title: intl.formatMessage({ id: 'amount(USDT)' }),
       dataIndex: 'amount',
       valueType: 'money',
       hideInSearch: true,
       render: (_, record) => {
-        return `$${record.amount}`;
+        return `${record.amount}`;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'fee(USDT)' }),
+      dataIndex: 'fee',
+      hideInSearch: true,
+      render: (_, record) => {
+        return `${record.fee}`;
       },
     },
     {
