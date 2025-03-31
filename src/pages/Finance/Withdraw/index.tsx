@@ -195,18 +195,18 @@ const WithdrawPage: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
-          <a
-            key="edit"
-            onClick={() => {
-              setCurrentRow(record);
-              handleUpdateModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </a>
-        ),
-        access.canSuperAdmin && (
+        // access.canSuperAdmin && (
+        //   <a
+        //     key="edit"
+        //     onClick={() => {
+        //       setCurrentRow(record);
+        //       handleUpdateModalOpen(true);
+        //     }}
+        //   >
+        //     {intl.formatMessage({ id: 'edit' })}
+        //   </a>
+        // ),
+        (access.canSuperAdmin || access.canUpdateWithdraw) && (
           <DeleteLink
             key="delete"
             onOk={async () => {

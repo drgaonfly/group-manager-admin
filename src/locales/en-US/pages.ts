@@ -105,4 +105,6 @@ export default {
   'employee.inviteCode': 'Channel Link',
   'fee(USDT)': 'Fee(USDT)',
   'amount(USDT)': 'Amount(USDT)',
+  'list.service-link': 'Service Link',
+  'menu.account.service-link': 'Service Link',
 };

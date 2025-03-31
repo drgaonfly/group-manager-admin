@@ -104,4 +104,6 @@ export default {
   'employee.inviteCode': '渠道链接',
   'fee(USDT)': '手续费(USDT)',
   'amount(USDT)': '金额(USDT)',
+  'list.service-link': '服务链接',
+  'menu.account.service-link': '服务链接',
 };

@@ -1,4 +1,9 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  UserOutlined,
+  CustomerServiceOutlined,
+} from '@ant-design/icons';
 import { FormattedMessage, history, useModel } from '@umijs/max';
 import { Spin } from 'antd';
 import { createStyles } from 'antd-style';
@@ -124,6 +129,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       key: 'logout',
       icon: <LogoutOutlined />,
       label: <FormattedMessage id="menu.account.logout" defaultMessage="退出登录" />,
+    },
+    {
+      key: 'service-link',
+      icon: <CustomerServiceOutlined />,
+      label: <FormattedMessage id="menu.account.serviceLink" defaultMessage="服务链接" />,
     },
   ];
 

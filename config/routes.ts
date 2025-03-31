@@ -49,6 +49,13 @@ export default [
     component: './account/change-password',
   },
   {
+    path: '/account/service-link',
+    // hideInMenu: true,
+    name: 'list.service-link',
+    icon: 'CustomerServiceOutlined',
+    component: './account/service-link',
+  },
+  {
     path: '/auth',
     name: 'list.auth',
     icon: 'table',
