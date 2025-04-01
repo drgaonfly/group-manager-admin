@@ -133,6 +133,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '来源地址' }),
       dataIndex: 'fromAddress',
       hideInSearch: true,
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'toNetwork', defaultMessage: '转入网络' }),
@@ -143,10 +144,17 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'toAddress', defaultMessage: '转入地址' }),
       dataIndex: 'toAddress',
       hideInSearch: true,
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'amount', defaultMessage: '质押金额' }),
       dataIndex: 'amount',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
       hideInSearch: true,
     },
     {
@@ -194,18 +202,6 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </a>,
-        access.canUpdateStacking && (
-          <a
-            key="edit"
-            onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </a>
-        ),
         access.canDeleteStacking && (
           <DeleteLink
             onOk={async () => {
