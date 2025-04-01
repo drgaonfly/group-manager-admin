@@ -50,7 +50,7 @@ export default {
   'menu.认证管理.权限组管理': 'Permission Groups',
   'menu.认证管理.数据权限管理': 'Data Permissions',
   'menu.代理管理': 'Proxy Management',
-  'menu.员工管理': 'Employee Management',
+  'menu.渠道管理': 'Employee Management',
   'menu.常见问题管理': 'Common Problem Management',
   'menu.交易账单管理': 'Transaction Bill Management',
   'menu.客户管理': 'Customer Management',
@@ -68,7 +68,7 @@ export default {
 
   'menu.用户管理': 'User Management',
   'menu.用户管理.代理管理': 'Proxy Management',
-  'menu.用户管理.员工管理': 'Employee Management',
+  'menu.用户管理.渠道管理': 'Employee Management',
   'menu.用户管理.客户管理': 'Customer Management',
 
   'menu.内容管理': 'Content Management',

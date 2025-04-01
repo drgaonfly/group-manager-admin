@@ -10,7 +10,7 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
-import { Role } from '@/apiDataStructures/ApiDataStructure';
+// import { Role } from '@/apiDataStructures/ApiDataStructure';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -160,14 +160,6 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'proxy.employee' }),
       hideInSearch: true,
       dataIndex: ['proxy', 'name'],
-    },
-    {
-      title: intl.formatMessage({ id: 'role' }),
-      dataIndex: 'roles',
-      hideInSearch: true,
-      renderText: (_, record: any) => {
-        return record.roles?.map((role: Role) => role.name)?.join(', ');
-      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,

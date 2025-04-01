@@ -22,7 +22,7 @@ export default {
   'menu.list.wallets.list.wallets.formal': '正式钱包',
   'menu.list.user-types': '用户类型',
   'menu.list.user-types.list.proxies': '代理列表',
-  'menu.list.user-types.list.employees': '员工列表',
+  'menu.list.user-types.list.employees': '渠道列表',
   'menu.list.user-types.list.customers': '客户列表',
   'menu.list.records': '记录列表',
   'menu.list.content.list.partnerships': '合作伙伴列表',
@@ -68,7 +68,7 @@ export default {
 
   'menu.user-type': '用户类型',
   'menu.user-type.proxies': '代理',
-  'menu.user-type.employees': '员工',
+  'menu.user-type.employees': '渠道',
   'menu.user-type.customers': '客户',
 
   'menu.content': '内容管理',
@@ -97,7 +97,7 @@ export default {
   'menu.认证管理.权限组管理': '权限组管理',
   'menu.认证管理.数据权限管理': '数据权限管理',
   'menu.代理管理': '代理管理',
-  'menu.员工管理': '员工管理',
+  'menu.渠道管理': '渠道管理',
   'menu.常见问题管理': '常见问题管理',
   'menu.交易账单管理': '交易账单管理',
   'menu.客户管理': '客户管理',
@@ -115,7 +115,7 @@ export default {
 
   'menu.用户管理': '用户管理',
   'menu.用户管理.代理管理': '代理管理',
-  'menu.用户管理.员工管理': '员工管理',
+  'menu.用户管理.渠道管理': '渠道管理',
   'menu.用户管理.客户管理': '客户管理',
 
   'menu.钱包管理': '钱包管理',
