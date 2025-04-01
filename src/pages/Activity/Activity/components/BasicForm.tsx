@@ -21,6 +21,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       form={form}
       initialValues={{
         ...values,
+        customer: values?.customer?._id,
       }}
       onFinish={async (values) => {
         const formData = {
