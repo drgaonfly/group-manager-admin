@@ -108,4 +108,5 @@ export default {
   'menu.account.service-link': '服务链接',
   'menu.list.service-link': '服务链接',
   'menu.account.change-password': '修改密码',
+  'menu.notifications': '私信管理',
 };

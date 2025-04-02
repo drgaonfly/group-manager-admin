@@ -118,4 +118,5 @@ export default {
   '2fa.not.setup': '2FA not set up',
   '2fa.enabled.message': 'Two-Factor Authentication is enabled',
   'menu.account.two-factor-auth': 'Two Factor Auth',
+  'menu.notifications': 'Notifications Management',
 };

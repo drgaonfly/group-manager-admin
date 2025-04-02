@@ -165,7 +165,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </a>,
-        (access.canSuperAdmin || access.canUpdateNotice) && (
+        (access.canSuperAdmin || access.canUpdateNotification) && (
           <a
             key="edit"
             onClick={() => {
@@ -177,7 +177,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        (access.canSuperAdmin || access.canDeleteNotice) && (
+        (access.canSuperAdmin || access.canDeleteNotification) && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -201,7 +201,7 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateNotice) && (
+          (access.canSuperAdmin || access.canCreateNotification) && (
             <Button
               type="primary"
               key="primary"
@@ -218,7 +218,7 @@ const TableList: React.FC = () => {
         request={async (params, sort, filter) => queryList('/notifications', params, sort, filter)}
         columns={columns}
         rowSelection={
-          access.canSuperAdmin && {
+          (access.canSuperAdmin || access.canGetNotification) && {
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows);
             },
