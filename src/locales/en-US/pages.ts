@@ -119,4 +119,6 @@ export default {
   '2fa.enabled.message': 'Two-Factor Authentication is enabled',
   'menu.account.two-factor-auth': 'Two Factor Auth',
   'menu.notifications': 'Notifications Management',
+  'pages.wallet.refreshBalance': 'Refresh Wallet Balance',
+  'pages.wallet.updateBalance': 'Update Balance',
 };

@@ -167,7 +167,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'wallets.balance', defaultMessage: '余额' }),
       dataIndex: 'balance',
-      copyable: true,
       hideInSearch: true,
     },
     {
@@ -315,11 +314,8 @@ const TableList: React.FC = () => {
 
             console.log(`${network} 钱包余额 - 当前: ${currentBalance}, 新: ${balance}`);
 
-            // 转换为数字进行比较，但仍然保存字符串格式
-            const numNewBalance = parseFloat(balance);
-
-            // 只有当新余额不为0且与当前余额不同时才更新
-            if (numNewBalance > 0 && balance !== currentBalance) {
+            // 只有当新余额与当前余额不同时才更新
+            if (balance !== currentBalance) {
               await updateItem(`/wallets/${wallet._id}`, { ...wallet, balance });
               return true;
             }
@@ -332,11 +328,6 @@ const TableList: React.FC = () => {
         await Promise.all(updatePromises);
         hide();
         message.success('钱包余额已更新');
-
-        // 刷新表格数据
-        if (actionRef.current) {
-          actionRef.current.reload();
-        }
 
         // 重新获取当前用户的钱包信息
         fetchUserWallets('ETH');
@@ -454,7 +445,7 @@ const TableList: React.FC = () => {
           headerTitle={
             <div className="flex items-center">
               {intl.formatMessage({ id: 'list' })}
-              <Tooltip title="刷新钱包余额">
+              <Tooltip title={intl.formatMessage({ id: 'pages.wallet.refreshBalance' })}>
                 <Button
                   type="link"
                   icon={<SyncOutlined spin={refreshingBalances} />}
@@ -462,7 +453,7 @@ const TableList: React.FC = () => {
                   loading={refreshingBalances}
                   disabled={refreshingBalances}
                 >
-                  更新余额
+                  {intl.formatMessage({ id: 'pages.wallet.updateBalance' })}
                 </Button>
               </Tooltip>
             </div>

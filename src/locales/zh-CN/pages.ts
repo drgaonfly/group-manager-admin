@@ -109,4 +109,6 @@ export default {
   'menu.list.service-link': '服务链接',
   'menu.account.change-password': '修改密码',
   'menu.notifications': '私信管理',
+  'pages.wallet.refreshBalance': '刷新钱包余额',
+  'pages.wallet.updateBalance': '更新余额',
 };
