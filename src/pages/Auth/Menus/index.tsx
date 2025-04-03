@@ -185,19 +185,17 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
-          <a
-            key="edit"
-            onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </a>
-        ),
-        access.canSuperAdmin && (
+        <a
+          key="edit"
+          onClick={() => {
+            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        access.canDeleteMenu && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -218,7 +216,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         search={{ labelWidth: 100 }}
         toolBarRender={() => [
-          access.canSuperAdmin && (
+          access.canCreateMenu && (
             <Button
               type="primary"
               key="primary"
@@ -250,7 +248,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteMenu) && (
+          {access.canDeleteMenu && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -261,7 +259,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateMenu) && (
+      {access.canCreateMenu && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -276,7 +274,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateMenu) && (
+      {access.canUpdateMenu && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

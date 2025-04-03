@@ -177,19 +177,17 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
-          <a
-            key="edit"
-            onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </a>
-        ),
-        access.canSuperAdmin && (
+        <a
+          key="edit"
+          onClick={() => {
+            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        access.canDeletePermission && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -210,7 +208,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         search={{ labelWidth: 100 }}
         toolBarRender={() => [
-          access.canSuperAdmin && (
+          access.canCreatePermission && (
             <Button
               type="primary"
               key="primary"
@@ -225,7 +223,7 @@ const TableList: React.FC = () => {
         request={async (params, sort, filter) => queryList('/permissions', params, sort, filter)}
         columns={columns}
         rowSelection={
-          access.canSuperAdmin && {
+          access.canDeletePermission && {
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows);
             },
@@ -242,7 +240,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeletePermission) && (
+          {access.canDeletePermission && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -253,7 +251,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreatePermission) && (
+      {access.canCreatePermission && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -268,7 +266,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdatePermission) && (
+      {access.canUpdatePermission && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

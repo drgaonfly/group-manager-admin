@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Badge, Button, message } from 'antd';
+import { Button, message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -203,15 +203,26 @@ const TableList: React.FC = () => {
         return record.roles?.map((role: Role) => role.name)?.join(', ');
       },
     },
-    // ... existing email and password columns ...
     {
-      title: intl.formatMessage({ id: 'live' }),
+      title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'live',
-      hideInSearch: true,
-      render: (text) => (
-        <Badge
-          status={text ? 'success' : 'default'}
-          text={text ? intl.formatMessage({ id: 'online' }) : intl.formatMessage({ id: 'offline' })}
+      hideInSearch: false,
+      valueEnum: {
+        '': { text: intl.formatMessage({ id: 'all' }) },
+        true: { text: intl.formatMessage({ id: 'platform.online' }) },
+        false: { text: intl.formatMessage({ id: 'platform.offline' }) },
+      },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
+          checked={record.live}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, live: !record.live });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
         />
       ),
     },
@@ -220,7 +231,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
+        access.canUpdateUser && (
           <a
             key="edit"
             onClick={() => {
@@ -232,7 +243,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canDeleteUser && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -253,7 +264,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         search={{ labelWidth: 100 }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canUpdateUser) && (
+          access.canCreateUser && (
             <Button
               type="primary"
               key="primary"
@@ -264,18 +275,6 @@ const TableList: React.FC = () => {
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
             </Button>
           ),
-          // (access.canSuperAdmin || access.canUpdateUser) && (
-          //   <Button
-          //     danger
-          //     key="batchUpload"
-          //     onClick={() => {
-          //       setBatchUploadModalOpen(true);
-          //     }}
-          //   >
-          //     <UploadOutlined />{' '}
-          //     <FormattedMessage id="batch_upload_users" defaultMessage="批量上传用户" />
-          //   </Button>
-          // ),
         ]}
         request={async (params, sort, filter) => queryList('/users', params, sort, filter)}
         columns={columns}
@@ -297,7 +296,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteUser) && (
+          {access.canDeleteUser && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -308,7 +307,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateUser) && (
+      {access.canCreateUser && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -323,7 +322,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateUser) && (
+      {access.canUpdateUser && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

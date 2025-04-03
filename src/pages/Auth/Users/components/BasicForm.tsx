@@ -13,7 +13,7 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  const { items: roles, loading } = useQueryList('/roles');
+  const { items: roles, loading: rolesLoading } = useQueryList('/roles');
 
   return (
     <ProForm
@@ -39,7 +39,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           );
         },
       }}
-      loading={loading}
+      loading={rolesLoading}
     >
       <ProForm.Group>
         <ProFormText
@@ -70,7 +70,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             value: role._id,
           }))}
           fieldProps={{
-            disabled: loading, // 确保在 loading 时禁用复选框
+            disabled: rolesLoading, // 确保在 loading 时禁用复选框
           }}
         />
       </ProForm.Group>

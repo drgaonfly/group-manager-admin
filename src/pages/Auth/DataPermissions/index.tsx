@@ -146,7 +146,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
+        access.canUpdateDataPermission && (
           <a
             key="edit"
             onClick={() => {
@@ -158,7 +158,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canSuperAdmin && (
+        access.canDeleteDataPermission && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -179,7 +179,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         search={{ labelWidth: 100 }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canUpdateDataPermission) && (
+          access.canCreateDataPermission && (
             <Button
               type="primary"
               key="primary"
@@ -196,7 +196,7 @@ const TableList: React.FC = () => {
         }
         columns={columns}
         rowSelection={
-          access.canSuperAdmin && {
+          access.canDeleteDataPermission && {
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows);
             },
@@ -213,7 +213,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteDataPermission) && (
+          {access.canDeleteDataPermission && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -224,7 +224,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateDataPermission) && (
+      {access.canCreateDataPermission && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -239,7 +239,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateDataPermission) && (
+      {access.canUpdateDataPermission && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

@@ -161,19 +161,17 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
-          <a
-            key="edit"
-            onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </a>
-        ),
-        access.canSuperAdmin && (
+        <a
+          key="edit"
+          onClick={() => {
+            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        access.canDeleteRole && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -194,7 +192,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         search={{ labelWidth: 100 }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canUpdateRole) && (
+          access.canCreateRole && (
             <Button
               type="primary"
               key="primary"
@@ -226,7 +224,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteRole) && (
+          {access.canDeleteRole && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -237,7 +235,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateRole) && (
+      {access.canCreateRole && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -252,7 +250,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateRole) && (
+      {access.canUpdateRole && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);

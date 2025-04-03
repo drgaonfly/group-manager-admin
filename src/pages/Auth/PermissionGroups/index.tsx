@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, TreeSelect } from 'antd';
+import { Button, message, Tag, TreeSelect } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -140,6 +140,18 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'permissions' }),
+      dataIndex: 'permissions',
+      hideInSearch: true,
+      render: (permissions: any) => {
+        return permissions.map((permission: any) => (
+          <Tag color="blue" key={permission.id}>
+            {permission.name}
+          </Tag>
+        ));
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'parent_permissionGroup' }),
       dataIndex: ['parent', 'name'],
       hideInSearch: true,
@@ -171,19 +183,17 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canSuperAdmin && (
-          <a
-            key="edit"
-            onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </a>
-        ),
-        access.canSuperAdmin && (
+        <a
+          key="edit"
+          onClick={() => {
+            // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        access.canDeletePermissionGroup && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -204,7 +214,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         search={{ labelWidth: 100 }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canUpdatePermissionGroup) && (
+          access.canCreatePermissionGroup && (
             <Button
               type="primary"
               key="primary"
@@ -238,7 +248,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeletePermissionGroup) && (
+          {access.canDeletePermissionGroup && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -249,7 +259,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreatePermissionGroup) && (
+      {access.canCreatePermissionGroup && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -264,7 +274,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdatePermissionGroup) && (
+      {access.canUpdatePermissionGroup && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
