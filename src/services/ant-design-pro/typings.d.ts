@@ -28,6 +28,7 @@ declare namespace API {
     twoFAEnabled?: boolean;
     address?: string;
     phone?: string;
+    balance?: number;
   };
 
   // Example type definition
@@ -74,6 +75,7 @@ declare namespace API {
     createdAt?: string;
     progress?: number;
     videoUrl?: string[];
+    balance?: number;
   };
 
   type ResData = {

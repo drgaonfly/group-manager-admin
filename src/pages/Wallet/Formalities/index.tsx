@@ -1,10 +1,10 @@
 import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Typography } from 'antd';
+import { Button, message, Typography, Tooltip } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -13,6 +13,8 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import { NetworkEnum } from '@/enums/networkEnum';
+import { createPublicClient, http, formatEther } from 'viem';
+import { mainnet, bsc } from 'viem/chains';
 
 /**
  * @en-US Add node
@@ -116,6 +118,7 @@ const TableList: React.FC = () => {
   const [activeKey] = useState<string | undefined>('');
   const access = useAccess();
   const [userWallets, setUserWallets] = useState<Record<string, any>>({});
+  const [refreshingBalances, setRefreshingBalances] = useState<boolean>(false);
 
   // 获取用户钱包信息
   const fetchUserWallets = async (network: string) => {
@@ -159,7 +162,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: 'address',
       copyable: true,
-      hideInSearch: true,
+      hideInSearch: false,
     },
     {
       title: intl.formatMessage({ id: 'wallets.balance', defaultMessage: '余额' }),
@@ -205,17 +208,6 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.showSecretKey" defaultMessage="platforms.showSecretKey" />
         </a>,
-        // access.canUpdateWallet && (
-        //   <a
-        //     key="edit"
-        //     onClick={() => {
-        //       handleUpdateModalOpen(true);
-        //       setCurrentRow(record);
-        //     }}
-        //   >
-        //     {intl.formatMessage({ id: 'edit' })}
-        //   </a>
-        // ),
         access.canDeleteWallet && (
           <DeleteLink
             onOk={async () => {
@@ -259,6 +251,110 @@ const TableList: React.FC = () => {
       return false;
     }
   };
+
+  // 获取钱包真实余额并更新数据库
+  const fetchRealBalanceAndUpdate = async () => {
+    setRefreshingBalances(true);
+    const hide = message.loading('正在获取最新余额...');
+
+    try {
+      // 获取所有钱包列表
+      const response = await queryList('/wallets', {});
+      if (response?.data) {
+        // 遍历所有钱包，获取真实余额并更新
+        const updatePromises = response.data.map(async (wallet: API.ItemData) => {
+          try {
+            // 根据不同网络调用不同的API获取余额
+            let balance = '0';
+            const { network, address } = wallet;
+
+            if (network === 'ETH') {
+              try {
+                // 使用viem创建ETH主网客户端
+                const ethClient = createPublicClient({
+                  chain: mainnet,
+                  transport: http(),
+                });
+
+                // 获取ETH余额（返回的是wei单位的bigint）
+                const ethBalanceWei = await ethClient.getBalance({ address });
+
+                // 将wei转换为ETH (使用formatEther将bigint转为字符串)
+                balance = formatEther(ethBalanceWei);
+
+                // 格式化为6位小数
+                balance = parseFloat(balance).toFixed(6);
+              } catch (error) {
+                console.error('以太坊余额获取失败:', error);
+                message.error(`获取ETH余额失败: 请稍后再试`);
+              }
+            } else if (network === 'BSC') {
+              try {
+                // 使用viem创建BSC主网客户端
+                const bscClient = createPublicClient({
+                  chain: bsc,
+                  transport: http(),
+                });
+
+                // 获取BNB余额（返回的是wei单位的bigint）
+                const bnbBalanceWei = await bscClient.getBalance({ address });
+
+                // 将wei转换为BNB (使用formatEther将bigint转为字符串)
+                balance = formatEther(bnbBalanceWei);
+
+                // 格式化为6位小数
+                balance = parseFloat(balance).toFixed(6);
+              } catch (error) {
+                console.error('BSC余额获取失败:', error);
+                message.error(`获取BNB余额失败: 请稍后再试`);
+              }
+            }
+
+            // 如果获取到余额，更新数据库
+            const currentBalance = wallet.balance || '0';
+
+            console.log(`${network} 钱包余额 - 当前: ${currentBalance}, 新: ${balance}`);
+
+            // 转换为数字进行比较，但仍然保存字符串格式
+            const numNewBalance = parseFloat(balance);
+
+            // 只有当新余额不为0且与当前余额不同时才更新
+            if (numNewBalance > 0 && balance !== currentBalance) {
+              await updateItem(`/wallets/${wallet._id}`, { ...wallet, balance });
+              return true;
+            }
+          } catch (error) {
+            console.error(`更新${wallet.network}钱包(${wallet.address})余额失败:`, error);
+          }
+          return false;
+        });
+
+        await Promise.all(updatePromises);
+        hide();
+        message.success('钱包余额已更新');
+
+        // 刷新表格数据
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+
+        // 重新获取当前用户的钱包信息
+        fetchUserWallets('ETH');
+        fetchUserWallets('BSC');
+      }
+    } catch (error) {
+      console.error('获取钱包余额失败:', error);
+      hide();
+      message.error('获取钱包余额失败，请稍后再试');
+    } finally {
+      setRefreshingBalances(false);
+    }
+  };
+
+  // 在页面加载时获取钱包余额
+  useEffect(() => {
+    fetchRealBalanceAndUpdate();
+  }, []);
 
   return (
     <div>
@@ -355,7 +451,22 @@ const TableList: React.FC = () => {
       </div>
       <PageContainer>
         <ProTable<API.ItemData, API.PageParams>
-          headerTitle={intl.formatMessage({ id: 'list' })}
+          headerTitle={
+            <div className="flex items-center">
+              {intl.formatMessage({ id: 'list' })}
+              <Tooltip title="刷新钱包余额">
+                <Button
+                  type="link"
+                  icon={<SyncOutlined spin={refreshingBalances} />}
+                  onClick={fetchRealBalanceAndUpdate}
+                  loading={refreshingBalances}
+                  disabled={refreshingBalances}
+                >
+                  更新余额
+                </Button>
+              </Tooltip>
+            </div>
+          }
           actionRef={actionRef}
           rowKey="_id"
           search={{
