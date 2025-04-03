@@ -19,6 +19,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         ...values,
         sender: values?.sender?._id,
         receiver: values?.receiver?._id,
+        customer: values?.customer?._id,
       }}
       onFinish={async (values) => {
         await onFinish({

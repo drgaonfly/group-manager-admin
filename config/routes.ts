@@ -103,25 +103,6 @@ export default [
       },
     ],
   },
-  // {
-  //   path: '/multilingual-management',
-  //   name: 'list.multilingual-management',
-  //   icon: 'TranslationOutlined',
-  //   routes: [
-  //     {
-  //       path: '/multilingual-management/languages',
-  //       name: 'list.languages',
-  //       component: './MultilingualManagement/Langue',
-  //       icon: 'TranslationOutlined',
-  //     },
-  //     {
-  //       path: '/multilingual-management/translates',
-  //       name: 'list.translates',
-  //       component: './MultilingualManagement/Translate',
-  //       icon: 'TranslationOutlined',
-  //     },
-  //   ],
-  // },
   {
     path: '/wallet-deal-records',
     name: 'list.walletDealRecords',
@@ -203,12 +184,6 @@ export default [
         component: './Content/Notice',
       },
       {
-        path: '/content/notifications',
-        name: 'list.notifications',
-        icon: 'BellOutlined',
-        component: './Content/Notification',
-      },
-      {
         path: '/content/partnerships',
         name: 'list.partnerships',
         icon: 'TeamOutlined',
@@ -228,7 +203,12 @@ export default [
       },
     ],
   },
-
+  {
+    path: '/notifications',
+    name: 'list.notifications',
+    icon: 'BellOutlined',
+    component: './Content/Notification',
+  },
   // 财务管理
   {
     path: '/finance',
