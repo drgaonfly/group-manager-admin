@@ -207,7 +207,8 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'inviter', defaultMessage: '邀请人' }),
       dataIndex: ['employee', 'name'],
-      hideInSearch: true,
+      hideInSearch: false,
+      copyable: true,
       width: '8%',
     },
     {
