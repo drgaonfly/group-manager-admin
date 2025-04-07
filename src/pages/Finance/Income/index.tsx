@@ -137,6 +137,13 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'walletAddress', defaultMessage: '地址' }),
       dataIndex: ['customer', 'address'],
+      copyable: true,
+      hideInSearch: false,
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
       hideInSearch: true,
     },
     {
