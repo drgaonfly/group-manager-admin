@@ -45,8 +45,6 @@ const Show: React.FC<Props> = (props) => {
       setCustomers(customersData);
     }
 
-    console.log('proxies', proxies);
-
     setLoading(false);
   };
 

@@ -25,9 +25,6 @@ const handleAdd = async (fields: API.ItemData) => {
     await addItem('/mining-outputs', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
-    setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
-    }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
     hide();

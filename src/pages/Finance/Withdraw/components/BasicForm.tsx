@@ -23,11 +23,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         answer: values?.answer?._id,
         topic: values?.topic?._id,
       }}
-      onFinish={async (values) => {
-        await onFinish({
-          ...values,
-        });
-      }}
+      onFinish={onFinish}
       submitter={{
         render: (props, dom) => {
           return (

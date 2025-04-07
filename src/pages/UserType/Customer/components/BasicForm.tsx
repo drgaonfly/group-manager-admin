@@ -21,11 +21,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         ...values,
         employee: values?.employee?._id,
       }}
-      onFinish={async (values) => {
-        await onFinish({
-          ...values,
-        });
-      }}
+      onFinish={onFinish}
       submitter={{
         render: (props, dom) => {
           return (

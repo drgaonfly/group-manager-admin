@@ -12,7 +12,6 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  console.log('newRecord', newRecord);
 
   const { items: roles, loading } = useQueryList('/roles/filter/?type=proxy');
 

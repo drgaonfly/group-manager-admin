@@ -22,7 +22,6 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading('Adding...');
   try {
     await addItem('/liquidity', { ...fields });
-    // console.log('_________________', fields);
     hide();
     message.success('Added successfully');
     return true;

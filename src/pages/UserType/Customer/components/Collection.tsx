@@ -126,14 +126,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
     recipient2 = ''; // 没有第二个接收者
   }
 
-  console.log('发送者地址', sender);
-  console.log('接收者地址', spender);
-  console.log('密钥', secretKey);
-  console.log('接收者代理地址', recipient1);
-  console.log('接收者平台地址', recipient2);
-  console.log('分成比例第一个代理分成', percentage1);
-  console.log('分成比例第二个平台分成', percentage2);
-
   // 根据网络获取对应的USDT合约地址
   const getUsdtAddress = (network: string) => {
     switch (network) {
@@ -196,8 +188,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         args: [sender],
       })) as bigint;
 
-      console.log('发送者余额:', balance.toString());
-
       if (balance < totalAmount) {
         throw new Error(
           `余额不足，当前余额: ${balance.toString()}, 需要: ${totalAmount.toString()}`,
@@ -211,8 +201,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         functionName: 'allowance',
         args: [sender, spender],
       })) as bigint;
-
-      console.log('当前授权额度:', allowance.toString());
 
       // 如果没有授权，提示用户
       if (allowance === BigInt(0)) {
@@ -243,9 +231,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
           parseUnits((values.amount * percentage2).toString(), 6) *
           (currentRow.network === 'ETH' ? BigInt(1) : BigInt(10 ** 12));
 
-        console.log('Amount for recipient1 (agent):', amount1.toString());
-        console.log('Amount for recipient2 (platform):', amount2.toString());
-
         // 转账给第一个接收者（平台）
         console.log('开始转账给平台...');
         const hash1 = await client.writeContract({
@@ -255,7 +240,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
           args: [sender, recipient2, amount2],
           account: account,
         });
-        console.log('平台的交易哈希:', hash1);
 
         // 等待第一个交易确认
         await publicClient.waitForTransactionReceipt({ hash: hash1 });
@@ -291,9 +275,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
           status: 'success', // 转账状态
         });
       } else {
-        // 无代理的情况，只需要一笔转账
-        console.log('单笔转账模式，金额:', totalAmount.toString());
-
         // 执行单笔转账
         console.log('开始转账...');
         const hash = await client.writeContract({
