@@ -126,11 +126,6 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       label: <FormattedMessage id="menu.account.change-password" defaultMessage="修改密码" />,
     },
     {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: <FormattedMessage id="menu.account.logout" defaultMessage="退出登录" />,
-    },
-    {
       key: 'service-link',
       icon: <CustomerServiceOutlined />,
       label: <FormattedMessage id="menu.account.serviceLink" defaultMessage="服务链接" />,
@@ -139,6 +134,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       key: 'two-factor-auth',
       icon: <SettingOutlined />,
       label: <FormattedMessage id="menu.account.two-factor-auth" defaultMessage="二步认证" />,
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: <FormattedMessage id="menu.account.logout" defaultMessage="退出登录" />,
     },
   ];
 

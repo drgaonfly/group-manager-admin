@@ -29,6 +29,8 @@ declare namespace API {
     address?: string;
     phone?: string;
     balance?: number;
+    serviceLink?: string;
+    serviceLinks?: string;
   };
 
   // Example type definition
