@@ -3,7 +3,7 @@ import { PageContainer } from '@ant-design/pro-components';
 import { Button, Input, List, Avatar, Card, Row, Col, Typography } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { SendOutlined, UserOutlined } from '@ant-design/icons';
-import io from 'socket.io-client';
+import useQueryList from '@/hooks/useQueryList';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -56,84 +56,14 @@ const Badge: React.FC<{ count?: number; children: React.ReactNode }> = ({ count,
 
 const CustomerService: React.FC = () => {
   const intl = useIntl();
-  const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<any>(null);
 
-  // Connect to socket server
-  useEffect(() => {
-    // Use environment variable for socket URL
-    const socketUrl = process.env.UMI_APP_SOCKET_URL || 'http://localhost:5007';
-    socketRef.current = io(socketUrl);
-
-    socketRef.current.on('connect', () => {
-      console.log('Connected to socket server');
-    });
-
-    socketRef.current.on('message', (msg: any) => {
-      if (selectedContact && msg.sender === selectedContact.id) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            id: Date.now().toString(),
-            content: msg.content,
-            sender: msg.sender,
-            timestamp: new Date(),
-            isCurrentUser: false,
-          },
-        ]);
-      } else {
-        // Update unread count for the contact
-        setContacts((prevContacts) =>
-          prevContacts.map((contact) =>
-            contact.id === msg.sender
-              ? {
-                  ...contact,
-                  unreadCount: (contact.unreadCount || 0) + 1,
-                  lastMessage: msg.content,
-                }
-              : contact,
-          ),
-        );
-      }
-    });
-
-    // Mock data for contacts
-    const mockContacts: Contact[] = [
-      {
-        id: '1',
-        name: 'John Doe',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-        lastMessage: 'Hello, how can I help you?',
-        unreadCount: 0,
-        online: true,
-      },
-      {
-        id: '2',
-        name: 'Jane Smith',
-        avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-        lastMessage: 'I have a question about my account',
-        unreadCount: 2,
-        online: true,
-      },
-      {
-        id: '3',
-        name: 'Bob Johnson',
-        avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
-        lastMessage: 'Thanks for your help!',
-        unreadCount: 0,
-        online: false,
-      },
-    ];
-    setContacts(mockContacts);
-
-    return () => {
-      socketRef.current.disconnect();
-    };
-  }, []);
+  // useQueryList
+  const { items: contacts } = useQueryList('/chats');
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -170,11 +100,6 @@ const CustomerService: React.FC = () => {
       setMessages(mockMessages);
 
       // Reset unread count for selected contact
-      setContacts((prevContacts) =>
-        prevContacts.map((contact) =>
-          contact.id === selectedContact.id ? { ...contact, unreadCount: 0 } : contact,
-        ),
-      );
     }
   }, [selectedContact]);
 
@@ -199,13 +124,6 @@ const CustomerService: React.FC = () => {
         recipient: selectedContact.id,
       });
     }
-
-    // Update last message in contacts
-    setContacts((prevContacts) =>
-      prevContacts.map((contact) =>
-        contact.id === selectedContact.id ? { ...contact, lastMessage: messageInput } : contact,
-      ),
-    );
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -232,7 +150,7 @@ const CustomerService: React.FC = () => {
               </Title>
               <List
                 dataSource={contacts}
-                renderItem={(contact) => (
+                renderItem={(contact: any) => (
                   <List.Item
                     onClick={() => setSelectedContact(contact)}
                     style={{
@@ -257,7 +175,9 @@ const CustomerService: React.FC = () => {
                       }
                       title={
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span>{contact.name}</span>
+                          <span>
+                            {contact.customer.network}-{contact.customer.address}
+                          </span>
                           {contact.online && (
                             <span style={{ color: '#52c41a', fontSize: '12px' }}>Online</span>
                           )}
