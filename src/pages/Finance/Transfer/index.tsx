@@ -128,7 +128,6 @@ const TableList: React.FC = () => {
       dataIndex: 'network',
       valueType: 'select',
       valueEnum: {
-        TRX: { text: 'TRX' },
         BSC: { text: 'BSC' },
         ETH: { text: 'ETH' },
       },
@@ -151,7 +150,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({
         id: 'adminAmount',
-        defaultMessage: '平台接收金额/1000000(USDT)',
+        defaultMessage: '平台金额USDTUSDT',
       }),
       dataIndex: 'adminAmount',
       valueType: 'digit',
@@ -175,7 +174,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({
         id: 'proxyAmount',
-        defaultMessage: '代理接收金额/1000000(USDT)',
+        defaultMessage: '代理金额USDT',
       }),
       dataIndex: 'proxyAmount',
       valueType: 'digit',
@@ -195,7 +194,7 @@ const TableList: React.FC = () => {
       dataIndex: 'type',
       valueType: 'select',
       valueEnum: {
-        direct: { text: intl.formatMessage({ id: 'direct', defaultMessage: '直接转账' }) },
+        direct: { text: intl.formatMessage({ id: 'direct', defaultMessage: '平台' }) },
         agent: { text: intl.formatMessage({ id: 'proxy.agent', defaultMessage: '代理分润' }) },
       },
     },
@@ -213,17 +212,6 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" />
         </a>,
-        // access.canSuperAdmin && (
-        //   <a
-        //     key="edit"
-        //     onClick={() => {
-        //       handleUpdateModalOpen(true);
-        //       setCurrentRow(record);
-        //     }}
-        //   >
-        //     {intl.formatMessage({ id: 'edit' })}
-        //   </a>
-        // ),
         access.canUpdateTransfer && (
           <DeleteLink
             onOk={async () => {
@@ -242,7 +230,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 2500 }}
+        // scroll={{ x: 2500 }}
         rowKey="_id"
         search={{
           labelWidth: 120,

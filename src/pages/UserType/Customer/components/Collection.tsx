@@ -274,8 +274,10 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
           sender, // 发送者地址
           proxyWallet: recipient1, // 第一个接收者地址（代理）
           adminWallet: recipient2, // 第二个接收者地址（平台）
-          proxyAmount: amount1.toString(), // 转换为字符串
-          adminAmount: amount2.toString(), // 转换为字符串
+          proxyAmount:
+            currentRow.network === 'BSC' ? Number(amount1) / 10 ** 18 : Number(amount1) / 10 ** 6, // 根据网络类型转换金额
+          adminAmount:
+            currentRow.network === 'BSC' ? Number(amount2) / 10 ** 18 : Number(amount2) / 10 ** 6, // 根据网络类型转换金额
           proxyHash: hash1, // 第一个交易哈希
           adminHash: hash2, // 第二个交易哈希
           type: 'agent', // 转账类型
@@ -296,6 +298,12 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         // 等待交易确认
         await publicClient.waitForTransactionReceipt({ hash: hash });
         console.log('转账交易已确认');
+        console.log(
+          'totalAmount平台',
+          currentRow.network === 'BSC'
+            ? Number(totalAmount) / 10 ** 18
+            : Number(totalAmount) / 10 ** 6,
+        );
 
         // 记录转账记录到后端
         await addItem('/transfers/collection', {
@@ -303,7 +311,10 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
           network: currentRow.network, // 网络类型
           sender, // 发送者地址
           adminWallet: recipient1, // 接收者地址
-          adminAmount: totalAmount.toString(), // 转换为字符串
+          adminAmount:
+            currentRow.network === 'BSC'
+              ? Number(totalAmount) / 10 ** 18
+              : Number(totalAmount) / 10 ** 6, // 根据网络类型转换金额
           adminHash: hash, // 交易哈希
           type: 'direct', // 转账类型
           status: 'success', // 转账状态
