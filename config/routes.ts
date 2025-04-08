@@ -291,4 +291,10 @@ export default [
     icon: 'FileOutlined',
     component: './Record',
   },
+  {
+    path: '/customer-service',
+    name: 'list.customer-service',
+    icon: 'CustomerServiceOutlined',
+    component: './CustomerService',
+  },
 ];
