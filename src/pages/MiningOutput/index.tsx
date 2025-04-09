@@ -50,9 +50,7 @@ const handleUpdate = async (fields: FormValueType) => {
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
-    }, 3000); // 延时 2 秒（3000 毫秒）
+
     return true;
   } catch (error: any) {
     hide();
@@ -85,9 +83,6 @@ const handleRemove = async (ids: string[]) => {
         defaultMessage="Deleted successfully and will refresh soon"
       />,
     );
-    setTimeout(() => {
-      window.location.reload(); // 直接刷新页面
-    }, 3000); // 延时 2 秒（3000 毫秒）
     return true;
   } catch (error: any) {
     hide();
