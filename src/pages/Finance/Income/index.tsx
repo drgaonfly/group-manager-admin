@@ -147,17 +147,16 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'status' }),
-      dataIndex: 'status',
+      title: intl.formatMessage({ id: 'type' }),
+      dataIndex: 'type',
       hideInSearch: true,
-      render: (_, record) => {
-        if (record.isAuthorized) {
-          return intl.formatMessage({ id: 'isAuthorized', defaultMessage: '授权收益' });
-        }
-        if (record.isVerified) {
-          return intl.formatMessage({ id: 'isVerified', defaultMessage: '模拟账号' });
-        }
-        return '-';
+      valueEnum: {
+        verified: {
+          text: intl.formatMessage({ id: 'verified', defaultMessage: '授权收益' }),
+        },
+        staking: {
+          text: intl.formatMessage({ id: 'staking', defaultMessage: '质押收益' }),
+        },
       },
     },
     {
