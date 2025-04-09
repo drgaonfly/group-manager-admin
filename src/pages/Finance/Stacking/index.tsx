@@ -132,7 +132,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '来源地址' }),
       dataIndex: 'fromAddress',
-      hideInSearch: true,
       copyable: true,
     },
     {
@@ -143,7 +142,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'toAddress', defaultMessage: '转入地址' }),
       dataIndex: 'toAddress',
-      hideInSearch: true,
       copyable: true,
     },
     {
@@ -162,6 +160,10 @@ const TableList: React.FC = () => {
       dataIndex: 'isFrozen',
       hideInSearch: false,
       valueEnum: {
+        '': {
+          text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }),
+          status: 'Default',
+        },
         true: {
           text: intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' }),
           status: 'Success',
