@@ -157,6 +157,11 @@ const WithdrawPage: React.FC = () => {
       valueEnum: StatusEnum(),
     },
     {
+      title: intl.formatMessage({ id: 'reason' }),
+      dataIndex: 'reason',
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认' }),
       dataIndex: 'isFrozen',
       hideInSearch: false,
@@ -212,7 +217,7 @@ const WithdrawPage: React.FC = () => {
             }}
           />
         ),
-        access.canUpdateWithdraw && record.status !== 'rejected' && (
+        access.canUpdateWithdraw && (
           <Button
             key="reject"
             type="link"

@@ -42,20 +42,18 @@ const Reject: React.FC<Props> = (props) => {
       <Form form={form} layout="vertical">
         <Form.Item
           name="rejectReason"
-          label={intl.formatMessage({
-            id: 'pages.withdraw.rejectReason',
-            defaultMessage: '拒绝原因',
-          })}
           rules={[
             {
               required: true,
-              message: intl.formatMessage({ id: 'pages.withdraw.rejectReason.required' }),
             },
           ]}
         >
           <Input.TextArea
             rows={4}
-            placeholder={intl.formatMessage({ id: 'pages.withdraw.rejectReason.placeholder' })}
+            placeholder={intl.formatMessage({
+              id: 'pages.rejectReason.placeholder',
+              defaultMessage: '请输入拒绝原因',
+            })}
           />
         </Form.Item>
       </Form>
