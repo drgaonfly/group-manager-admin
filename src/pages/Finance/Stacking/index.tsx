@@ -132,7 +132,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '来源地址' }),
       dataIndex: 'fromAddress',
-      hideInSearch: true,
       copyable: true,
     },
     {
@@ -143,7 +142,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'toAddress', defaultMessage: '转入地址' }),
       dataIndex: 'toAddress',
-      hideInSearch: true,
       copyable: true,
     },
     {

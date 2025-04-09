@@ -139,13 +139,11 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'sender' }),
       dataIndex: 'sender',
       copyable: true,
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'adminWallet', defaultMessage: '平台接收钱包' }),
       dataIndex: 'adminWallet',
       copyable: true,
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({
@@ -161,15 +159,12 @@ const TableList: React.FC = () => {
       dataIndex: 'adminHash',
       copyable: true,
       ellipsis: true,
-      hideInSearch: true,
       hideInTable: true,
-      search: false,
     },
     {
       title: intl.formatMessage({ id: 'proxyWallet', defaultMessage: '代理接收钱包' }),
       dataIndex: 'proxyWallet',
       copyable: true,
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({
@@ -185,9 +180,7 @@ const TableList: React.FC = () => {
       dataIndex: 'proxyHash',
       copyable: true,
       ellipsis: true,
-      hideInSearch: true,
       hideInTable: true,
-      search: false,
     },
     {
       title: intl.formatMessage({ id: 'transferType', defaultMessage: '转账类型' }),
