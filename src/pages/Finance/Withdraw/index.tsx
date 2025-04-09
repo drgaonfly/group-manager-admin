@@ -128,7 +128,7 @@ const WithdrawPage: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'address' }),
       dataIndex: ['customer', 'address'],
-      hideInSearch: true,
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'amount(USDT)' }),
@@ -158,6 +158,10 @@ const WithdrawPage: React.FC = () => {
       dataIndex: 'isFrozen',
       hideInSearch: false,
       valueEnum: {
+        '': {
+          text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }),
+          status: 'Error',
+        },
         true: {
           text: intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' }),
           status: 'Success',
@@ -226,7 +230,10 @@ const WithdrawPage: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'pages.withdraw.withdrawList' })}
         actionRef={actionRef}
         rowKey="_id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120,
+          defaultCollapsed: false,
+        }}
         request={async (params, sort, filter) => queryList('/withdraws', params, sort, filter)}
         columns={columns}
         rowSelection={
