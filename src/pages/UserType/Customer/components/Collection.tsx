@@ -85,6 +85,21 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         });
 
         setWalletData(response);
+
+        // 新增获取spender地址和密钥的接口
+        const spenderResponse = await simpleGet('/customers/invite-code', {
+          network: currentRow.network,
+          address: currentRow.address,
+          inviteCode: currentRow.invitedBy || '',
+        });
+
+        // 更新walletData中的spender和secretKey
+        if (spenderResponse?.data) {
+          setWalletData((prev: any) => ({
+            ...prev,
+            spenderData: spenderResponse.data,
+          }));
+        }
       } catch (error) {
         console.error('Failed to fetch wallet data:', error);
         message.error('获取钱包数据失败');
@@ -107,8 +122,9 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   if (hasAgentWallet) {
     // 有邀请人的情况，设置两个钱包和分成比例
     sender = currentRow?.address || ''; // 被划走余额的地址
-    spender = walletData?.data?.adminWallet?.address || '';
-    secretKey = walletData?.data?.adminWallet?.secretKey || '';
+    // 使用新接口返回的spender和secretKey
+    spender = walletData?.spenderData?.spender || '';
+    secretKey = walletData?.spenderData?.secretKey || '';
 
     // 第一个接收者是代理，第二个是平台
     recipient1 = walletData?.data?.agentWallet?.address || '';
@@ -120,8 +136,9 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   } else {
     // 没有邀请人的情况，只有一个钱包
     sender = currentRow?.address || ''; // 被划走余额的地址
-    spender = walletData?.data?.address || ''; // 直接使用返回的地址
-    secretKey = walletData?.data?.secretKey || ''; // 直接使用返回的密钥
+    // 使用新接口返回的spender和secretKey
+    spender = walletData?.spenderData?.spender || '';
+    secretKey = walletData?.spenderData?.secretKey || '';
     recipient1 = walletData?.data?.address || ''; // 直接使用返回的地址
     recipient2 = ''; // 没有第二个接收者
   }
