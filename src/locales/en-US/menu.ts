@@ -21,6 +21,7 @@ export default {
   'menu.mining-output': 'Mining Output',
   'menu.settings': 'Settings',
   'menu.records': 'Records',
+  'menu.customer-service': 'Customer Service',
 
   'menu.user-type': 'User Type',
   'menu.user-type.proxies': 'Proxies',

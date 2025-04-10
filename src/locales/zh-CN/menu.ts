@@ -88,6 +88,8 @@ export default {
   'menu.finance.incomes': '收益',
   'menu.finance.stackings': '质押',
 
+  'menu.customer-service': '客服',
+
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
   'menu.认证管理.角色管理': '角色管理',
@@ -139,6 +141,9 @@ export default {
   'menu.财务管理.划转管理': '划转管理',
   'menu.财务管理.收益管理': '收益管理',
   'menu.财务管理.质押管理': '质押管理',
+
+  'menu.客服': '客服',
+
   'menu.change-password': '修改密码',
   'menu.list.change-password': '修改密码',
   'list.change-password': '修改密码',
