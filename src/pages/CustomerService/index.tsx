@@ -1,6 +1,6 @@
-import { useIntl } from '@umijs/max';
+import { useIntl, request } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Input, List, Avatar, Card, Row, Col, Typography } from 'antd';
+import { Button, Input, List, Avatar, Card, Row, Col, Typography, Spin } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { SendOutlined, UserOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
@@ -56,52 +56,53 @@ const Badge: React.FC<{ count?: number; children: React.ReactNode }> = ({ count,
 
 const CustomerService: React.FC = () => {
   const intl = useIntl();
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [selectedContact, setSelectedContact] = useState<Contact | any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<any>(null);
 
   // useQueryList
   const { items: contacts } = useQueryList('/chats');
 
+  // Add request method to fetch messages
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (selectedContact?.customer?._id) {
+        try {
+          setLoadingMessages(true);
+          const response = await request('/chats/user-messages', {
+            method: 'GET',
+            params: {
+              customerId: selectedContact.customer._id,
+            },
+          });
+
+          const formattedMessages: Message[] = response.data.map((msg: any) => ({
+            id: msg._id,
+            content: msg.message,
+            sender: msg.sender,
+            timestamp: new Date(msg.createdAt),
+            isCurrentUser: msg.sender === 'support', // 根据你的业务逻辑调整身份验证
+          }));
+
+          setMessages(formattedMessages);
+        } catch (error) {
+          console.error('Error fetching messages:', error);
+        } finally {
+          setLoadingMessages(false);
+        }
+      }
+    };
+
+    fetchMessages();
+  }, [selectedContact]);
+
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // Load messages when selecting a contact
-  useEffect(() => {
-    if (selectedContact) {
-      // Mock data for messages
-      const mockMessages: Message[] = [
-        {
-          id: '1',
-          content: `Hello, I'm ${selectedContact.name}. How can you help me today?`,
-          sender: selectedContact.id,
-          timestamp: new Date(Date.now() - 3600000),
-          isCurrentUser: false,
-        },
-        {
-          id: '2',
-          content: `Hi ${selectedContact.name}, I'm here to assist you. What do you need help with?`,
-          sender: 'me',
-          timestamp: new Date(Date.now() - 3500000),
-          isCurrentUser: true,
-        },
-        {
-          id: '3',
-          content: 'I have a question about my recent transaction.',
-          sender: selectedContact.id,
-          timestamp: new Date(Date.now() - 3400000),
-          isCurrentUser: false,
-        },
-      ];
-      setMessages(mockMessages);
-
-      // Reset unread count for selected contact
-    }
-  }, [selectedContact]);
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedContact) return;
@@ -152,25 +153,52 @@ const CustomerService: React.FC = () => {
                 dataSource={contacts}
                 renderItem={(contact: any) => (
                   <List.Item
-                    onClick={() => setSelectedContact(contact)}
+                    onClick={() =>
+                      setSelectedContact({
+                        ...contact,
+                        id: contact.customer._id,
+                        name: contact.customer.name,
+                        online: contact.customer.isOnline,
+                      })
+                    }
                     style={{
                       cursor: 'pointer',
                       backgroundColor:
-                        selectedContact?.id === contact.id ? '#f0f0f0' : 'transparent',
+                        selectedContact?.id === contact.customer._id ? '#e6f7ff' : 'transparent',
+                      borderRight:
+                        selectedContact?.id === contact.customer._id ? '3px solid #1890ff' : 'none',
                       padding: '10px',
                       borderRadius: '4px',
+                      transition: 'all 0.3s',
+                      color: selectedContact?.id === contact.customer._id ? '#1890ff' : 'inherit',
                     }}
+                    className="contact-item-hover"
                   >
                     <List.Item.Meta
                       title={
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                           <Badge count={contact.unreadCount}>
                             <Avatar
-                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${contact.customer.id}`}
-                              icon={<UserOutlined />}
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${contact.customer._id}`}
                             />
                           </Badge>
-                          <span>{contact.user.name}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span
+                              style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                backgroundColor: contact.customer.isOnline ? '#52c41a' : '#f5222d',
+                                display: 'inline-block',
+                                flexShrink: 0,
+                              }}
+                            />
+                            <Text style={{ fontSize: '12px' }}>
+                              {contact.customer.isOnline
+                                ? intl.formatMessage({ id: 'platform.online' })
+                                : intl.formatMessage({ id: 'platform.offline' })}
+                            </Text>
+                          </div>
                         </div>
                       }
                       description={
@@ -178,19 +206,19 @@ const CustomerService: React.FC = () => {
                           <Text ellipsis style={{ maxWidth: '100%' }}>
                             {contact.lastMessage}
                           </Text>
-                          <span style={{ fontSize: '12px', color: '#999' }}>
-                            {contact.customer.network}-{contact.customer.address}
-                          </span>
-                          <span
+                          <div
                             style={{
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              backgroundColor: contact.customer.isOnline ? '#52c41a' : '#f5222d',
-                              display: 'inline-block',
-                              flexShrink: 0,
+                              fontSize: '12px',
+                              color: '#999',
+                              display: 'flex',
+                              alignItems: 'center',
                             }}
-                          />
+                          >
+                            <span>{contact.customer.network}-</span>
+                            <Typography.Text copyable style={{ fontSize: '12px', color: '#999' }}>
+                              {contact.customer.address}
+                            </Typography.Text>
+                          </div>
                         </div>
                       }
                     />
@@ -238,44 +266,61 @@ const CustomerService: React.FC = () => {
                     overflowY: 'auto',
                     display: 'flex',
                     flexDirection: 'column',
+                    position: 'relative',
                   }}
                 >
-                  {messages.map((msg) => (
+                  {loadingMessages ? (
                     <div
-                      key={msg.id}
                       style={{
-                        alignSelf: msg.isCurrentUser ? 'flex-end' : 'flex-start',
-                        maxWidth: '70%',
-                        marginBottom: '10px',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 1,
                       }}
                     >
-                      <div
-                        style={{
-                          backgroundColor: msg.isCurrentUser ? '#1890ff' : '#f0f0f0',
-                          color: msg.isCurrentUser ? 'white' : 'black',
-                          padding: '10px 15px',
-                          borderRadius: '18px',
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {msg.content}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '12px',
-                          color: '#999',
-                          marginTop: '5px',
-                          textAlign: msg.isCurrentUser ? 'right' : 'left',
-                        }}
-                      >
-                        {new Date(msg.timestamp).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </div>
+                      <Spin size="large" tip="Loading messages..." />
                     </div>
-                  ))}
-                  <div ref={messagesEndRef} />
+                  ) : (
+                    <>
+                      {messages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          style={{
+                            alignSelf: msg.isCurrentUser ? 'flex-end' : 'flex-start',
+                            maxWidth: '70%',
+                            marginBottom: '10px',
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: msg.isCurrentUser ? '#1890ff' : '#f0f0f0',
+                              color: msg.isCurrentUser ? 'white' : 'black',
+                              padding: '10px 15px',
+                              borderRadius: '18px',
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            {msg.content}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: '12px',
+                              color: '#999',
+                              marginTop: '5px',
+                              textAlign: msg.isCurrentUser ? 'right' : 'left',
+                            }}
+                          >
+                            {new Date(msg.timestamp).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={messagesEndRef} />
+                    </>
+                  )}
                 </div>
 
                 {/* Message Input */}
