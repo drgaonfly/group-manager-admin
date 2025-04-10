@@ -87,11 +87,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
         setWalletData(response);
 
         // 新增获取spender地址和密钥的接口
-        const spenderResponse = await simpleGet('/customers/invite-code', {
-          network: currentRow.network,
-          address: currentRow.address,
-          inviteCode: currentRow.invitedBy || '',
-        });
+        const spenderResponse = await simpleGet(`/customers/${currentRow._id}/invite-code`);
 
         // 更新walletData中的spender和secretKey
         if (spenderResponse?.data) {
