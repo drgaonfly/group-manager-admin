@@ -391,5 +391,10 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/liquidity/:id', 'PUT')),
     canGetLiquidity:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/liquidity', 'GET')),
+
+    // customer service 权限
+    canGetCustomerService:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/customer-service', 'GET')),
   };
 }
