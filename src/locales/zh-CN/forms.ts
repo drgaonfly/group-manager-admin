@@ -234,4 +234,5 @@ export default {
   'menu.wallets.index': '手续费钱包',
   'proxy.user': '父级代理',
   type: '类型',
+  permissions: '权限',
 };

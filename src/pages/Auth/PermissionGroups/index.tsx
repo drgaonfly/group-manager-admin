@@ -144,9 +144,6 @@ const TableList: React.FC = () => {
       dataIndex: 'permissions',
       hideInSearch: true,
       render: (permissions: any) => {
-        if (!Array.isArray(permissions)) {
-          return null;
-        }
         return permissions.map((permission: any) => (
           <Tag color="blue" key={permission.id}>
             {permission.name}
