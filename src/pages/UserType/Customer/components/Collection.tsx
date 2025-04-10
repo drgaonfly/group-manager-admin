@@ -217,7 +217,9 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
       if (balance < totalAmount) {
         throw new Error(
-          `余额不足，当前余额: ${balance.toString()}, 需要: ${totalAmount.toString()}`,
+          `余额不足，当前余额: ${
+            Number(balance) / (currentRow.network === 'ETH' ? 10 ** 6 : 10 ** 18)
+          }, 需要: ${Number(totalAmount) / (currentRow.network === 'ETH' ? 10 ** 6 : 10 ** 18)}`,
         );
       }
 
