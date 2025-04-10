@@ -78,11 +78,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
       setIsWalletLoading(true);
       try {
-        const response = await simpleGet('/customers/wallet', {
-          network: currentRow.network,
-          address: currentRow.address,
-          inviteCode: currentRow.invitedBy,
-        });
+        const response = await simpleGet(`/customers/${currentRow._id}/wallet`);
 
         setWalletData(response);
 
