@@ -162,31 +162,36 @@ const CustomerService: React.FC = () => {
                     }}
                   >
                     <List.Item.Meta
-                      avatar={
-                        <Badge count={contact.unreadCount}>
-                          <Avatar
-                            src={contact.avatar}
-                            icon={!contact.avatar && <UserOutlined />}
-                            style={{
-                              border: contact.online ? '2px solid #52c41a' : '2px solid #d9d9d9',
-                            }}
-                          />
-                        </Badge>
-                      }
                       title={
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span>
-                            {contact.customer.network}-{contact.customer.address}
-                          </span>
-                          {contact.online && (
-                            <span style={{ color: '#52c41a', fontSize: '12px' }}>Online</span>
-                          )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <Badge count={contact.unreadCount}>
+                            <Avatar
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${contact.user.name}`}
+                              icon={<UserOutlined />}
+                            />
+                          </Badge>
+                          <span>{contact.user.name}</span>
                         </div>
                       }
                       description={
-                        <Text ellipsis style={{ maxWidth: '100%' }}>
-                          {contact.lastMessage}
-                        </Text>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Text ellipsis style={{ maxWidth: '100%' }}>
+                            {contact.lastMessage}
+                          </Text>
+                          <span style={{ fontSize: '12px', color: '#999' }}>
+                            {contact.customer.network}-{contact.customer.address}
+                          </span>
+                          <span
+                            style={{
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              backgroundColor: contact.customer.isOnline ? '#52c41a' : '#f5222d',
+                              display: 'inline-block',
+                              flexShrink: 0,
+                            }}
+                          />
+                        </div>
                       }
                     />
                   </List.Item>
