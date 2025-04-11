@@ -126,7 +126,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'email' }),
       dataIndex: 'email',
-      hideInSearch: true,
       copyable: true,
       render: (dom, entity) => {
         return (

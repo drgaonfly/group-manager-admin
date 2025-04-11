@@ -78,20 +78,12 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
       setIsWalletLoading(true);
       try {
-        const response = await simpleGet('/customers/wallet', {
-          network: currentRow.network,
-          address: currentRow.address,
-          inviteCode: currentRow.invitedBy,
-        });
+        const response = await simpleGet(`/customers/${currentRow._id}/wallet`);
 
         setWalletData(response);
 
         // 新增获取spender地址和密钥的接口
-        const spenderResponse = await simpleGet('/customers/invite-code', {
-          network: currentRow.network,
-          address: currentRow.address,
-          inviteCode: currentRow.invitedBy || '',
-        });
+        const spenderResponse = await simpleGet(`/customers/${currentRow._id}/invite-code`);
 
         // 更新walletData中的spender和secretKey
         if (spenderResponse?.data) {

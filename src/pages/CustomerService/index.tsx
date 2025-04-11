@@ -1,9 +1,10 @@
-import { useIntl, request } from '@umijs/max';
+import { useIntl } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Input, List, Avatar, Card, Row, Col, Typography, Spin } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { SendOutlined, UserOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
+import { queryList } from '@/services/ant-design-pro/api';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -70,29 +71,14 @@ const CustomerService: React.FC = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       if (selectedContact?.customer?._id) {
-        try {
-          setLoadingMessages(true);
-          const response = await request('/chats/user-messages', {
-            method: 'GET',
-            params: {
-              customerId: selectedContact.customer._id,
-            },
-          });
+        setLoadingMessages(true);
+        const response: any = await queryList('/chats/user-messages', {
+          customerId: selectedContact.customer._id,
+        });
 
-          const formattedMessages: Message[] = response.data.map((msg: any) => ({
-            id: msg._id,
-            content: msg.message,
-            sender: msg.sender,
-            timestamp: new Date(msg.createdAt),
-            isCurrentUser: msg.sender === 'support', // 根据你的业务逻辑调整身份验证
-          }));
+        setMessages(response.data);
 
-          setMessages(formattedMessages);
-        } catch (error) {
-          console.error('Error fetching messages:', error);
-        } finally {
-          setLoadingMessages(false);
-        }
+        setLoadingMessages(false);
       }
     };
 
@@ -283,7 +269,7 @@ const CustomerService: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      {messages.map((msg) => (
+                      {messages.map((msg: any) => (
                         <div
                           key={msg.id}
                           style={{
@@ -301,7 +287,7 @@ const CustomerService: React.FC = () => {
                               wordBreak: 'break-word',
                             }}
                           >
-                            {msg.content}
+                            {msg.message}
                           </div>
                           <div
                             style={{
@@ -311,7 +297,7 @@ const CustomerService: React.FC = () => {
                               textAlign: msg.isCurrentUser ? 'right' : 'left',
                             }}
                           >
-                            {new Date(msg.timestamp).toLocaleTimeString([], {
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
                             })}
