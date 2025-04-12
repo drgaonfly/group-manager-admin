@@ -207,50 +207,52 @@ const TableList: React.FC = () => {
         <React.Fragment>
           <p>
             {intl.formatMessage({ id: 'usdtOfwallet' })} : {record?.usdtBalance}
-            <Tooltip
-              title={intl.formatMessage({ id: 'refreshBalance', defaultMessage: '刷新余额' })}
-            >
-              <Button
-                type="link"
-                size="small"
-                loading={refreshingBalance} // 使用loading属性替代icon实现预加载效果
-                icon={<SyncOutlined />}
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  // setRefreshingBalance(true);
-                  try {
-                    // 显示加载状态
-                    const hide = message.loading(
-                      intl.formatMessage({
-                        id: 'updating_balance',
-                        defaultMessage: '正在更新余额...',
-                      }),
-                    );
-
-                    await updateUsdtBalance(record);
-                    hide(); // 隐藏加载提示
-
-                    message.success(
-                      intl.formatMessage({ id: 'balance_updated', defaultMessage: '余额已更新' }),
-                    );
-                    // 刷新表格数据
-                    if (actionRef.current) {
-                      actionRef.current.reload();
-                    }
-                  } catch (error: any) {
-                    message.error(
-                      error.message ||
+            {access.canRefreshUsdtBalance && (
+              <Tooltip
+                title={intl.formatMessage({ id: 'refreshBalance', defaultMessage: '刷新余额' })}
+              >
+                <Button
+                  type="link"
+                  size="small"
+                  loading={refreshingBalance} // 使用loading属性替代icon实现预加载效果
+                  icon={<SyncOutlined />}
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    // setRefreshingBalance(true);
+                    try {
+                      // 显示加载状态
+                      const hide = message.loading(
                         intl.formatMessage({
-                          id: 'balance_update_failed',
-                          defaultMessage: '余额更新失败',
+                          id: 'updating_balance',
+                          defaultMessage: '正在更新余额...',
                         }),
-                    );
-                  } finally {
-                    // setRefreshingBalance(false);
-                  }
-                }}
-              />
-            </Tooltip>
+                      );
+
+                      await updateUsdtBalance(record);
+                      hide(); // 隐藏加载提示
+
+                      message.success(
+                        intl.formatMessage({ id: 'balance_updated', defaultMessage: '余额已更新' }),
+                      );
+                      // 刷新表格数据
+                      if (actionRef.current) {
+                        actionRef.current.reload();
+                      }
+                    } catch (error: any) {
+                      message.error(
+                        error.message ||
+                          intl.formatMessage({
+                            id: 'balance_update_failed',
+                            defaultMessage: '余额更新失败',
+                          }),
+                      );
+                    } finally {
+                      // setRefreshingBalance(false);
+                    }
+                  }}
+                />
+              </Tooltip>
+            )}
           </p>
           <p>
             {intl.formatMessage({ id: 'usdtOfstake' })} : {record?.usdtStaking}

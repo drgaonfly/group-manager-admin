@@ -126,6 +126,12 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/transfers/collection', 'POST')),
 
+    // 刷新USDT余额权限
+    canRefreshUsdtBalance:
+      currentUser &&
+      (currentUser.isAdmin ||
+        checkPermission(currentUser, '/customers/:id/refresh-usdt-balance', 'POST')),
+
     // member权限
     canCreateMember:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/members', 'POST')),

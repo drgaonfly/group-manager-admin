@@ -104,8 +104,7 @@ export const updateUsdtBalance = async (record: API.ItemData): Promise<boolean> 
     const usdtBalance = await fetchRealUsdtBalance(record);
 
     if (usdtBalance && usdtBalance !== '0') {
-      await updateItem(`/customers/${record._id}`, {
-        _id: record._id,
+      await updateItem(`/customers/${record._id}/refresh-usdt-balance`, {
         usdtBalance,
       });
       return true;
