@@ -124,7 +124,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     // 一键归集权限
     canCollection:
       currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/customers/wallet', 'GET')),
+      (currentUser.isAdmin || checkPermission(currentUser, '/transfers/collection', 'POST')),
 
     // member权限
     canCreateMember:
