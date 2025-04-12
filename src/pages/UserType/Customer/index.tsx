@@ -178,6 +178,23 @@ const TableList: React.FC = () => {
       ),
     },
     {
+      title: intl.formatMessage({ id: 'frozenAmount', defaultMessage: '冻结金额' }),
+      hideInSearch: true,
+      width: '10%',
+      render: (_, record) => (
+        <React.Fragment>
+          <p>
+            {intl.formatMessage({ id: 'withdrawFrozen', defaultMessage: '提现冻结' })} :{' '}
+            {record?.frozenAmount}
+          </p>
+          <p>
+            {intl.formatMessage({ id: 'stakingFrozen', defaultMessage: '质押冻结' })} :{' '}
+            {record?.stakingFrozenAmount}
+          </p>
+        </React.Fragment>
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'estateOverview' }),
       hideInSearch: true,
       width: '15%',
