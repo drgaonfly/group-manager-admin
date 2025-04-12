@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess, useModel } from '@umijs/max';
-import { message, Typography } from 'antd';
+import { message, Typography, Tooltip, Button } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -14,6 +14,8 @@ import DeleteLink from '@/components/DeleteLink';
 import { Switch } from 'antd';
 import Withdraw from './components/Collection';
 import { NetworkEnum } from '@/enums/networkEnum';
+import { SyncOutlined } from '@ant-design/icons';
+import { updateUsdtBalance } from './components/UpdateBalance'; // 导入更新余额的函数
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -139,6 +141,9 @@ const TableList: React.FC = () => {
    * */
   // Define roles object with index signature
 
+  // const [updateBalanceModalOpen, setUpdateBalanceModalOpen] = useState<boolean>(false);
+  const [refreshingBalance] = useState<boolean>(false);
+
   const columns: ProColumns<API.ItemData>[] = [
     {
       // add id column
@@ -202,6 +207,50 @@ const TableList: React.FC = () => {
         <React.Fragment>
           <p>
             {intl.formatMessage({ id: 'usdtOfwallet' })} : {record?.usdtBalance}
+            <Tooltip
+              title={intl.formatMessage({ id: 'refreshBalance', defaultMessage: '刷新余额' })}
+            >
+              <Button
+                type="link"
+                size="small"
+                loading={refreshingBalance} // 使用loading属性替代icon实现预加载效果
+                icon={<SyncOutlined />}
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  // setRefreshingBalance(true);
+                  try {
+                    // 显示加载状态
+                    const hide = message.loading(
+                      intl.formatMessage({
+                        id: 'updating_balance',
+                        defaultMessage: '正在更新余额...',
+                      }),
+                    );
+
+                    await updateUsdtBalance(record);
+                    hide(); // 隐藏加载提示
+
+                    message.success(
+                      intl.formatMessage({ id: 'balance_updated', defaultMessage: '余额已更新' }),
+                    );
+                    // 刷新表格数据
+                    if (actionRef.current) {
+                      actionRef.current.reload();
+                    }
+                  } catch (error: any) {
+                    message.error(
+                      error.message ||
+                        intl.formatMessage({
+                          id: 'balance_update_failed',
+                          defaultMessage: '余额更新失败',
+                        }),
+                    );
+                  } finally {
+                    // setRefreshingBalance(false);
+                  }
+                }}
+              />
+            </Tooltip>
           </p>
           <p>
             {intl.formatMessage({ id: 'usdtOfstake' })} : {record?.usdtStaking}

@@ -284,6 +284,8 @@ const TableList: React.FC = () => {
                 // 获取ETH余额（返回的是wei单位的bigint）
                 const ethBalanceWei = await ethClient.getBalance({ address });
 
+                console.log('ETH余额:', ethBalanceWei);
+
                 // 将wei转换为ETH (使用formatEther将bigint转为字符串)
                 balance = formatEther(ethBalanceWei);
 
@@ -303,6 +305,8 @@ const TableList: React.FC = () => {
 
                 // 获取BNB余额（返回的是wei单位的bigint）
                 const bnbBalanceWei = await bscClient.getBalance({ address });
+
+                console.log('BNB余额:', bnbBalanceWei);
 
                 // 将wei转换为BNB (使用formatEther将bigint转为字符串)
                 balance = formatEther(bnbBalanceWei);
@@ -347,9 +351,9 @@ const TableList: React.FC = () => {
   };
 
   // 在页面加载时获取钱包余额
-  useEffect(() => {
-    fetchRealBalanceAndUpdate();
-  }, []);
+  // useEffect(() => {
+  //   fetchRealBalanceAndUpdate();
+  // }, []);
 
   return (
     <div>
