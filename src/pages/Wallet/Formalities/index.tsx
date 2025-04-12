@@ -121,14 +121,11 @@ const TableList: React.FC = () => {
   const [refreshingBalances, setRefreshingBalances] = useState<boolean>(false);
 
   // 获取用户钱包信息
-  const fetchUserWallets = async (network: string) => {
+  const fetchUserWallets = async (network: string[] | string) => {
     try {
       const response = await queryList('/wallets/get-current-user-wallet', { network });
       if (response?.data) {
-        setUserWallets((prev) => ({
-          ...prev,
-          [network]: response.data,
-        }));
+        setUserWallets(response.data);
       }
     } catch (error) {
       console.error(`Failed to fetch ${network} wallet:`, error);
@@ -136,10 +133,11 @@ const TableList: React.FC = () => {
   };
 
   useEffect(() => {
-    // 分别获取各个网络的钱包信息
-    fetchUserWallets('ETH');
-    fetchUserWallets('BSC');
-    fetchUserWallets('TRX');
+    const fetchData = async () => {
+      // 分别获取各个网络的钱包信息
+      await fetchUserWallets(['ETH', 'BSC', 'TRX']);
+    };
+    fetchData();
   }, []);
 
   /**
@@ -233,7 +231,7 @@ const TableList: React.FC = () => {
       await addItem(`/wallets/generate-eth-wallet`, {});
       hide();
       message.success('生成成功');
-      fetchUserWallets('ETH'); // 重新获取ETH钱包信息
+      await fetchUserWallets(['ETH', 'BSC', 'TRX']);
       return true;
     } catch (error: any) {
       hide();
@@ -248,7 +246,7 @@ const TableList: React.FC = () => {
       await addItem(`/wallets/generate-bnb-wallet`, {});
       hide();
       message.success('生成成功');
-      fetchUserWallets('BSC'); // 重新获取BSC钱包信息
+      await fetchUserWallets(['ETH', 'BSC', 'TRX']);
       return true;
     } catch (error: any) {
       hide();
@@ -338,8 +336,7 @@ const TableList: React.FC = () => {
         message.success('钱包余额已更新');
 
         // 重新获取当前用户的钱包信息
-        fetchUserWallets('ETH');
-        fetchUserWallets('BSC');
+        await fetchUserWallets(['ETH', 'BSC', 'TRX']);
       }
     } catch (error) {
       console.error('获取钱包余额失败:', error);
