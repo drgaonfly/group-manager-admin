@@ -130,7 +130,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canRefreshUsdtBalance:
       currentUser &&
       (currentUser.isAdmin ||
-        checkPermission(currentUser, '/customers/:id/refresh-usdt-balance', 'POST')),
+        checkPermission(currentUser, '/customers/:id/refresh-usdt-balance', 'PUT')),
 
     // member权限
     canCreateMember:
