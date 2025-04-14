@@ -135,7 +135,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     //更新是模拟账户还是客户
     canUpdateCustomerData:
       currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/customers/:id/updateData', 'PUT')),
+      (currentUser.isAdmin || checkPermission(currentUser, '/customers/:id/verified', 'PUT')),
 
     // member权限
     canCreateMember:

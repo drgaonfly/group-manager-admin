@@ -71,7 +71,7 @@ const handleUpdate = async (fields: FormValueType) => {
 const customerUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/customers/${fields._id}/updatedata`, fields);
+    await updateItem(`/customers/${fields._id}/verified`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
