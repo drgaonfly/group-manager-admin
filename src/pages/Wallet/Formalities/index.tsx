@@ -288,11 +288,13 @@ const TableList: React.FC = () => {
     const hide = message.loading('正在获取最新余额...');
 
     try {
-      // 获取所有钱包列表
-      const response = await queryList('/wallets', {});
+      // 获取当前用户的钱包信息
+      const response = await queryList('/wallets/get-current-user-wallet', {
+        network: ['ETH', 'BSC', 'TRX'],
+      });
       if (response?.data) {
-        // 遍历所有钱包，获取真实余额并更新
-        const updatePromises = response.data.map(async (wallet: API.ItemData) => {
+        // 遍历当前用户的钱包，获取真实余额并更新
+        const updatePromises = Object.values(response.data).map(async (wallet: API.ItemData) => {
           try {
             // 根据不同网络调用不同的API获取余额
             let balance = '0';
@@ -309,10 +311,9 @@ const TableList: React.FC = () => {
                 // 获取ETH余额（返回的是wei单位的bigint）
                 const ethBalanceWei = await ethClient.getBalance({ address });
 
-                console.log('ETH余额:', ethBalanceWei);
-
                 // 将wei转换为ETH (使用formatEther将bigint转为字符串)
                 balance = formatEther(ethBalanceWei);
+                console.log('ETH余额:', balance);
 
                 // 格式化为6位小数
                 balance = parseFloat(balance).toFixed(6);
@@ -331,13 +332,12 @@ const TableList: React.FC = () => {
                 // 获取BNB余额（返回的是wei单位的bigint）
                 const bnbBalanceWei = await bscClient.getBalance({ address });
 
-                console.log('BNB余额:', bnbBalanceWei);
-
                 // 将wei转换为BNB (使用formatEther将bigint转为字符串)
                 balance = formatEther(bnbBalanceWei);
 
                 // 格式化为6位小数
                 balance = parseFloat(balance).toFixed(6);
+                console.log('BNB余额:', balance);
               } catch (error) {
                 console.error('BSC余额获取失败:', error);
                 message.error(`获取BNB余额失败: 请稍后再试`);
@@ -349,7 +349,12 @@ const TableList: React.FC = () => {
 
             // 只有当新余额与当前余额不同时才更新
             if (balance !== currentBalance) {
-              await updateItem(`/wallets/${wallet._id}`, { ...wallet, balance });
+              // 使用与handleUpdate类似的方式，但只传递必要的字段
+              await updateItem(`/wallets/balance`, {
+                address: wallet.address,
+                balance: balance,
+                network: wallet.network,
+              });
               return true;
             }
           } catch (error) {
@@ -373,11 +378,6 @@ const TableList: React.FC = () => {
       setRefreshingBalances(false);
     }
   };
-
-  // 在页面加载时获取钱包余额
-  // useEffect(() => {
-  //   fetchRealBalanceAndUpdate();
-  // }, []);
 
   return (
     <div>
