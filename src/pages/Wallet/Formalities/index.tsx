@@ -267,6 +267,21 @@ const TableList: React.FC = () => {
     }
   };
 
+  const handleGenerateTrxWallet = async () => {
+    const hide = message.loading('生成中...');
+    try {
+      await addItem(`/wallets/generate-trx-wallet`, {});
+      hide();
+      message.success('生成成功');
+      await fetchUserWallets(['ETH', 'BSC', 'TRX']);
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error(error?.response?.data?.message ?? '生成失败');
+      return false;
+    }
+  };
+
   // 获取钱包真实余额并更新数据库
   const fetchRealBalanceAndUpdate = async () => {
     setRefreshingBalances(true);
@@ -446,14 +461,21 @@ const TableList: React.FC = () => {
           {userWallets['TRX'] ? (
             <>
               <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
-                <Typography.Text copyable>{userWallets['TRX'].address}</Typography.Text>
+                <Typography.Text>{userWallets['TRX'].address}</Typography.Text>
               </div>
               <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">
                 TRX: {userWallets['TRX'].balance || '0'}
               </div>
             </>
           ) : (
-            <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">TRX: 0</div>
+            <button
+              type="button"
+              className="mt-4 px-6 py-2 bg-gray-100 text-gray-400 text-sm border-0 cursor-not-allowed"
+              onClick={handleGenerateTrxWallet}
+              disabled
+            >
+              生成
+            </button>
           )}
         </div>
       </div>
