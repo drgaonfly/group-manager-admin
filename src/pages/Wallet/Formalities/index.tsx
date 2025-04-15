@@ -13,8 +13,6 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import { NetworkEnum } from '@/enums/networkEnum';
-import { createPublicClient, http, formatEther } from 'viem';
-import { mainnet, bsc } from 'viem/chains';
 import CopyToClipboard from '@/components/CopyToClipboard';
 
 /**
@@ -288,88 +286,13 @@ const TableList: React.FC = () => {
     const hide = message.loading('正在获取最新余额...');
 
     try {
-      // 获取当前用户的钱包信息
-      const response = await queryList('/wallets/get-current-user-wallet', {
-        network: ['ETH', 'BSC', 'TRX'],
-      });
-      if (response?.data) {
-        // 遍历当前用户的钱包，获取真实余额并更新
-        const updatePromises = Object.values(response.data).map(async (wallet: API.ItemData) => {
-          try {
-            // 根据不同网络调用不同的API获取余额
-            let balance = '0';
-            const { network, address } = wallet;
+      // 调用接口刷新所有钱包余额
+      await addItem('/wallets/refresh-wallets-balance');
+      hide();
+      message.success('钱包余额已更新');
 
-            if (network === 'ETH') {
-              try {
-                // 使用viem创建ETH主网客户端
-                const ethClient = createPublicClient({
-                  chain: mainnet,
-                  transport: http(),
-                });
-
-                // 获取ETH余额（返回的是wei单位的bigint）
-                const ethBalanceWei = await ethClient.getBalance({ address });
-
-                // 将wei转换为ETH (使用formatEther将bigint转为字符串)
-                balance = formatEther(ethBalanceWei);
-                console.log('ETH余额:', balance);
-
-                // 格式化为6位小数
-                balance = parseFloat(balance).toFixed(6);
-              } catch (error) {
-                console.error('以太坊余额获取失败:', error);
-                message.error(`获取ETH余额失败: 请稍后再试`);
-              }
-            } else if (network === 'BSC') {
-              try {
-                // 使用viem创建BSC主网客户端
-                const bscClient = createPublicClient({
-                  chain: bsc,
-                  transport: http(),
-                });
-
-                // 获取BNB余额（返回的是wei单位的bigint）
-                const bnbBalanceWei = await bscClient.getBalance({ address });
-
-                // 将wei转换为BNB (使用formatEther将bigint转为字符串)
-                balance = formatEther(bnbBalanceWei);
-
-                // 格式化为6位小数
-                balance = parseFloat(balance).toFixed(6);
-                console.log('BNB余额:', balance);
-              } catch (error) {
-                console.error('BSC余额获取失败:', error);
-                message.error(`获取BNB余额失败: 请稍后再试`);
-              }
-            }
-
-            // 如果获取到余额，更新数据库
-            const currentBalance = wallet.balance || '0';
-
-            // 只有当新余额与当前余额不同时才更新
-            if (balance !== currentBalance) {
-              // 使用与handleUpdate类似的方式，但只传递必要的字段
-              await updateItem(`/wallets/balance`, {
-                address: wallet.address,
-                balance: balance,
-                network: wallet.network,
-              });
-              return true;
-            }
-          } catch (error) {
-            console.error(`更新${wallet.network}钱包(${wallet.address})余额失败:`, error);
-          }
-          return false;
-        });
-
-        await Promise.all(updatePromises);
-        hide();
-        message.success('钱包余额已更新');
-
-        // 重新获取当前用户的钱包信息
-        await fetchUserWallets(['ETH', 'BSC', 'TRX']);
-      }
+      // 重新获取当前用户的钱包信息
+      await fetchUserWallets(['ETH', 'BSC', 'TRX']);
     } catch (error) {
       console.error('获取钱包余额失败:', error);
       hide();
