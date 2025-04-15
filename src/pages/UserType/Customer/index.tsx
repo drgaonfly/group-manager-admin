@@ -15,7 +15,6 @@ import { Switch } from 'antd';
 import Withdraw from './components/Collection';
 import { NetworkEnum } from '@/enums/networkEnum';
 import { SyncOutlined } from '@ant-design/icons';
-import { updateUsdtBalance } from './components/UpdateBalance'; // 导入更新余额的函数
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -85,6 +84,21 @@ const customerUpdate = async (fields: FormValueType) => {
       ),
     );
     return false;
+  }
+};
+
+const updateUsdtBalance = async (record: API.ItemData): Promise<boolean> => {
+  if (!record || !record._id) {
+    throw new Error('缺少用户ID');
+  }
+
+  try {
+    // const usdtBalance = await fetchRealUsdtBalance(record);
+    await updateItem(`/customers/${record._id}/refresh-usdt-balance`);
+    return true;
+  } catch (error) {
+    console.error('更新USDT余额失败:', error);
+    throw error;
   }
 };
 
