@@ -415,15 +415,17 @@ const TableList: React.FC = () => {
             <div className="flex items-center">
               {intl.formatMessage({ id: 'list' })}
               <Tooltip title={intl.formatMessage({ id: 'pages.wallet.refreshBalance' })}>
-                <Button
-                  type="link"
-                  icon={<SyncOutlined spin={refreshingBalances} />}
-                  onClick={fetchRealBalanceAndUpdate}
-                  loading={refreshingBalances}
-                  disabled={refreshingBalances}
-                >
-                  {intl.formatMessage({ id: 'pages.wallet.updateBalance' })}
-                </Button>
+                <Tooltip title="只更新当前用户的钱包余额">
+                  <Button
+                    type="link"
+                    icon={<SyncOutlined spin={refreshingBalances} />}
+                    onClick={fetchRealBalanceAndUpdate}
+                    loading={refreshingBalances}
+                    disabled={refreshingBalances}
+                  >
+                    {intl.formatMessage({ id: 'pages.wallet.updateBalance' })}
+                  </Button>
+                </Tooltip>
               </Tooltip>
             </div>
           }
