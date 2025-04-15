@@ -64,6 +64,26 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
+//拒绝同意提现
+const withdrawUpdate = async (fields: FormValueType) => {
+  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  try {
+    await updateItem(`/withdraws/${fields._id}/withrdaws`, fields);
+    hide();
+
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
+      ),
+    );
+    return false;
+  }
+};
+
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -165,6 +185,7 @@ const WithdrawPage: React.FC = () => {
       title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认' }),
       dataIndex: 'isFrozen',
       hideInSearch: false,
+      hideInTable: !access.canAgreeWithdraw,
       valueEnum: {
         '': {
           text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }),
@@ -179,22 +200,26 @@ const WithdrawPage: React.FC = () => {
           status: 'Error',
         },
       },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' })}
-          unCheckedChildren={intl.formatMessage({
-            id: 'platform.unfrozen',
-            defaultMessage: '未确认',
-          })}
-          checked={record.isFrozen}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isFrozen: !record.isFrozen });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
+      render: (_, record: any) =>
+        access.canAgreeWithdraw && (
+          <Switch
+            checkedChildren={intl.formatMessage({
+              id: 'platform.frozen',
+              defaultMessage: '已确认',
+            })}
+            unCheckedChildren={intl.formatMessage({
+              id: 'platform.unfrozen',
+              defaultMessage: '未确认',
+            })}
+            checked={record.isFrozen}
+            onChange={async () => {
+              await withdrawUpdate({ _id: record._id, isFrozen: !record.isFrozen });
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
+          />
+        ),
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
@@ -217,7 +242,7 @@ const WithdrawPage: React.FC = () => {
             }}
           />
         ),
-        access.canUpdateWithdraw && (
+        access.canAgreeWithdraw && (
           <Button
             key="reject"
             type="link"
@@ -312,7 +337,7 @@ const WithdrawPage: React.FC = () => {
           open={rejectModalOpen}
           onCancel={setRejectModalOpen}
           onSubmit={async (value) => {
-            const success = await handleUpdate(value);
+            const success = await withdrawUpdate(value);
             if (success) {
               setRejectModalOpen(false);
               setCurrentRow(undefined);
