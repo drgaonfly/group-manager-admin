@@ -1,5 +1,11 @@
 import { useIntl } from '@umijs/max';
-import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import {
+  addItem,
+  queryList,
+  removeItem,
+  simpleGet,
+  updateItem,
+} from '@/services/ant-design-pro/api';
 import { SyncOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -122,7 +128,7 @@ const TableList: React.FC = () => {
   // 获取用户钱包信息
   const fetchUserWallets = async () => {
     try {
-      const response = await queryList('/wallets/get-current-user-wallet', {});
+      const response = await simpleGet('/wallets/get-current-user-wallet');
       if (response?.data) {
         setUserWallets(response.data);
       }
