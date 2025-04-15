@@ -131,6 +131,7 @@ const TableList: React.FC = () => {
       const response = await simpleGet('/wallets/get-current-user-wallet');
       if (response?.data) {
         setUserWallets(response.data);
+        actionRef.current?.reloadAndRest?.();
       }
     } catch (error) {
       console.error(`Failed to fetch wallet:`, error);
