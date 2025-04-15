@@ -128,6 +128,13 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      // add id column
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: 'id',
+      hideInSearch: true,
+      width: '5%',
+    },
+    {
       title: intl.formatMessage({ id: 'proxy.employee' }),
       dataIndex: ['user', 'name'],
       hideInSearch: false,
