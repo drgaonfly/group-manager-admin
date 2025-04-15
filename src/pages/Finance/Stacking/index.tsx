@@ -63,6 +63,26 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
+//确认质押金额
+const agreeStaking = async (fields: FormValueType) => {
+  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  try {
+    await updateItem(`/stackings/${fields._id}/agreestaking`, fields);
+    hide();
+
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
+      ),
+    );
+    return false;
+  }
+};
+
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -158,6 +178,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认收款' }),
       dataIndex: 'isFrozen',
+      hideInTable: !access.canAgreeStacking,
       hideInSearch: false,
       valueEnum: {
         '': {
@@ -173,22 +194,26 @@ const TableList: React.FC = () => {
           status: 'Error',
         },
       },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' })}
-          unCheckedChildren={intl.formatMessage({
-            id: 'platform.unfrozen',
-            defaultMessage: '未确认',
-          })}
-          checked={record.isFrozen}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isFrozen: !record.isFrozen });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
+      render: (_, record: any) =>
+        access.canAgreeStacking && (
+          <Switch
+            checkedChildren={intl.formatMessage({
+              id: 'platform.frozen',
+              defaultMessage: '已确认',
+            })}
+            unCheckedChildren={intl.formatMessage({
+              id: 'platform.unfrozen',
+              defaultMessage: '未确认',
+            })}
+            checked={record.isFrozen}
+            onChange={async () => {
+              await agreeStaking({ _id: record._id, isFrozen: !record.isFrozen });
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
+          />
+        ),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -227,19 +252,6 @@ const TableList: React.FC = () => {
           labelWidth: 120,
           collapsed: false,
         }}
-        // toolBarRender={() => [
-        //   access.canCreateStacking && (
-        //     <Button
-        //       type="primary"
-        //       key="primary"
-        //       onClick={() => {
-        //         handleModalOpen(true);
-        //       }}
-        //     >
-        //       <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-        //     </Button>
-        //   ),
-        // ]}
         request={async (params, sort, filter) =>
           queryList('/stackings', { ...params, isOnline: activeKey }, sort, filter)
         }

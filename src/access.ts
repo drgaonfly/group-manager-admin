@@ -200,6 +200,11 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetStacking:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/stackings', 'GET')),
 
+    //确认质押金额权限
+    canAgreeStacking:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/stackings/:id/agreestaking', 'PUT')),
+
     // proxy commission records权限
     canCreateProxyCommissionRecord:
       currentUser &&
