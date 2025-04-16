@@ -295,12 +295,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'usdtOfplatform' })} : {record?.usdtPlatform}
           </p>
           <p>
-            {intl.formatMessage({ id: 'ethOfplatform' })} :{' '}
-            {
-              Number(record?.ethPlatform)
-                .toString()
-                .match(/^-?\d+(?:\.\d{0,5})?/)?.[0]
-            }
+            {intl.formatMessage({ id: 'ethOfplatform' })} : {record?.ethPlatform}
           </p>
         </React.Fragment>
       ),

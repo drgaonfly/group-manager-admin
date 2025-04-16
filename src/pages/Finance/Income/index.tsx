@@ -130,6 +130,11 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'usdtIncome', defaultMessage: 'ETH收益' }),
+      dataIndex: 'ethIncome',
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'network', defaultMessage: '网络' }),
       dataIndex: ['customer', 'network'],
       valueEnum: NetworkEnum,
