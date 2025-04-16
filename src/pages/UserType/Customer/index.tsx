@@ -363,7 +363,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'accountType' }),
       dataIndex: 'isAuthorized',
       hideInSearch: false,
-      hideInTable: !access.canSuperAdmin,
+      hideInTable: !access.canAuthorized,
       width: '8%',
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'demoAccount' }), status: 'Success' },
