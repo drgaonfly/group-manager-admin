@@ -148,7 +148,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({
         id: 'adminAmount',
-        defaultMessage: '平台金额USDTUSDT',
+        defaultMessage: '平台金额USDT',
       }),
       dataIndex: 'adminAmount',
       valueType: 'digit',
