@@ -87,10 +87,9 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdraws/:id', 'PUT')),
     canGetWithdraw:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/withdraws', 'GET')),
-    // withdraws拒绝同意提现权限
-    canAgreeWithdraw:
+    canCheckWithdraw:
       currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/withdraws/:id/withrdaws', 'PUT')),
+      (currentUser.isAdmin || checkPermission(currentUser, '/withdraws/:id/check', 'PUT')),
 
     // proxy权限
     canCreateProxy:

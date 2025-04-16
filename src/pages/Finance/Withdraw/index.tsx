@@ -185,7 +185,7 @@ const WithdrawPage: React.FC = () => {
       title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认' }),
       dataIndex: 'isFrozen',
       hideInSearch: false,
-      hideInTable: !access.canAgreeWithdraw,
+      hideInTable: !access.canCheckWithdraw,
       valueEnum: {
         '': {
           text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }),
@@ -201,7 +201,7 @@ const WithdrawPage: React.FC = () => {
         },
       },
       render: (_, record: any) =>
-        access.canAgreeWithdraw && (
+        access.canCheckWithdraw && (
           <Switch
             checkedChildren={intl.formatMessage({
               id: 'platform.frozen',
@@ -242,7 +242,7 @@ const WithdrawPage: React.FC = () => {
             }}
           />
         ),
-        access.canAgreeWithdraw && (
+        access.canCheckWithdraw && (
           <Button
             key="reject"
             type="link"
