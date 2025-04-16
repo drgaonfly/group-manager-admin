@@ -363,14 +363,14 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'accountType' }),
       dataIndex: 'isAuthorized',
       hideInSearch: false,
-      hideInTable: !access.canSuperAdmin,
+      hideInTable: !access.canAuthorized,
       width: '8%',
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'demoAccount' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'customer' }), status: 'Error' },
       },
       render: (_, record: any) =>
-        access.canVerified && (
+        access.canAuthorized && (
           <Switch
             checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
             unCheckedChildren={intl.formatMessage({ id: 'customer' })}
@@ -409,7 +409,7 @@ const TableList: React.FC = () => {
       dataIndex: 'isVerified',
       hideInSearch: false,
       // 只有拥有更新客户数据权限的用户才能看到此列
-      hideInTable: !access.canAuthorized,
+      hideInTable: !access.canVerified,
       width: '8%',
       valueEnum: {
         true: {
@@ -422,7 +422,7 @@ const TableList: React.FC = () => {
         },
       },
       render: (_, record: any) =>
-        access.canAuthorized && (
+        access.canVerified && (
           <Switch
             checkedChildren={intl.formatMessage({
               id: 'isAuthorized.authorized',
