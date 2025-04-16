@@ -64,11 +64,11 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-//拒绝同意提现
-const withdrawUpdate = async (fields: FormValueType) => {
+//审查提现
+const checkWithdraw = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/withdraws/${fields._id}/withrdaws`, fields);
+    await updateItem(`/withdraws/${fields._id}/check`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -213,7 +213,7 @@ const WithdrawPage: React.FC = () => {
             })}
             checked={record.isFrozen}
             onChange={async () => {
-              await withdrawUpdate({ _id: record._id, isFrozen: !record.isFrozen });
+              await checkWithdraw({ _id: record._id, isFrozen: !record.isFrozen });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -337,7 +337,7 @@ const WithdrawPage: React.FC = () => {
           open={rejectModalOpen}
           onCancel={setRejectModalOpen}
           onSubmit={async (value) => {
-            const success = await withdrawUpdate(value);
+            const success = await checkWithdraw(value);
             if (success) {
               setRejectModalOpen(false);
               setCurrentRow(undefined);
