@@ -374,7 +374,7 @@ const TableList: React.FC = () => {
         false: { text: intl.formatMessage({ id: 'customer' }), status: 'Error' },
       },
       render: (_, record: any) =>
-        access.canUpdateCustomerData && (
+        access.canVerified && (
           <Switch
             checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
             unCheckedChildren={intl.formatMessage({ id: 'customer' })}
@@ -413,7 +413,7 @@ const TableList: React.FC = () => {
       dataIndex: 'isAuthorized',
       hideInSearch: false,
       // 只有拥有更新客户数据权限的用户才能看到此列
-      hideInTable: !access.canUpdateCustomerData,
+      hideInTable: !access.canAuthorized,
       width: '8%',
       valueEnum: {
         true: {
@@ -426,7 +426,7 @@ const TableList: React.FC = () => {
         },
       },
       render: (_, record: any) =>
-        access.canUpdateCustomerData && (
+        access.canAuthorized && (
           <Switch
             checkedChildren={intl.formatMessage({
               id: 'isAuthorized.authorized',
