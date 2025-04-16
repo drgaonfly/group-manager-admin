@@ -67,7 +67,7 @@ const handleUpdate = async (fields: FormValueType) => {
 const agreeStaking = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/stackings/${fields._id}/agreestaking`, fields);
+    await updateItem(`/stackings/${fields._id}/check`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
