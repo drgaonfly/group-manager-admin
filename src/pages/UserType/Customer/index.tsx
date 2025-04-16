@@ -67,22 +67,54 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const customerUpdate = async (fields: FormValueType) => {
+const handleVerified = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/customers/${fields._id}/verified`, fields);
+    await updateItem(`/customers/${fields._id}/verified`, {
+      isVerified: fields.isVerified,
+    });
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-
     return true;
   } catch (error: any) {
     hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
-      ),
-    );
+    // 处理特定的错误消息
+    if (error?.response?.data?.message === '模拟账户不能设置为授权账户') {
+      message.error('模拟账户不能设置为授权账户');
+    } else {
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
+        ),
+      );
+    }
+    return false;
+  }
+};
+
+const handleAuthorized = async (fields: FormValueType) => {
+  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  try {
+    await updateItem(`/customers/${fields._id}/authorized`, {
+      isAuthorized: !fields.isAuthorized,
+    });
+    hide();
+
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    // 处理特定的错误消息
+    if (error?.response?.data?.message === '模拟账户不能设置为授权账户') {
+      message.error('模拟账户不能设置为授权账户');
+    } else {
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
+        ),
+      );
+    }
     return false;
   }
 };
@@ -333,7 +365,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'accountType' }),
-      dataIndex: 'isAuthorized',
+      dataIndex: 'isVerified',
       hideInSearch: false,
       hideInTable: !access.canSuperAdmin,
       width: '8%',
@@ -346,9 +378,9 @@ const TableList: React.FC = () => {
           <Switch
             checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
             unCheckedChildren={intl.formatMessage({ id: 'customer' })}
-            checked={record.isAuthorized}
+            checked={record.isVerified}
             onChange={async () => {
-              await handleUpdate({ _id: record._id, isAuthorized: !record.isAuthorized });
+              await handleVerified({ _id: record._id });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -378,7 +410,7 @@ const TableList: React.FC = () => {
     // },
     {
       title: intl.formatMessage({ id: 'isAuthorized' }),
-      dataIndex: 'isVerified',
+      dataIndex: 'isAuthorized',
       hideInSearch: false,
       // 只有拥有更新客户数据权限的用户才能看到此列
       hideInTable: !access.canUpdateCustomerData,
@@ -404,9 +436,9 @@ const TableList: React.FC = () => {
               id: 'isAuthorized.unauthorized',
               defaultMessage: '未授权',
             })}
-            checked={record.isVerified}
+            checked={record.isAuthorized}
             onChange={async () => {
-              await customerUpdate({ _id: record._id, isVerified: !record.isVerified });
+              await handleAuthorized({ _id: record._id });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
