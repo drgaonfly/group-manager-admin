@@ -70,9 +70,7 @@ const handleUpdate = async (fields: FormValueType) => {
 const handleVerified = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/customers/${fields._id}/verified`, {
-      isVerified: fields.isVerified,
-    });
+    await updateItem(`/customers/${fields._id}/verified`, {});
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -96,9 +94,7 @@ const handleVerified = async (fields: FormValueType) => {
 const handleAuthorized = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/customers/${fields._id}/authorized`, {
-      isAuthorized: !fields.isAuthorized,
-    });
+    await updateItem(`/customers/${fields._id}/authorized`, {});
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -365,7 +361,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'accountType' }),
-      dataIndex: 'isVerified',
+      dataIndex: 'isAuthorized',
       hideInSearch: false,
       hideInTable: !access.canSuperAdmin,
       width: '8%',
@@ -378,9 +374,9 @@ const TableList: React.FC = () => {
           <Switch
             checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
             unCheckedChildren={intl.formatMessage({ id: 'customer' })}
-            checked={record.isVerified}
+            checked={record.isAuthorized}
             onChange={async () => {
-              await handleVerified({ _id: record._id });
+              await handleAuthorized({ _id: record._id });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -410,7 +406,7 @@ const TableList: React.FC = () => {
     // },
     {
       title: intl.formatMessage({ id: 'isAuthorized' }),
-      dataIndex: 'isAuthorized',
+      dataIndex: 'isVerified',
       hideInSearch: false,
       // 只有拥有更新客户数据权限的用户才能看到此列
       hideInTable: !access.canAuthorized,
@@ -436,9 +432,9 @@ const TableList: React.FC = () => {
               id: 'isAuthorized.unauthorized',
               defaultMessage: '未授权',
             })}
-            checked={record.isAuthorized}
+            checked={record.isVerified}
             onChange={async () => {
-              await handleAuthorized({ _id: record._id });
+              await handleVerified({ _id: record._id });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
