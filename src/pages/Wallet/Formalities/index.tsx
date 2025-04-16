@@ -1,17 +1,22 @@
-import { useIntl, useModel } from '@umijs/max';
-import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import { useIntl } from '@umijs/max';
+import {
+  addItem,
+  queryList,
+  removeItem,
+  simpleGet,
+  updateItem,
+} from '@/services/ant-design-pro/api';
 import { SyncOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Typography, Tooltip, Spin } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
-import DeleteLink from '@/components/DeleteLink';
 import { NetworkEnum } from '@/enums/networkEnum';
 import CopyToClipboard from '@/components/CopyToClipboard';
 
@@ -117,9 +122,30 @@ const TableList: React.FC = () => {
   const access = useAccess();
   const [userWallets, setUserWallets] = useState<Record<string, any>>({});
   const [refreshingBalances, setRefreshingBalances] = useState<boolean>(false);
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
   const [loading, setLoading] = useState<boolean>(false);
+
+  const fetchUserWallets = async () => {
+    try {
+      setLoading(true);
+      const response = await simpleGet('/wallets/get-currentuser-wallet');
+      if (response?.data) {
+        setUserWallets(response.data);
+        // actionRef.current?.reloadAndRest?.();
+      }
+    } catch (error) {
+      console.error(`Failed to fetch wallet:`, error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // 分别获取各个网络的钱包信息
+      await fetchUserWallets();
+    };
+    fetchData();
+  }, []);
 
   /**
    * @en-US International configuration
@@ -211,15 +237,6 @@ const TableList: React.FC = () => {
             />
           </a>
         ),
-        access.canDeleteWallet && (
-          <DeleteLink
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          />
-        ),
       ],
     },
   ];
@@ -228,13 +245,17 @@ const TableList: React.FC = () => {
   const handleGenerateEthWallet = async () => {
     const hide = message.loading('生成中...');
     try {
+      setLoading(true);
       await addItem(`/wallets/generate-eth-wallet`, {});
       hide();
       message.success('生成成功');
+      await fetchUserWallets();
       actionRef.current?.reloadAndRest?.();
+      setLoading(false);
       return true;
     } catch (error: any) {
       hide();
+      setLoading(false);
       message.error(error?.response?.data?.message ?? '生成失败');
       return false;
     }
@@ -243,13 +264,17 @@ const TableList: React.FC = () => {
   const handleGenerateBnbWallet = async () => {
     const hide = message.loading('生成中...');
     try {
+      setLoading(true);
       await addItem(`/wallets/generate-bnb-wallet`);
       hide();
       message.success('生成成功');
+      await fetchUserWallets();
       actionRef.current?.reloadAndRest?.();
+      setLoading(false);
       return true;
     } catch (error: any) {
       hide();
+      setLoading(false);
       message.error(error?.response?.data?.message ?? '生成失败');
       return false;
     }
@@ -258,13 +283,17 @@ const TableList: React.FC = () => {
   const handleGenerateTrxWallet = async () => {
     const hide = message.loading('生成中...');
     try {
+      setLoading(true);
       await addItem(`/wallets/generate-trx-wallet`);
       hide();
       message.success('生成成功');
+      await fetchUserWallets();
       actionRef.current?.reloadAndRest?.();
+      setLoading(false);
       return true;
     } catch (error: any) {
       hide();
+      setLoading(false);
       message.error(error?.response?.data?.message ?? '生成失败');
       return false;
     }
@@ -292,112 +321,117 @@ const TableList: React.FC = () => {
     }
   };
 
+  const LoadingComponent = () => {
+    return <Spin size="default" />;
+  };
+
   return (
     <div>
-      {loading ? (
-        <div className="flex justify-center items-center h-[200px]">
-          <Spin size="default" />
+      <div className="flex justify-center items-center gap-32 p-6 bg-white rounded-lg shadow-sm mb-6">
+        {/* ETH Wallet */}
+        <div className="flex flex-col items-center">
+          <div className="w-30 h-30 bg-blue-100 rounded-full flex items-center justify-center mb-8">
+            <img
+              src="/ethereum-logo.svg"
+              alt="Ethereum"
+              className="w-28 h-28"
+              onError={(e) => {
+                e.currentTarget.src = '/image/eth.79abb487.png';
+              }}
+            />
+          </div>
+          {userWallets['ETH'] ? (
+            <>
+              <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
+                <Typography.Text>{userWallets['ETH'].address}</Typography.Text>
+              </div>
+              <div className="mt-4 px-5 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">
+                ETH: {userWallets['ETH'].balance || '0'}
+              </div>
+            </>
+          ) : loading ? (
+            <LoadingComponent />
+          ) : (
+            <button
+              type="button"
+              className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
+              onClick={handleGenerateEthWallet}
+            >
+              生成
+            </button>
+          )}
         </div>
-      ) : (
-        <div className="flex justify-center items-center gap-32 p-6 bg-white rounded-lg shadow-sm mb-6">
-          {/* ETH Wallet */}
-          <div className="flex flex-col items-center">
-            <div className="w-30 h-30 bg-blue-100 rounded-full flex items-center justify-center mb-8">
-              <img
-                src="/ethereum-logo.svg"
-                alt="Ethereum"
-                className="w-28 h-28"
-                onError={(e) => {
-                  e.currentTarget.src = '/image/eth.79abb487.png';
-                }}
-              />
-            </div>
-            {userWallets['ETH'] ? (
-              <>
-                <div className="text-xs text-blue-500 break-all text-center max-w-xs mb-4">
-                  <Typography.Text>{userWallets['ETH'].address}</Typography.Text>
-                </div>
-                <div className="mt-4 px-5 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">
-                  ETH: {userWallets['ETH'].balance || '0'}
-                </div>
-              </>
-            ) : (
-              <button
-                type="button"
-                className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
-                onClick={handleGenerateEthWallet}
-              >
-                生成
-              </button>
-            )}
-          </div>
 
-          {/* BNB Wallet */}
-          <div className="flex flex-col items-center">
-            <div className="w-30 h-30 bg-yellow-50 rounded-full flex items-center justify-center mb-8">
-              <img
-                src="/binance-logo.svg"
-                alt="Binance"
-                className="w-28 h-28"
-                onError={(e) => {
-                  e.currentTarget.src = '/image/bsc.329cced7.png';
-                }}
-              />
-            </div>
-            {userWallets['BSC'] ? (
-              <>
-                <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
-                  <Typography.Text>{userWallets['BSC'].address}</Typography.Text>
-                </div>
-                <div className="mt-4 px-5 py-1 bg-yellow-50 text-yellow-600 text-xs rounded-full">
-                  BNB: {userWallets['BSC'].balance || '0'}
-                </div>
-              </>
-            ) : (
-              <button
-                type="button"
-                className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
-                onClick={handleGenerateBnbWallet}
-              >
-                生成
-              </button>
-            )}
+        {/* BNB Wallet */}
+        <div className="flex flex-col items-center">
+          <div className="w-30 h-30 bg-yellow-50 rounded-full flex items-center justify-center mb-8">
+            <img
+              src="/binance-logo.svg"
+              alt="Binance"
+              className="w-28 h-28"
+              onError={(e) => {
+                e.currentTarget.src = '/image/bsc.329cced7.png';
+              }}
+            />
           </div>
-
-          {/* TRX Wallet */}
-          <div className="flex flex-col items-center">
-            <div className="w-30 h-30 bg-red-100 rounded-full flex items-center justify-center mb-8">
-              <img
-                src="/tron-logo.svg"
-                alt="Tron"
-                className="w-28 h-28"
-                onError={(e) => {
-                  e.currentTarget.src = '/image/tron.a74ebfd1.png';
-                }}
-              />
-            </div>
-            {userWallets['TRX'] ? (
-              <>
-                <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
-                  <Typography.Text>{userWallets['TRX'].address}</Typography.Text>
-                </div>
-                <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">
-                  TRX: {userWallets['TRX'].balance || '0'}
-                </div>
-              </>
-            ) : (
-              <button
-                type="button"
-                className="mt-4 px-6 py-2 bg-gray-100 text-gray-400 text-sm border-0 cursor-not-allowed"
-                onClick={handleGenerateTrxWallet}
-                disabled
-              >
-                生成
-              </button>
-            )}
-          </div>
+          {userWallets['BSC'] ? (
+            <>
+              <div className="text-xs text-yellow-700 break-all text-center max-w-xs mb-4">
+                <Typography.Text>{userWallets['BSC'].address}</Typography.Text>
+              </div>
+              <div className="mt-4 px-5 py-1 bg-yellow-50 text-yellow-600 text-xs rounded-full">
+                BNB: {userWallets['BSC'].balance || '0'}
+              </div>
+            </>
+          ) : loading ? (
+            <LoadingComponent />
+          ) : (
+            <button
+              type="button"
+              className="mt-4 px-6 py-2 bg-green-50 text-green-600 text-sm border-0 hover:bg-green-100 transition-colors duration-200 cursor-pointer"
+              onClick={handleGenerateBnbWallet}
+            >
+              生成
+            </button>
+          )}
         </div>
-      )}
+
+        {/* TRX Wallet */}
+        <div className="flex flex-col items-center">
+          <div className="w-30 h-30 bg-red-100 rounded-full flex items-center justify-center mb-8">
+            <img
+              src="/tron-logo.svg"
+              alt="Tron"
+              className="w-28 h-28"
+              onError={(e) => {
+                e.currentTarget.src = '/image/tron.a74ebfd1.png';
+              }}
+            />
+          </div>
+          {userWallets['TRX'] ? (
+            <>
+              <div className="text-xs text-red-500 break-all text-center max-w-xs mb-4">
+                <Typography.Text>{userWallets['TRX'].address}</Typography.Text>
+              </div>
+              <div className="mt-4 px-5 py-1 bg-red-50 text-red-600 text-xs rounded-full">
+                TRX: {userWallets['TRX'].balance || '0'}
+              </div>
+            </>
+          ) : loading ? (
+            <LoadingComponent />
+          ) : (
+            <button
+              type="button"
+              className="mt-4 px-6 py-2 bg-gray-100 text-gray-400 text-sm border-0 cursor-not-allowed"
+              onClick={handleGenerateTrxWallet}
+              disabled
+            >
+              生成
+            </button>
+          )}
+        </div>
+      </div>
+
       <PageContainer>
         <ProTable<API.ItemData, API.PageParams>
           headerTitle={
@@ -426,27 +460,8 @@ const TableList: React.FC = () => {
           }}
           toolBarRender={() => []}
           request={async (params, sort, filter) => {
-            setLoading(true);
-            const response = await queryList('/wallets', { ...params }, sort, filter);
-            const wallets = response.data as API.ListItem[];
-            const currentUserWallets = wallets.filter(
-              (wallet: any) => wallet.user?._id === currentUser?._id,
-            );
-            setUserWallets(
-              currentUserWallets.reduce(
-                (acc, wallet: any) => ({
-                  ...acc,
-                  [wallet.network]: {
-                    network: wallet.network,
-                    address: wallet.address,
-                    balance: wallet.balance,
-                  },
-                }),
-                {},
-              ),
-            );
-            setLoading(false);
-            return response;
+            await fetchUserWallets();
+            return await queryList('/wallets', { ...params }, sort, filter);
           }}
           columns={columns}
           rowSelection={

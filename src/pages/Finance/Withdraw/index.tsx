@@ -11,7 +11,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import Reject from './components/withdraw';
+import Reject from './components/Reject';
 // import { Card, Row, Col, Button, Statistic } from 'antd';
 import { NetworkEnum } from '@/enums/networkEnum';
 import StatusEnum from '@/enums/statusEnum';
@@ -332,12 +332,12 @@ const WithdrawPage: React.FC = () => {
           values={currentRow || {}}
         />
       )}
-      {access.canUpdateWithdraw && (
+      {access.canCheckWithdraw && (
         <Reject
           open={rejectModalOpen}
           onCancel={setRejectModalOpen}
-          onSubmit={async (value) => {
-            const success = await checkWithdraw(value);
+          onSubmit={async (values) => {
+            const success = await checkWithdraw(values);
             if (success) {
               setRejectModalOpen(false);
               setCurrentRow(undefined);
