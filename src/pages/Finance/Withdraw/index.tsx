@@ -189,14 +189,18 @@ const WithdrawPage: React.FC = () => {
       valueEnum: {
         '': {
           text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }),
-          status: 'Error',
+          status: 'Default',
         },
-        true: {
-          text: intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' }),
+        pending: {
+          text: intl.formatMessage({ id: 'status.pending', defaultMessage: '待审核' }),
+          status: 'Warning',
+        },
+        completed: {
+          text: intl.formatMessage({ id: 'status.completed', defaultMessage: '已完成' }),
           status: 'Success',
         },
-        false: {
-          text: intl.formatMessage({ id: 'platform.unfrozen', defaultMessage: '未确认' }),
+        rejected: {
+          text: intl.formatMessage({ id: 'status.rejected', defaultMessage: '已拒绝' }),
           status: 'Error',
         },
       },
@@ -204,16 +208,20 @@ const WithdrawPage: React.FC = () => {
         access.canCheckWithdraw && (
           <Switch
             checkedChildren={intl.formatMessage({
-              id: 'platform.frozen',
-              defaultMessage: '已确认',
+              id: 'status.completed',
+              defaultMessage: '已通过',
             })}
             unCheckedChildren={intl.formatMessage({
-              id: 'platform.unfrozen',
-              defaultMessage: '未确认',
+              id: 'status.pending',
+              defaultMessage: '待审核',
             })}
-            checked={record.isFrozen}
+            checked={record.status === 'completed'}
+            disabled={record.status === 'rejected'}
             onChange={async () => {
-              await checkWithdraw({ _id: record._id });
+              await checkWithdraw({
+                _id: record._id,
+                status: record.status === 'completed' ? 'pending' : 'completed',
+              });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
