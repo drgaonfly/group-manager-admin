@@ -4,7 +4,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { Button, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -13,6 +13,7 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import { NetworkEnum } from '@/enums/networkEnum';
+import { PlusOutlined } from '@ant-design/icons';
 
 /**
  * @en-US Add node
@@ -23,7 +24,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/incomes', { ...fields });
+    await addItem('/incomes', { ...fields, isManual: true });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -217,19 +218,19 @@ const TableList: React.FC = () => {
         search={{
           collapsed: false,
         }}
-        // toolBarRender={() => [
-        //   (access.canCreateIncome) && (
-        //     <Button
-        //       type="primary"
-        //       key="primary"
-        //       onClick={() => {
-        //         handleModalOpen(true);
-        //       }}
-        //     >
-        //       <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-        //     </Button>
-        //   ),
-        // ]}
+        toolBarRender={() => [
+          access.canCreateIncome && (
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            </Button>
+          ),
+        ]}
         request={async (params, sort, filter) =>
           queryList('/incomes', { ...params, isOnline: activeKey }, sort, filter)
         }

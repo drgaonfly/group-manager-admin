@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import WalletSelect from '@/components/walletCustomerSelect';
+import CustomerSelect from '@/components/customerSelect';
 
 interface Props {
   newRecord?: boolean;
@@ -34,15 +34,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <WalletSelect />
+        <CustomerSelect />
 
         <ProFormText
           rules={[{ required: false }]}
           width="md"
-          label={intl.formatMessage({ id: 'usdtEarnings' })}
-          name="usdtEarnings"
+          label={intl.formatMessage({ id: 'usdtIncome', defaultMessage: 'USDT收益' })}
+          name="usdtIncome"
+        />
+
+        <ProFormText
+          rules={[{ required: false }]}
+          width="md"
+          label={intl.formatMessage({ id: 'ethIncome', defaultMessage: 'ETH收益' })}
+          name="ethIncome"
         />
       </ProForm.Group>
+
+      <ProForm.Group></ProForm.Group>
 
       <ProForm.Group>
         <ProFormSelect
@@ -50,28 +59,15 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'incomeType' })}
           name="type"
           options={[
-            { label: intl.formatMessage({ id: 'income.flowing' }), value: 'flowing' },
+            { label: intl.formatMessage({ id: 'income.flowing' }), value: 'verified' },
             { label: intl.formatMessage({ id: 'income.stacking' }), value: 'staking' },
-            { label: intl.formatMessage({ id: 'income.teamworking' }), value: 'teamworking' },
           ]}
         />
-
-        <ProFormSelect
-          width="md"
-          label={intl.formatMessage({ id: 'status' })}
-          name="status"
-          options={[
-            { label: intl.formatMessage({ id: 'pending' }), value: 'pending' },
-            { label: intl.formatMessage({ id: 'success' }), value: 'success' },
-            { label: intl.formatMessage({ id: 'fail' }), value: 'fail' },
-          ]}
-        />
-
         <ProFormText
           rules={[{ required: false }]}
           width="md"
           label={intl.formatMessage({ id: 'remark' })}
-          name="remark"
+          name="remarks"
         />
       </ProForm.Group>
 
