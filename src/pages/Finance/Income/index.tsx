@@ -24,7 +24,7 @@ const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
   try {
-    await addItem('/incomes', { ...fields, isManual: true });
+    await addItem('/incomes', { ...fields, isManuall: true });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
