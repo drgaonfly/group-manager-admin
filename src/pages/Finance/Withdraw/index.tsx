@@ -213,7 +213,7 @@ const WithdrawPage: React.FC = () => {
             })}
             checked={record.isFrozen}
             onChange={async () => {
-              await checkWithdraw({ _id: record._id, isFrozen: !record.isFrozen });
+              await checkWithdraw({ _id: record._id });
               if (actionRef.current) {
                 actionRef.current.reload();
               }
