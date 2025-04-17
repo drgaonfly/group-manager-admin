@@ -177,7 +177,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认收款' }),
-      dataIndex: 'isFrozen',
+      dataIndex: 'status',
       hideInTable: !access.canCheckStacking,
       hideInSearch: false,
       valueEnum: {
@@ -185,13 +185,13 @@ const TableList: React.FC = () => {
           text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }),
           status: 'Default',
         },
-        true: {
-          text: intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' }),
-          status: 'Success',
-        },
-        false: {
+        pending: {
           text: intl.formatMessage({ id: 'platform.unfrozen', defaultMessage: '未确认' }),
           status: 'Error',
+        },
+        confirmed: {
+          text: intl.formatMessage({ id: 'platform.frozen', defaultMessage: '已确认' }),
+          status: 'Success',
         },
       },
       render: (_, record: any) =>
@@ -205,7 +205,7 @@ const TableList: React.FC = () => {
               id: 'platform.unfrozen',
               defaultMessage: '未确认',
             })}
-            checked={record.isFrozen}
+            checked={record.status === 'confirmed'}
             onChange={async () => {
               await checkStaking({ _id: record._id });
               if (actionRef.current) {
