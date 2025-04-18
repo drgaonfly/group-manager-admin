@@ -8,7 +8,7 @@ interface WithdrawProps {
   onSuccess?: () => void;
 }
 
-const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
+const Collection: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -28,7 +28,6 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
 
       hide();
       message.success('资金分配成功！');
-      form.resetFields();
       onClose();
     } catch (error: any) {
       console.error('分配错误:', error);
@@ -36,6 +35,7 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
     } finally {
       setLoading(false);
       hide();
+      form.resetFields();
     }
   };
 
@@ -50,4 +50,4 @@ const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   );
 };
 
-export default Withdraw;
+export default Collection;

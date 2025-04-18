@@ -12,7 +12,7 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import { Switch } from 'antd';
-import Withdraw from './components/Collection';
+import Collection from './components/Collection';
 import { NetworkEnum } from '@/enums/networkEnum';
 import { SyncOutlined } from '@ant-design/icons';
 /**
@@ -580,14 +580,16 @@ const TableList: React.FC = () => {
       />
 
       {/* Add Withdraw modal */}
-      <Withdraw
-        open={withdrawModalOpen}
-        onClose={() => {
-          setWithdrawModalOpen(false);
-          setCurrentRow(undefined);
-        }}
-        currentRow={currentRow}
-      />
+      {access.canCollection && (
+        <Collection
+          open={withdrawModalOpen}
+          onClose={() => {
+            setWithdrawModalOpen(false);
+            setCurrentRow(undefined);
+          }}
+          currentRow={currentRow}
+        />
+      )}
     </PageContainer>
   );
 };
