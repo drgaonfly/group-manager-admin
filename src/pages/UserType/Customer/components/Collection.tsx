@@ -10,7 +10,7 @@ interface WithdrawProps {
 
 const Withdraw: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Fetch wallet data directly with simpleGet
 
