@@ -262,6 +262,23 @@ const TableList: React.FC = () => {
       ),
     },
     {
+      title: intl.formatMessage({ id: 'frozenAmount', defaultMessage: '收益产生时间' }),
+      hideInSearch: true,
+      width: '10%',
+      render: (_, record) => (
+        <React.Fragment>
+          <p>
+            {intl.formatMessage({ id: 'withdrawFrozen', defaultMessage: '授权收益' })} :{' '}
+            {record?.nextIncomeAt ? new Date(record.nextIncomeAt).toLocaleString() : '-'}
+          </p>
+          <p>
+            {intl.formatMessage({ id: 'stakingFrozen', defaultMessage: '质押收益' })} :{' '}
+            {record?.stakingFrozenAmount}
+          </p>
+        </React.Fragment>
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'estateOverview' }),
       hideInSearch: true,
       width: '15%',
@@ -497,7 +514,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 3000 }}
+        scroll={{ x: 3200 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
