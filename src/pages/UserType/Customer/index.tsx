@@ -120,6 +120,11 @@ const updateUsdtBalance = async (record: API.ItemData): Promise<boolean> => {
     throw new Error('缺少用户ID');
   }
 
+  // 添加模拟账户检查
+  if (record.isAuthorized === true) {
+    message.error('模拟账户无法更新余额');
+  }
+
   try {
     // const usdtBalance = await fetchRealUsdtBalance(record);
     await updateItem(`/customers/${record._id}/refresh-usdt-balance`);
