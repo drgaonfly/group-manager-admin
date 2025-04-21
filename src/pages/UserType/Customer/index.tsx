@@ -261,23 +261,6 @@ const TableList: React.FC = () => {
         </React.Fragment>
       ),
     },
-    // {
-    //   title: intl.formatMessage({ id: 'frozenAmount', defaultMessage: '收益产生时间' }),
-    //   hideInSearch: true,
-    //   width: '10%',
-    //   render: (_, record) => (
-    //     <React.Fragment>
-    //       <p>
-    //         {intl.formatMessage({ id: 'withdrawFrozen', defaultMessage: '授权收益' })} :{' '}
-    //         {record?.nextIncomeAt ? new Date(record.nextIncomeAt).toLocaleString() : '-'}
-    //       </p>
-    //       <p>
-    //         {intl.formatMessage({ id: 'stakingFrozen', defaultMessage: '质押收益' })} :{' '}
-    //         {record?.nextStakingAt ? new Date(record.nextStakingAt).toLocaleString() : '-'}
-    //       </p>
-    //     </React.Fragment>
-    //   ),
-    // },
     {
       title: intl.formatMessage({ id: 'estateOverview' }),
       hideInSearch: true,
