@@ -151,7 +151,7 @@ const TableList: React.FC = () => {
       // dataIndex: ['earningTime', 'createdAt'],
       valueType: 'dateTime',
       hideInSearch: true,
-      render: (_, record) => record.earningTime || record.createdAt,
+      renderText: (_, record) => record.earningTime || record.createdAt,
     },
     {
       title: intl.formatMessage({ id: 'type' }),
