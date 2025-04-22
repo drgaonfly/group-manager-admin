@@ -173,4 +173,6 @@ export default {
   'menu.wallets.share': 'Share Wallet',
   'menu.wallets.index': 'Index Wallet',
   'proxy.user': 'Parent Proxy',
+  parent_customer_id: 'Parent',
+  select_parent_customer_id: 'Please select parent',
 };

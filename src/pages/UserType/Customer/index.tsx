@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess, useModel } from '@umijs/max';
-import { message, Typography, Tooltip, Button } from 'antd';
+import { message, Typography, Tooltip, Button, TreeSelect } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -15,6 +15,7 @@ import { Switch } from 'antd';
 import Collection from './components/Collection';
 import { NetworkEnum } from '@/enums/networkEnum';
 import { SyncOutlined } from '@ant-design/icons';
+import useQueryList from '@/hooks/useQueryList';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -209,6 +210,8 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const { items: customers, loading } = useQueryList('/customers');
+
   // const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
 
@@ -238,26 +241,45 @@ const TableList: React.FC = () => {
       // add id column
       title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
-      hideInSearch: true,
-      width: '5%',
     },
     {
       title: intl.formatMessage({ id: 'walletAddress' }),
       dataIndex: 'address',
       copyable: true,
       hideInSearch: false,
-      width: '15%',
     },
     {
       title: intl.formatMessage({ id: 'network' }),
       dataIndex: 'network',
       valueEnum: NetworkEnum,
-      width: '8%',
+    },
+    {
+      title: intl.formatMessage({ id: 'parent_customer_id' }),
+      dataIndex: ['parent', 'id'],
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      renderFormItem: (_, { type, defaultRender, formItemProps, fieldProps, ...rest }, form) => {
+        if (type === 'form') {
+          return null;
+        }
+        return (
+          <TreeSelect
+            showSearch
+            placeholder={intl.formatMessage({ id: 'select_parent_customer_id' })}
+            allowClear
+            treeNodeFilterProp="id"
+            fieldNames={{ label: 'id', value: '_id' }}
+            treeDefaultExpandAll
+            treeData={customers}
+            loading={loading}
+            {...fieldProps}
+          />
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'interestRate', defaultMessage: '收益倍率' }),
       hideInSearch: true,
-      width: '10%',
       render: (_, record) => (
         <React.Fragment>
           <p>
@@ -274,7 +296,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'frozenAmount', defaultMessage: '冻结金额' }),
       hideInSearch: true,
-      width: '10%',
       render: (_, record) => (
         <React.Fragment>
           <p>
@@ -291,7 +312,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'estateOverview' }),
       hideInSearch: true,
-      width: '15%',
       render: (_, record) => (
         <React.Fragment>
           <p>
@@ -356,17 +376,9 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'inviter', defaultMessage: '邀请人' }),
-      dataIndex: ['employee', 'name'],
-      hideInSearch: false,
-      copyable: true,
-      width: '8%',
-    },
-    {
       title: intl.formatMessage({ id: 'customerOverview' }),
       dataIndex: 'overview',
       hideInSearch: true,
-      width: '15%',
       render: (_, record) => (
         <div>
           <div>
@@ -391,7 +403,6 @@ const TableList: React.FC = () => {
       dataIndex: 'isAuthorized',
       hideInSearch: false,
       hideInTable: !access.canAuthorized,
-      width: '8%',
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'demoAccount' }), status: 'Success' },
         false: { text: intl.formatMessage({ id: 'customer' }), status: 'Error' },
@@ -415,29 +426,18 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'inviteCode' }),
       dataIndex: 'ownInviteCode',
       hideInSearch: true,
-      width: '12%',
       render: (ownInviteCode, record) => {
         if (!ownInviteCode) return '-';
         const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?key=${record.ownInviteCode}`;
         return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
     },
-    // {
-    //   title: intl.formatMessage({ id: 'isSpied' }),
-    //   dataIndex: 'isSpied',
-    //   hideInSearch: true,
-    //   width: '6%',
-    //   render: (text) => (
-    //     <span>{text ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' })}</span>
-    //   ),
-    // },
     {
       title: intl.formatMessage({ id: 'isAuthorized' }),
       dataIndex: 'isVerified',
       hideInSearch: false,
       // 只有拥有更新客户数据权限的用户才能看到此列
       hideInTable: !access.canVerified,
-      width: '8%',
       valueEnum: {
         true: {
           text: intl.formatMessage({ id: 'isAuthorized.authorized', defaultMessage: '已授权' }),
@@ -560,10 +560,9 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 3000 }}
+        scroll={{ x: 'max-content' }}
         rowKey="_id"
         search={{
-          labelWidth: 120,
           collapsed: false,
         }}
         request={async (params, sort, filter) =>

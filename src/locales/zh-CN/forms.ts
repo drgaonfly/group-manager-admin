@@ -235,4 +235,6 @@ export default {
   'proxy.user': '父级代理',
   type: '类型',
   permissions: '权限',
+  parent_customer_id: '邀请人',
+  select_parent_customer_id: '选择邀请人',
 };
