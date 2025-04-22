@@ -147,7 +147,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     //暂停收益产生
     canPauseIncome:
       currentUser &&
-      (currentUser.isAdmin || checkPermission(currentUser, '/customer/:id/pause-income', 'PUT')),
+      (currentUser.isAdmin || checkPermission(currentUser, '/customers/:id/pause-income', 'PUT')),
 
     // member权限
     canCreateMember:
