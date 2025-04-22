@@ -234,7 +234,9 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   // const [updateBalanceModalOpen, setUpdateBalanceModalOpen] = useState<boolean>(false);
+  // 在TableList组件内部，其他useState声明附近添加
   const [refreshingBalance] = useState<boolean>(false);
+  const [pausingIncome, setPausingIncome] = useState<Record<string, boolean>>({});
 
   const columns: ProColumns<API.ItemData>[] = [
     {
@@ -501,18 +503,29 @@ const TableList: React.FC = () => {
             <a
               key="pause"
               onClick={async () => {
-                // 切换暂停状态
-                const success = await handlePauseEarnings({
-                  _id: record._id,
-                  isPausedIncome: !record.isPausedIncome,
-                });
-                if (success && actionRef.current) {
-                  actionRef.current.reload();
+                // 设置当前记录的加载状态
+                setPausingIncome((prev) => ({ ...prev, [record._id as string]: true }));
+                try {
+                  // 切换暂停状态
+                  const success = await handlePauseEarnings({
+                    _id: record._id,
+                    isPausedIncome: !record.isPausedIncome,
+                  });
+                  if (success && actionRef.current) {
+                    actionRef.current.reload();
+                  }
+                } finally {
+                  // 无论成功失败，都清除加载状态
+                  setPausingIncome((prev) => ({ ...prev, [record._id as string]: false }));
                 }
               }}
               style={{ width: '100%', textAlign: 'center' }}
             >
-              {record.isPausedIncome ? (
+              {pausingIncome[record._id as string] ? (
+                <span>
+                  <SyncOutlined spin /> {record.isPausedIncome ? '恢复中...' : '暂停中...'}
+                </span>
+              ) : record.isPausedIncome ? (
                 <FormattedMessage id="resume" defaultMessage="恢复收益" />
               ) : (
                 <FormattedMessage id="pause" defaultMessage="暂停收益" />
