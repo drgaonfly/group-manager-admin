@@ -39,7 +39,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   return (
     <EditableProTable<API.ItemData>
       rowKey="_id"
-      headerTitle={<FormattedMessage id="show.employees" defaultMessage="员工" />}
+      headerTitle={<FormattedMessage id="show.employees" defaultMessage="渠道" />}
       columns={tableColumns}
       value={employees}
       loading={loading}
