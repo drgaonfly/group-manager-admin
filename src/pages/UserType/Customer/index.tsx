@@ -497,7 +497,7 @@ const TableList: React.FC = () => {
               {intl.formatMessage({ id: 'Collection', defaultMessage: '一键归集' })}
             </a>
           )}
-          {access.canUpdateCustomer && (
+          {access.canPauseIncome && (
             <a
               key="pause"
               onClick={async () => {

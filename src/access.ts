@@ -139,10 +139,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canVerified:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/customers/:id/verified', 'PUT')),
-
+    //模拟账户
     canAuthorized:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/customers/:id/authorized', 'PUT')),
+
+    //暂停收益产生
+    canPauseIncome:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/customer/:id/pause-income', 'PUT')),
 
     // member权限
     canCreateMember:
