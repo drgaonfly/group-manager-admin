@@ -82,7 +82,7 @@ export const errorConfig: RequestConfig = {
         if (error.response.status === 403) {
           message.error('没有权限');
         } else {
-          message.error(`Response status:${error.response.status}`);
+          message.error(`${error.response?.data?.message}`);
         }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
