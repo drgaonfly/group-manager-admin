@@ -452,48 +452,67 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      render: (_, record) => [
-        access.canCollection && (
-          <a
-            key="withdraw"
-            onClick={() => {
-              setCurrentRow(record);
-              setWithdrawModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({ id: 'Collection', defaultMessage: '一键归集' })}
-          </a>
-        ),
-        <a
-          key="detail"
-          onClick={() => {
-            setCurrentRow(record);
-            setShowDetail(true);
+      align: 'center',
+      render: (_, record) => (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            alignItems: 'center',
+            padding: '4px 0',
           }}
         >
-          <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </a>,
-        access.canUpdateCustomer && (
+          {access.canCollection && (
+            <a
+              key="withdraw"
+              onClick={() => {
+                setCurrentRow(record);
+                setWithdrawModalOpen(true);
+              }}
+              style={{ width: '100%', textAlign: 'center' }}
+            >
+              {intl.formatMessage({ id: 'Collection', defaultMessage: '一键归集' })}
+            </a>
+          )}
+          {access.canUpdateCustomer && (
+            <a key="pause" onClick={() => {}} style={{ width: '100%', textAlign: 'center' }}>
+              <FormattedMessage id="pause" defaultMessage="暂停收益" />
+            </a>
+          )}
           <a
-            key="edit"
+            key="detail"
             onClick={() => {
-              handleUpdateModalOpen(true);
               setCurrentRow(record);
+              setShowDetail(true);
             }}
+            style={{ width: '100%', textAlign: 'center' }}
           >
-            {intl.formatMessage({ id: 'edit' })}
+            <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
           </a>
-        ),
-        access.canDeleteCustomer && (
-          <DeleteLink
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          />
-        ),
-      ],
+          {access.canUpdateCustomer && (
+            <a
+              key="edit"
+              onClick={() => {
+                handleUpdateModalOpen(true);
+                setCurrentRow(record);
+              }}
+              style={{ width: '100%', textAlign: 'center' }}
+            >
+              {intl.formatMessage({ id: 'edit' })}
+            </a>
+          )}
+          {access.canDeleteCustomer && (
+            <DeleteLink
+              onOk={async () => {
+                await handleRemove([record._id!]);
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              }}
+            />
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -502,7 +521,7 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
-        scroll={{ x: 3200 }}
+        scroll={{ x: 3000 }}
         rowKey="_id"
         search={{
           labelWidth: 120,
