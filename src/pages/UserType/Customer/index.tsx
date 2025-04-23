@@ -430,7 +430,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (ownInviteCode, record) => {
         if (!ownInviteCode) return '-';
-        const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?key=${record.ownInviteCode}`;
+        const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?inviter=${record.ownInviteCode}`;
         return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
     },

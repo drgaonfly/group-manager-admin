@@ -15,7 +15,7 @@ const EmployeeSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
   return (
     <ProFormSelect
       options={employees.map((employee: any) => ({
-        label: `${process.env.UMI_APP_FRONTEND_URL}?key=${employee.inviteCode}`,
+        label: `${process.env.UMI_APP_FRONTEND_URL}?code=${employee.inviteCode}`,
         value: employee._id,
       }))}
       width="md"

@@ -35,7 +35,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       hideInSearch: true,
       render: (inviteCode, record) => {
         if (!inviteCode) return '-';
-        const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?key=${record.inviteCode}`;
+        const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?code=${record.inviteCode}`;
         return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
     },
