@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SendOutlined, UserOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 import { queryList } from '@/services/ant-design-pro/api';
+import { request } from '@umijs/max';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -26,7 +27,6 @@ interface Contact {
   online?: boolean;
 }
 
-// Add Badge component for unread message count
 const Badge: React.FC<{ count?: number; children: React.ReactNode }> = ({ count, children }) => {
   if (!count || count <= 0) return <>{children}</>;
 
@@ -61,76 +61,99 @@ const CustomerService: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false); // 新增发送消息的loading状态
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<any>(null);
 
-  // useQueryList
   const { items: contacts } = useQueryList('/chats');
 
-  // Add request method to fetch messages
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (selectedContact?.customer?._id) {
-        setLoadingMessages(true);
+  // 获取消息列表
+  const fetchMessages = async () => {
+    if (selectedContact?.customer?._id) {
+      setLoadingMessages(true);
+      try {
         const response: any = await queryList('/chats/user-messages', {
           customerId: selectedContact.customer._id,
         });
-
         setMessages(response.data);
-
-        setLoadingMessages(false);
+      } catch (error) {
+        console.error('获取消息失败:', error);
       }
-    };
+      setLoadingMessages(false);
+    }
+  };
 
+  useEffect(() => {
     fetchMessages();
   }, [selectedContact]);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (!messageInput.trim() || !selectedContact) return;
+  // 发送消息的公共方法
+  const sendMessage = async () => {
+    if (!messageInput.trim() || !selectedContact || sendingMessage) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      content: messageInput,
-      sender: 'me',
-      timestamp: new Date(),
-      isCurrentUser: true,
-    };
-
-    setMessages([...messages, newMessage]);
-    setMessageInput('');
-
-    // Send message to server
-    if (socketRef.current) {
-      socketRef.current.emit('message', {
-        content: messageInput,
-        recipient: selectedContact.id,
+    setSendingMessage(true);
+    try {
+      await request('/chats/add-user-messages', {
+        method: 'POST',
+        data: {
+          message: messageInput,
+          customerId: selectedContact.customer._id,
+        },
       });
+
+      // 重新获取消息列表和联系人列表
+      await Promise.all([fetchMessages()]);
+
+      setMessageInput('');
+
+      if (socketRef.current) {
+        socketRef.current.emit('message', {
+          content: messageInput,
+          recipient: selectedContact.id,
+        });
+      }
+    } catch (error) {
+      console.error('发送消息失败:', error);
+    } finally {
+      setSendingMessage(false);
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleSendMessage = () => {
+    sendMessage();
+  };
+
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      sendMessage();
     }
   };
 
+  // 其余JSX部分保持不变...
   return (
     <PageContainer>
-      <Card style={{ height: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column' }}>
+      <Card
+        style={{
+          height: 'calc(100vh - 100px)',
+          overflowY: 'scroll',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Row style={{ height: '100%' }}>
-          {/* Contacts List */}
+          {/* 联系人列表部分保持不变 */}
           <Col
             xs={24}
             sm={8}
             md={6}
             style={{ borderRight: '1px solid #f0f0f0', height: '100%', overflowY: 'auto' }}
           >
+            {/* 原有的联系人列表代码 */}
             <div style={{ padding: '10px' }}>
               <Title level={4}>
                 {intl.formatMessage({ id: 'contacts', defaultMessage: 'Contacts' })}
@@ -214,16 +237,19 @@ const CustomerService: React.FC = () => {
             </div>
           </Col>
 
-          {/* Chat Area */}
           <Col
             xs={24}
             sm={16}
             md={18}
-            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+            style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
           >
             {selectedContact ? (
               <>
-                {/* Chat Header */}
                 <div style={{ padding: '10px 20px', borderBottom: '1px solid #f0f0f0' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar
@@ -244,7 +270,6 @@ const CustomerService: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Messages */}
                 <div
                   style={{
                     flex: 1,
@@ -253,6 +278,7 @@ const CustomerService: React.FC = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
+                    marginBottom: '80px',
                   }}
                 >
                   {loadingMessages ? (
@@ -269,48 +295,61 @@ const CustomerService: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      {messages.map((msg: any) => (
-                        <div
-                          key={msg.id}
-                          style={{
-                            alignSelf: msg.isCurrentUser ? 'flex-end' : 'flex-start',
-                            maxWidth: '70%',
-                            marginBottom: '10px',
-                          }}
-                        >
+                      {messages.map((msg: any) => {
+                        const isCustomer = msg.sender === 'customer';
+                        return (
                           <div
+                            key={msg.id}
                             style={{
-                              backgroundColor: msg.isCurrentUser ? '#1890ff' : '#f0f0f0',
-                              color: msg.isCurrentUser ? 'white' : 'black',
-                              padding: '10px 15px',
-                              borderRadius: '18px',
-                              wordBreak: 'break-word',
+                              alignSelf: isCustomer ? 'flex-start' : 'flex-end',
+                              maxWidth: '70%',
+                              marginBottom: '10px',
                             }}
                           >
-                            {msg.message}
+                            <div
+                              style={{
+                                backgroundColor: isCustomer ? '#f0f0f0' : '#1890ff',
+                                color: isCustomer ? 'black' : 'white',
+                                padding: '10px 15px',
+                                borderRadius: '18px',
+                                wordBreak: 'break-word',
+                              }}
+                            >
+                              {msg.message}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: '12px',
+                                color: '#999',
+                                marginTop: '5px',
+                                textAlign: isCustomer ? 'left' : 'right',
+                              }}
+                            >
+                              {new Date(msg.createdAt).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </div>
                           </div>
-                          <div
-                            style={{
-                              fontSize: '12px',
-                              color: '#999',
-                              marginTop: '5px',
-                              textAlign: msg.isCurrentUser ? 'right' : 'left',
-                            }}
-                          >
-                            {new Date(msg.createdAt).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                       <div ref={messagesEndRef} />
                     </>
                   )}
                 </div>
 
-                {/* Message Input */}
-                <div style={{ padding: '10px 20px', borderTop: '1px solid #f0f0f0' }}>
+                <div
+                  style={{
+                    padding: '10px 20px',
+                    borderTop: '1px solid #f0f0f0',
+                    backgroundColor: '#fff',
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                  }}
+                >
                   <div style={{ display: 'flex' }}>
                     <TextArea
                       value={messageInput}
@@ -322,12 +361,14 @@ const CustomerService: React.FC = () => {
                       })}
                       autoSize={{ minRows: 1, maxRows: 4 }}
                       style={{ flex: 1, marginRight: '10px' }}
+                      disabled={sendingMessage}
                     />
                     <Button
                       type="primary"
                       icon={<SendOutlined />}
                       onClick={handleSendMessage}
-                      disabled={!messageInput.trim()}
+                      disabled={!messageInput.trim() || sendingMessage}
+                      loading={sendingMessage}
                     />
                   </div>
                 </div>
