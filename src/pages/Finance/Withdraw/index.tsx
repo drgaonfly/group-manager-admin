@@ -180,6 +180,7 @@ const WithdrawPage: React.FC = () => {
       title: intl.formatMessage({ id: 'reason' }),
       dataIndex: 'reason',
       hideInSearch: true,
+      ellipsis: true, // 文字过长自动省略
     },
     {
       title: intl.formatMessage({ id: 'isFrozen', defaultMessage: '是否确认' }),
