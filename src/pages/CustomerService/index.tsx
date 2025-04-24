@@ -9,6 +9,7 @@ import { request } from '@umijs/max';
 import Editor from '@/components/Editor';
 import ReactQuill from 'react-quill';
 import { useModel } from '@umijs/max';
+import { useAccess } from '@umijs/max';
 
 const { Title, Text } = Typography;
 
@@ -59,6 +60,7 @@ const Badge: React.FC<{ count?: number; children: React.ReactNode }> = ({ count,
 
 const CustomerService: React.FC = () => {
   const intl = useIntl();
+  const access = useAccess();
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [selectedContact, setSelectedContact] = useState<Contact | any>(null);
@@ -154,9 +156,13 @@ const CustomerService: React.FC = () => {
                 {intl.formatMessage({ id: 'contacts', defaultMessage: 'Contacts' })}
               </Title>
               <List
-                dataSource={contacts.filter(
-                  (contact) => (contact as any).user._id === (currentUser as any)._id,
-                )}
+                dataSource={
+                  access.canSuperAdmin
+                    ? contacts
+                    : contacts.filter(
+                        (contact) => (contact as any).user._id === (currentUser as any)._id,
+                      )
+                }
                 renderItem={(contact: any) => (
                   <List.Item
                     onClick={() =>
@@ -379,8 +385,14 @@ const CustomerService: React.FC = () => {
                 }}
               >
                 {intl.formatMessage({
-                  id: 'select.contact',
-                  defaultMessage: 'Select a contact to start chatting',
+                  id: intl.formatMessage({
+                    id: 'select.contact',
+                    defaultMessage: '联系人',
+                  }),
+                  defaultMessage: intl.formatMessage({
+                    id: 'Select a contact to start chatting',
+                    defaultMessage: '点击选择一个联系人开始聊天',
+                  }),
                 })}
               </div>
             )}
