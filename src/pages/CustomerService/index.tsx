@@ -153,7 +153,7 @@ const CustomerService: React.FC = () => {
           >
             <div style={{ padding: '10px' }}>
               <Title level={4}>
-                {intl.formatMessage({ id: 'contacts', defaultMessage: 'Contacts' })}
+                {intl.formatMessage({ id: 'contacts', defaultMessage: '联系人' })}
               </Title>
               <List
                 dataSource={
@@ -306,7 +306,7 @@ const CustomerService: React.FC = () => {
                             style={{
                               alignSelf: isCustomer ? 'flex-start' : 'flex-end',
                               maxWidth: '70%',
-                              marginBottom: '10px',
+                              marginBottom: '10%',
                             }}
                           >
                             <div
@@ -314,7 +314,6 @@ const CustomerService: React.FC = () => {
                                 backgroundColor: isCustomer ? '#f0f0f0' : '#1890ff',
                                 color: isCustomer ? 'black' : 'white',
                                 wordBreak: 'break-word',
-                                marginBottom: '20%',
                               }}
                             >
                               <ReactQuill value={msg.message} readOnly={true} theme="bubble" />

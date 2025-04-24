@@ -19,5 +19,5 @@
       "@@test/*": ["./src/.umi-test/*"]
     }
   },
-  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx", "src/pages/vipMember"]
+  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx", "src/pages/vipMember", "src", "src/types"]
 }
