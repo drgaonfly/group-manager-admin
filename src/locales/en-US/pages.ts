@@ -121,4 +121,6 @@ export default {
   'menu.notifications': 'Notifications Management',
   'pages.wallet.refreshBalance': 'Refresh Wallet Balance',
   'pages.wallet.updateBalance': 'Update Balance',
+  depth: 'Depth',
+  incomeRate: 'Income Rate %',
 };

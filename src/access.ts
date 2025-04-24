@@ -420,6 +420,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetLiquidity:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/liquidity', 'GET')),
 
+    // depthIncome 权限
+    canCreateDepthIncome:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/depth-incomes', 'POST')),
+    canDeleteDepthIncome:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/depth-incomes', 'DELETE')),
+    canUpdateDepthIncome:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/depth-incomes/:id', 'PUT')),
+    canGetDepthIncome:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/depth-incomes', 'GET')),
+
     // customer service 权限
     canGetCustomerService:
       currentUser &&

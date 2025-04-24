@@ -111,4 +111,6 @@ export default {
   'menu.notifications': '私信管理',
   'pages.wallet.refreshBalance': '刷新钱包余额',
   'pages.wallet.updateBalance': '更新余额',
+  depth: '层级深度',
+  incomeRate: '收益率%',
 };

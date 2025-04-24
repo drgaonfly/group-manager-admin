@@ -152,6 +152,12 @@ export default [
     icon: 'SettingOutlined',
     component: './Liquidity',
   },
+  {
+    path: '/depth-incomes',
+    name: 'list.depth-incomes',
+    icon: 'FundOutlined',
+    component: './DepthIncome',
+  },
 
   // 内容管理
   {
