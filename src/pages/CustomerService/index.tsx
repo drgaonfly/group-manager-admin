@@ -1,13 +1,15 @@
 import { useIntl } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Input, List, Avatar, Card, Row, Col, Typography, Spin } from 'antd';
+import { Button, List, Avatar, Card, Row, Col, Typography, Spin } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { SendOutlined, UserOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 import { queryList } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
+import Editor from '@/components/Editor';
+import ReactQuill from 'react-quill';
+import { useModel } from '@umijs/max';
 
-const { TextArea } = Input;
 const { Title, Text } = Typography;
 
 interface Message {
@@ -57,17 +59,22 @@ const Badge: React.FC<{ count?: number; children: React.ReactNode }> = ({ count,
 
 const CustomerService: React.FC = () => {
   const intl = useIntl();
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
   const [selectedContact, setSelectedContact] = useState<Contact | any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [loadingMessages, setLoadingMessages] = useState(false);
-  const [sendingMessage, setSendingMessage] = useState(false); // 新增发送消息的loading状态
+  const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<any>(null);
 
   const { items: contacts } = useQueryList('/chats');
 
-  // 获取消息列表
+  console.log('contacts', contacts);
+
+  console.log('currentUser', currentUser);
+
   const fetchMessages = async () => {
     if (selectedContact?.customer?._id) {
       setLoadingMessages(true);
@@ -91,7 +98,6 @@ const CustomerService: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 发送消息的公共方法
   const sendMessage = async () => {
     if (!messageInput.trim() || !selectedContact || sendingMessage) return;
 
@@ -105,7 +111,6 @@ const CustomerService: React.FC = () => {
         },
       });
 
-      // 重新获取消息列表和联系人列表
       await Promise.all([fetchMessages()]);
 
       setMessageInput('');
@@ -127,14 +132,6 @@ const CustomerService: React.FC = () => {
     sendMessage();
   };
 
-  const handleKeyPress = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  // 其余JSX部分保持不变...
   return (
     <PageContainer>
       <Card
@@ -145,21 +142,21 @@ const CustomerService: React.FC = () => {
           flexDirection: 'column',
         }}
       >
-        <Row style={{ height: '100%' }}>
-          {/* 联系人列表部分保持不变 */}
+        <Row style={{ height: 'auto' }}>
           <Col
             xs={24}
             sm={8}
             md={6}
-            style={{ borderRight: '1px solid #f0f0f0', height: '100%', overflowY: 'auto' }}
+            style={{ borderRight: '1px solid #f0f0f0', height: 'auto', overflowY: 'auto' }}
           >
-            {/* 原有的联系人列表代码 */}
             <div style={{ padding: '10px' }}>
               <Title level={4}>
                 {intl.formatMessage({ id: 'contacts', defaultMessage: 'Contacts' })}
               </Title>
               <List
-                dataSource={contacts}
+                dataSource={contacts.filter(
+                  (contact) => (contact as any).user._id === (currentUser as any)._id,
+                )}
                 renderItem={(contact: any) => (
                   <List.Item
                     onClick={() =>
@@ -195,7 +192,7 @@ const CustomerService: React.FC = () => {
                             <span
                               style={{
                                 width: '8px',
-                                height: '8px',
+                                height: 'auto',
                                 borderRadius: '50%',
                                 backgroundColor: contact.customer.isOnline ? '#52c41a' : '#f5222d',
                                 display: 'inline-block',
@@ -242,7 +239,7 @@ const CustomerService: React.FC = () => {
             sm={16}
             md={18}
             style={{
-              height: '100%',
+              height: 'auto',
               display: 'flex',
               flexDirection: 'column',
               position: 'relative',
@@ -310,12 +307,11 @@ const CustomerService: React.FC = () => {
                               style={{
                                 backgroundColor: isCustomer ? '#f0f0f0' : '#1890ff',
                                 color: isCustomer ? 'black' : 'white',
-                                padding: '10px 15px',
-                                borderRadius: '18px',
                                 wordBreak: 'break-word',
+                                marginBottom: '20%',
                               }}
                             >
-                              {msg.message}
+                              <ReactQuill value={msg.message} readOnly={true} theme="bubble" />
                             </div>
                             <div
                               style={{
@@ -350,25 +346,24 @@ const CustomerService: React.FC = () => {
                     zIndex: 10,
                   }}
                 >
-                  <div style={{ display: 'flex' }}>
-                    <TextArea
-                      value={messageInput}
-                      onChange={(e) => setMessageInput(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder={intl.formatMessage({
-                        id: 'type.message',
-                        defaultMessage: 'Type a message...',
-                      })}
-                      autoSize={{ minRows: 1, maxRows: 4 }}
-                      style={{ flex: 1, marginRight: '10px' }}
-                      disabled={sendingMessage}
-                    />
+                  <div>
+                    <div style={{ flex: 1, marginRight: '10px' }}>
+                      <Editor
+                        value={messageInput}
+                        onChange={setMessageInput}
+                        placeholder={intl.formatMessage({
+                          id: 'type.message',
+                          defaultMessage: 'Type a message...',
+                        })}
+                      />
+                    </div>
                     <Button
                       type="primary"
                       icon={<SendOutlined />}
                       onClick={handleSendMessage}
                       disabled={!messageInput.trim() || sendingMessage}
                       loading={sendingMessage}
+                      style={{ width: '25%', float: 'right', marginTop: '1%' }}
                     />
                   </div>
                 </div>
@@ -379,7 +374,7 @@ const CustomerService: React.FC = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: '100%',
+                  height: 'auto',
                   color: '#999',
                 }}
               >
