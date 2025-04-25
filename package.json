@@ -58,7 +58,6 @@
     "chart.js": "^4.4.8",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
-    "emoji-mart": "3.0.1",
     "jwt-decode": "3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
