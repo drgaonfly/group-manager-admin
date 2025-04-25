@@ -20,7 +20,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'wallet' }),
       dataIndex: 'customer',
-      hideInSearch: true,
       render: (text, record) => {
         return (
           <span>
