@@ -102,18 +102,46 @@ const TableList: React.FC = () => {
    * */
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'address' }),
-      dataIndex: ['customer', 'address'],
+      title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '转出地址' }),
+      dataIndex: 'fromAddress',
       hideInForm: false,
       hideInSearch: false,
       valueType: 'text',
     },
     {
-      title: intl.formatMessage({ id: 'network' }),
-      dataIndex: ['customer', 'network'],
+      title: intl.formatMessage({ id: 'fromNetwork', defaultMessage: '转出网络' }),
+      dataIndex: 'fromNetwork',
       hideInForm: false,
       hideInSearch: false,
       valueType: 'text',
+    },
+    {
+      title: intl.formatMessage({ id: 'toAddress', defaultMessage: '转入地址' }),
+      dataIndex: 'toAddress',
+      hideInForm: false,
+      hideInSearch: false,
+      valueType: 'text',
+    },
+    {
+      title: intl.formatMessage({ id: 'toNetwork', defaultMessage: '转入网络' }),
+      dataIndex: 'toNetwork',
+      hideInForm: false,
+      hideInSearch: false,
+      valueType: 'text',
+    },
+    {
+      title: intl.formatMessage({ id: 'toDepth', defaultMessage: '转入层级深度' }),
+      dataIndex: 'toDepth',
+      hideInForm: false,
+      hideInSearch: false,
+      valueType: 'digit',
+    },
+    {
+      title: intl.formatMessage({ id: 'incomeRate', defaultMessage: '收益率' }),
+      dataIndex: 'incomeRate',
+      hideInForm: false,
+      hideInSearch: true,
+      valueType: 'percent',
     },
     {
       title: intl.formatMessage({ id: 'ethIncome', defaultMessage: 'ETH收益' }),
@@ -121,7 +149,6 @@ const TableList: React.FC = () => {
       hideInForm: false,
       hideInSearch: true,
       valueType: 'money',
-      // 以太坊实时收益
     },
     {
       title: intl.formatMessage({ id: 'usdtIncome', defaultMessage: 'USDT收益' }),
@@ -129,7 +156,6 @@ const TableList: React.FC = () => {
       hideInForm: false,
       hideInSearch: true,
       valueType: 'money',
-      // USDT收益
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
