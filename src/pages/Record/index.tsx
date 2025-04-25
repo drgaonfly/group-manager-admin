@@ -16,7 +16,6 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'wallet' }),
