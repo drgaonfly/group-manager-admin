@@ -4,6 +4,7 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
+import { NetworkEnum } from '@/enums/networkEnum';
 
 const TableList: React.FC = () => {
   const intl = useIntl();
@@ -19,14 +20,15 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'wallet' }),
-      dataIndex: 'customer',
-      render: (text, record) => {
-        return (
-          <span>
-            {record?.customer?.network} - {record?.customer?.address}
-          </span>
-        );
-      },
+      dataIndex: 'address',
+      renderText: (text, record) => record.address || record.customer?.address,
+      copyable: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'network' }),
+      dataIndex: 'network',
+      valueEnum: NetworkEnum,
+      renderText: (text, record) => record.network || record.customer?.network,
     },
     {
       title: intl.formatMessage({ id: 'type' }),
