@@ -87,4 +87,5 @@ export default {
   'menu.财务管理.质押管理': 'Stacking',
   'menu.change-password': 'Change Password',
   'menu.depth-incomes': 'Depth Incomes Management',
+  'menu.team-benefits': 'Team Benefits Management',
 };

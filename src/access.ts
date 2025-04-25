@@ -433,6 +433,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetDepthIncome:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/depth-incomes', 'GET')),
 
+    //团队收益权限
+    canCreateTeamBenefit:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/team-benefits', 'POST')),
+    canDeleteTeamBenefit:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/team-benefits', 'DELETE')),
+    canUpdateTeamBenefit:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/team-benefits/:id', 'PUT')),
+    canGetTeamBenefit:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/team-benefits', 'GET')),
+
     // customer service 权限
     canGetCustomerService:
       currentUser &&

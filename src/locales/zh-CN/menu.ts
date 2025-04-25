@@ -149,4 +149,5 @@ export default {
   'list.change-password': '修改密码',
   'menu.account.two-factor-auth': '二步认证',
   'menu.depth-incomes': '层级收益管理',
+  'menu.team-benefits': '团队收益记录管理',
 };

@@ -158,6 +158,12 @@ export default [
     icon: 'FundOutlined',
     component: './DepthIncome',
   },
+  {
+    path: '/team-benefits',
+    name: 'list.team-benefits',
+    icon: 'TeamOutlined',
+    component: './TeamBenefit',
+  },
 
   // 内容管理
   {
