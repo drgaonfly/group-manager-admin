@@ -102,14 +102,21 @@ const TableList: React.FC = () => {
    * */
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '转出地址' }),
-      dataIndex: 'fromAddress',
+      title: intl.formatMessage({ id: 'id', defaultMessage: 'ID' }),
+      dataIndex: ['customer', 'id'],
       hideInForm: false,
       hideInSearch: false,
       valueType: 'text',
     },
     {
-      title: intl.formatMessage({ id: 'fromNetwork', defaultMessage: '转出网络' }),
+      title: intl.formatMessage({ id: 'fromAddress', defaultMessage: '地址' }),
+      dataIndex: 'fromAddress',
+      hideInForm: false,
+      hideInSearch: true,
+      valueType: 'text',
+    },
+    {
+      title: intl.formatMessage({ id: 'fromNetwork', defaultMessage: '网络' }),
       dataIndex: 'fromNetwork',
       hideInForm: false,
       hideInSearch: false,
@@ -133,7 +140,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'toDepth', defaultMessage: '转入层级深度' }),
       dataIndex: 'toDepth',
       hideInForm: false,
-      hideInSearch: false,
+      hideInSearch: true,
       valueType: 'digit',
     },
     {
