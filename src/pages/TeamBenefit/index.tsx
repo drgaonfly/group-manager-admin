@@ -102,7 +102,7 @@ const TableList: React.FC = () => {
    * */
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'id', defaultMessage: 'ID' }),
+      title: intl.formatMessage({ id: 'customer', defaultMessage: 'ID' }),
       dataIndex: ['customer', 'id'],
       hideInForm: false,
       hideInSearch: false,
