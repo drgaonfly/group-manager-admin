@@ -134,7 +134,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'toDepth', defaultMessage: '转入层级深度' }),
+      title: intl.formatMessage({ id: 'toDepth', defaultMessage: '深度' }),
       dataIndex: 'depth',
       hideInForm: false,
       hideInSearch: true,
@@ -157,6 +157,12 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'usdtIncome', defaultMessage: 'USDT收益' }),
       dataIndex: 'usdtIncome',
       hideInForm: false,
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: ['createdAt'],
+      valueType: 'dateTime',
       hideInSearch: true,
     },
     {
