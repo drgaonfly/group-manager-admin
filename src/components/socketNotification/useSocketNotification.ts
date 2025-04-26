@@ -1,3 +1,4 @@
+import { useModel } from '@umijs/max';
 import { useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
 
@@ -8,6 +9,9 @@ interface SocketConfig {
 }
 
 export const useSocketNotification = (configs: SocketConfig[]) => {
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
+
   useEffect(() => {
     const SOCKET_URL = process.env.UMI_APP_SOCKET_URL || 'http://localhost:5003';
     const socket: Socket = io(SOCKET_URL, {
@@ -16,6 +20,8 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
       withCredentials: true,
+      auth: { token: localStorage.getItem('token') },
+      query: { userId: currentUser?._id }, // 替换为实际用户ID
     });
 
     // Handle socket connection
@@ -39,6 +45,13 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
     // Handle socket disconnection
     socket.on('disconnect', (reason) => {
       console.log('Socket disconnected, reason:', reason);
+      // 自动重连
+      if (reason === 'io server disconnect' || reason === 'io client disconnect') {
+        // 服务器或客户端主动断开连接，需要手动重连
+        socket.connect();
+        console.log('Attempting to reconnect after disconnect');
+      }
+      // 其他原因的断开连接，socket.io会自动尝试重连
     });
 
     // Handle connection errors
@@ -51,8 +64,24 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       console.log(`Socket.IO reconnection attempt ${attempt}`);
     });
 
+    socket.on('reconnect', (attemptNumber: number) => {
+      console.log(`Socket.IO reconnected after ${attemptNumber} attempts`);
+      // 重连成功后重新发送初始事件
+      configs.forEach((config) => {
+        if (config.initialEmitEvent) {
+          socket.emit(config.initialEmitEvent);
+          console.log(`Re-emitted initial event after reconnection: ${config.initialEmitEvent}`);
+        }
+      });
+    });
+
     socket.on('reconnect_failed', () => {
       console.log('Socket.IO reconnection failed');
+      // 重连失败后手动尝试重连
+      setTimeout(() => {
+        console.log('Manual reconnection attempt after reconnection failure');
+        socket.connect();
+      }, 5000);
     });
 
     // Listen to 'message' event (if needed)
@@ -69,5 +98,5 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       });
       socket.disconnect();
     };
-  }, []); // Dependency array includes the entire configs array
+  }, [currentUser]); // Dependency array includes the entire configs array
 };
