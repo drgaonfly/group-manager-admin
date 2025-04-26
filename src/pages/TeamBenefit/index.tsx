@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import { CopyOutlined } from '@ant-design/icons';
 // import DeleteLink from '@/components/DeleteLink';
 
 /**
@@ -112,7 +113,23 @@ const TableList: React.FC = () => {
       dataIndex: 'toAddress',
       hideInForm: false,
       hideInSearch: false,
-      copyable: true,
+      render: (text) => {
+        const address = React.isValidElement(text) ? text.props?.children : text;
+
+        if (!address || typeof address !== 'string') return '-';
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>{`${address.substring(0, 6)}...${address.substring(address.length - 6)}`}</span>
+            <CopyOutlined
+              style={{ cursor: 'pointer', color: '#1890ff' }}
+              onClick={() => {
+                navigator.clipboard.writeText(address);
+                message.success('已复制到剪贴板');
+              }}
+            />
+          </div>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'toNetwork', defaultMessage: '网络' }),
@@ -125,7 +142,23 @@ const TableList: React.FC = () => {
       dataIndex: 'fromAddress',
       hideInForm: false,
       hideInSearch: false,
-      copyable: true,
+      render: (text) => {
+        const address = React.isValidElement(text) ? text.props?.children : text;
+
+        if (!address || typeof address !== 'string') return '-';
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>{`${address.substring(0, 6)}...${address.substring(address.length - 6)}`}</span>
+            <CopyOutlined
+              style={{ cursor: 'pointer', color: '#1890ff' }}
+              onClick={() => {
+                navigator.clipboard.writeText(address);
+                message.success('已复制到剪贴板');
+              }}
+            />
+          </div>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'fromNetwork', defaultMessage: '邀请人网络' }),
