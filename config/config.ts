@@ -16,6 +16,16 @@ export default defineConfig({
 
   jsMinifier: 'terser',
 
+  jsMinifierOptions: {
+    compress: {
+      // 保留方案1：移除所有 console.* （包括 log/error/warn）
+      drop_console: process.env.NODE_ENV === 'production',
+
+      // 保留方案2：只移除 console.log 保留 error/warn（二选一）
+      // pure_funcs: ['console.log']
+    },
+  },
+
   /**
    * @name 兼容性设置
    * @description 设置 ie11 不一定完美兼容，需要检查自己使用的所有依赖
@@ -160,13 +170,5 @@ export default defineConfig({
   },
   tailwindcss: {
     cssFilePath: './tailwind.css',
-  },
-  chainWebpack(config) {
-    if (process.env.NODE_ENV === 'production') {
-      config.optimization.minimizer('terser').tap((args) => {
-        args[0].terserOptions.compress.drop_console = true;
-        return args;
-      });
-    }
   },
 });
