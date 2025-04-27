@@ -27,11 +27,11 @@ const Collection: React.FC<WithdrawProps> = ({ open, onClose, currentRow }) => {
       });
 
       hide();
-      message.success('资金分配成功！');
+      message.success('成功归集，请到链上确认实际状态');
       onClose();
     } catch (error: any) {
       console.error('分配错误:', error);
-      message.error(error.message || '资金分配失败');
+      message.error(error.message || '归集失败');
     } finally {
       setLoading(false);
       hide();
