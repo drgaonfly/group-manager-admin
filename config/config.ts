@@ -1,6 +1,5 @@
 // https://umijs.org/config/
 import { defineConfig } from '@umijs/max';
-import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
@@ -98,7 +97,7 @@ export default defineConfig({
    */
   locale: {
     // default zh-CN
-    default: 'en-US',
+    default: 'zh-CN',
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
@@ -136,20 +135,20 @@ export default defineConfig({
    * @description 基于 openapi 的规范生成serve 和mock，能减少很多样板代码
    * @doc https://pro.ant.design/zh-cn/docs/openapi/
    */
-  openAPI: [
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      // 或者使用在线的版本
-      // schemaPath: "https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json"
-      schemaPath: join(__dirname, 'oneapi.json'),
-      mock: false,
-    },
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'https://gw.alipayobjects.com/os/antfincdn/CA1dOm%2631B/openapi.json',
-      projectName: 'swagger',
-    },
-  ],
+  // openAPI: [
+  //   {
+  //     requestLibPath: "import { request } from '@umijs/max'",
+  //     // 或者使用在线的版本
+  //     // schemaPath: "https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json"
+  //     schemaPath: join(__dirname, 'oneapi.json'),
+  //     mock: false,
+  //   },
+  //   {
+  //     requestLibPath: "import { request } from '@umijs/max'",
+  //     schemaPath: 'https://gw.alipayobjects.com/os/antfincdn/CA1dOm%2631B/openapi.json',
+  //     projectName: 'swagger',
+  //   },
+  // ],
   mfsu: {
     strategy: 'normal',
   },
@@ -161,5 +160,22 @@ export default defineConfig({
   },
   tailwindcss: {
     cssFilePath: './tailwind.css',
+  },
+  chainWebpack(config) {
+    // 确保 terser 插件已定义后再调用 tap
+    if (process.env.NODE_ENV === 'production') {
+      // 使用 use 方法先定义 terser 插件
+      const TerserPlugin = require('terser-webpack-plugin');
+      config.optimization.minimizer('terser').use(TerserPlugin, [
+        {
+          terserOptions: {
+            compress: {
+              drop_console: true, // 移除所有 console
+              pure_funcs: ['console.log'], // 或者仅移除 console.log，保留其他如 warn/error
+            },
+          },
+        },
+      ]);
+    }
   },
 });
