@@ -1,4 +1,3 @@
-import { useModel } from '@umijs/max';
 import { useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
 
@@ -9,8 +8,8 @@ interface SocketConfig {
 }
 
 export const useSocketNotification = (configs: SocketConfig[]) => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
+  // const { initialState } = useModel('@@initialState');
+  // const { currentUser } = initialState || {};
 
   useEffect(() => {
     const SOCKET_URL = process.env.UMI_APP_SOCKET_URL || 'http://localhost:5003';
@@ -21,7 +20,7 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       reconnectionAttempts: 5,
       withCredentials: true,
       auth: { token: `Bearer ${localStorage.getItem('token')}` },
-      query: { userId: currentUser?._id }, // 替换为实际用户ID
+      // query: { userId: currentUser?._id }, // 替换为实际用户ID
     });
 
     // Handle socket connection
@@ -98,5 +97,5 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       });
       socket.disconnect();
     };
-  }, [currentUser]); // Dependency array includes the entire configs array
+  }, []); // Dependency array includes the entire configs array
 };

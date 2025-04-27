@@ -172,7 +172,7 @@ const CustomerService: React.FC = () => {
         >
           <div style={{ padding: '10px' }}>
             <Title level={4} style={{ fontSize: '14px', fontWeight: 'normal' }}>
-              {intl.formatMessage({ id: 'contacts', defaultMessage: '工作人员' })}
+              {intl.formatMessage({ id: 'contacts', defaultMessage: '客户' })}
             </Title>
             {loadingContacts ? (
               <div
