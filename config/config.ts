@@ -162,20 +162,11 @@ export default defineConfig({
     cssFilePath: './tailwind.css',
   },
   chainWebpack(config) {
-    // 确保 terser 插件已定义后再调用 tap
     if (process.env.NODE_ENV === 'production') {
-      // 使用 use 方法先定义 terser 插件
-      const TerserPlugin = require('terser-webpack-plugin');
-      config.optimization.minimizer('terser').use(TerserPlugin, [
-        {
-          terserOptions: {
-            compress: {
-              drop_console: true, // 移除所有 console
-              pure_funcs: ['console.log'], // 或者仅移除 console.log，保留其他如 warn/error
-            },
-          },
-        },
-      ]);
+      config.optimization.minimizer('terser').tap((args) => {
+        args[0].terserOptions.compress.drop_console = true;
+        return args;
+      });
     }
   },
 });
