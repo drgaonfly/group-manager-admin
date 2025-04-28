@@ -245,7 +245,7 @@ const CustomerService: React.FC = () => {
                                 : intl.formatMessage({ id: 'platform.offline' })}
                             </Text>
                             <span style={{ fontSize: '12px', marginLeft: '4px' }}>
-                              {format(contact.lastOnline, 'zh_CN')}
+                              {format(contact.customer.lastOnline, 'zh_CN')}
                             </span>
                           </div>
                         </div>
