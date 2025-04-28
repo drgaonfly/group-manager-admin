@@ -41,7 +41,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="icon"
           width="md"
           label={intl.formatMessage({ id: 'icon', defaultMessage: '图标' })}
-          placeholder={intl.formatMessage({ id: 'selectIcon', defaultMessage: '请选择图标' })}
           options={[
             {
               value:
@@ -93,22 +92,18 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             ),
           }}
         />
-        <ProFormText
-          name="title"
+        <ProFormText name="title" width="md" label={intl.formatMessage({ id: 'title' })} />
+        <ProFormSelect
+          name="type"
           width="md"
-          label={intl.formatMessage({ id: 'title' })}
-          placeholder={intl.formatMessage({ id: 'title' })}
+          label={intl.formatMessage({ id: 'type' })}
+          options={[
+            { label: '项目特点', value: 'feature' },
+            { label: '邀请步骤', value: 'step' },
+          ]}
+          rules={[{ required: true }]}
         />
-        <ProForm.Item
-          name="text"
-          label={intl.formatMessage({ id: 'text', defaultMessage: 'Text' })}
-        >
-          <Input.TextArea
-            rows={4}
-            placeholder={intl.formatMessage({ id: 'text', defaultMessage: 'Text' })}
-            style={{ width: '328px' }}
-          />
-        </ProForm.Item>
+
         <ProFormSelect
           name="lang"
           width="md"
@@ -132,6 +127,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           placeholder={intl.formatMessage({ id: 'selectLanguage' })}
           rules={[{ required: true, message: intl.formatMessage({ id: 'languageRequired' }) }]}
         />
+        <ProForm.Item
+          name="text"
+          label={intl.formatMessage({ id: 'text', defaultMessage: 'Text' })}
+        >
+          <Input.TextArea
+            rows={4}
+            placeholder={intl.formatMessage({ id: 'text', defaultMessage: 'Text' })}
+            style={{ width: '328px' }}
+          />
+        </ProForm.Item>
       </ProForm.Group>
 
       {!newRecord && (

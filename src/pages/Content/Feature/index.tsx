@@ -143,6 +143,16 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'type' }),
+      dataIndex: 'type',
+      hideInSearch: false,
+      valueType: 'select',
+      valueEnum: {
+        feature: { text: '项目特点' },
+        step: { text: '邀请步骤' },
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'title' }),
       dataIndex: 'title',
       hideInSearch: true,
