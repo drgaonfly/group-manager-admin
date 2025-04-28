@@ -81,6 +81,20 @@ const CustomerService: React.FC = () => {
 
   // Use the customer status model to track online status
   const { customerStatus } = useModel('customerStatusModel');
+  // 使用聊天消息模型来处理实时消息
+  const { chatMessage } = useModel('chatMessageModel');
+
+  useEffect(() => {
+    console.log('Chat Message:', chatMessage);
+
+    // 当收到新消息时更新消息列表
+    if (
+      chatMessage?.customer?._id &&
+      selectedContact?.customer?._id === chatMessage?.customer?._id
+    ) {
+      setMessages((prevMessages: any) => [...prevMessages, chatMessage]);
+    }
+  }, [chatMessage]);
 
   useEffect(() => {
     console.log('Customer Status:', customerStatus);

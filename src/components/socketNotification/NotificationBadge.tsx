@@ -3,6 +3,7 @@ import { useModel } from '@umijs/max';
 import { useSocketNotification } from './useSocketNotification';
 import { notification } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
+import { ChatMessage } from '@/models/chatMessageModel';
 
 // 预加载声音
 const soundSrc = '/sounds/newCustomerBeep.mp3';
@@ -28,6 +29,7 @@ const openNotification = (message: string, description: string, playSoundEnabled
 const NotificationBadge: React.FC = () => {
   const { handleCustomerNew } = useModel('notificationModel');
   const { handleCustomerStatusChange } = useModel('customerStatusModel');
+  const { handleChatMessageChange } = useModel('chatMessageModel');
 
   useSocketNotification([
     {
@@ -41,6 +43,13 @@ const NotificationBadge: React.FC = () => {
       eventName: 'customer_status',
       onDataReceived: (data: { customerId: string; isOn: boolean; lastOnline: Date }) => {
         handleCustomerStatusChange(data);
+      },
+    },
+    {
+      eventName: 'chatMessage',
+      onDataReceived: (data: ChatMessage) => {
+        playSound();
+        handleChatMessageChange(data);
       },
     },
   ]);
