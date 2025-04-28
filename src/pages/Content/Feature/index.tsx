@@ -145,7 +145,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'type' }),
       dataIndex: 'type',
-      hideInSearch: true,
+      hideInSearch: false,
       valueType: 'select',
       valueEnum: {
         feature: { text: '项目特点' },
