@@ -27,6 +27,7 @@ const openNotification = (message: string, description: string, playSoundEnabled
 
 const NotificationBadge: React.FC = () => {
   const { handleCustomerNew } = useModel('notificationModel');
+  const { handleCustomerStatusChange } = useModel('customerStatusModel');
 
   useSocketNotification([
     {
@@ -34,6 +35,12 @@ const NotificationBadge: React.FC = () => {
       onDataReceived: (data: { title: string; message: string }) => {
         handleCustomerNew(data);
         openNotification(data.title, data.message, true);
+      },
+    },
+    {
+      eventName: 'customer_status',
+      onDataReceived: (data: { customerId: string; isOn: boolean; lastOnline: Date }) => {
+        handleCustomerStatusChange(data);
       },
     },
   ]);

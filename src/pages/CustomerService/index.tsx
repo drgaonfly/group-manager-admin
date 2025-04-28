@@ -73,7 +73,39 @@ const CustomerService: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<any>(null);
 
-  const { items: contacts, loading: loadingContacts } = useQueryList('/chats/latest');
+  const {
+    items: contacts,
+    setItems: setContacts,
+    loading: loadingContacts,
+  } = useQueryList('/chats/latest');
+
+  // Use the customer status model to track online status
+  const { customerStatus } = useModel('customerStatusModel');
+
+  useEffect(() => {
+    console.log('Customer Status:', customerStatus);
+
+    // Update contact list when customer status changes
+    if (customerStatus.customerId) {
+      setContacts((prevContacts: any) => {
+        return prevContacts.map((contact: any) => {
+          // Check if this contact matches the customer whose status changed
+          if (contact.customer?._id === customerStatus.customerId) {
+            // Return updated contact with new online status
+            return {
+              ...contact,
+              customer: {
+                ...contact.customer,
+                isOnline: customerStatus.isOnline,
+                lastOnline: customerStatus.lastOnline,
+              },
+            };
+          }
+          return contact;
+        });
+      });
+    }
+  }, [customerStatus]);
 
   console.log('contacts', contacts);
 
