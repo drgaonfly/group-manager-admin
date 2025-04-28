@@ -1,8 +1,6 @@
 import { useIntl } from '@umijs/max';
-import { message } from 'antd';
+import { Modal } from 'antd';
 import BasicForm from './BasicForm';
-import { useState } from 'react';
-import { ModalForm } from '@ant-design/pro-components';
 
 interface Props {
   open: boolean;
@@ -12,44 +10,20 @@ interface Props {
 
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
-  const { open, onOpenChange, onFinish } = props; // Added setImageUrl to destructured props
-  const [image, setImageUrl] = useState<string | undefined>('');
-
-  const handleFormFinish = async (values: any): Promise<void> => {
-    if (!image) {
-      message.error(intl.formatMessage({ id: 'message.error.imageUpload' }));
-      return;
-    }
-    await onFinish({
-      ...values,
-      image: image,
-    });
-  };
+  const { open, onOpenChange, onFinish } = props;
 
   return (
-    <ModalForm
+    <Modal
       title={intl.formatMessage({ id: 'add_new' })}
       width="45%"
       open={open}
-      onOpenChange={onOpenChange}
-      modalProps={{
-        destroyOnClose: true,
-        maskClosable: false,
-        footer: null,
-      }}
-      submitter={false}
-      onFinish={async (values) => {
-        await handleFormFinish(values);
-        return true;
-      }}
+      onCancel={() => onOpenChange(false)}
+      destroyOnClose={true}
+      maskClosable={false}
+      footer={null}
     >
-      <BasicForm
-        newRecord
-        setImageUrl={setImageUrl}
-        packgeImageUrl={image}
-        onFinish={handleFormFinish}
-      />
-    </ModalForm>
+      <BasicForm newRecord onFinish={onFinish} />
+    </Modal>
   );
 };
 

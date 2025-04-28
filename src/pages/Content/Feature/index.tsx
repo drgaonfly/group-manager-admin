@@ -10,7 +10,6 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
-import { Image } from 'antd';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -133,26 +132,22 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'image' }),
-      dataIndex: 'image',
+      title: intl.formatMessage({ id: 'icon', defaultMessage: '图标' }),
+      dataIndex: 'icon',
       hideInSearch: true,
-      valueType: 'image',
-      render: (_, record) => (
-        <Image
-          src={record.image}
-          alt="image"
-          width={90}
-          height={90}
-          style={{
-            objectFit: 'cover',
-          }}
-          preview={true}
-        />
-      ),
+      render: (icon) => {
+        if (!icon) return '-';
+        return (
+          <svg viewBox="0 0 24 24" width="30" height="30">
+            <path d={String(icon)} />
+          </svg>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
+      valueType: 'dateTime',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
