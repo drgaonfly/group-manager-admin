@@ -96,8 +96,8 @@ const CustomerService: React.FC = () => {
               ...contact,
               customer: {
                 ...contact.customer,
-                isOnline: customerStatus.isOnline,
-                lastOnline: customerStatus.lastOnline,
+                isOnline: customerStatus?.isOnline,
+                lastOnline: customerStatus?.lastOnline,
               },
             };
           }
@@ -116,7 +116,7 @@ const CustomerService: React.FC = () => {
       setLoadingMessages(true);
       try {
         const response: any = await queryList('/chats/user-messages', {
-          customerId: selectedContact.customer._id,
+          customerId: selectedContact.customer?._id,
         });
         setMessages(
           access.canSuperAdmin
@@ -147,7 +147,7 @@ const CustomerService: React.FC = () => {
         method: 'POST',
         data: {
           message: messageInput,
-          customerId: selectedContact.customer._id,
+          customerId: selectedContact.customer?._id,
         },
       });
 
@@ -227,7 +227,7 @@ const CustomerService: React.FC = () => {
                   access.canSuperAdmin
                     ? contacts
                     : contacts.filter(
-                        (contact) => (contact as any).user._id === (currentUser as any)._id,
+                        (contact) => (contact as any).user?._id === (currentUser as any)?._id,
                       )
                 }
                 renderItem={(contact: any) => (
@@ -235,21 +235,23 @@ const CustomerService: React.FC = () => {
                     onClick={() =>
                       setSelectedContact({
                         ...contact,
-                        id: contact.customer._id,
-                        name: contact.customer.name,
-                        online: contact.customer.isOnline,
+                        id: contact.customer?._id,
+                        name: contact.customer?.name,
+                        online: contact.customer?.isOnline,
                       })
                     }
                     style={{
                       cursor: 'pointer',
                       backgroundColor:
-                        selectedContact?.id === contact.customer._id ? '#e6f7ff' : 'transparent',
+                        selectedContact?.id === contact.customer?._id ? '#e6f7ff' : 'transparent',
                       borderRight:
-                        selectedContact?.id === contact.customer._id ? '3px solid #1890ff' : 'none',
+                        selectedContact?.id === contact.customer?._id
+                          ? '3px solid #1890ff'
+                          : 'none',
                       padding: '10px',
                       borderRadius: '4px',
                       transition: 'all 0.3s',
-                      color: selectedContact?.id === contact.customer._id ? '#1890ff' : 'inherit',
+                      color: selectedContact?.id === contact.customer?._id ? '#1890ff' : 'inherit',
                     }}
                     className="contact-item-hover"
                   >
@@ -258,7 +260,7 @@ const CustomerService: React.FC = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                           <Badge count={contact.unreadCount}>
                             <Avatar
-                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${contact.customer._id}`}
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${contact.customer?._id}`}
                             />
                           </Badge>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -267,17 +269,17 @@ const CustomerService: React.FC = () => {
                                 width: '8px',
                                 height: '8px',
                                 borderRadius: '50%',
-                                backgroundColor: contact.customer.isOnline ? '#52c41a' : '#f5222d',
+                                backgroundColor: contact.customer?.isOnline ? '#52c41a' : '#f5222d',
                                 display: 'inline-block',
                               }}
                             />
                             <Text style={{ fontSize: '12px' }}>
-                              {contact.customer.isOnline
+                              {contact.customer?.isOnline
                                 ? intl.formatMessage({ id: 'platform.online' })
                                 : intl.formatMessage({ id: 'platform.offline' })}
                             </Text>
                             <span style={{ fontSize: '12px', marginLeft: '4px' }}>
-                              {format(contact.customer.lastOnline, 'zh_CN')}
+                              {format(contact.customer?.lastOnline, 'zh_CN')}
                             </span>
                           </div>
                         </div>
@@ -322,7 +324,7 @@ const CustomerService: React.FC = () => {
                   />
                   <div>
                     <Title level={5} style={{ margin: 0 }}>
-                      {selectedContact.name}
+                      {selectedContact?.name}
                     </Title>
                     {selectedContact.online && (
                       <Text type="success" style={{ fontSize: '12px' }}>
@@ -364,7 +366,7 @@ const CustomerService: React.FC = () => {
                         const isSoftDeleted = msg.isSoftDeleted;
                         return (
                           <div
-                            key={msg._id}
+                            key={msg?._id}
                             style={{
                               alignSelf: isCustomer ? 'flex-start' : 'flex-end',
                               maxWidth: '70%',
@@ -413,14 +415,14 @@ const CustomerService: React.FC = () => {
                                       id: 'delete.message.confirm',
                                       defaultMessage: '确定要删除这条消息吗？',
                                     })}
-                                    onConfirm={() => handleSoftDelete(msg._id)}
+                                    onConfirm={() => handleSoftDelete(msg?._id)}
                                     okText={intl.formatMessage({ id: 'yes', defaultMessage: '是' })}
                                     cancelText={intl.formatMessage({
                                       id: 'no',
                                       defaultMessage: '否',
                                     })}
                                   >
-                                    <DeleteOutlined spin={deletingMessage === msg._id} />
+                                    <DeleteOutlined spin={deletingMessage === msg?._id} />
                                   </Popconfirm>
                                 )}
                               </div>
