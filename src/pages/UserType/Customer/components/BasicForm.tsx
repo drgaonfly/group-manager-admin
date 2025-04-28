@@ -73,36 +73,24 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="usdtBalance"
           width="md"
           min={0}
-          fieldProps={{
-            precision: 2,
-          }}
         />
         <ProFormDigit
           label={intl.formatMessage({ id: 'usdtStaking', defaultMessage: 'USDT质押' })}
           name="usdtStaking"
           width="md"
           min={0}
-          fieldProps={{
-            precision: 2,
-          }}
         />
         <ProFormDigit
           label={intl.formatMessage({ id: 'usdtPlatform', defaultMessage: 'USDT平台' })}
           name="usdtPlatform"
           width="md"
           min={0}
-          fieldProps={{
-            precision: 2,
-          }}
         />
         <ProFormDigit
           label={intl.formatMessage({ id: 'ethPlatform', defaultMessage: 'ETH平台' })}
           name="ethPlatform"
           width="md"
           min={0}
-          fieldProps={{
-            precision: 8,
-          }}
         />
       </ProForm.Group>
 
