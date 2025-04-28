@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { refreshToken } from '@/services/ant-design-pro/api';
+import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 interface SocketConfig {
@@ -11,6 +12,26 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
   // const { initialState } = useModel('@@initialState');
   // const { currentUser } = initialState || {};
 
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      const response = await refreshToken({
+        refreshToken: localStorage.getItem('refreshToken')!,
+      });
+      if (response.success) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('refreshToken', response.refreshToken);
+
+        setToken(response.token);
+      }
+    }, 60 * 60 * 1000); // 每小时刷新
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
   useEffect(() => {
     const SOCKET_URL = process.env.UMI_APP_SOCKET_URL || 'http://localhost:5003';
     const socket: Socket = io(SOCKET_URL, {
@@ -19,7 +40,7 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
       withCredentials: true,
-      auth: { token: `Bearer ${localStorage.getItem('token')}` },
+      auth: { token: `Bearer ${token}` },
       // query: { userId: currentUser?._id }, // 替换为实际用户ID
     });
 
@@ -97,5 +118,5 @@ export const useSocketNotification = (configs: SocketConfig[]) => {
       });
       socket.disconnect();
     };
-  }, []); // Dependency array includes the entire configs array
+  }, [token]); // Dependency array includes the entire configs array
 };
