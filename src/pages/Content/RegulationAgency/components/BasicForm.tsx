@@ -9,22 +9,21 @@ interface Props {
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
-  setImageUrl: (url: string) => void;
-  imageUrl?: string;
+  setlogoUrl: (url: string) => void;
+  logoUrl?: string;
   defaultFileList?: UploadFile[];
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, imageUrl }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setlogoUrl, logoUrl }) => {
   const intl = useIntl();
 
-  const defaultFileList: UploadFile[] = imageUrl
+  const defaultFileList: UploadFile[] = logoUrl
     ? [
         {
           uid: '-1',
           name: 'logoUrl.png',
           status: 'done' as const,
-          url: imageUrl,
-          type: 'image/png',
+          url: logoUrl,
         },
       ]
     : [];
@@ -34,7 +33,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
       // 构建提交数据
       const submitData = {
         ...formData,
-        logoUrl: imageUrl,
+        logoUrl: logoUrl,
       };
 
       await onFinish(submitData);
@@ -50,7 +49,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
         ...values,
         name: values?.name || '', // Ensure `name` is initialized
         website: values?.website || '', // Ensure `website` is initialized
-        logoUrl: imageUrl,
+        logoUrl: logoUrl,
       }}
       onFinish={handleFormFinish}
       submitter={{
@@ -70,7 +69,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, setImageUrl, 
           <AliyunOSSUpload
             onFileUpload={(url: string) => {
               console.log('Uploaded file URL:', url);
-              setImageUrl!(url);
+              setlogoUrl!(url);
             }}
             accept=".jpg,.jpeg,.png,.pdf"
             defaultFileList={defaultFileList}

@@ -19,7 +19,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
 
-  const [imageUrl, setImageUrl] = useState<string | undefined>(values.logoUrl || '');
+  const [logoUrl, setlogoUrl] = useState<string | undefined>(values.logoUrl || '');
 
   const defaultFileList: UploadFile[] = values.logoUrl
     ? [
@@ -28,24 +28,18 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name: 'logo.png',
           status: 'done' as const,
           url: values.logoUrl,
-          type: 'image/png',
-          thumbUrl: values.logoUrl,
         },
       ]
     : [];
 
   useEffect(() => {
-    setImageUrl(values.logoUrl);
+    setlogoUrl(values.logoUrl);
   }, [values]);
 
   const handleSubmit = async (formValues: any) => {
-    // 判断formValues.avatar是否包含http或者是https，如果包含的化，就删除掉这个字段
-    if (formValues.logoUrl?.includes('http') || formValues.logoUrl?.includes('https')) {
-      delete formValues.logoUrl;
-    }
     await onSubmit({
       ...formValues,
-      logoUrl: imageUrl,
+      logoUrl: logoUrl,
     });
   };
 
@@ -62,7 +56,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       <BasicForm
         values={values}
         onFinish={handleSubmit}
-        setImageUrl={setImageUrl}
+        setlogoUrl={setlogoUrl}
+        logoUrl={logoUrl}
         defaultFileList={defaultFileList}
       />
     </Modal>

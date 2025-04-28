@@ -10,7 +10,7 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    videoUrl?: string;
+    url?: string;
   } & Partial<API.ItemData>;
 };
 
@@ -18,20 +18,20 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
 
-  const [videoUrl, setVideoUrl] = useState<string | undefined>(values?.videoUrl || '');
+  const [url, setVideoUrl] = useState<string | undefined>(values?.url || '');
 
   useEffect(() => {
-    setVideoUrl(values?.videoUrl);
+    setVideoUrl(values?.url);
   }, [values]);
 
   const handleSubmit = async (formValues: any) => {
     // 判断formValues.avatar是否包含http或者是https，如果包含的化，就删除掉这个字段
-    if (formValues.videoUrl?.includes('http') || formValues.videoUrl?.includes('https')) {
-      delete formValues.videoUrl;
+    if (formValues.url?.includes('http') || formValues.url?.includes('https')) {
+      delete formValues.url;
     }
     await onSubmit({
       ...formValues,
-      videoUrl: videoUrl,
+      url: url,
     });
   };
 
@@ -45,7 +45,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       footer={false}
       onCancel={() => onCancel(false)}
     >
-      <BasicForm values={values} onFinish={handleSubmit} setUrl={setVideoUrl} url={videoUrl} />
+      <BasicForm values={values} onFinish={handleSubmit} setUrl={setVideoUrl} url={url} />
     </Modal>
   );
 };

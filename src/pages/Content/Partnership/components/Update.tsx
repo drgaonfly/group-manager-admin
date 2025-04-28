@@ -63,6 +63,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         values={values}
         onFinish={handleSubmit}
         setImageUrl={setImageUrl}
+        imageUrl={imageUrl}
         defaultFileList={defaultFileList}
       />
     </Modal>

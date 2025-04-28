@@ -13,16 +13,16 @@ interface Props {
 const Create: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { open, onOpenChange, onFinish } = props;
-  const [imageUrl, setImageUrl] = useState<string | undefined>('');
+  const [logoUrl, setlogoUrl] = useState<string | undefined>('');
 
   const handleFormFinish = async (values: any): Promise<void> => {
-    if (!imageUrl) {
+    if (!logoUrl) {
       message.error(intl.formatMessage({ id: 'message.error.imageUpload' }));
       return;
     }
     await onFinish({
       ...values,
-      logoUrl: imageUrl,
+      logoUrl: logoUrl,
     });
   };
 
@@ -43,7 +43,7 @@ const Create: React.FC<Props> = (props) => {
         return true;
       }}
     >
-      <BasicForm newRecord setImageUrl={setImageUrl} onFinish={handleFormFinish} />
+      <BasicForm newRecord setlogoUrl={setlogoUrl} onFinish={handleFormFinish} />
     </ModalForm>
   );
 };
