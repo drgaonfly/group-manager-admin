@@ -122,6 +122,27 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      title: intl.formatMessage({ id: 'language', defaultMessage: '语言' }),
+      dataIndex: 'lang',
+      valueType: 'select',
+      valueEnum: {
+        en: { text: '英语' },
+        'zh-TW': { text: '繁体中文' },
+        ja: { text: '日语' },
+        ko: { text: '韩语' },
+        it: { text: '意大利语' },
+        fr: { text: '法语' },
+        pt: { text: '葡萄牙语' },
+        ru: { text: '俄语' },
+        ar: { text: '阿拉伯语' },
+        hi: { text: '印地语' },
+        bg: { text: '保加利亚语' },
+        es: { text: '西班牙语' },
+        de: { text: '德语' },
+        tr: { text: '土耳其语' },
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'title' }),
       dataIndex: 'title',
       hideInSearch: true,
@@ -148,6 +169,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,

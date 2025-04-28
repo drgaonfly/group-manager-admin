@@ -59,6 +59,27 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               value:
                 'M4 8h4V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2zm10-4h-4v4h4V4z',
             },
+            {
+              value:
+                'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
+            },
+            {
+              value: 'M7 2v11h3v9l7-12h-4l4-8z',
+            },
+            {
+              value:
+                'M12 23c6.075 0 11-4.925 11-11 0-6.075-3-8-3-8s0 4-2 4-2-7-7-7S7 7 5 9s-4 5-4 8c0 6.075 4.925 11 11 11zm0-8a3 3 0 100-6 3 3 0 000 6z',
+            },
+            {
+              value:
+                'M12 8l3.293-3.293a1 1 0 011.414 0l2.586 2.586a1 1 0 010 1.414L16 12l3.293 3.293a1 1 0 010 1.414l-2.586 2.586a1 1 0 01-1.414 0L12 16l-3.293 3.293a1 1 0 01-1.414 0L4.707 16.707a1 1 0 010-1.414L8 12 4.707 8.707a1 1 0 010-1.414l2.586-2.586a1 1 0 011.414 0L12 8z',
+            },
+            {
+              value: 'M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z',
+            },
+            {
+              value: 'M12 2L2 8l10 6 10-6-10-6zM2 14l10 6 10-6-10-6-10 6z',
+            },
             // 可以根据需要添加更多图标选项
           ]}
           fieldProps={{
@@ -88,6 +109,29 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             style={{ width: '328px' }}
           />
         </ProForm.Item>
+        <ProFormSelect
+          name="lang"
+          width="md"
+          label={intl.formatMessage({ id: 'language' })}
+          options={[
+            { label: 'en', value: 'en' },
+            { label: 'zh-TW', value: 'zh-TW' },
+            { label: 'ja', value: 'ja' },
+            { label: 'ko', value: 'ko' },
+            { label: 'it', value: 'it' },
+            { label: 'fr', value: 'fr' },
+            { label: 'pt', value: 'pt' },
+            { label: 'ru', value: 'ru' },
+            { label: 'ar', value: 'ar' },
+            { label: 'hi', value: 'hi' },
+            { label: 'bg', value: 'bg' },
+            { label: 'es', value: 'es' },
+            { label: 'de', value: 'de' },
+            { label: 'tr', value: 'tr' },
+          ]}
+          placeholder={intl.formatMessage({ id: 'selectLanguage' })}
+          rules={[{ required: true, message: intl.formatMessage({ id: 'languageRequired' }) }]}
+        />
       </ProForm.Group>
 
       {!newRecord && (
