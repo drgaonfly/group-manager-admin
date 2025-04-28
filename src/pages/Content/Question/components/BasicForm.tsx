@@ -95,10 +95,23 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       <ProForm.Group>
         <ProFormSelect
           name="lang"
+          width="md"
           label={intl.formatMessage({ id: 'language' })}
           options={[
             { label: 'en', value: 'en' },
-            { label: 'zh', value: 'zh' },
+            { label: 'zh-TW', value: 'zh-TW' },
+            { label: 'ja', value: 'ja' },
+            { label: 'ko', value: 'ko' },
+            { label: 'it', value: 'it' },
+            { label: 'fr', value: 'fr' },
+            { label: 'pt', value: 'pt' },
+            { label: 'ru', value: 'ru' },
+            { label: 'ar', value: 'ar' },
+            { label: 'hi', value: 'hi' },
+            { label: 'bg', value: 'bg' },
+            { label: 'es', value: 'es' },
+            { label: 'de', value: 'de' },
+            { label: 'tr', value: 'tr' },
           ]}
           placeholder={intl.formatMessage({ id: 'selectLanguage' })}
           rules={[{ required: true, message: intl.formatMessage({ id: 'languageRequired' }) }]}

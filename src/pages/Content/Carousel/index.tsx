@@ -145,22 +145,6 @@ const TableList: React.FC = () => {
         />
       ),
     },
-    {
-      title: intl.formatMessage({ id: 'size' }),
-      dataIndex: 'size',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'imageType' }),
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: {
-        jpg: { text: 'jpg' },
-        png: { text: 'png' },
-        jpeg: { text: 'jpeg' },
-      },
-      hideInSearch: true,
-    },
     // {
     //   title: intl.formatMessage({ id: 'imagePath' }),
     //   dataIndex: 'path',

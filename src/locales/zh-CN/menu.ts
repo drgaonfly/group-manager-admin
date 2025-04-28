@@ -154,4 +154,5 @@ export default {
   'menu.account.two-factor-auth': '二步认证',
   'menu.depth-incomes': '层级收益管理',
   'menu.team-benefits': '团队收益记录管理',
+  'menu.content.features': '项目特点介绍管理',
 };

@@ -10,9 +10,9 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
+import { Image } from 'antd';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import ReactQuill from 'react-quill';
 
 /**
  * @en-US Add node
@@ -22,7 +22,7 @@ import ReactQuill from 'react-quill';
 const handleAdd = async (fields: API.ItemData) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
   try {
-    await addItem('questions', { ...fields });
+    await addItem('/features', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
     return true;
@@ -46,7 +46,7 @@ const handleAdd = async (fields: API.ItemData) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`questions/${fields._id}`, fields);
+    await updateItem(`/features/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
@@ -72,7 +72,7 @@ const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('questions', {
+    await removeItem('/features', {
       ids,
     });
     hide();
@@ -108,10 +108,11 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
 
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
   const access = useAccess();
 
   /**
@@ -122,68 +123,55 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'id' }),
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'language', defaultMessage: '语言' }),
-      dataIndex: 'lang',
-      valueType: 'select',
-      valueEnum: {
-        en: { text: '英语' },
-        'zh-TW': { text: '繁体中文' },
-        ja: { text: '日语' },
-        ko: { text: '韩语' },
-        it: { text: '意大利语' },
-        fr: { text: '法语' },
-        pt: { text: '葡萄牙语' },
-        ru: { text: '俄语' },
-        ar: { text: '阿拉伯语' },
-        hi: { text: '印地语' },
-        bg: { text: '保加利亚语' },
-        es: { text: '西班牙语' },
-        de: { text: '德语' },
-        tr: { text: '土耳其语' },
-      },
-    },
-    {
       title: intl.formatMessage({ id: 'title' }),
       dataIndex: 'title',
-      copyable: true,
-    },
-    {
-      title: <FormattedMessage id="content" />,
-      dataIndex: 'content',
       hideInSearch: true,
-      render: (dom) => {
-        return (
-          <div>
-            <ReactQuill
-              value={dom as string} // 使用 ReactQuill 显示内容
-              readOnly={true} // 设置为只读模式
-              theme="bubble" // 使用轻量的 Bubble 主题
-            />
-          </div>
-        );
-      },
     },
     {
-      // add createdAt column
+      title: intl.formatMessage({ id: 'text', defaultMessage: 'Text' }),
+      dataIndex: 'text',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'image' }),
+      dataIndex: 'image',
+      hideInSearch: true,
+      valueType: 'image',
+      render: (_, record) => (
+        <Image
+          src={record.image}
+          alt="image"
+          width={90}
+          height={90}
+          style={{
+            objectFit: 'cover',
+          }}
+          preview={true}
+        />
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
-      hideInSearch: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canUpdateQuestion && (
+        <a
+          key="detail"
+          onClick={() => {
+            setCurrentRow(record);
+            setShowDetail(true);
+          }}
+        >
+          <FormattedMessage id="detail" />
+        </a>,
+        access.canUpdateFeature && (
           <a
             key="edit"
             onClick={() => {
-              // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
@@ -191,7 +179,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </a>
         ),
-        access.canDeleteQuestion && (
+        access.canCreateFeature && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);
@@ -209,11 +197,11 @@ const TableList: React.FC = () => {
       <ProTable<API.ItemData, API.PageParams>
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
+        // scroll={{ x: 2500 }}
         rowKey="_id"
-        scroll={{ x: 2500 }}
-        search={{ labelWidth: 100 }}
+        search={{ labelWidth: 120 }}
         toolBarRender={() => [
-          access.canCreateQuestion && (
+          access.canCreateFeature && (
             <Button
               type="primary"
               key="primary"
@@ -225,10 +213,10 @@ const TableList: React.FC = () => {
             </Button>
           ),
         ]}
-        request={async (params, sort, filter) => queryList('questions', params, sort, filter)}
+        request={async (params, sort, filter) => queryList('/features', params, sort, filter)}
         columns={columns}
         rowSelection={
-          access.canDeleteQuestion && {
+          access.canSuperAdmin && {
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows);
             },
@@ -245,7 +233,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canDeleteQuestion && (
+          {access.canDeleteFeature && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -256,8 +244,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-
-      {access.canCreateQuestion && (
+      {access.canCreateFeature && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -272,7 +259,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {access.canUpdateQuestion && (
+      {access.canUpdateFeature && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
@@ -289,6 +276,7 @@ const TableList: React.FC = () => {
           values={currentRow || {}}
         />
       )}
+
       <Show
         open={showDetail}
         currentRow={currentRow as API.ItemData}
