@@ -207,6 +207,12 @@ export default [
         icon: 'VideoCameraOutlined',
         component: './Content/Video',
       },
+      {
+        path: '/content/features',
+        name: 'list.features',
+        icon: 'PictureOutlined',
+        component: './Content/Feature',
+      },
     ],
   },
   {

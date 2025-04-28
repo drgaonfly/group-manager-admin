@@ -198,6 +198,16 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetCarousel:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/carousels', 'GET')),
 
+    //项目特点管理权限
+    canCreateFeature:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/features', 'POST')),
+    canDeleteFeature:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/features', 'DELETE')),
+    canUpdateFeature:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/features/:id', 'PUT')),
+    canGetFeature:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/features', 'GET')),
+
     // stacking 权限
     canCreateStacking:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/stackings', 'POST')),

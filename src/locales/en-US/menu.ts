@@ -91,4 +91,5 @@ export default {
   'menu.change-password': 'Change Password',
   'menu.depth-incomes': 'Depth Incomes Management',
   'menu.team-benefits': 'Team Benefits Management',
+  'menu.content.features': 'Project Features Management',
 };
