@@ -88,14 +88,28 @@ const CustomerService: React.FC = () => {
   useEffect(() => {
     console.log('Chat Message:', chatMessage);
 
+    if (!chatMessage?.customer?._id) return;
+
     // 当收到新消息时更新消息列表
     if (
-      chatMessage?.customer?._id &&
       selectedContact?.customer?._id === chatMessage?.customer?._id &&
       chatMessage?.sender === 'customer'
     ) {
       playSound();
       setMessages((prevMessages: any) => [...prevMessages, chatMessage]);
+    }
+    // 在联系人列表上不存在时
+    // 检查新消息的客户是否存在于联系人列表中
+
+    const existingContact = contacts.find(
+      (contact: any) =>
+        contact.customer?._id === chatMessage.customer?._id && chatMessage?.sender === 'customer',
+    );
+
+    if (!existingContact) {
+      playSound();
+      // @ts-ignore
+      setContacts((prevContacts) => [chatMessage, ...prevContacts]);
     }
   }, [chatMessage]);
 
