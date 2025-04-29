@@ -227,10 +227,11 @@ const CustomerService: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
 
   // 更新联系人列表时使用搜索输入
-  const fetchContacts = async () => {
+  const fetchContacts = async (address = '') => {
+    // 添加参数 address，默认值为空字符串
     try {
       const response: any = await queryList('/chats/latest', {
-        address: searchInput.trim(),
+        address: address.trim(), // 使用传入的 address 参数
       });
       setContacts(response.data);
     } catch (error) {
@@ -273,14 +274,14 @@ const CustomerService: React.FC = () => {
                   e.target.style.boxShadow = '0 0 0 2px rgba(24, 144, 255, 0.2)'; // 蓝色阴影
                 }}
               />
-              <Button type="primary" onClick={fetchContacts}>
+              <Button type="primary" onClick={() => fetchContacts(searchInput)}>
                 {intl.formatMessage({ id: 'search', defaultMessage: '搜索' })}
               </Button>
               <Button
                 icon={<ReloadOutlined />}
                 onClick={() => {
                   setSearchInput(''); // 清空输入框的值
-                  fetchContacts(); // 调用接口时不传递 searchInput
+                  fetchContacts(''); // 调用接口时传递空字符串
                 }}
                 style={{ marginLeft: '10px' }}
               />
