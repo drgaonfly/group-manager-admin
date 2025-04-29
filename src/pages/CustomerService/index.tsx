@@ -54,7 +54,7 @@ const Badge: React.FC<{ count?: number; children: React.ReactNode }> = ({ count,
           fontSize: '12px',
         }}
       >
-        {count > 9 ? '9+' : count}
+        {count > 99 ? '99+' : count}
       </span>
     </div>
   );
