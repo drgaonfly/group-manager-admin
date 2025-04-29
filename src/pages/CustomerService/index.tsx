@@ -83,6 +83,25 @@ const CustomerService: React.FC = () => {
   const { customerStatus } = useModel('customerStatusModel');
   // 使用聊天消息模型来处理实时消息
   const { chatMessage } = useModel('chatMessageModel');
+  const { messageReadStatus } = useModel('chatMessageReadModel');
+
+  useEffect(() => {
+    const customerId = messageReadStatus?.customerId;
+
+    const existingContact = contacts.find(
+      (contact: any) =>
+        contact.customer?._id === customerId && messageReadStatus?.sender === 'customer',
+    );
+
+    if (existingContact) {
+      // 更新联系人列表中的未读消息数
+      setContacts((prevContacts: any) =>
+        prevContacts.map((contact: any) =>
+          contact.customer?._id === customerId ? { ...contact, unreadCount: 0 } : contact,
+        ),
+      );
+    }
+  }, [messageReadStatus]);
 
   useEffect(() => {
     console.log('Chat Message:', chatMessage);
