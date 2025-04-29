@@ -8,7 +8,7 @@ import { ChatMessage } from '@/models/chatMessageModel';
 // 预加载声音
 const soundSrc = '/sounds/newCustomerBeep.mp3';
 
-const playSound = () => {
+export const playSound = () => {
   const sound = new Audio(soundSrc);
   sound.preload = 'auto';
   sound.play();
@@ -48,7 +48,6 @@ const NotificationBadge: React.FC = () => {
     {
       eventName: 'chatMessage',
       onDataReceived: (data: ChatMessage) => {
-        playSound();
         handleChatMessageChange(data);
       },
     },

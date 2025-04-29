@@ -11,6 +11,7 @@ import ReactQuill from 'react-quill';
 import { useModel } from '@umijs/max';
 import { useAccess } from '@umijs/max';
 import { format } from 'timeago.js';
+import { playSound } from '@/components/socketNotification/NotificationBadge';
 
 const { Title, Text } = Typography;
 
@@ -90,8 +91,10 @@ const CustomerService: React.FC = () => {
     // 当收到新消息时更新消息列表
     if (
       chatMessage?.customer?._id &&
-      selectedContact?.customer?._id === chatMessage?.customer?._id
+      selectedContact?.customer?._id === chatMessage?.customer?._id &&
+      chatMessage?.sender === 'customer'
     ) {
+      playSound();
       setMessages((prevMessages: any) => [...prevMessages, chatMessage]);
     }
   }, [chatMessage]);
