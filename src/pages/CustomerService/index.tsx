@@ -72,7 +72,6 @@ const CustomerService: React.FC = () => {
   const [sendingMessage, setSendingMessage] = useState(false);
   const [deletingMessage, setDeletingMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const socketRef = useRef<any>(null);
 
   const {
     items: contacts,
@@ -195,13 +194,6 @@ const CustomerService: React.FC = () => {
       setMessages([...messages, data]);
 
       setMessageInput('');
-
-      if (socketRef.current) {
-        socketRef.current.emit('message', {
-          content: messageInput,
-          recipient: selectedContact.id,
-        });
-      }
     } catch (error) {
       console.error('发送消息失败:', error);
     } finally {
@@ -231,6 +223,24 @@ const CustomerService: React.FC = () => {
     sendMessage();
   };
 
+  const [searchInput, setSearchInput] = useState('');
+
+  // 更新联系人列表时使用搜索输入
+  const fetchContacts = async () => {
+    try {
+      const response: any = await queryList('/chats/latest', {
+        address: searchInput.trim(),
+      });
+      setContacts(response.data);
+    } catch (error) {
+      console.error('获取联系人失败:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, [searchInput]);
+
   return (
     <PageContainer>
       <div style={{ display: 'flex', height: 'calc(100vh - 100px)' }}>
@@ -246,9 +256,11 @@ const CustomerService: React.FC = () => {
             <div style={{ display: 'flex', marginBottom: '10px' }}>
               <input
                 type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={intl.formatMessage({
                   id: 'search.contacts',
-                  defaultMessage: '搜索联系人...',
+                  defaultMessage: '搜索地址...',
                 })}
                 style={{
                   flex: 1,
@@ -260,7 +272,7 @@ const CustomerService: React.FC = () => {
                   color: '#000',
                 }}
               />
-              <Button type="primary">
+              <Button type="primary" onClick={fetchContacts}>
                 {intl.formatMessage({ id: 'search', defaultMessage: '搜索' })}
               </Button>
             </div>
