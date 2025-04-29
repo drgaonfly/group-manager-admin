@@ -232,9 +232,27 @@ const CustomerService: React.FC = () => {
           }}
         >
           <div style={{ padding: '10px' }}>
-            <Title level={4} style={{ fontSize: '14px', fontWeight: 'normal' }}>
-              {intl.formatMessage({ id: 'contacts', defaultMessage: '客户' })}
-            </Title>
+            <div style={{ display: 'flex', marginBottom: '10px' }}>
+              <input
+                type="text"
+                placeholder={intl.formatMessage({
+                  id: 'search.contacts',
+                  defaultMessage: '搜索联系人...',
+                })}
+                style={{
+                  flex: 1,
+                  marginRight: '10px',
+                  padding: '5px',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '4px',
+                  backgroundColor: '#fff',
+                  color: '#000',
+                }}
+              />
+              <Button type="primary">
+                {intl.formatMessage({ id: 'search', defaultMessage: '搜索' })}
+              </Button>
+            </div>
             {loadingContacts ? (
               <div
                 style={{
