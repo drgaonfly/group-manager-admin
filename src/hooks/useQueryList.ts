@@ -21,7 +21,7 @@ const useQueryList = (url: string, hasPermission = true) => {
     query().catch(console.error);
   }, [hasPermission]); // Adding `hasPermission` to the dependency array to re-run the effect if it changes
 
-  return { items, setItems, loading };
+  return { items, setItems, loading, setLoading, query };
 };
 
 export default useQueryList;
