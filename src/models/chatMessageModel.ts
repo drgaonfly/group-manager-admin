@@ -8,6 +8,7 @@ export interface ChatMessage {
   isRead: boolean;
   isSoftDeleted: boolean;
   deletedAt: Date | null;
+  unreadCount?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

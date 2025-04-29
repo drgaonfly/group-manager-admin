@@ -109,6 +109,17 @@ const CustomerService: React.FC = () => {
       // @ts-ignore
       setContacts((prevContacts) => [chatMessage, ...prevContacts]);
     }
+
+    if (existingContact) {
+      // 更新联系人列表中的未读消息数
+      setContacts((prevContacts: any) =>
+        prevContacts.map((contact: any) =>
+          contact.customer?._id === customerId
+            ? { ...contact, unreadCount: chatMessage.unreadCount }
+            : contact,
+        ),
+      );
+    }
   }, [chatMessage]);
 
   useEffect(() => {
