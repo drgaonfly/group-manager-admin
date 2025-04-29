@@ -88,6 +88,32 @@ const CustomerService: React.FC = () => {
   const [remarkModalVisible, setRemarkModalVisible] = useState(false);
   const [remarkInput, setRemarkInput] = useState('');
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // 当最后一条消息进入视口时
+        if (entries[0].isIntersecting) {
+          console.log('Last message is visible');
+          // 这里可以添加你的逻辑，比如标记消息为已读等
+        }
+      },
+      {
+        threshold: 0.5, // 当消息有 50% 进入视口时触发
+      },
+    );
+
+    if (lastMessageRef.current) {
+      observer.observe(lastMessageRef.current);
+    }
+
+    return () => {
+      if (lastMessageRef.current) {
+        observer.unobserve(lastMessageRef.current);
+      }
+    };
+  }, [messages]); // 当消息列表更新时重新设置观察者
 
   const {
     items: contacts,
@@ -525,13 +551,15 @@ const CustomerService: React.FC = () => {
                 ) : (
                   <>
                     {Array.isArray(messages) &&
-                      messages.map((msg: any) => {
+                      messages.map((msg: any, index: number) => {
                         const isCustomer = msg.sender === 'customer';
                         const isSoftDeleted = msg.isSoftDeleted;
-                        const hasImage = msg.image; // 假设消息对象中有一个image属性
+                        const hasImage = msg.image;
+                        const isLastMessage = index === messages.length - 1;
                         return (
                           <div
                             key={msg?._id}
+                            ref={isLastMessage ? lastMessageRef : null}
                             style={{
                               alignSelf: isCustomer ? 'flex-start' : 'flex-end',
                               maxWidth: '70%',
