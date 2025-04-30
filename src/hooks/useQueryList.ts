@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { queryList } from '@/services/ant-design-pro/api';
 
-const useQueryList = (url: string, hasPermission = true, config = {}) => {
-  const [items, setItems] = useState([]);
+const useQueryList = <T = any>(url: string, hasPermission = true, config = {}) => {
+  const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
 
   const query = async () => {

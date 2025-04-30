@@ -321,7 +321,7 @@ const CustomerService: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
 
   // 更新联系人列表时使用搜索输入
-  const fetchContacts = async (address = '', currentPage = 1) => {
+  const fetchContacts = async (address = '', currentPage = 1, isLoadMore = false) => {
     setLoadingContacts(true);
     try {
       const response: any = await queryList('/chats/latest', {
@@ -329,7 +329,14 @@ const CustomerService: React.FC = () => {
         current: currentPage,
         pageSize: pagination.pageSize,
       });
-      setContacts(response.data);
+
+      // 如果是加载更多，则追加数据，否则替换数据
+      if (isLoadMore) {
+        setContacts((prevContacts: Contact[]) => [...prevContacts, ...response.data]);
+      } else {
+        setContacts(response.data);
+      }
+
       setPagination((prev) => ({
         ...prev,
         total: response.total || 0,
@@ -340,6 +347,15 @@ const CustomerService: React.FC = () => {
     } finally {
       setLoadingContacts(false);
     }
+  };
+
+  // 加载更多联系人
+  const loadMoreContacts = () => {
+    if (loadingContacts || pagination.current * pagination.pageSize >= pagination.total) {
+      return;
+    }
+    const nextPage = pagination.current + 1;
+    fetchContacts(searchInput, nextPage, true);
   };
 
   useEffect(() => {
@@ -424,15 +440,28 @@ const CustomerService: React.FC = () => {
                         (contact) => (contact as any).user?._id === (currentUser as any)?._id,
                       )
                 }
-                pagination={{
-                  current: pagination.current,
-                  pageSize: pagination.pageSize,
-                  total: pagination.total,
-                  onChange: (page) => fetchContacts(searchInput, page),
-                  showSizeChanger: false,
-                  size: 'small',
-                  style: { fontSize: '12px' },
-                }}
+                loadMore={
+                  <div
+                    style={{
+                      textAlign: 'center',
+                      marginTop: 12,
+                      height: 32,
+                      lineHeight: '32px',
+                    }}
+                  >
+                    {loadingContacts ? (
+                      <Spin size="small" />
+                    ) : pagination.current * pagination.pageSize < pagination.total ? (
+                      <Button onClick={loadMoreContacts}>
+                        {intl.formatMessage({ id: 'load.more', defaultMessage: '加载更多' })}
+                      </Button>
+                    ) : (
+                      <span style={{ color: '#999', fontSize: '12px' }}>
+                        {intl.formatMessage({ id: 'no.more', defaultMessage: '没有更多了' })}
+                      </span>
+                    )}
+                  </div>
+                }
                 renderItem={(contact: any) => (
                   <List.Item
                     onClick={() => setSelectedContact(contact)}
