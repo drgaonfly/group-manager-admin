@@ -597,9 +597,8 @@ const CustomerService: React.FC = () => {
                       {selectedContact?.customer?.countryName && (
                         <div>登录地点: {selectedContact.customer.countryName}</div>
                       )}
-
-                      <div>USDT余额: {selectedContact.customer.usdtBalance}</div>
-                      <div> USDT质押: {selectedContact.customer.usdtStaking}</div>
+                      <div>USDT余额: {selectedContact.customer?.usdtBalance}</div>
+                      <div> USDT质押: {selectedContact.customer?.usdtStaking}</div>
                     </div>
                   </div>
                 </div>
