@@ -586,33 +586,16 @@ const CustomerService: React.FC = () => {
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#666' }}>
-                      {selectedContact?.customer?.address && (
-                        <div>
-                          钱包地址:{' '}
-                          {`${selectedContact.customer.address.substring(0, 8)}
-                          .....${selectedContact.customer.address.substring(
-                            selectedContact.customer.address.length - 12,
-                          )}`}
-                        </div>
-                      )}
-                      {selectedContact?.customer?.network && (
-                        <div>网络: {selectedContact.customer.network}</div>
-                      )}
-                      {selectedContact?.customer?.createdAt && (
-                        <div>
-                          创建时间: {new Date(selectedContact.customer.createdAt).toLocaleString()}
-                        </div>
-                      )}
                       {selectedContact?.customer?.logedinAt && (
                         <div>
                           登录时间: {new Date(selectedContact.customer.logedinAt).toLocaleString()}
                         </div>
                       )}
-                      {selectedContact?.customer?.registerIP && (
-                        <div>注册IP: {selectedContact.customer.registerIP}</div>
-                      )}
                       {selectedContact?.customer?.loginIP && (
                         <div>登录IP: {selectedContact.customer.loginIP}</div>
+                      )}
+                      {selectedContact?.customer?.countryName && (
+                        <div>登录地点: {selectedContact.customer.countryName}</div>
                       )}
                     </div>
                   </div>
