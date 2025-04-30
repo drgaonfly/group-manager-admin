@@ -342,8 +342,16 @@ const CustomerService: React.FC = () => {
     }
   };
 
+  // 在组件的顶部或者适当位置添加这段样式
+  const messageHoverStyle = `
+  .message-bubble:hover .delete-button {
+    opacity: 1 !important;
+  }
+`;
+
   return (
     <PageContainer>
+      <style>{messageHoverStyle}</style>
       <div style={{ display: 'flex', height: 'calc(100vh - 100px)' }}>
         <div
           style={{
@@ -572,6 +580,7 @@ const CustomerService: React.FC = () => {
                               marginBottom: '10%',
                               position: 'relative',
                             }}
+                            className="message-bubble"
                           >
                             <div
                               style={{
@@ -583,6 +592,10 @@ const CustomerService: React.FC = () => {
                                 color: isCustomer ? 'black' : 'white',
                                 wordBreak: 'break-word',
                                 position: 'relative',
+                                padding: '10px 15px',
+                                borderRadius: '12px',
+                                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+                                marginBottom: '5px',
                               }}
                             >
                               {msg.message ? (
@@ -594,27 +607,18 @@ const CustomerService: React.FC = () => {
                                   style={{ maxWidth: '100%' }}
                                 />
                               ) : null}
-                              <span
-                                style={{
-                                  position: 'absolute',
-                                  bottom: '-15px',
-                                  fontSize: '10px',
-                                  color: 'red',
-                                  right: isCustomer ? '0' : '120px',
-                                }}
-                              >
-                                {isSoftDeleted ? '已删除' : ''}
-                              </span>
                               <div
                                 style={{
                                   position: 'absolute',
                                   top: '5px',
                                   right: '5px',
-                                  opacity: 0.7,
+                                  opacity: 0,
                                   cursor: 'pointer',
                                   zIndex: 10,
                                   color: isCustomer ? 'black' : 'white',
+                                  transition: 'opacity 0.2s',
                                 }}
+                                className="delete-button"
                               >
                                 {access.canSoftDeleteChat && (
                                   <Popconfirm
@@ -639,25 +643,21 @@ const CustomerService: React.FC = () => {
                                 fontSize: '12px',
                                 color: '#999',
                                 marginTop: '5px',
-                                textAlign: 'right',
+                                display: 'flex',
+                                justifyContent: isCustomer ? 'flex-start' : 'flex-end',
+                                alignItems: 'center',
+                                gap: '8px',
                               }}
                             >
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  left: 0,
-                                  color: '#999',
-                                  fontSize: '12px',
-                                  marginTop: '5px',
-                                }}
-                              >
+                              <span>
                                 {new Date(msg.createdAt).toLocaleTimeString([], {
                                   hour: '2-digit',
                                   minute: '2-digit',
                                 })}
-                              </div>
+                              </span>
+                              {isSoftDeleted && <span style={{ color: 'red' }}>已删除</span>}
                               {!isCustomer && (
-                                <span style={{ marginLeft: '10px', color: '#999' }}>
+                                <span style={{ color: msg.isRead ? '#52c41a' : '#999' }}>
                                   {msg.isRead ? '已读' : '未读'}
                                 </span>
                               )}
