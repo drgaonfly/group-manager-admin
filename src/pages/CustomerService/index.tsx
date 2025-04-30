@@ -11,6 +11,7 @@ import ReactQuill from 'react-quill';
 import { format } from 'timeago.js';
 import { playSound } from '@/components/socketNotification/NotificationBadge';
 import { ReloadOutlined } from '@ant-design/icons'; // 引入重置图标
+import { getSocket } from '@/components/socketNotification/useSocketNotification';
 
 const { Title, Text } = Typography;
 
@@ -83,12 +84,18 @@ const CustomerService: React.FC = () => {
     pageSize: 50,
     total: 0,
   });
+  const socket = getSocket();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         // 当最后一条消息进入视口时
         if (entries[0].isIntersecting) {
+          socket.emit('mark-read', {
+            customerId: selectedContact?.customer?._id,
+            sender: 'customer',
+            userId: selectedContact?.user?._id,
+          });
           console.log('Last message is visible');
           // 这里可以添加你的逻辑，比如标记消息为已读等
         }
