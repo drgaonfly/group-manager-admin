@@ -13,7 +13,13 @@ import {
   Badge,
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
-import { SendOutlined, UserOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  SendOutlined,
+  UserOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 import { queryList, updateItem } from '@/services/ant-design-pro/api';
 import { request, FormattedMessage, useModel, useAccess } from '@umijs/max';
@@ -21,7 +27,6 @@ import Editor from '@/components/Editor';
 import ReactQuill from 'react-quill';
 import { format } from 'timeago.js';
 import { playSound } from '@/components/socketNotification/NotificationBadge';
-import { ReloadOutlined } from '@ant-design/icons'; // 引入重置图标
 
 const { Title, Text } = Typography;
 
@@ -458,12 +463,18 @@ const CustomerService: React.FC = () => {
                                 marginLeft: '4px',
                                 cursor: 'pointer',
                                 color: '#1890ff',
+                                display: 'flex',
+                                alignItems: 'center',
                               }}
-                              onClick={() =>
-                                handleUpdateRemark(contact.customer?._id, contact.customer?.remark)
-                              }
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleUpdateRemark(contact.customer?._id, contact.customer?.remark);
+                              }}
                             >
                               {contact.customer?.remark ? contact.customer.remark : '设置备注名'}
+                              <EditOutlined
+                                style={{ marginLeft: '4px', fontSize: '12px', color: '#1890ff' }}
+                              />
                             </span>
                           </div>
                         </div>
