@@ -342,8 +342,30 @@ const CustomerService: React.FC = () => {
     }
   };
 
+  // 在组件的顶部或者适当位置添加这段样式
+  const messageHoverStyle = `
+  .message-bubble:hover .delete-button {
+    opacity: 1 !important;
+  }
+  
+  .message-content .ql-editor {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+  }
+  
+  .message-content .ql-container {
+    border: none !important;
+  }
+  
+  .message-content p {
+    margin: 0 !important;
+  }
+`;
+
   return (
     <PageContainer>
+      <style>{messageHoverStyle}</style>
       <div style={{ display: 'flex', height: 'calc(100vh - 100px)' }}>
         <div
           style={{
@@ -451,9 +473,10 @@ const CustomerService: React.FC = () => {
                                 cursor: 'pointer',
                                 color: '#1890ff',
                               }}
-                              onClick={() =>
-                                handleUpdateRemark(contact.customer?._id, contact.customer?.remark)
-                              }
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleUpdateRemark(contact.customer?._id, contact.customer?.remark);
+                              }}
                             >
                               {contact.customer?.remark ? contact.customer.remark : '设置备注名'}
                             </span>
@@ -539,7 +562,7 @@ const CustomerService: React.FC = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
-                  marginBottom: '80px',
+                  marginBottom: '120px', // 从80px增加到120px，增加底部间距
                 }}
               >
                 {loadingMessages ? (
@@ -569,9 +592,10 @@ const CustomerService: React.FC = () => {
                             style={{
                               alignSelf: isCustomer ? 'flex-start' : 'flex-end',
                               maxWidth: '70%',
-                              marginBottom: '10%',
+                              marginBottom: '15px',
                               position: 'relative',
                             }}
+                            className="message-bubble"
                           >
                             <div
                               style={{
@@ -581,12 +605,27 @@ const CustomerService: React.FC = () => {
                                   ? '#f0f0f0'
                                   : '#1890ff',
                                 color: isCustomer ? 'black' : 'white',
-                                wordBreak: 'break-word',
+                                padding: '8px 12px',
+                                borderRadius: isCustomer ? '0 15px 15px 15px' : '15px 0 15px 15px',
+                                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                                 position: 'relative',
+                                wordBreak: 'break-word',
+                                display: 'inline-block',
+                                maxWidth: '100%',
                               }}
                             >
                               {msg.message ? (
-                                <ReactQuill value={msg.message} readOnly={true} theme="bubble" />
+                                <div className="message-content">
+                                  <ReactQuill
+                                    value={msg.message}
+                                    readOnly={true}
+                                    theme="bubble"
+                                    style={{
+                                      padding: 0,
+                                      margin: 0,
+                                    }}
+                                  />
+                                </div>
                               ) : hasImage ? (
                                 <img
                                   src={msg.image}
@@ -594,27 +633,18 @@ const CustomerService: React.FC = () => {
                                   style={{ maxWidth: '100%' }}
                                 />
                               ) : null}
-                              <span
-                                style={{
-                                  position: 'absolute',
-                                  bottom: '-15px',
-                                  fontSize: '10px',
-                                  color: 'red',
-                                  right: isCustomer ? '0' : '120px',
-                                }}
-                              >
-                                {isSoftDeleted ? '已删除' : ''}
-                              </span>
                               <div
                                 style={{
                                   position: 'absolute',
                                   top: '5px',
                                   right: '5px',
-                                  opacity: 0.7,
+                                  opacity: 0,
                                   cursor: 'pointer',
                                   zIndex: 10,
                                   color: isCustomer ? 'black' : 'white',
+                                  transition: 'opacity 0.2s',
                                 }}
+                                className="delete-button"
                               >
                                 {access.canSoftDeleteChat && (
                                   <Popconfirm
@@ -639,25 +669,21 @@ const CustomerService: React.FC = () => {
                                 fontSize: '12px',
                                 color: '#999',
                                 marginTop: '5px',
-                                textAlign: 'right',
+                                display: 'flex',
+                                justifyContent: isCustomer ? 'flex-start' : 'flex-end',
+                                alignItems: 'center',
+                                gap: '8px',
                               }}
                             >
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  left: 0,
-                                  color: '#999',
-                                  fontSize: '12px',
-                                  marginTop: '5px',
-                                }}
-                              >
+                              <span>
                                 {new Date(msg.createdAt).toLocaleTimeString([], {
                                   hour: '2-digit',
                                   minute: '2-digit',
                                 })}
-                              </div>
+                              </span>
+                              {isSoftDeleted && <span style={{ color: 'red' }}>已删除</span>}
                               {!isCustomer && (
-                                <span style={{ marginLeft: '10px', color: '#999' }}>
+                                <span style={{ color: msg.isRead ? '#52c41a' : '#999' }}>
                                   {msg.isRead ? '已读' : '未读'}
                                 </span>
                               )}
