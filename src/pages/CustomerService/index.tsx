@@ -475,11 +475,17 @@ const CustomerService: React.FC = () => {
                           >
                             <span>{contact.customer?.network}-</span>
                             <Typography.Text
-                              copyable
+                              copyable={{ text: contact.customer?.address }}
                               style={{ fontSize: '12px', color: '#999' }}
-                              ellipsis={{ tooltip: contact.customer?.address }}
                             >
-                              {contact.customer?.address}
+                              {contact.customer?.address
+                                ? `${contact.customer.address.substring(
+                                    0,
+                                    8,
+                                  )}...${contact.customer.address.substring(
+                                    contact.customer.address.length - 12,
+                                  )}`
+                                : ''}
                             </Typography.Text>
                           </div>
                         </div>
