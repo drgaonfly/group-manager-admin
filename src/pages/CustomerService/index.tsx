@@ -555,7 +555,13 @@ const CustomerService: React.FC = () => {
                     </div>
                     <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#666' }}>
                       {selectedContact?.customer?.address && (
-                        <div>钱包地址: {selectedContact.customer.address}</div>
+                        <div>
+                          钱包地址:{' '}
+                          {`${selectedContact.customer.address.substring(0, 8)}
+                          .....${selectedContact.customer.address.substring(
+                            selectedContact.customer.address.length - 12,
+                          )}`}
+                        </div>
                       )}
                       {selectedContact?.customer?.network && (
                         <div>网络: {selectedContact.customer.network}</div>
