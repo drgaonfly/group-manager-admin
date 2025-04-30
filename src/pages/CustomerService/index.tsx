@@ -13,13 +13,7 @@ import {
   Badge,
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  SendOutlined,
-  UserOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { SendOutlined, UserOutlined, DeleteOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 import { queryList, updateItem } from '@/services/ant-design-pro/api';
 import { request, FormattedMessage, useModel, useAccess } from '@umijs/max';
@@ -27,6 +21,7 @@ import Editor from '@/components/Editor';
 import ReactQuill from 'react-quill';
 import { format } from 'timeago.js';
 import { playSound } from '@/components/socketNotification/NotificationBadge';
+import { ReloadOutlined } from '@ant-design/icons'; // 引入重置图标
 
 const { Title, Text } = Typography;
 
@@ -463,8 +458,6 @@ const CustomerService: React.FC = () => {
                                 marginLeft: '4px',
                                 cursor: 'pointer',
                                 color: '#1890ff',
-                                display: 'flex',
-                                alignItems: 'center',
                               }}
                               onClick={(e) => {
                                 e.stopPropagation(); // 阻止事件冒泡
@@ -472,9 +465,6 @@ const CustomerService: React.FC = () => {
                               }}
                             >
                               {contact.customer?.remark ? contact.customer.remark : '设置备注名'}
-                              <EditOutlined
-                                style={{ marginLeft: '4px', fontSize: '12px', color: '#1890ff' }}
-                              />
                             </span>
                           </div>
                         </div>
@@ -601,12 +591,11 @@ const CustomerService: React.FC = () => {
                                   ? '#f0f0f0'
                                   : '#1890ff',
                                 color: isCustomer ? 'black' : 'white',
-                                wordBreak: 'break-word',
-                                position: 'relative',
                                 padding: '10px 15px',
-                                borderRadius: '12px',
+                                borderRadius: isCustomer ? '0 15px 15px 15px' : '15px 0 15px 15px',
                                 boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-                                marginBottom: '5px',
+                                position: 'relative',
+                                wordBreak: 'break-word',
                               }}
                             >
                               {msg.message ? (
