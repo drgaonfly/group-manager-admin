@@ -1,10 +1,12 @@
 import React from 'react';
 import { useModel } from '@umijs/max';
 import { useSocketNotification } from './useSocketNotification';
-import { notification } from 'antd';
+import { Badge, notification } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
 import { ChatMessage } from '@/models/chatMessageModel';
 import { ChatMessageReadStatus } from '@/models/chatMessageReadModel';
+import { history } from '@umijs/max';
+import { UnreadCountData } from '@/models/unreadMessageCountModel';
 
 // 预加载声音
 const soundSrc = '/sounds/newCustomerBeep.mp3';
@@ -32,6 +34,7 @@ const NotificationBadge: React.FC = () => {
   const { handleCustomerStatusChange } = useModel('customerStatusModel');
   const { handleChatMessageChange } = useModel('chatMessageModel');
   const { handleMessageReadStatusChange } = useModel('chatMessageReadModel');
+  const { handleUnreadCountUpdate } = useModel('unreadMessageCountModel');
 
   useSocketNotification([
     {
@@ -59,13 +62,20 @@ const NotificationBadge: React.FC = () => {
         handleMessageReadStatusChange(data);
       },
     },
+    {
+      eventName: 'unreadMessageCountUpdated',
+      initialEmitEvent: 'getUnreadMessageCount',
+      onDataReceived: (data: UnreadCountData) => {
+        // 更新未读消息数量
+        handleUnreadCountUpdate(data);
+      },
+    },
   ]);
 
   return (
-    <BellOutlined
-      onClick={playSound}
-      style={{ fontSize: '12px', padding: '5px 10px', border: 'none' }}
-    />
+    <Badge count={5} size="small">
+      <BellOutlined onClick={() => history.push(`/customer-service?t=${Date.now()}`)} />
+    </Badge>
   );
 };
 
