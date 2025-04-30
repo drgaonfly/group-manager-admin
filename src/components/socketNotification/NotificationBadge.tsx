@@ -37,6 +37,7 @@ const NotificationBadge: React.FC = () => {
   const { handleUnreadCountUpdate, unreadCount } = useModel('unreadMessageCountModel');
 
   useSocketNotification([
+    // 处理新客户
     {
       eventName: 'newCustomerAdded',
       onDataReceived: (data: { title: string; message: string }) => {
@@ -44,29 +45,32 @@ const NotificationBadge: React.FC = () => {
         openNotification(data.title, data.message, true);
       },
     },
+    // 处理客户状态变化
     {
       eventName: 'customer_status',
       onDataReceived: (data: { customerId: string; isOn: boolean; lastOnline: Date }) => {
         handleCustomerStatusChange(data);
       },
     },
+    // 处理新消息
     {
       eventName: 'chatMessage',
       onDataReceived: (data: ChatMessage) => {
         handleChatMessageChange(data);
       },
     },
+    // 处理已读消息
     {
       eventName: 'chatMessageRead',
       onDataReceived: (data: ChatMessageReadStatus) => {
         handleMessageReadStatusChange(data);
       },
     },
+    // 通知未读消息数量
     {
       eventName: 'unreadMessageCountUpdated',
       initialEmitEvent: 'getUnreadMessageCount',
       onDataReceived: (data: UnreadCountData) => {
-        // 更新未读消息数量
         handleUnreadCountUpdate(data);
       },
     },

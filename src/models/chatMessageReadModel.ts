@@ -13,21 +13,18 @@ export default function ChatMessageReadModel() {
     sender: '',
   });
 
-  const handleMessageReadStatusChange = useCallback(
-    (data: { customerId: string; userId: string; sender: string }) => {
-      console.log('Message read status changed:', {
-        customerId: data.customerId,
-        userId: data.userId,
-        sender: data.sender,
-      });
-      setMessageReadStatus({
-        customerId: data.customerId,
-        userId: data.userId,
-        sender: data.sender,
-      });
-    },
-    [],
-  );
+  const handleMessageReadStatusChange = useCallback((data: ChatMessageReadStatus) => {
+    console.log('Message read status changed:', {
+      customerId: data.customerId,
+      userId: data.userId,
+      sender: data.sender,
+    });
+    setMessageReadStatus({
+      customerId: data.customerId,
+      userId: data.userId,
+      sender: data.sender,
+    });
+  }, []);
 
   return { handleMessageReadStatusChange, messageReadStatus };
 }
