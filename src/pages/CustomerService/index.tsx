@@ -80,7 +80,7 @@ const CustomerService: React.FC = () => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 2,
+    pageSize: 30,
     total: 0,
   });
 
@@ -430,6 +430,8 @@ const CustomerService: React.FC = () => {
                   total: pagination.total,
                   onChange: (page) => fetchContacts(searchInput, page),
                   showSizeChanger: false,
+                  size: 'small',
+                  style: { fontSize: '12px' },
                 }}
                 renderItem={(contact: any) => (
                   <List.Item
