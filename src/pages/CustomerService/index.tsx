@@ -2,7 +2,7 @@ import { useIntl } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, List, Avatar, Typography, Spin, Popconfirm, Input, Modal, message } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
-import { SendOutlined, UserOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SendOutlined, UserOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 import { queryList, updateItem } from '@/services/ant-design-pro/api';
 import { request, FormattedMessage, useModel, useAccess } from '@umijs/max';
@@ -497,6 +497,9 @@ const CustomerService: React.FC = () => {
                               }}
                             >
                               {contact.customer?.remark ? contact.customer.remark : '设置备注名'}
+                              <EditOutlined
+                                style={{ marginLeft: '4px', fontSize: '12px', color: '#1890ff' }}
+                              />
                             </span>
                           </div>
                         </div>
