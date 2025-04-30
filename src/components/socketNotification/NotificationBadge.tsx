@@ -34,7 +34,7 @@ const NotificationBadge: React.FC = () => {
   const { handleCustomerStatusChange } = useModel('customerStatusModel');
   const { handleChatMessageChange } = useModel('chatMessageModel');
   const { handleMessageReadStatusChange } = useModel('chatMessageReadModel');
-  const { handleUnreadCountUpdate } = useModel('unreadMessageCountModel');
+  const { handleUnreadCountUpdate, unreadCount } = useModel('unreadMessageCountModel');
 
   useSocketNotification([
     {
@@ -73,7 +73,7 @@ const NotificationBadge: React.FC = () => {
   ]);
 
   return (
-    <Badge count={5} size="small">
+    <Badge count={unreadCount} size="small">
       <BellOutlined onClick={() => history.push(`/customer-service?t=${Date.now()}`)} />
     </Badge>
   );
