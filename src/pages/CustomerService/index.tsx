@@ -430,7 +430,7 @@ const CustomerService: React.FC = () => {
                                 width: '8px',
                                 height: '8px',
                                 borderRadius: '50%',
-                                backgroundColor: contact.customer?.isOnline ? '#52c41a' : '#f5222d',
+                                backgroundColor: contact.customer?.isOnline ? '#52c41a' : '#808080',
                                 display: 'inline-block',
                               }}
                             />
@@ -518,7 +518,7 @@ const CustomerService: React.FC = () => {
                   </div>
                   <div>
                     <Badge
-                      status={selectedContact.customer?.isOnline ? 'success' : 'error'}
+                      status={selectedContact.customer?.isOnline ? 'success' : 'default'}
                       style={{ marginLeft: '10px' }}
                     />
                   </div>
