@@ -80,7 +80,7 @@ const CustomerService: React.FC = () => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 30,
+    pageSize: 1,
     total: 0,
   });
 
@@ -625,6 +625,9 @@ const CustomerService: React.FC = () => {
                       )}
                       {selectedContact?.customer?.countryName && (
                         <div>登录地点: {selectedContact.customer.countryName}</div>
+                      )}
+                      {selectedContact?.customer?.proxy?.name && (
+                        <div>代理用户: {selectedContact.customer.proxy.name}</div>
                       )}
                       <div>USDT余额: {selectedContact.customer?.usdtBalance}</div>
                       <div> USDT质押: {selectedContact.customer?.usdtStaking}</div>
