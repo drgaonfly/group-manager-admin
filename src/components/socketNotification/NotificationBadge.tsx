@@ -68,7 +68,7 @@ const NotificationBadge: React.FC = () => {
     },
     // 通知未读消息数量
     {
-      eventName: 'unreadMessageCountUpdated',
+      eventName: 'unreadUserMessageCountUpdated',
       initialEmitEvent: 'getUnreadMessageCount',
       onDataReceived: (data: UnreadCountData) => {
         handleUnreadCountUpdate(data);
