@@ -189,11 +189,15 @@ const CustomerService: React.FC = () => {
   useEffect(() => {
     console.log('Chat Message:', chatMessage);
 
+    if (!chatMessage?.customer) return; // 如果没有消息，直接返回
+
     const customerId = chatMessage?.customer?._id;
 
     if (!customerId) return;
 
     if (chatMessage?.sender !== 'customer') return; // 忽略非客户发送的消息
+
+    playSound();
 
     // 以下分两种情况处理：
     // 1. 当当前选中的联系人是新消息的客户时，直接添加消息到消息列表
@@ -202,7 +206,6 @@ const CustomerService: React.FC = () => {
     // 进入跟客户聊天窗口时，直接添加消息
     // 如果当前选中的联系人是新消息的客户
     if (selectedContact?.customer?._id === customerId) {
-      playSound();
       setMessages((prevMessages: any) => [...prevMessages, chatMessage]);
     }
 
@@ -211,13 +214,11 @@ const CustomerService: React.FC = () => {
 
     // 在联系人列表上不存在时
     if (!existingContact && selectedContact?.customer?._id !== customerId) {
-      playSound();
       // @ts-ignore
       setContacts((prevContacts) => [chatMessage, ...prevContacts]);
     }
 
     if (existingContact) {
-      playSound();
       // 更新联系人列表中的未读消息数
       setContacts((prevContacts: any) =>
         prevContacts.map((contact: any) =>
@@ -762,7 +763,7 @@ const CustomerService: React.FC = () => {
                               {isSoftDeleted && <span style={{ color: 'red' }}>已删除</span>}
                               {!isCustomer && (
                                 <span style={{ color: msg.isRead ? '#52c41a' : '#999' }}>
-                                  {msg.isRead ? '已读' : '未读'}
+                                  {msg.isRead ? '✓✓' : '✓'}
                                 </span>
                               )}
                             </div>

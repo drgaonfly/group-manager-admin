@@ -15,8 +15,8 @@ export interface ChatMessage {
 
 export default function Page() {
   const [chatMessage, setChatMessage] = useState<ChatMessage>({
-    customer: '',
-    user: '',
+    customer: null,
+    user: null,
     message: '',
     sender: 'user',
     isRead: false,
