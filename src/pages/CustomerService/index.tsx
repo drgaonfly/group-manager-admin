@@ -1,4 +1,4 @@
-import { useIntl } from '@umijs/max';
+import { useIntl, useLocation } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, List, Avatar, Typography, Spin, Popconfirm, Input, Modal, message } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
@@ -195,8 +195,6 @@ const CustomerService: React.FC = () => {
 
     if (chatMessage?.sender !== 'customer') return; // 忽略非客户发送的消息
 
-    playSound();
-
     // 以下分两种情况处理：
     // 1. 当当前选中的联系人是新消息的客户时，直接添加消息到消息列表
     // 2. 当当前选中的联系人不是新消息的客户时，检查新消息的客户是否存在于联系人列表中
@@ -204,6 +202,7 @@ const CustomerService: React.FC = () => {
     // 进入跟客户聊天窗口时，直接添加消息
     // 如果当前选中的联系人是新消息的客户
     if (selectedContact?.customer?._id === customerId) {
+      playSound();
       setMessages((prevMessages: any) => [...prevMessages, chatMessage]);
     }
 
@@ -212,11 +211,13 @@ const CustomerService: React.FC = () => {
 
     // 在联系人列表上不存在时
     if (!existingContact && selectedContact?.customer?._id !== customerId) {
+      playSound();
       // @ts-ignore
       setContacts((prevContacts) => [chatMessage, ...prevContacts]);
     }
 
     if (existingContact) {
+      playSound();
       // 更新联系人列表中的未读消息数
       setContacts((prevContacts: any) =>
         prevContacts.map((contact: any) =>
@@ -360,6 +361,15 @@ const CustomerService: React.FC = () => {
   useEffect(() => {
     fetchContacts('', pagination.current);
   }, []);
+
+  const { search } = useLocation();
+  const t = new URLSearchParams(search).get('t');
+
+  useEffect(() => {
+    // 当搜索输入改变时，重新获取联系人列表
+    fetchContacts(searchInput, pagination.current);
+    setSelectedContact(undefined);
+  }, [t]);
 
   // 在组件的顶部或者适当位置添加这段样式
   const messageHoverStyle = `
