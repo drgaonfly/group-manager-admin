@@ -2,7 +2,13 @@ import { useIntl, useLocation } from '@umijs/max';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, List, Avatar, Typography, Spin, Popconfirm, Input, Modal, message } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
-import { SendOutlined, UserOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  SendOutlined,
+  UserOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ArrowDownOutlined,
+} from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 import { queryList, updateItem } from '@/services/ant-design-pro/api';
 import { request, FormattedMessage, useModel, useAccess } from '@umijs/max';
@@ -637,9 +643,26 @@ const CustomerService: React.FC = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
-                  marginBottom: '120px', // 从80px增加到120px，增加底部间距
+                  marginBottom: '120px',
                 }}
               >
+                {/* 添加滚动到底部按钮 */}
+                {messages.length > 0 && (
+                  <Button
+                    type="primary"
+                    shape="circle"
+                    icon={<ArrowDownOutlined />}
+                    style={{
+                      position: 'fixed',
+                      right: '40px',
+                      bottom: '140px',
+                      zIndex: 100,
+                      opacity: 0.8,
+                    }}
+                    onClick={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                  />
+                )}
+
                 {loadingMessages ? (
                   <div
                     style={{
