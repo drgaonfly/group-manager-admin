@@ -9,7 +9,6 @@ import { request, FormattedMessage, useModel, useAccess } from '@umijs/max';
 import Editor from '@/components/Editor';
 import ReactQuill from 'react-quill';
 import { format } from 'timeago.js';
-import { playSound } from '@/components/socketNotification/NotificationBadge';
 import { ReloadOutlined } from '@ant-design/icons'; // 引入重置图标
 import { getSocket } from '@/components/socketNotification/useSocketNotification';
 
@@ -170,10 +169,9 @@ const CustomerService: React.FC = () => {
   useEffect(() => {
     const customerId = messageReadStatus?.customerId;
 
-    const existingContact = contacts.find(
-      (contact: any) =>
-        contact.customer?._id === customerId && messageReadStatus?.sender === 'customer',
-    );
+    if (messageReadStatus?.sender !== 'customer') return;
+
+    const existingContact = contacts.find((contact: any) => contact.customer?._id === customerId);
 
     if (existingContact) {
       // 更新联系人列表中的未读消息数
@@ -196,8 +194,6 @@ const CustomerService: React.FC = () => {
     if (!customerId) return;
 
     if (chatMessage?.sender !== 'customer') return; // 忽略非客户发送的消息
-
-    playSound();
 
     // 以下分两种情况处理：
     // 1. 当当前选中的联系人是新消息的客户时，直接添加消息到消息列表

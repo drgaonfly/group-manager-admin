@@ -56,14 +56,19 @@ const NotificationBadge: React.FC = () => {
     {
       eventName: 'chatMessage',
       onDataReceived: (data: ChatMessage) => {
-        handleChatMessageChange(data);
+        if (data?.sender === 'customer') {
+          playSound();
+          handleChatMessageChange(data);
+        }
       },
     },
     // 处理已读消息
     {
       eventName: 'chatMessageRead',
       onDataReceived: (data: ChatMessageReadStatus) => {
-        handleMessageReadStatusChange(data);
+        if (data?.sender === 'customer') {
+          handleMessageReadStatusChange(data);
+        }
       },
     },
     // 通知未读消息数量
