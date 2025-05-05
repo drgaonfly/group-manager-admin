@@ -2,19 +2,15 @@ import { useIntl } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { FormattedMessage, useAccess, useModel } from '@umijs/max';
-import { message, Typography, Tooltip, Button, TreeSelect } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { FormattedMessage, useAccess } from '@umijs/max';
+import { message, Typography, TreeSelect } from 'antd';
+import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import { Switch } from 'antd';
-import Collection from './components/Collection';
-import { NetworkEnum } from '@/enums/networkEnum';
-import { SyncOutlined } from '@ant-design/icons';
 import useQueryList from '@/hooks/useQueryList';
 /**
  * @en-US Add node
@@ -65,96 +61,6 @@ const handleUpdate = async (fields: FormValueType) => {
       ),
     );
     return false;
-  }
-};
-
-//暂停收益
-const handlePauseEarnings = async (fields: FormValueType) => {
-  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
-  try {
-    // 调用暂停/恢复收益的接口
-    await updateItem(`/customers/${fields._id}/pause-income`, {});
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
-      ),
-    );
-    return false;
-  }
-};
-
-const handleVerified = async (fields: FormValueType) => {
-  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
-  try {
-    await updateItem(`/customers/${fields._id}/verified`, {});
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    // 处理特定的错误消息
-    if (error?.response?.data?.message === '模拟账户不能设置为授权账户') {
-      message.error('模拟账户不能设置为授权账户');
-    } else {
-      message.error(
-        error?.response?.data?.message ?? (
-          <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
-        ),
-      );
-    }
-    return false;
-  }
-};
-
-const handleAuthorized = async (fields: FormValueType) => {
-  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
-  try {
-    await updateItem(`/customers/${fields._id}/authorized`, {});
-    hide();
-
-    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    // 处理特定的错误消息
-    if (error?.response?.data?.message === '模拟账户不能设置为授权账户') {
-      message.error('模拟账户不能设置为授权账户');
-    } else {
-      message.error(
-        error?.response?.data?.message ?? (
-          <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
-        ),
-      );
-    }
-    return false;
-  }
-};
-
-const updateUsdtBalance = async (record: API.ItemData): Promise<boolean> => {
-  if (!record || !record._id) {
-    throw new Error('缺少用户ID');
-  }
-
-  // 添加模拟账户检查
-  if (record.isAuthorized === true) {
-    message.error('模拟账户无法更新余额');
-  }
-
-  try {
-    // const usdtBalance = await fetchRealUsdtBalance(record);
-    await updateItem(`/customers/${record._id}/refresh-usdt-balance`);
-    return true;
-  } catch (error) {
-    console.error('更新USDT余额失败:', error);
-    throw error;
   }
 };
 
@@ -211,49 +117,13 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const { items: customers, loading } = useQueryList('/customers');
-
-  // const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
-
-  // Add state for withdraw modal
-  const [withdrawModalOpen, setWithdrawModalOpen] = useState<boolean>(false);
-  const { customerNewTimeFlag } = useModel('notificationModel');
-
-  useEffect(() => {
-    if (customerNewTimeFlag) {
-      if (actionRef.current) {
-        actionRef.current.reload();
-      }
-    }
-  }, [customerNewTimeFlag]);
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  // Define roles object with index signature
-
-  // const [updateBalanceModalOpen, setUpdateBalanceModalOpen] = useState<boolean>(false);
-  // 在TableList组件内部，其他useState声明附近添加
-  const [refreshingBalance] = useState<boolean>(false);
-  const [pausingIncome, setPausingIncome] = useState<Record<string, boolean>>({});
 
   const columns: ProColumns<API.ItemData>[] = [
     {
       // add id column
       title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
-    },
-    {
-      title: intl.formatMessage({ id: 'walletAddress' }),
-      dataIndex: 'address',
-      copyable: true,
-      hideInSearch: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'network' }),
-      dataIndex: 'network',
-      valueEnum: NetworkEnum,
     },
     {
       title: intl.formatMessage({ id: 'parent_customer_id' }),
@@ -280,151 +150,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'interestRate', defaultMessage: '收益倍率' }),
-      hideInSearch: true,
-      render: (_, record) => (
-        <React.Fragment>
-          <p>
-            {intl.formatMessage({ id: 'liquidRate', defaultMessage: '流动倍率' })} :{' '}
-            {record?.liquidRate}
-          </p>
-          <p>
-            {intl.formatMessage({ id: 'stakeRate', defaultMessage: '质押倍率' })} :{' '}
-            {record?.stakeRate}
-          </p>
-        </React.Fragment>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'frozenAmount', defaultMessage: '冻结金额' }),
-      hideInSearch: true,
-      render: (_, record) => (
-        <React.Fragment>
-          <p>
-            {intl.formatMessage({ id: 'withdrawFrozen', defaultMessage: '提现冻结' })} :{' '}
-            {record?.frozenAmount}
-          </p>
-          <p>
-            {intl.formatMessage({ id: 'stakingFrozen', defaultMessage: '质押冻结' })} :{' '}
-            {record?.stakingFrozenAmount}
-          </p>
-        </React.Fragment>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'estateOverview' }),
-      hideInSearch: true,
-      render: (_, record) => (
-        <React.Fragment>
-          <p>
-            {intl.formatMessage({ id: 'usdtOfwallet' })} : {record?.usdtBalance}
-            {access.canRefreshUsdtBalance && (
-              <Tooltip
-                title={intl.formatMessage({ id: 'refreshBalance', defaultMessage: '刷新余额' })}
-              >
-                <Button
-                  type="link"
-                  size="small"
-                  loading={refreshingBalance} // 使用loading属性替代icon实现预加载效果
-                  icon={<SyncOutlined />}
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    // setRefreshingBalance(true);
-                    try {
-                      // 显示加载状态
-                      const hide = message.loading(
-                        intl.formatMessage({
-                          id: 'updating_balance',
-                          defaultMessage: '正在更新余额...',
-                        }),
-                      );
-
-                      await updateUsdtBalance(record);
-                      hide(); // 隐藏加载提示
-
-                      message.success(
-                        intl.formatMessage({ id: 'balance_updated', defaultMessage: '余额已更新' }),
-                      );
-                      // 刷新表格数据
-                      if (actionRef.current) {
-                        actionRef.current.reload();
-                      }
-                    } catch (error: any) {
-                      message.error(
-                        error.message ||
-                          intl.formatMessage({
-                            id: 'balance_update_failed',
-                            defaultMessage: '余额更新失败',
-                          }),
-                      );
-                    } finally {
-                      // setRefreshingBalance(false);
-                    }
-                  }}
-                />
-              </Tooltip>
-            )}
-          </p>
-          <p>
-            {intl.formatMessage({ id: 'usdtOfstake' })} : {record?.usdtStaking}
-          </p>
-          <p>
-            {intl.formatMessage({ id: 'usdtOfplatform' })} : {record?.usdtPlatform}
-          </p>
-          <p>
-            {intl.formatMessage({ id: 'ethOfplatform' })} : {record?.ethPlatform}
-          </p>
-        </React.Fragment>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'customerOverview' }),
-      dataIndex: 'overview',
-      hideInSearch: true,
-      render: (_, record) => (
-        <div>
-          <div>
-            <strong>{intl.formatMessage({ id: 'registeredAt' })} :</strong>{' '}
-            {record?.createdAt || '-'}
-          </div>
-          <div>
-            <strong>{intl.formatMessage({ id: 'logedinAt' })} :</strong> {record?.logedinAt || '-'}
-          </div>
-          <div>
-            <strong>{intl.formatMessage({ id: 'registeredIP' })} :</strong>
-            {record?.registerIP}
-          </div>
-          <div>
-            <strong>{intl.formatMessage({ id: 'LogedinIP' })} :</strong> {record?.loginIP}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'accountType' }),
-      dataIndex: 'isAuthorized',
-      hideInSearch: false,
-      hideInTable: !access.canAuthorized,
-      valueEnum: {
-        true: { text: intl.formatMessage({ id: 'demoAccount' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'customer' }), status: 'Error' },
-      },
-      render: (_, record: any) =>
-        access.canAuthorized && (
-          <Switch
-            checkedChildren={intl.formatMessage({ id: 'demoAccount' })}
-            unCheckedChildren={intl.formatMessage({ id: 'customer' })}
-            checked={record.isAuthorized}
-            onChange={async () => {
-              await handleAuthorized({ _id: record._id });
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }}
-          />
-        ),
-    },
-    {
       title: intl.formatMessage({ id: 'inviteCode' }),
       dataIndex: 'ownInviteCode',
       hideInSearch: true,
@@ -433,43 +158,6 @@ const TableList: React.FC = () => {
         const fullUrl = `${process.env.UMI_APP_FRONTEND_URL}?inviter=${record.ownInviteCode}`;
         return <Typography.Text copyable>{fullUrl}</Typography.Text>;
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'isAuthorized' }),
-      dataIndex: 'isVerified',
-      hideInSearch: false,
-      // 只有拥有更新客户数据权限的用户才能看到此列
-      hideInTable: !access.canVerified,
-      valueEnum: {
-        true: {
-          text: intl.formatMessage({ id: 'isAuthorized.authorized', defaultMessage: '已授权' }),
-          status: 'Success',
-        },
-        false: {
-          text: intl.formatMessage({ id: 'isAuthorized.unauthorized', defaultMessage: '未授权' }),
-          status: 'Error',
-        },
-      },
-      render: (_, record: any) =>
-        access.canVerified && (
-          <Switch
-            checkedChildren={intl.formatMessage({
-              id: 'isAuthorized.authorized',
-              defaultMessage: '已授权',
-            })}
-            unCheckedChildren={intl.formatMessage({
-              id: 'isAuthorized.unauthorized',
-              defaultMessage: '未授权',
-            })}
-            checked={record.isVerified}
-            onChange={async () => {
-              await handleVerified({ _id: record._id });
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }}
-          />
-        ),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
@@ -487,51 +175,6 @@ const TableList: React.FC = () => {
             padding: '4px 0',
           }}
         >
-          {access.canCollection && (
-            <a
-              key="withdraw"
-              onClick={() => {
-                setCurrentRow(record);
-                setWithdrawModalOpen(true);
-              }}
-              style={{ width: '100%', textAlign: 'center' }}
-            >
-              {intl.formatMessage({ id: 'Collection', defaultMessage: '一键归集' })}
-            </a>
-          )}
-          {access.canPauseIncome && (
-            <a
-              key="pause"
-              onClick={async () => {
-                // 设置当前记录的加载状态
-                setPausingIncome((prev) => ({ ...prev, [record._id as string]: true }));
-                try {
-                  // 切换暂停状态
-                  const success = await handlePauseEarnings({
-                    _id: record._id,
-                    isPausedIncome: !record.isPausedIncome,
-                  });
-                  if (success && actionRef.current) {
-                    actionRef.current.reload();
-                  }
-                } finally {
-                  // 无论成功失败，都清除加载状态
-                  setPausingIncome((prev) => ({ ...prev, [record._id as string]: false }));
-                }
-              }}
-              style={{ width: '100%', textAlign: 'center' }}
-            >
-              {pausingIncome[record._id as string] ? (
-                <span>
-                  <SyncOutlined spin /> {record.isPausedIncome ? '恢复中...' : '暂停中...'}
-                </span>
-              ) : record.isPausedIncome ? (
-                <FormattedMessage id="resume" defaultMessage="恢复收益" />
-              ) : (
-                <FormattedMessage id="pause" defaultMessage="暂停收益" />
-              )}
-            </a>
-          )}
           <a
             key="detail"
             onClick={() => {
@@ -653,18 +296,6 @@ const TableList: React.FC = () => {
           setShowDetail(false);
         }}
       />
-
-      {/* Add Withdraw modal */}
-      {access.canCollection && (
-        <Collection
-          open={withdrawModalOpen}
-          onClose={() => {
-            setWithdrawModalOpen(false);
-            setCurrentRow(undefined);
-          }}
-          currentRow={currentRow}
-        />
-      )}
     </PageContainer>
   );
 };
