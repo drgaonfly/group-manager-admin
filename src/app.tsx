@@ -58,7 +58,6 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { fetchMenuData, currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import React, { ReactElement } from 'react';
-import NotificationBadge from './components/socketNotification/NotificationBadge';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -160,10 +159,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    actionsRender: () => [
-      <NotificationBadge key="NotificationBadge" />,
-      <SelectLang key="SelectLang" />,
-    ],
+    actionsRender: () => [<SelectLang key="SelectLang" />],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
