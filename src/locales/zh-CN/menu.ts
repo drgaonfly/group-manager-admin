@@ -29,6 +29,14 @@ export default {
   'menu.user-type.employees': '渠道',
   'menu.user-type.customers': '客户',
 
+  'menu.change-password': '修改密码',
+  'menu.list.change-password': '修改密码',
+  'list.change-password': '修改密码',
+  'menu.account.two-factor-auth': '二步认证',
+
+  'menu.bots': '机器人',
+  'menu.bot-users': '机器人用户',
+
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
   'menu.认证管理.角色管理': '角色管理',
@@ -45,8 +53,6 @@ export default {
   'menu.用户管理.渠道管理': '渠道管理',
   'menu.用户管理.客户管理': '客户管理',
 
-  'menu.change-password': '修改密码',
-  'menu.list.change-password': '修改密码',
-  'list.change-password': '修改密码',
-  'menu.account.two-factor-auth': '二步认证',
+  'menu.机器人管理': '机器人管理',
+  'menu.机器人用户管理': '机器人用户管理',
 };

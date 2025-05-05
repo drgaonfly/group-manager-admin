@@ -13,6 +13,11 @@ export default {
   'menu.user-type.employees': 'Employees',
   'menu.user-type.customers': 'Customers',
 
+  'menu.change-password': 'Change Password',
+
+  'menu.bots': 'Bots',
+  'menu.bot-users': 'Bot Users',
+
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',
   'menu.认证管理.用户管理': 'Users',
@@ -29,5 +34,6 @@ export default {
   'menu.用户管理.渠道管理': 'Channel Management',
   'menu.用户管理.客户管理': 'Customer Management',
 
-  'menu.change-password': 'Change Password',
+  'menu.机器人管理': 'Bot Management',
+  'menu.机器人用户管理': 'Bot User Management',
 };

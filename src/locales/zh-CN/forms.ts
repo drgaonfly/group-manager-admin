@@ -104,4 +104,15 @@ export default {
   permissions: '权限',
   parent_customer_id: '邀请人',
   select_parent_customer_id: '选择邀请人',
+
+  token: '机器人 Token',
+  bot_name: '机器人名称',
+  remark: '备注',
+  calling_name: '启动命令',
+  user_name: '用户名',
+  owner: '归属用户',
+  owner_bot: '归属机器人',
+
+  first_name: '名字',
+  last_name: '姓氏',
 };

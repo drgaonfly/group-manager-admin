@@ -126,4 +126,16 @@ export default [
       },
     ],
   },
+  {
+    path: '/bots',
+    name: 'list.bots',
+    icon: 'TableOutlined',
+    component: './Bot',
+  },
+  {
+    path: '/bot-users',
+    name: 'list.bot-users',
+    icon: 'RobotOutlined',
+    component: './BotUser',
+  },
 ];
