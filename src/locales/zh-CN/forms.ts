@@ -115,4 +115,5 @@ export default {
 
   first_name: '名字',
   last_name: '姓氏',
+  configure: '配置',
 };

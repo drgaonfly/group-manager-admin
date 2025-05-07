@@ -17,6 +17,8 @@ export default {
   'menu.list.user-types.list.employees': '渠道列表',
   'menu.list.user-types.list.customers': '客户列表',
 
+  'menu.list.transactions': '交易记录',
+
   'menu.auth.users': '用户',
   'menu.auth.roles': '角色',
   'menu.auth.menus': '菜单',
@@ -36,6 +38,7 @@ export default {
 
   'menu.bots': '机器人',
   'menu.bot-users': '机器人用户',
+  'menu.transactions': '交易记录',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
@@ -55,4 +58,5 @@ export default {
 
   'menu.机器人管理': '机器人管理',
   'menu.机器人用户管理': '机器人用户管理',
+  'menu.交易记录': '交易记录',
 };

@@ -143,5 +143,17 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bot-users/:id', 'PUT')),
     canGetBotUser:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bot-users', 'GET')),
+
+    // Transaction权限
+    canCreateTransaction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'POST')),
+    canDeleteTransaction:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'DELETE')),
+    canUpdateTransaction:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/transactions/:id', 'PUT')),
+    canGetTransaction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'GET')),
   };
 }

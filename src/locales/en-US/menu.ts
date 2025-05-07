@@ -17,6 +17,7 @@ export default {
 
   'menu.bots': 'Bots',
   'menu.bot-users': 'Bot Users',
+  'menu.transactions': 'Transactions',
 
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',
@@ -36,4 +37,5 @@ export default {
 
   'menu.机器人管理': 'Bot Management',
   'menu.机器人用户管理': 'Bot User Management',
+  'menu.交易记录': 'Transaction Records',
 };

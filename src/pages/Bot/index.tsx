@@ -241,7 +241,7 @@ const TableList: React.FC = () => {
           >
             {intl.formatMessage({
               id: 'configure',
-              defaultMessage: 'Configure',
+              defaultMessage: intl.formatMessage({ id: 'configure' }),
             })}
           </a>
         ),
@@ -288,16 +288,7 @@ const TableList: React.FC = () => {
         rowKey="_id"
         scroll={{ x: 'max-content' }}
         search={{
-          labelWidth: 120,
           collapsed: false,
-          span: {
-            xs: 24, // 手机端占满
-            sm: 24, // 平板端占满
-            md: 6, // 电脑端
-            lg: 6, // 大屏幕
-            xl: 6, // 超大屏幕
-            xxl: 6, // 超超大屏幕
-          },
         }}
         toolBarRender={() => [
           (access.canSuperAdmin || access.canCreateBot) && (

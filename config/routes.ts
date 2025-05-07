@@ -138,4 +138,11 @@ export default [
     icon: 'RobotOutlined',
     component: './BotUser',
   },
+  // transaction
+  {
+    path: '/transactions',
+    name: 'list.transactions',
+    icon: 'MoneyCollectOutlined',
+    component: './Transaction',
+  },
 ];
