@@ -161,9 +161,23 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'owner' }),
+      title: intl.formatMessage({ id: 'user' }),
       dataIndex: ['user', 'name'],
       hideInSearch: true,
+      copyable: true,
+    },
+    // frist_name
+    {
+      title: intl.formatMessage({ id: 'first_name_user_telegram' }),
+      dataIndex: 'firstName',
+      hideInSearch: false,
+      copyable: true,
+    },
+    // last_name
+    {
+      title: intl.formatMessage({ id: 'last_name_user_telegram' }),
+      dataIndex: 'lastName',
+      hideInSearch: false,
       copyable: true,
     },
     {

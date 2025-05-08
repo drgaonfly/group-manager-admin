@@ -112,10 +112,10 @@ export default {
   calling_name: '启动命令',
   user_name: '用户名',
   owner: '归属用户',
-  owner_bot: '归属机器人',
+  owner_bot: '用户的电报机器人',
 
-  first_name: '名字',
-  last_name: '姓氏',
+  first_name_user_telegram: '用户的电报名',
+  last_name_user_telegram: '用户的电报姓',
   configure: '配置',
   fee_rate: '费率',
   send_message: '发送消息',
