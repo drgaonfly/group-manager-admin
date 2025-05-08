@@ -163,38 +163,37 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: ['user', 'name'],
-      hideInSearch: true,
       copyable: true,
     },
     // frist_name
     {
       title: intl.formatMessage({ id: 'first_name_user_telegram' }),
       dataIndex: 'firstName',
-      hideInSearch: false,
+      hideInSearch: true,
       copyable: true,
     },
     // last_name
     {
       title: intl.formatMessage({ id: 'last_name_user_telegram' }),
       dataIndex: 'lastName',
-      hideInSearch: false,
+      hideInSearch: true,
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'owner_bot' }),
       dataIndex: ['bot', 'botName'],
-      hideInSearch: false,
+      hideInSearch: true,
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'fee_rate' }),
       dataIndex: 'fee_rate',
-      hideInSearch: false,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'exchange_rate' }),
       dataIndex: 'exchange_rate',
-      hideInSearch: false,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
@@ -248,7 +247,6 @@ const TableList: React.FC = () => {
         rowKey="_id"
         scroll={{ x: 'max-content' }}
         search={{
-          labelWidth: 120,
           collapsed: false,
         }}
         toolBarRender={() => []}
