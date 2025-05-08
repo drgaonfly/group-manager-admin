@@ -122,4 +122,7 @@ export default {
   fee_rate: '费率',
   send_message: '发送消息',
   to_user: '接收用户',
+
+  deposit: '入款',
+  withdraw: '下发',
 };
