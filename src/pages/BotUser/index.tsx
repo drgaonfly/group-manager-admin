@@ -189,6 +189,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'fee_rate' }),
       dataIndex: 'fee_rate',
       hideInSearch: true,
+      valueType: 'percent',
     },
     {
       title: intl.formatMessage({ id: 'exchange_rate' }),
