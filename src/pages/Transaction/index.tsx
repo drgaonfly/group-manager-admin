@@ -40,35 +40,35 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'transaction.id', defaultMessage: '交易ID' }),
+      title: intl.formatMessage({ id: 'id', defaultMessage: '交易ID' }),
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'transaction.bot', defaultMessage: '机器人' }),
+      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
       dataIndex: ['bot', 'botName'],
     },
     // type
     {
-      title: intl.formatMessage({ id: 'transaction.type', defaultMessage: '类型' }),
+      title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
     },
     {
-      title: intl.formatMessage({ id: 'transaction.amount', defaultMessage: '金额' }),
+      title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
       dataIndex: 'amount',
     },
     {
-      title: intl.formatMessage({ id: 'transaction.exchange_rate', defaultMessage: '汇率' }),
+      title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: '汇率' }),
       dataIndex: 'exchange_rate',
       valueType: 'digit',
     },
     {
-      title: intl.formatMessage({ id: 'transaction.fee_rate', defaultMessage: '手续费率' }),
+      title: intl.formatMessage({ id: 'fee_rate', defaultMessage: '手续费率' }),
       dataIndex: 'fee_rate',
       valueType: 'percent',
     },
     {
-      title: intl.formatMessage({ id: 'transaction.to_user', defaultMessage: '收款用户' }),
+      title: intl.formatMessage({ id: 'to_user', defaultMessage: '收款用户' }),
       dataIndex: ['to_user', 'name'],
     },
     {

@@ -12,7 +12,6 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
-import CopyToClipboard from '@/components/CopyToClipboard';
 // import { Input } from 'antd';
 import SendMessageModal from './components/SendMessageModal';
 /**
@@ -174,28 +173,13 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'calling_name' }),
-      dataIndex: 'userName',
-      render: (_, record) => {
-        const link = `@${record.userName}`;
-        if (record.userName) {
-          return (
-            <span>
-              @{record.userName}
-              <CopyToClipboard text={link} />
-            </span>
-          );
-        }
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'first_name' }),
-      dataIndex: 'firstName',
+      title: intl.formatMessage({ id: 'fee_rate' }),
+      dataIndex: 'fee_rate',
       hideInSearch: false,
     },
     {
-      title: intl.formatMessage({ id: 'last_name' }),
-      dataIndex: 'lastName',
+      title: intl.formatMessage({ id: 'exchange_rate' }),
+      dataIndex: 'exchange_rate',
       hideInSearch: false,
     },
     {
@@ -235,7 +219,7 @@ const TableList: React.FC = () => {
               setMessageModalOpen(true);
             }}
           >
-            <FormattedMessage id="send.message" defaultMessage="发送消息" />
+            <FormattedMessage id="send_message" defaultMessage="发送消息" />
           </a>
         ),
       ],

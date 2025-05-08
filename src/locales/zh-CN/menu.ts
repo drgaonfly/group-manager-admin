@@ -17,6 +17,9 @@ export default {
   'menu.list.user-types.list.employees': '渠道列表',
   'menu.list.user-types.list.customers': '客户列表',
 
+  'menu.list.bots': '机器人列表',
+  'menu.list.bot-users': '机器人用户列表',
+
   'menu.list.transactions': '交易记录',
 
   'menu.auth.users': '用户',

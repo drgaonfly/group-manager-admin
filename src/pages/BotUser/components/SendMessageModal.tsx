@@ -46,7 +46,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
 
   return (
     <Modal
-      title={<FormattedMessage id="send.message" defaultMessage="发送消息" />}
+      title={<FormattedMessage id="send_message" defaultMessage="发送消息" />}
       open={open}
       onOk={handleOk}
       onCancel={onClose}

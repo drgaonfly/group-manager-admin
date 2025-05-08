@@ -106,6 +106,7 @@ export default {
   select_parent_customer_id: '选择邀请人',
 
   token: '机器人 Token',
+  bot: '机器人',
   bot_name: '机器人名称',
   remark: '备注',
   calling_name: '启动命令',
@@ -116,4 +117,7 @@ export default {
   first_name: '名字',
   last_name: '姓氏',
   configure: '配置',
+  fee_rate: '费率',
+  send_message: '发送消息',
+  to_user: '接收用户',
 };
