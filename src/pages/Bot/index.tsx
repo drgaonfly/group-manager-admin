@@ -143,13 +143,13 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'bot_name', defaultMessage: 'Bot Name' }),
+      title: intl.formatMessage({ id: 'owner_bot_display_name' }),
       dataIndex: 'botName',
       hideInSearch: false,
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'calling_name', defaultMessage: 'Calling Name' }),
+      title: intl.formatMessage({ id: 'owner_bot_identifier_name' }),
       dataIndex: 'userName',
       hideInSearch: true,
       render: (_, record) => {

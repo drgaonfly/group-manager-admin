@@ -250,14 +250,6 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
           collapsed: false,
-          span: {
-            xs: 24, // 手机端占满
-            sm: 24, // 平板端占满
-            md: 6, // 电脑端
-            lg: 6, // 大屏幕
-            xl: 6, // 超大屏幕
-            xxl: 6, // 超超大屏幕
-          },
         }}
         toolBarRender={() => []}
         request={async (params, sort, filter) => queryList('/bot-users', params, sort, filter)}
