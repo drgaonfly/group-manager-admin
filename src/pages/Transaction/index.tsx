@@ -72,10 +72,6 @@ const TableList: React.FC = () => {
       valueType: 'percent',
     },
     {
-      title: intl.formatMessage({ id: 'to_user', defaultMessage: '收款用户' }),
-      dataIndex: ['to_user', 'name'],
-    },
-    {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
