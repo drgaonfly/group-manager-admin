@@ -110,7 +110,11 @@ async function uploadAndExtract() {
           // 解压文件
           await new Promise((res, rej) => {
             conn.exec(
-              `cd ${REMOTE_DEPLOY_PATH} && mkdir -p dist && unzip -o dist.zip -d dist && rm dist.zip`,
+              `cd ${REMOTE_DEPLOY_PATH} && \
+              rm -rf dist && \
+              mkdir -p dist && \
+              unzip -o dist.zip -d dist && \
+              rm dist.zip`,
               (err, stream) => {
                 if (err) rej(err);
                 stream.on('close', res);
