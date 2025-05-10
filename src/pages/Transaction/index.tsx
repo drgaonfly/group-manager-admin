@@ -60,21 +60,25 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
       dataIndex: 'amount',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: '汇率' }),
       dataIndex: 'exchange_rate',
       valueType: 'digit',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'fee_rate', defaultMessage: '手续费率' }),
       dataIndex: 'fee_rate',
       valueType: 'percent',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,

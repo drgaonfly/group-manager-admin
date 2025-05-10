@@ -1,0 +1,188 @@
+import { useIntl } from '@umijs/max';
+import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
+import { FormattedMessage, useAccess } from '@umijs/max';
+import { message } from 'antd';
+import React, { useRef, useState } from 'react';
+import Update from './components/Update';
+import Show from './components/Show';
+import DeleteButton from '@/components/DeleteButton';
+import DeleteLink from '@/components/DeleteLink';
+
+const handleUpdate = async (fields: any) => {
+  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  try {
+    await updateItem(`/groups/${fields._id}`, fields);
+    hide();
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? 'Failed to update group');
+    return false;
+  }
+};
+
+const handleRemove = async (ids: any) => {
+  const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
+  try {
+    await removeItem('/groups', { ids });
+    hide();
+    message.success(
+      <FormattedMessage id="delete_successful" defaultMessage="Deleted successfully" />,
+    );
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.message ?? 'Failed to delete group');
+    return false;
+  }
+};
+
+const GroupTableList: React.FC = () => {
+  const intl = useIntl();
+  const [updateModalOpen, handleUpdateModalOpen] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const actionRef = useRef<ActionType>();
+  const [currentRow, setCurrentRow] = useState<any>();
+  const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const access = useAccess();
+
+  const columns: ProColumns<API.ItemData>[] = [
+    {
+      title: intl.formatMessage({ id: 'title', defaultMessage: '群名' }),
+      dataIndex: 'title',
+    },
+    {
+      title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
+      dataIndex: 'type',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: 'Exchange Rate' }),
+      dataIndex: 'exchange_rate',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'fee_rate', defaultMessage: 'Fee Rate' }),
+      dataIndex: 'fee_rate',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
+      dataIndex: 'operators',
+      hideInSearch: true,
+      render: (text) =>
+        Array.isArray(text) ? text.map((op: any) => op.name || op._id).join(', ') : '',
+    },
+    {
+      title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+      dataIndex: 'creator',
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      hideInSearch: true,
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Actions" />,
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => [
+        <a
+          key="detail"
+          onClick={() => {
+            setCurrentRow(record);
+            setShowDetail(true);
+          }}
+        >
+          <FormattedMessage id="platforms.detail" defaultMessage="Detail" />
+        </a>,
+        access.canSuperAdmin && (
+          <a
+            key="edit"
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            {intl.formatMessage({ id: 'edit' })}
+          </a>
+        ),
+        access.canDeleteGroup && (
+          <DeleteLink
+            onOk={async () => {
+              await handleRemove([record._id!]);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          />
+        ),
+      ],
+    },
+  ];
+
+  return (
+    <PageContainer>
+      <ProTable<API.ItemData, API.PageParams>
+        headerTitle={intl.formatMessage({ id: 'group.list', defaultMessage: 'Group List' })}
+        actionRef={actionRef}
+        rowKey="_id"
+        request={(params, sort, filter) => queryList('/groups', params, sort, filter)}
+        columns={columns}
+        rowSelection={
+          access.canSuperAdmin && {
+            onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+          }
+        }
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              <FormattedMessage id="pages.searchTable.item" defaultMessage="items" />
+            </div>
+          }
+        >
+          <DeleteButton
+            onOk={async () => {
+              await handleRemove(selectedRowsState.map((item) => item._id!));
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          />
+        </FooterToolbar>
+      )}
+      {access.canUpdateGroup && (
+        <Update
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalOpen(false);
+              setCurrentRow(undefined);
+              actionRef.current?.reload();
+            }
+          }}
+          onCancel={handleUpdateModalOpen}
+          updateModalOpen={updateModalOpen}
+          values={currentRow || {}}
+        />
+      )}
+      <Show
+        open={showDetail}
+        currentRow={currentRow}
+        columns={columns as ProDescriptionsItemProps<any>[]}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+      />
+    </PageContainer>
+  );
+};
+
+export default GroupTableList;

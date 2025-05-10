@@ -20,7 +20,8 @@ export default {
   'menu.list.bots': '机器人列表',
   'menu.list.bot-users': '机器人用户列表',
 
-  'menu.list.transactions': '交易记录',
+  'menu.list.transactions': '账单记录',
+  'menu.list.groups': '群组列表',
 
   'menu.auth.users': '用户',
   'menu.auth.roles': '角色',
@@ -41,7 +42,8 @@ export default {
 
   'menu.bots': '机器人',
   'menu.bot-users': '机器人用户',
-  'menu.transactions': '交易记录',
+  'menu.transactions': '账单记录',
+  'menu.groups': '群组',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
@@ -61,5 +63,6 @@ export default {
 
   'menu.机器人管理': '机器人管理',
   'menu.机器人用户管理': '机器人用户管理',
-  'menu.交易记录': '交易记录',
+  'menu.账单记录': '账单记录',
+  'menu.群组管理': '群组管理',
 };

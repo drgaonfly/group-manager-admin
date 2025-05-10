@@ -155,5 +155,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/transactions/:id', 'PUT')),
     canGetTransaction:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/transactions', 'GET')),
+
+    // Group权限
+    canCreateGroup:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/groups', 'POST')),
+    canDeleteGroup:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/groups', 'DELETE')),
+    canUpdateGroup:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/groups/:id', 'PUT')),
+    canGetGroup:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/groups', 'GET')),
   };
 }

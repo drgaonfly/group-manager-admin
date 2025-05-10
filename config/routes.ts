@@ -145,4 +145,11 @@ export default [
     icon: 'MoneyCollectOutlined',
     component: './Transaction',
   },
+  // group
+  {
+    path: '/groups',
+    name: 'list.groups',
+    icon: 'TeamOutlined',
+    component: './Group',
+  },
 ];
