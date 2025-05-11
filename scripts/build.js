@@ -55,14 +55,7 @@ async function processFiles() {
       stringArrayEncoding: ['rc4'],
     }).getObfuscatedCode();
 
-    // 压缩
-    const result = await minify(code, {
-      compress: true,
-      mangle: true,
-    });
-    if (result.error) throw result.error;
-
-    await fs.writeFile(file, result.code);
+    await fs.writeFile(file, code);
   }
 
   await createZipArchive();
