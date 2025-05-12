@@ -81,7 +81,9 @@ const GroupTableList: React.FC = () => {
       dataIndex: 'operators',
       hideInSearch: true,
       render: (text) =>
-        Array.isArray(text) ? text.map((op: any) => op.firstName || op._id).join(', ') : '',
+        Array.isArray(text)
+          ? text.map((op: any) => op.userName || op.firstName || op.lastName).join(', ')
+          : '',
     },
     // isOnline
     {
