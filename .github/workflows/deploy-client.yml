@@ -22,7 +22,7 @@ jobs:
           script: |
             cd /www/wwwroot/account-admin.2025fc.xyz/account-bot-admin-client &&
             git pull --rebase origin ${{ github.event.inputs.branch }}  # 动态读取分支
-            npm install
+            /www/server/nodejs/v20.16.0/bin/pnpm install
             git checkout -f .
             npm run build
             npm run copy-to-remote
