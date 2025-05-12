@@ -126,4 +126,7 @@ export default {
 
   deposit: '入款',
   withdraw: '下发',
+
+  online: '在线',
+  offline: '离线',
 };

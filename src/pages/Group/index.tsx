@@ -3,7 +3,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Update from './components/Update';
 import Show from './components/Show';
@@ -81,6 +81,28 @@ const GroupTableList: React.FC = () => {
       hideInSearch: true,
       render: (text) =>
         Array.isArray(text) ? text.map((op: any) => op.name || op._id).join(', ') : '',
+    },
+    // isOnline
+    {
+      title: intl.formatMessage({ id: 'isOnline', defaultMessage: 'Is Online' }),
+      dataIndex: 'isOnline',
+      hideInSearch: true,
+      valueEnum: {
+        true: intl.formatMessage({ id: 'online', defaultMessage: 'Online' }),
+        false: intl.formatMessage({ id: 'offline', defaultMessage: 'Offline' }),
+      },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'offline' })}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
