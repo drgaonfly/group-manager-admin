@@ -95,6 +95,7 @@ const GroupTableList: React.FC = () => {
         <Switch
           checkedChildren={intl.formatMessage({ id: 'online' })}
           unCheckedChildren={intl.formatMessage({ id: 'offline' })}
+          checked={record.isOnline}
           onChange={async () => {
             await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
             if (actionRef.current) {
