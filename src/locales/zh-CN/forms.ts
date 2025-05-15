@@ -116,8 +116,8 @@ export default {
 
   first_name_user_telegram: '名字',
   last_name_user_telegram: '姓氏',
-  owner_bot_display_name: '显示名称',
-  owner_bot_identifier_name: '标识名称',
+  owner_bot_display_name: '名称',
+  owner_bot_identifier_name: '用户名',
   configure: '配置',
   fee_rate: '费率',
   send_message: '发送消息',
