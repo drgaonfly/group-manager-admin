@@ -24,14 +24,10 @@ const Show: React.FC<Props> = (props) => {
 
   const query = async () => {
     setLoading(true);
-    const response = (await queryList(`/transactions/all`, {}, {})) as any;
+    const { data, success } = (await queryList(`/groups/${currentRow._id}`, {}, {})) as any;
 
-    if (response?.success) {
-      const filtereds = response?.data?.filter(
-        (item: any) => item.group.toString() === currentRow?._id?.toString(),
-      );
-      console.log(filtereds);
-      setTransactions(filtereds);
+    if (success) {
+      setTransactions(data.transactions);
     }
 
     setLoading(false);

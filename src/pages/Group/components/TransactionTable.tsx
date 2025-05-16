@@ -64,7 +64,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
       loading={loading}
       pagination={{
         ...pagination,
-        total: transactions.length,
+        total: transactions?.length,
         onChange: (page, pageSize) => {
           setPagination({ current: page, pageSize });
         },
