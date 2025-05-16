@@ -27,7 +27,7 @@ const Show: React.FC<Props> = (props) => {
         <>
           <ProDescriptions<API.ItemData>
             column={1}
-            title={`菜品信息`}
+            title={`账单记录`}
             request={async () => ({
               data: currentRow || {},
             })}
