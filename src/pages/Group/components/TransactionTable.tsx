@@ -26,6 +26,10 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
     {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
+      valueEnum: {
+        withdraw: intl.formatMessage({ id: 'withdraw' }),
+        deposit: intl.formatMessage({ id: 'deposit' }),
+      },
     },
     {
       title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
@@ -45,7 +49,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
     },
     {
       title: intl.formatMessage({ id: 'botUser', defaultMessage: '用户 ID' }),
-      dataIndex: ['botUser', '_id'], // 或直接 'botUser'，视后端数据结构而定
+      dataIndex: ['botUser', 'userName'], // 或直接 'botUser'，视后端数据结构而定
     },
   ];
 
