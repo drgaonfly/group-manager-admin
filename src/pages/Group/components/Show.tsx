@@ -24,13 +24,14 @@ const Show: React.FC<Props> = (props) => {
 
   const query = async () => {
     setLoading(true);
-    const response = (await queryList(`/transactions`, { group: currentRow?._id }, {})) as any;
-
-    console.log('response.data', response.data);
+    const response = (await queryList(`/transactions/all`, {}, {})) as any;
 
     if (response?.success) {
-      const transactions = response?.data || [];
-      setTransactions(transactions);
+      const filtereds = response?.data?.filter(
+        (item: any) => item.group._id.toString() === currentRow?._id?.toString(),
+      );
+      console.log(filtereds);
+      setTransactions(filtereds);
     }
 
     setLoading(false);
@@ -41,6 +42,7 @@ const Show: React.FC<Props> = (props) => {
       query().catch(console.error);
     }
   }, [currentRow]);
+
   return (
     <Modal
       open={open}

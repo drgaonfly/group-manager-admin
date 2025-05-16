@@ -1,5 +1,8 @@
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { queryList } from '@/services/ant-design-pro/api';
+import TransactionTable from './TransactionTable';
 
 interface Props {
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -10,9 +13,35 @@ interface Props {
 
 const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns } = props;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
+    current: 1,
+    pageSize: 5,
+  });
   const filteredColumns = columns
     .filter((col) => col.dataIndex !== 'option')
     .filter((_, index) => index !== 3);
+
+  const query = async () => {
+    setLoading(true);
+    const response = (await queryList(`/transactions/all`, {}, {})) as any;
+
+    if (response?.success) {
+      const filtereds = response?.data?.filter(
+        (item: any) => item.botUser._id.toString() === currentRow?._id?.toString(),
+      );
+      setTransactions(filtereds);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (currentRow?._id) {
+      query().catch(console.error);
+    }
+  }, [currentRow]);
 
   return (
     <Modal
@@ -37,6 +66,12 @@ const Show: React.FC<Props> = (props) => {
             columns={filteredColumns as ProDescriptionsItemProps<API.ItemData>[]}
             bordered
             size="middle"
+          />
+          <TransactionTable
+            transactions={transactions}
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
           />
         </>
       )}
