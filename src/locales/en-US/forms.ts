@@ -104,4 +104,19 @@ export default {
   'proxy.user': 'Parent Proxy',
   parent_customer_id: 'Parent',
   select_parent_customer_id: 'Please select parent',
+
+  plan: 'Plan',
+  subscription_weekly: '7 Days',
+  subscription_biweekly: 'Biweekly',
+  subscription_monthly: 'Monthly',
+  subscription_quarter: 'Quarterly',
+
+  subscription_active: 'Active',
+  subscription_expired: 'Expired',
+  subscription_canceled: 'Canceled',
+
+  isAuto: 'is Auto',
+  isTrial: 'is Trial',
+
+  subscription_list: 'Subscription List',
 };

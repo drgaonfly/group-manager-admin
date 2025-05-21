@@ -1,7 +1,9 @@
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import BotUserTable from './BotUserTable';
+
 import { Modal } from 'antd';
 import React, { useState } from 'react';
+// import { queryList } from '@/services/ant-design-pro/api';
 
 interface Props {
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
@@ -13,11 +15,29 @@ interface Props {
 const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns: cols } = props;
   const filteredColumns = cols.filter((col) => col.dataIndex !== 'option');
-
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [transactions, setTransactions] = useState<any[]>([]);
   const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
     current: 1,
     pageSize: 5,
   });
+
+  // const query = async () => {
+  //   setLoading(true);
+  //   const { data, success } = (await queryList(`/groups/${currentRow._id}`, {}, {})) as any;
+
+  //   if (success) {
+  //     setTransactions(data.transactions);
+  //   }
+
+  //   setLoading(false);
+  // };
+
+  // useEffect(() => {
+  //   if (currentRow?._id) {
+  //     query().catch(console.error);
+  //   }
+  // }, [currentRow]);
 
   return (
     <Modal
@@ -32,7 +52,7 @@ const Show: React.FC<Props> = (props) => {
         <>
           <ProDescriptions<API.ItemData>
             column={2}
-            title={currentRow?.botName}
+            title={currentRow?.phoneNumber}
             request={async () => ({
               data: currentRow || {},
             })}

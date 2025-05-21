@@ -286,7 +286,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: 2000 }}
         search={{
           collapsed: false,
         }}

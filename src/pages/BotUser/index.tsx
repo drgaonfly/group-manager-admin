@@ -160,11 +160,6 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       copyable: true,
     },
-    {
-      title: intl.formatMessage({ id: 'user' }),
-      dataIndex: ['user', 'name'],
-      copyable: true,
-    },
     //userName
     {
       title: intl.formatMessage({ id: 'userName' }),
@@ -195,23 +190,6 @@ const TableList: React.FC = () => {
       dataIndex: 'lastName',
       hideInSearch: true,
       copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'owner_bot' }),
-      dataIndex: ['bot', 'botName'],
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'fee_rate' }),
-      dataIndex: 'fee_rate',
-      hideInSearch: true,
-      valueType: 'percent',
-    },
-    {
-      title: intl.formatMessage({ id: 'exchange_rate' }),
-      dataIndex: 'exchange_rate',
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),

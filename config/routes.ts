@@ -152,4 +152,11 @@ export default [
     icon: 'TeamOutlined',
     component: './Group',
   },
+  // suscription
+  {
+    path: '/subscriptions',
+    name: 'list.subscriptions',
+    icon: 'PayCircleOutlined',
+    component: './Subscription',
+  },
 ];

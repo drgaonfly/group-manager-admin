@@ -49,6 +49,7 @@ import {
   VideoCameraOutlined,
   CustomerServiceOutlined,
   MessageOutlined,
+  PayCircleOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -109,6 +110,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   VideoCameraOutlined: <VideoCameraOutlined />,
   CustomerServiceOutlined: <CustomerServiceOutlined />,
   MessageOutlined: <MessageOutlined />,
+  PayCircleOutlined: <PayCircleOutlined />,
 };
 
 const loopMenuItem = (menus: MenuDataItem[]): MenuDataItem[] =>

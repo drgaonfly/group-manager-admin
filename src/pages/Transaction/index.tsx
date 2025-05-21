@@ -81,6 +81,11 @@ const TableList: React.FC = () => {
       valueType: 'percent',
       hideInSearch: true,
     },
+    // group
+    {
+      title: intl.formatMessage({ id: 'group', defaultMessage: '所属群组' }),
+      dataIndex: ['group', 'title'],
+    },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',

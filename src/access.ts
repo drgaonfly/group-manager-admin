@@ -165,5 +165,18 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/groups/:id', 'PUT')),
     canGetGroup:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/groups', 'GET')),
+
+    // Subscription权限
+    canCreateSubscription:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/subscriptions', 'POST')),
+    canDeleteSubscription:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/subscriptions', 'DELETE')),
+    canUpdateSubscription:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/subscriptions/:id', 'PUT')),
+    canGetSubscription:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/subscriptions', 'GET')),
   };
 }
