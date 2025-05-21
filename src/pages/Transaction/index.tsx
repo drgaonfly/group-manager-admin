@@ -46,7 +46,9 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
-      dataIndex: ['bot', 'botName'],
+      dataIndex: 'bot',
+      copyable: true,
+      renderText: (bot) => bot?.botName,
     },
     // type
     {
@@ -61,6 +63,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'botUser', defaultMessage: '发送人' }),
       dataIndex: 'botUser',
       hideInSearch: true,
+      copyable: true,
       renderText: (creator) =>
         creator.userName || `${creator.firstName || ''} ${creator.lastName || ''}`.trim(),
     },
@@ -84,7 +87,9 @@ const TableList: React.FC = () => {
     // group
     {
       title: intl.formatMessage({ id: 'group', defaultMessage: '所属群组' }),
-      dataIndex: ['group', 'title'],
+      dataIndex: 'group',
+      copyable: true,
+      renderText: (group) => group?.title,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
