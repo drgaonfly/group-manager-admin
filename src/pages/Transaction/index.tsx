@@ -58,6 +58,13 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'botUser', defaultMessage: '发送人' }),
+      dataIndex: ['creator'],
+      hideInSearch: true,
+      renderText: (creator) =>
+        creator.userName || `${creator.firstName || ''} ${creator.lastName || ''}`.trim(),
+    },
+    {
       title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
       dataIndex: 'amount',
       hideInSearch: true,
