@@ -159,4 +159,11 @@ export default [
     icon: 'PayCircleOutlined',
     component: './Subscription',
   },
+  // payment
+  {
+    path: '/payments',
+    name: 'list.payments',
+    icon: 'OrderedListOutlined',
+    component: './Payment',
+  },
 ];
