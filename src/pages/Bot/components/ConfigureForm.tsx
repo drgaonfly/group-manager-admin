@@ -4,6 +4,8 @@ import {
   ModalForm,
   ProFormTextArea,
   ProDescriptions,
+  ProFormGroup,
+  ProFormText,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { FormattedMessage, useIntl, useModel } from '@umijs/max';
@@ -97,20 +99,9 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               copyable: true,
             },
             {
-              title: intl.formatMessage({ id: 'inviteCode', defaultMessage: '邀请码' }),
-              dataIndex: 'inviteCode',
-              copyable: true,
-            },
-            {
               title: intl.formatMessage({ id: 'botName', defaultMessage: '机器人名称' }),
               dataIndex: 'botName',
               copyable: true,
-            },
-            {
-              title: intl.formatMessage({ id: 'url', defaultMessage: '链接' }),
-              copyable: true,
-              render: () =>
-                `${process.env.UMI_APP_CUSTOMER_PROTOCOL}://${process.env.UMI_APP_CUSTOMER_DOMAIN}`, // 显示环境变量 UMI_APP_LOGIN_URL
             },
             // 可以根据需要添加更多字段
           ]}
@@ -130,15 +121,33 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
         />
       )}
       <>
-        <ProFormTextArea
-          rules={[{ message: intl.formatMessage({ id: 'enter_name' }) }]}
-          width="md"
-          label={intl.formatMessage({ id: 'start_message' })}
-          name="message"
-        />
+        <ProFormGroup>
+          <ProFormTextArea
+            rules={[{ message: intl.formatMessage({ id: 'enter_name' }) }]}
+            width="md"
+            label={intl.formatMessage({ id: 'start_message', defaultMessage: '开始消息' })}
+            name="message"
+          />
+          <ProFormTextArea
+            rules={[{ message: intl.formatMessage({ id: 'enter_contact' }) }]}
+            width="md"
+            label={intl.formatMessage({ id: 'contact_message', defaultMessage: '联系客服信息' })}
+            name="contact"
+          />
+          <ProFormText
+            rules={[{ message: intl.formatMessage({ id: 'enter_customer_service_link' }) }]}
+            width="md"
+            label={intl.formatMessage({ id: 'customer_service_link', defaultMessage: '客服链接' })}
+            name="customer_service_link"
+            tooltip="格式示例: https://t.me/xxxx"
+          />
+        </ProFormGroup>
         <EditableProTable<menuItem>
           rowKey="_id"
-          headerTitle={intl.formatMessage({ id: 'start' })}
+          headerTitle={intl.formatMessage({
+            id: 'inline_menu_config',
+            defaultMessage: '内联菜单配置',
+          })}
           // @ts-ignore
           columns={columns}
           value={menus}
