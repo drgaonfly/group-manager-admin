@@ -54,32 +54,32 @@ async function createZipArchive() {
 
 // 混淆和压缩
 async function processFiles() {
-  const files = glob.sync('dist/**/*.js');
-  const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  console.log('开始处理文件...');
-  progressBar.start(files.length, 0);
+  // const files = glob.sync('dist/**/*.js');
+  // const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  // console.log('开始处理文件...');
+  // progressBar.start(files.length, 0);
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    let code = await fs.readFile(file, 'utf8');
+  // for (let i = 0; i < files.length; i++) {
+  //   const file = files[i];
+  //   let code = await fs.readFile(file, 'utf8');
 
-    // 混淆
-    code = JavaScriptObfuscator.obfuscate(code, {
-      compact: true,
-      stringArrayEncoding: ['rc4'],
-    }).getObfuscatedCode();
+  //   // 混淆
+  //   code = JavaScriptObfuscator.obfuscate(code, {
+  //     compact: true,
+  //     stringArrayEncoding: ['rc4'],
+  //   }).getObfuscatedCode();
 
-    // 压缩
-    const result = await minify(code, {
-      compress: true,
-      mangle: true,
-    });
-    if (result.error) throw result.error;
+  //   // 压缩
+  //   const result = await minify(code, {
+  //     compress: true,
+  //     mangle: true,
+  //   });
+  //   if (result.error) throw result.error;
 
-    await fs.writeFile(file, result.code);
-    progressBar.update(i + 1);
-  }
-  progressBar.stop();
+  //   await fs.writeFile(file, result.code);
+  //   progressBar.update(i + 1);
+  // }
+  // progressBar.stop();
 
   console.log('开始创建压缩包...');
   await createZipArchive();
