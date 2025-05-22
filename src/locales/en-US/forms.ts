@@ -119,4 +119,15 @@ export default {
   isTrial: 'is Trial',
 
   subscription_list: 'Subscription List',
+  orderNumber: 'Order Number',
+  wallet: 'Wallet',
+  currency: 'Currency',
+  txHash: 'Transaction Hash',
+  receiveAddress: 'Receive Address',
+  sendAddress: 'Send Address',
+  expiresAt: 'Expiration Time',
+
+  pending: 'Pending',
+  paid: 'Paid',
+  expires: 'Expired',
 };

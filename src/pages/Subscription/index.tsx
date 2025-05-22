@@ -58,7 +58,7 @@ const SubscriptionTableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'botUser', defaultMessage: 'Bot User' }),
+      title: intl.formatMessage({ id: 'user', defaultMessage: 'Bot User' }),
       dataIndex: 'botUser',
       render: (_, record) => {
         return record.botUser.firstName + ' ' + record.botUser.lastName;

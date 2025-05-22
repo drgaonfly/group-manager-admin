@@ -23,6 +23,7 @@ export default {
   'menu.list.transactions': '账单记录',
   'menu.list.groups': '群组列表',
   'menu.list.subscriptions': '订阅列表',
+  'menu.list.payments': '支付订单',
 
   'menu.auth.users': '用户',
   'menu.auth.roles': '角色',
@@ -46,6 +47,7 @@ export default {
   'menu.transactions': '账单记录',
   'menu.groups': '群组',
   'menu.subscriptions': '订阅',
+  'menu.payments': '支付订单',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
@@ -68,4 +70,5 @@ export default {
   'menu.账单记录': '账单记录',
   'menu.群组管理': '群组管理',
   'menu.订阅管理': '订阅管理',
+  'menu.支付订单': '支付订单',
 };

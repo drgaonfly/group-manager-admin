@@ -144,4 +144,15 @@ export default {
   isTrial: '是否试用',
 
   subscription_list: '订阅列表',
+  orderNumber: '订单号',
+  wallet: '钱包',
+  currency: '货币',
+  txHash: '交易哈希',
+  receiveAddress: '接收地址',
+  sendAddress: '发送地址',
+  expiresAt: '过期时间',
+
+  pending: '待处理',
+  paid: '已支付',
+  expires: '已过期',
 };

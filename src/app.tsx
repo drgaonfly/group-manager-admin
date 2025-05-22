@@ -50,6 +50,7 @@ import {
   CustomerServiceOutlined,
   MessageOutlined,
   PayCircleOutlined,
+  OrderedListOutlined,
 } from '@ant-design/icons';
 import type { Settings as LayoutSettings, MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -111,6 +112,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   CustomerServiceOutlined: <CustomerServiceOutlined />,
   MessageOutlined: <MessageOutlined />,
   PayCircleOutlined: <PayCircleOutlined />,
+  OrderedListOutlined: <OrderedListOutlined />,
 };
 
 const loopMenuItem = (menus: MenuDataItem[]): MenuDataItem[] =>
