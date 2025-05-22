@@ -14,17 +14,17 @@ export default defineConfig({
    */
   hash: true,
 
-  // jsMinifier: 'terser',
+  jsMinifier: 'terser',
 
-  // jsMinifierOptions: {
-  //   compress: {
-  //     // 保留方案1：移除所有 console.* （包括 log/error/warn）
-  //     drop_console: process.env.NODE_ENV === 'production',
+  jsMinifierOptions: {
+    compress: {
+      // 保留方案1：移除所有 console.* （包括 log/error/warn）
+      drop_console: process.env.NODE_ENV === 'production',
 
-  //     // 保留方案2：只移除 console.log 保留 error/warn（二选一）
-  //     // pure_funcs: ['console.log']
-  //   },
-  // },
+      // 保留方案2：只移除 console.log 保留 error/warn（二选一）
+      // pure_funcs: ['console.log']
+    },
+  },
 
   /**
    * @name 兼容性设置
