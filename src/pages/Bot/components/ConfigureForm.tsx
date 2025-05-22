@@ -142,6 +142,14 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             tooltip="格式示例: https://t.me/xxxx"
             placeholder="https://t.me/"
           />
+          <ProFormText
+            rules={[{ message: intl.formatMessage({ id: 'enter_trx20_address' }) }]}
+            width="md"
+            label={intl.formatMessage({ id: 'trx20_address', defaultMessage: 'TRX20地址' })}
+            name="trx20_address"
+            tooltip="格式示例: T..."
+            placeholder="请输入TRX20地址"
+          />
         </ProFormGroup>
         <EditableProTable<menuItem>
           rowKey="_id"
