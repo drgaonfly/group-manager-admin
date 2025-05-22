@@ -3,12 +3,11 @@ import { queryList, removeItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import StatusEnum from '@/enums/paymentStatus';
 import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
@@ -59,7 +58,9 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'status',
-      valueEnum: StatusEnum,
+      render: (_, record) => {
+        return <Tag color="blue">{intl.formatMessage({ id: record.status })}</Tag>;
+      },
     },
     {
       title: intl.formatMessage({ id: 'txHash' }),
