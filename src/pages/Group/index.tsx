@@ -47,6 +47,7 @@ const GroupTableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
@@ -90,10 +91,6 @@ const GroupTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: 'Is Online' }),
       dataIndex: 'isOnline',
       hideInSearch: true,
-      valueEnum: {
-        true: intl.formatMessage({ id: 'online', defaultMessage: 'Online' }),
-        false: intl.formatMessage({ id: 'offline', defaultMessage: 'Offline' }),
-      },
       render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'online' })}
@@ -162,7 +159,45 @@ const GroupTableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })}
         actionRef={actionRef}
         rowKey="_id"
-        request={(params, sort, filter) => queryList('/groups', params, sort, filter)}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="all" defaultMessage="all" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="online" defaultMessage="online" />,
+                key: 'true',
+              },
+              {
+                label: <FormattedMessage id="offline" defaultMessage="offline" />,
+                key: 'false',
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
+        request={async (params, sort, filter) => {
+          // 处理isOnline参数
+          let isOnline;
+          if (activeKey === '') {
+            isOnline = undefined; // 全部
+          } else if (activeKey === 'true') {
+            isOnline = true; // 在线
+          } else if (activeKey === 'false') {
+            isOnline = false; // 离线
+          }
+
+          return queryList('/groups', { ...params, isOnline }, sort, filter);
+        }}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
