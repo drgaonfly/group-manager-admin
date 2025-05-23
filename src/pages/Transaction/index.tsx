@@ -36,6 +36,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
@@ -54,10 +55,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
-      valueEnum: {
-        deposit: intl.formatMessage({ id: 'deposit', defaultMessage: '入款' }),
-        withdraw: intl.formatMessage({ id: 'withdraw', defaultMessage: '下发' }),
-      },
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'botUser', defaultMessage: '发送人' }),
@@ -135,7 +133,35 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={(params, sort, filter) => queryList('/transactions', params, sort, filter)}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="all" defaultMessage="all" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="deposit" defaultMessage="deposit" />,
+                key: 'deposit',
+              },
+              {
+                label: <FormattedMessage id="withdraw" defaultMessage="withdraw" />,
+                key: 'withdraw',
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
+        request={(params, sort, filter) =>
+          queryList('/transactions', { ...params, type: activeKey }, sort, filter)
+        }
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

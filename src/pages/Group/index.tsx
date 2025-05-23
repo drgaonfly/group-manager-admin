@@ -159,7 +159,7 @@ const GroupTableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.ItemData, API.PageParams>
-        headerTitle={intl.formatMessage({ id: 'group.list', defaultMessage: '群组列表' })}
+        headerTitle={intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })}
         actionRef={actionRef}
         rowKey="_id"
         request={(params, sort, filter) => queryList('/groups', params, sort, filter)}

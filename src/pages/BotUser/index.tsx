@@ -142,11 +142,11 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const access = useAccess();
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-
   const [messageModalOpen, setMessageModalOpen] = useState(false);
   const [messageText, setMessageText] = useState('');
+  const access = useAccess();
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -193,12 +193,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'status', defaultMessage: '授权状态' }),
       dataIndex: 'isAuthorized',
-      hideInSearch: false,
-      valueEnum: {
-        '': { text: intl.formatMessage({ id: 'all', defaultMessage: '全部' }) },
-        true: { text: intl.formatMessage({ id: 'authorized', defaultMessage: '已授权' }) },
-        false: { text: intl.formatMessage({ id: 'unauthorized', defaultMessage: '未授权' }) },
-      },
+      hideInSearch: true,
       render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'authorized', defaultMessage: '已授权' })}
@@ -267,8 +262,45 @@ const TableList: React.FC = () => {
         search={{
           collapsed: false,
         }}
-        toolBarRender={() => []}
-        request={async (params, sort, filter) => queryList('/bot-users', params, sort, filter)}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="all" defaultMessage="all" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="authorized" defaultMessage="authorized" />,
+                key: 'true',
+              },
+              {
+                label: <FormattedMessage id="unauthorized" defaultMessage="unauthorized" />,
+                key: 'false',
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
+        request={async (params, sort, filter) => {
+          // 处理isAuthorized参数
+          let isAuthorized;
+          if (activeKey === '') {
+            isAuthorized = undefined; // 全部
+          } else if (activeKey === 'true') {
+            isAuthorized = true; // 已授权
+          } else if (activeKey === 'false') {
+            isAuthorized = false; // 未授权
+          }
+
+          return queryList('/bot-users', { ...params, isAuthorized }, sort, filter);
+        }}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {

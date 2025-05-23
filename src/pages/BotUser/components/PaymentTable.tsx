@@ -32,6 +32,9 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
     {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
+      render: (_, record) => {
+        return intl.formatMessage({ id: `${record.type}` });
+      },
     },
     {
       title: intl.formatMessage({ id: 'status', defaultMessage: '状态' }),
@@ -72,7 +75,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
   return (
     <EditableProTable<any>
       rowKey="id"
-      headerTitle={<FormattedMessage id="show.payments" defaultMessage="支付记录" />}
+      headerTitle={<FormattedMessage id="show_payments" defaultMessage="支付记录" />}
       columns={tableColumns}
       value={payments}
       recordCreatorProps={false}

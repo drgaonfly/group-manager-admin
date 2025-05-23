@@ -167,4 +167,28 @@ export default {
 
   recharge: '充币',
   subscription: '订阅',
+
+  // 新增缺失的国际化
+  ID: 'ID',
+  BotStartMessage: '机器人启动消息',
+  debug: '调试',
+  menuName: '菜单名称',
+  url: '链接',
+  userDetails: '用户详情',
+  botName: '机器人名称',
+  start_message: '启动消息',
+  enter_contact: '请输入联系方式',
+  contact_message: '联系消息',
+  enter_customer_service_link: '请输入客服链接',
+  customer_service_link: '客服链接',
+  enter_trx20_address: '请输入TRX20地址',
+  trx20_address: 'TRX20地址',
+  inline_menu_config: '内联菜单配置',
+  usdt_amount: 'USDT金额',
+  botUser: '机器人用户',
+  show_transactions: '显示交易',
+  expiresAt: '到期时间',
+  show_payments: '显示支付',
+  operators: '操作员',
+  group_list: '群组列表',
 };

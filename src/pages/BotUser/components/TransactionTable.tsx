@@ -56,7 +56,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   return (
     <EditableProTable<any>
       rowKey="id"
-      headerTitle={<FormattedMessage id="show.transactions" defaultMessage="交易记录" />}
+      headerTitle={<FormattedMessage id="show_transactions" defaultMessage="交易记录" />}
       columns={tableColumns}
       value={transactions}
       recordCreatorProps={false}

@@ -10,7 +10,6 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import SubscriptionPlan from '@/enums/subscriptionPlan';
-import SubscriptionStatus from '@/enums/subscriptionStatus';
 
 const handleUpdate = async (fields: any) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
@@ -74,7 +73,7 @@ const SubscriptionTableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'status', defaultMessage: 'Status' }),
       dataIndex: 'status',
-      valueEnum: SubscriptionStatus,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'isAuto', defaultMessage: 'Auto Renewal' }),
