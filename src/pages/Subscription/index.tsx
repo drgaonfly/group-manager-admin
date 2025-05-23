@@ -74,6 +74,10 @@ const SubscriptionTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'status', defaultMessage: 'Status' }),
       dataIndex: 'status',
       hideInSearch: true,
+      render: (_, record) =>
+        intl.formatMessage({
+          id: `${record.status}`,
+        }),
     },
     {
       title: intl.formatMessage({ id: 'isAuto', defaultMessage: 'Auto Renewal' }),
