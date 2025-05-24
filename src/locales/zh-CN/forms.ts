@@ -191,4 +191,5 @@ export default {
   show_payments: '显示支付',
   operators: '操作员',
   group_list: '群组列表',
+  paymentAmount: '实际支付金额',
 };

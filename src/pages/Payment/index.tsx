@@ -44,10 +44,17 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'orderNumber' }),
       dataIndex: 'orderNumber',
+      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'amount' }),
       dataIndex: 'amount',
+      hideInSearch: true,
+    },
+    // paymentAmount
+    {
+      title: intl.formatMessage({ id: 'paymentAmount' }),
+      dataIndex: 'paymentAmount',
       hideInSearch: true,
     },
     {

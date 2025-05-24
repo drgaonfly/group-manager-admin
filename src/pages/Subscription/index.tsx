@@ -92,19 +92,19 @@ const SubscriptionTableList: React.FC = () => {
         </Tag>
       ),
     },
-    {
-      title: intl.formatMessage({ id: 'isTrial', defaultMessage: 'Trial' }),
-      dataIndex: 'isTrial',
-      hideInSearch: true,
-      render: (isTrial) => (
-        <Tag color={isTrial ? 'blue' : 'default'}>
-          {intl.formatMessage({
-            id: isTrial ? 'subscription_trial' : 'subscription_regular',
-            defaultMessage: isTrial ? 'Trial' : 'Regular',
-          })}
-        </Tag>
-      ),
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'isTrial', defaultMessage: 'Trial' }),
+    //   dataIndex: 'isTrial',
+    //   hideInSearch: true,
+    //   render: (isTrial) => (
+    //     <Tag color={isTrial ? 'blue' : 'default'}>
+    //       {intl.formatMessage({
+    //         id: isTrial ? 'subscription_trial' : 'subscription_regular',
+    //         defaultMessage: isTrial ? 'Trial' : 'Regular',
+    //       })}
+    //     </Tag>
+    //   ),
+    // },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'CreatedAt' }),
       dataIndex: 'createdAt',

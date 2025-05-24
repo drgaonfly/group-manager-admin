@@ -155,4 +155,5 @@ export default {
   show_payments: 'Show Payments',
   operators: 'Operators',
   group_list: 'Group List',
+  paymentAmount: ' Payment Actually',
 };
