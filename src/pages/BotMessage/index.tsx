@@ -3,7 +3,7 @@ import { queryList, removeItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
@@ -47,7 +47,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       valueEnum: {
         text: { text: intl.formatMessage({ id: 'text' }) },
-        image: { text: intl.formatMessage({ id: 'image' }) },
+        photo: { text: intl.formatMessage({ id: 'image' }) },
         command: { text: intl.formatMessage({ id: 'command' }) },
       },
     },
@@ -57,6 +57,12 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       ellipsis: true,
       copyable: true,
+      render: (_, record) => {
+        if (record.messageType === 'photo') {
+          return <Image src={record.content} alt="message" style={{ maxWidth: '100px' }} preview />;
+        }
+        return record.content;
+      },
     },
     {
       title: intl.formatMessage({ id: 'user' }),
@@ -114,7 +120,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.ItemData, API.PageParams>
-        headerTitle={intl.formatMessage({ id: 'list' })}
+        headerTitle={intl.formatMessage({ id: 'botMessage_list' })}
         actionRef={actionRef}
         rowKey="_id"
         scroll={{ x: 'max-content' }}
@@ -137,7 +143,7 @@ const TableList: React.FC = () => {
               },
               {
                 label: intl.formatMessage({ id: 'image' }),
-                key: 'image',
+                key: 'photo',
               },
               {
                 label: intl.formatMessage({ id: 'command' }),
