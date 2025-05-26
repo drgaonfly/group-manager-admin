@@ -67,9 +67,10 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: intl.formatMessage({ id: 'bot' }),
-      dataIndex: ['bot', 'userName'],
-      hideInSearch: true,
+      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
+      dataIndex: 'bot',
+      copyable: true,
+      renderText: (bot) => bot?.botName,
     },
     {
       title: intl.formatMessage({ id: 'group' }),
