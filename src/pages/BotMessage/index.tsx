@@ -8,6 +8,7 @@ import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import { MessageType } from '@/enums/message';
 import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
@@ -68,8 +69,9 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: 'botUser',
       hideInSearch: true,
+      copyable: true,
       render: (_, record) => {
-        return record?.botUser?.firstName + ' ' + record?.botUser?.lastName;
+        return record.username || record?.botUser?.firstName + ' ' + record?.botUser?.lastName;
       },
     },
     {
@@ -139,15 +141,47 @@ const TableList: React.FC = () => {
               },
               {
                 label: intl.formatMessage({ id: 'text' }),
-                key: 'text',
+                key: MessageType.TEXT,
               },
               {
                 label: intl.formatMessage({ id: 'image' }),
-                key: 'photo',
+                key: MessageType.PHOTO,
+              },
+              {
+                label: intl.formatMessage({ id: 'video' }),
+                key: MessageType.VIDEO,
+              },
+              {
+                label: intl.formatMessage({ id: 'voice' }),
+                key: MessageType.VOICE,
+              },
+              {
+                label: intl.formatMessage({ id: 'document' }),
+                key: MessageType.DOCUMENT,
+              },
+              {
+                label: intl.formatMessage({ id: 'sticker' }),
+                key: MessageType.STICKER,
+              },
+              {
+                label: intl.formatMessage({ id: 'location' }),
+                key: MessageType.LOCATION,
               },
               {
                 label: intl.formatMessage({ id: 'command' }),
-                key: 'command',
+                key: MessageType.COMMAND,
+              },
+              {
+                label: intl.formatMessage({ id: 'audio' }),
+                key: MessageType.AUDIO,
+              },
+              {
+                label: intl.formatMessage({ id: 'file' }),
+                key: MessageType.FILE,
+              },
+              {
+                label: intl.formatMessage({ id: 'other' }),
+                key: MessageType.OTHER,
               },
             ],
             onChange: (key: any) => {

@@ -173,4 +173,11 @@ export default [
     icon: 'MessageOutlined',
     component: './BotMessage',
   },
+  // message
+  {
+    path: '/messages',
+    name: 'list.messages',
+    icon: 'MessageOutlined',
+    component: './Message',
+  },
 ];

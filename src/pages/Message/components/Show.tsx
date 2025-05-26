@@ -11,7 +11,9 @@ interface Props {
 
 const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns } = props;
+
   const intl = useIntl();
+
   const filteredColumns = columns
     .filter((col) => col.dataIndex !== 'option')
     .filter((_, index) => index !== 3);

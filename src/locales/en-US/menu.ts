@@ -21,6 +21,7 @@ export default {
   'menu.transactions': 'Transactions',
   'menu.groups': 'Groups',
   'menu.subscriptions': 'Subscriptions',
+  'menu.messages': 'Messages',
 
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',

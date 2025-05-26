@@ -3,17 +3,19 @@ import { queryList, removeItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import { MessageType } from '@/enums/message';
+import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
   if (!ids) return true;
   try {
-    await removeItem('/transactions', {
+    await removeItem('/messages', {
       ids,
     });
     hide();
@@ -33,65 +35,80 @@ const handleRemove = async (ids: string[]) => {
 const TableList: React.FC = () => {
   const intl = useIntl();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.ItemData>();
-  const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const actionRef = useRef<ActionType>();
+  const [currentRow, setCurrentRow] = useState<any>();
+  const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const access = useAccess();
 
-  const columns: ProColumns<API.ItemData>[] = [
+  const columns: ProColumns<any>[] = [
     {
-      title: intl.formatMessage({ id: 'id', defaultMessage: '交易ID' }),
-      dataIndex: 'id',
+      title: intl.formatMessage({ id: 'messageType' }),
+      dataIndex: 'messageType',
       hideInSearch: true,
+      valueEnum: {
+        text: { text: intl.formatMessage({ id: 'text' }) },
+        photo: { text: intl.formatMessage({ id: 'image' }) },
+        command: { text: intl.formatMessage({ id: 'command' }) },
+      },
     },
     {
-      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
-      dataIndex: 'bot',
+      title: intl.formatMessage({ id: 'content' }),
+      dataIndex: 'content',
+      hideInSearch: true,
+      ellipsis: true,
       copyable: true,
-      renderText: (bot) => bot?.botName,
+      render: (_, record) => {
+        if (record.messageType === 'photo') {
+          return <Image src={record.content} alt="message" style={{ maxWidth: '100px' }} preview />;
+        }
+        return record.content;
+      },
     },
-    // type
+    // username
     {
-      title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
-      dataIndex: 'type',
-      hideInSearch: true,
+      title: intl.formatMessage({ id: 'user' }),
+      dataIndex: 'username',
+      render: (_, record) => {
+        return record.username || record.first_name + '' + record.last_name;
+      },
     },
+    // from
+    // {
+    //   title: intl.formatMessage({ id: 'from' }),
+    //   hideInSearch: true,
+    //   render: (_, record) => {
+    //     return `
+    //     ${intl.formatMessage({ id: 'id' })}: ${record.from.id}
+    //     ${intl.formatMessage({ id: 'is_bot' })}: ${record.is_bot}
+    //     ${intl.formatMessage({ id: 'username' })}: ${record.username || record.first_name + record.last_name}
+    //     ${intl.formatMessage({ id: 'language_code' })}: ${record.language_code}
+    //     `;
+    //   },
+    // },
+    // chat_type
     {
-      title: intl.formatMessage({ id: 'botUser', defaultMessage: '机器人用户' }),
-      dataIndex: 'botUser',
-      copyable: true,
-      renderText: (record) => record.userName || record.firstName + ' ' + record.lastName,
+      title: intl.formatMessage({ id: 'group' }),
+      dataIndex: 'chat_title',
     },
+    // chat
+    // {
+    //   title: intl.formatMessage({ id: 'chat' }),
+    //   hideInSearch: true,
+    //   render: (_, record) => {
+    //     return `
+    //     ${intl.formatMessage({ id: 'id' })}: ${record.chat_id}
+    //     ${intl.formatMessage({ id: 'title' })}: ${record.chat_title}
+    //     ${intl.formatMessage({ id: 'type' })}: ${record.chat_type}
+    //     `;
+    //   }
+    // },
     {
-      title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
-      dataIndex: 'amount',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: '汇率' }),
-      dataIndex: 'exchange_rate',
-      valueType: 'digit',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'fee_rate', defaultMessage: '手续费率' }),
-      dataIndex: 'fee_rate',
-      valueType: 'percent',
-      hideInSearch: true,
-    },
-    // group
-    {
-      title: intl.formatMessage({ id: 'group', defaultMessage: '所属群组' }),
-      dataIndex: 'group',
-      copyable: true,
-      renderText: (group) => group?.title,
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
+      title: intl.formatMessage({ id: 'date' }),
+      dataIndex: 'date',
       valueType: 'dateTime',
       hideInSearch: true,
+      render: (_, record) => moment(record.date * 1000).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
@@ -108,7 +125,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
         </a>,
-        access.canDeleteTransaction && (
+        access.canDeleteMessage && (
           <DeleteLink
             key="delete"
             onOk={async () => {
@@ -123,13 +140,14 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.ItemData, API.PageParams>
-        headerTitle={intl.formatMessage({ id: 'list' })}
+      <ProTable<any, API.PageParams>
+        headerTitle={intl.formatMessage({ id: 'message_list' })}
         actionRef={actionRef}
         rowKey="_id"
         scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
+          collapsed: true,
         }}
         toolbar={{
           menu: {
@@ -137,16 +155,40 @@ const TableList: React.FC = () => {
             activeKey: activeKey,
             items: [
               {
-                label: <FormattedMessage id="all" defaultMessage="all" />,
+                label: <FormattedMessage id="platform.all" defaultMessage="all" />,
                 key: '',
               },
               {
-                label: <FormattedMessage id="deposit" defaultMessage="deposit" />,
-                key: 'deposit',
+                label: intl.formatMessage({ id: 'text' }),
+                key: MessageType.TEXT,
               },
               {
-                label: <FormattedMessage id="withdraw" defaultMessage="withdraw" />,
-                key: 'withdraw',
+                label: intl.formatMessage({ id: 'image' }),
+                key: MessageType.PHOTO,
+              },
+              {
+                label: intl.formatMessage({ id: 'video' }),
+                key: MessageType.VIDEO,
+              },
+              {
+                label: intl.formatMessage({ id: 'voice' }),
+                key: MessageType.VOICE,
+              },
+              {
+                label: intl.formatMessage({ id: 'document' }),
+                key: MessageType.DOCUMENT,
+              },
+              {
+                label: intl.formatMessage({ id: 'sticker' }),
+                key: MessageType.STICKER,
+              },
+              {
+                label: intl.formatMessage({ id: 'location' }),
+                key: MessageType.LOCATION,
+              },
+              {
+                label: intl.formatMessage({ id: 'command' }),
+                key: MessageType.COMMAND,
               },
             ],
             onChange: (key: any) => {
@@ -158,7 +200,7 @@ const TableList: React.FC = () => {
           },
         }}
         request={(params, sort, filter) =>
-          queryList('/transactions', { ...params, type: activeKey }, sort, filter)
+          queryList('/messages', { ...params, messageType: activeKey }, sort, filter)
         }
         columns={columns}
         rowSelection={{
@@ -177,7 +219,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {access.canDeleteTransaction && (
+          {access.canDeleteMessage && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState.map((item) => item._id!));
@@ -191,8 +233,8 @@ const TableList: React.FC = () => {
 
       <Show
         open={showDetail}
-        currentRow={currentRow || ({} as API.ItemData)}
-        columns={columns as ProDescriptionsItemProps<API.ItemData>[]}
+        currentRow={currentRow}
+        columns={columns as ProDescriptionsItemProps<any>[]}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);

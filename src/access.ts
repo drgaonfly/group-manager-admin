@@ -200,5 +200,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/bot-messages/:id', 'PUT')),
     canGetBotMessage:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bot-messages', 'GET')),
+
+    // Message
+    canCreateMessage:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/messages', 'POST')),
+    canDeleteMessage:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/messages', 'DELETE')),
+    canUpdateMessage:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/messages/:id', 'PUT')),
+    canGetMessage:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/messages', 'GET')),
   };
 }

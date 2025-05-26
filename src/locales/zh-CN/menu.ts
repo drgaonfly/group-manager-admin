@@ -25,6 +25,7 @@ export default {
   'menu.list.groups': '群组列表',
   'menu.list.subscriptions': '订阅列表',
   'menu.list.payments': '支付订单',
+  'menu.list.messages': '消息列表',
 
   'menu.auth.users': '用户',
   'menu.auth.roles': '角色',
@@ -50,6 +51,7 @@ export default {
   'menu.groups': '群组',
   'menu.subscriptions': '订阅',
   'menu.payments': '支付订单',
+  'menu.messages': '消息',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
