@@ -192,4 +192,7 @@ export default {
   operators: '操作员',
   group_list: '群组列表',
   paymentAmount: '实际支付金额',
+  messageType: '消息类型',
+  content: '内容',
+  group: '群组',
 };

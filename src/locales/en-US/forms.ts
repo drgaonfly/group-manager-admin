@@ -156,4 +156,7 @@ export default {
   operators: 'Operators',
   group_list: 'Group List',
   paymentAmount: ' Payment Actually',
+  messageType: 'Message Type',
+  content: 'Content',
+  group: 'Group',
 };

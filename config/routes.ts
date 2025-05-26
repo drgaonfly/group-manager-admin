@@ -166,4 +166,11 @@ export default [
     icon: 'OrderedListOutlined',
     component: './Payment',
   },
+  // botMessage
+  {
+    path: '/bot-messages',
+    name: 'list.bot-messages',
+    icon: 'MessageOutlined',
+    component: './BotMessage',
+  },
 ];
