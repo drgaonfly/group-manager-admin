@@ -71,7 +71,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       copyable: true,
       render: (_, record) => {
-        return record.username || record?.botUser?.firstName + ' ' + record?.botUser?.lastName;
+        return record.userName || record?.botUser?.firstName + ' ' + record?.botUser?.lastName;
       },
     },
     {
