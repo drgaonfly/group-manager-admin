@@ -126,7 +126,7 @@ const TableList: React.FC = () => {
         scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
-          collapsed: true,
+          collapsed: false,
         }}
         toolbar={{
           menu: {
