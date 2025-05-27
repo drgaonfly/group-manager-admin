@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /www/wwwroot/account-admin.2025fc.xyz/forwarding-admin &&
+            cd /www/wwwroot/forwarding-admin.2025fc.xyz/forwarding-admin &&
             git pull --rebase origin main &&
             /www/server/nodejs/v20.16.0/bin/pnpm install &&
             git checkout -f . &&
