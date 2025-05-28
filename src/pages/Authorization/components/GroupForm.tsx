@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useIntl } from '@umijs/max';
-import { Modal, Table, Typography, Card, Descriptions, Badge } from 'antd';
+import { Modal, Typography, Card, Descriptions, Badge } from 'antd';
 import { FormattedMessage } from '@umijs/max';
-import type { ColumnType } from 'antd/es/table';
+import { ProTable, type ProColumns } from '@ant-design/pro-components';
+import BotUserForm from './BotUserForm';
 
 interface GroupFormProps {
   open: boolean;
@@ -13,9 +14,12 @@ interface GroupFormProps {
 const GroupForm: React.FC<GroupFormProps> = (props) => {
   const { open, onCancel, values } = props;
   const intl = useIntl();
+  const [botUserModalVisible, setBotUserModalVisible] = useState<boolean>(false);
+  const [currentGroup, setCurrentGroup] = useState<any>(null);
+  const [currentBotUsers, setCurrentBotUsers] = useState<any[]>([]);
 
   // 定义群组表格的列
-  const groupColumns: ColumnType<any>[] = [
+  const groupColumns: ProColumns<any>[] = [
     {
       title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
       dataIndex: 'id',
@@ -67,53 +71,81 @@ const GroupForm: React.FC<GroupFormProps> = (props) => {
       dataIndex: 'createdAt',
       key: 'createdAt',
     },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => [
+        // 查看成员 (botUsers)
+        <a
+          key="users"
+          onClick={() => {
+            setCurrentGroup(record);
+            setCurrentBotUsers(values.botUsers || []);
+            setBotUserModalVisible(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'view_members', defaultMessage: '查看成员' })}
+        </a>,
+      ],
+    },
   ];
 
   return (
-    <Modal
-      title={intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })}
-      open={open}
-      onCancel={() => onCancel(false)}
-      width={1000}
-      footer={null}
-    >
-      {values?.groups && values.groups.length > 0 ? (
-        <>
-          <Card className="mb-4">
-            <Descriptions
-              title={intl.formatMessage({ id: 'bot_info', defaultMessage: '机器人信息' })}
-              bordered
-            >
-              <Descriptions.Item
-                label={intl.formatMessage({ id: 'botName', defaultMessage: '机器人名称' })}
+    <>
+      <Modal
+        title={intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })}
+        open={open}
+        onCancel={() => onCancel(false)}
+        width={1500}
+        footer={null}
+      >
+        {values?.groups && values.groups.length > 0 ? (
+          <>
+            <Card className="mb-4">
+              <Descriptions
+                title={intl.formatMessage({ id: 'bot_info', defaultMessage: '机器人信息' })}
+                bordered
               >
-                {values.botName}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label={intl.formatMessage({ id: 'userName', defaultMessage: '用户名' })}
-              >
-                @{values.userName}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label={intl.formatMessage({ id: 'groups_count', defaultMessage: '群组数量' })}
-              >
-                {values.groups.length}
-              </Descriptions.Item>
-            </Descriptions>
-          </Card>
-          <Table
-            columns={groupColumns}
-            dataSource={values.groups}
-            rowKey="_id"
-            pagination={{ pageSize: 5 }}
-          />
-        </>
-      ) : (
-        <Typography.Text>
-          <FormattedMessage id="no_groups" defaultMessage="该机器人没有关联的群组" />
-        </Typography.Text>
-      )}
-    </Modal>
+                <Descriptions.Item
+                  label={intl.formatMessage({ id: 'botName', defaultMessage: '机器人名称' })}
+                >
+                  {values.botName}
+                </Descriptions.Item>
+                <Descriptions.Item
+                  label={intl.formatMessage({ id: 'userName', defaultMessage: '用户名' })}
+                >
+                  @{values.userName}
+                </Descriptions.Item>
+                <Descriptions.Item
+                  label={intl.formatMessage({ id: 'groups_count', defaultMessage: '群组数量' })}
+                >
+                  {values.groups.length}
+                </Descriptions.Item>
+              </Descriptions>
+            </Card>
+            <ProTable
+              search={false}
+              columns={groupColumns}
+              dataSource={values.groups}
+              rowKey="_id"
+              pagination={{ pageSize: 5 }}
+            />
+          </>
+        ) : (
+          <Typography.Text>
+            <FormattedMessage id="no_groups" defaultMessage="该机器人没有关联的群组" />
+          </Typography.Text>
+        )}
+      </Modal>
+
+      <BotUserForm
+        open={botUserModalVisible}
+        onCancel={setBotUserModalVisible}
+        values={{ botUsers: currentBotUsers }}
+        groupInfo={currentGroup}
+      />
+    </>
   );
 };
 

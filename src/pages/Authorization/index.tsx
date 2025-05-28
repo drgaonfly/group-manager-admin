@@ -196,25 +196,6 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'debug', defaultMessage: '调试' }),
-      hideInSearch: true,
-      hideInTable: !access.canSuperAdmin,
-      render: (_, record) =>
-        access.canSuperAdmin && (
-          <div style={{ display: 'flex', justifyContent: 'left' }}>
-            <a
-              href={`https://api.telegram.org/bot${record.token}/getWebhookInfo`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button type="link" style={{ padding: 0 }}>
-                <FormattedMessage id="debug" defaultMessage="调试" />
-              </Button>
-            </a>
-          </div>
-        ),
-    },
-    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: 'Remark' }),
       dataIndex: 'remark',
       hideInSearch: true,
