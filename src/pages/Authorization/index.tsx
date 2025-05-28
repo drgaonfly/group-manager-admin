@@ -165,6 +165,24 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       copyable: true,
     },
+    // groups
+    {
+      title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
+      dataIndex: 'groups',
+      hideInSearch: true,
+      align: 'center',
+      render: (_, record) => (
+        <a
+          key="group"
+          onClick={() => {
+            setCurrentRow(record);
+            setGroupModalVisible(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'display' })}
+        </a>
+      ),
+    },
     {
       title: intl.formatMessage({ id: 'BotStartMessage', defaultMessage: 'BotStartMessage' }),
       dataIndex: 'message',
@@ -258,16 +276,6 @@ const TableList: React.FC = () => {
             }}
           />
         ),
-        // 查看群组
-        <a
-          key="group"
-          onClick={() => {
-            setCurrentRow(record);
-            setGroupModalVisible(true);
-          }}
-        >
-          {intl.formatMessage({ id: 'group' })}
-        </a>,
       ],
     },
   ];

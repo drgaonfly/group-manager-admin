@@ -212,4 +212,11 @@ export default {
   date: '时间',
   photo: '图片',
   mention: '引用',
+  display: '显示',
+  unit: '单位',
+  displayName: '显示名称',
+  firstName: '名字',
+  lastName: '姓氏',
+  isAuthorized: '是否授权',
+  bot_users_list: '机器人用户列表',
 };

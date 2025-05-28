@@ -175,4 +175,11 @@ export default {
   date: 'Date',
   photo: 'Photo',
   mention: 'Mention',
+  display: '显示',
+  unit: 'Unit',
+  displayName: 'Display Name',
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  isAuthorized: 'Is Authorized',
+  bot_users_list: 'Bot Users List',
 };
