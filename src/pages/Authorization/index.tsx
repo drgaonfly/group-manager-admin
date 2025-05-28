@@ -15,6 +15,7 @@ import DeleteLink from '@/components/DeleteLink';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import GroupForm from './components/GroupForm';
+import AddOwnerForm from './components/AddOwnerForm';
 
 /**
  * @en-US Add node
@@ -125,6 +126,8 @@ const TableList: React.FC = () => {
    * */
   // Define roles object with index signature
 
+  const [addOwnerModalVisible, setAddOwnerModalVisible] = useState<boolean>(false);
+
   const columns: ProColumns<any>[] = [
     {
       title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
@@ -158,6 +161,24 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'user', defaultMessage: '用户' }),
       dataIndex: ['user', 'name'],
       hideInSearch: false,
+    },
+    // add owners
+    {
+      title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
+      dataIndex: 'owners',
+      hideInSearch: true,
+      align: 'center',
+      render: (_, record) => (
+        <a
+          key="add_owner"
+          onClick={() => {
+            setCurrentRow(record);
+            setAddOwnerModalVisible(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'add_owner' })}
+        </a>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
@@ -442,6 +463,16 @@ const TableList: React.FC = () => {
         footer={null}
         width={800}
       ></Modal>
+      <AddOwnerForm
+        open={addOwnerModalVisible}
+        onCancel={setAddOwnerModalVisible}
+        values={currentRow || {}}
+        onSuccess={() => {
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+      />
     </PageContainer>
   );
 };

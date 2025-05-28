@@ -219,4 +219,5 @@ export default {
   lastName: '姓氏',
   isAuthorized: '是否授权',
   bot_users_list: '机器人用户列表',
+  add_owner: '添加拥有者',
 };
