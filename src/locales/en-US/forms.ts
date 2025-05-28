@@ -186,4 +186,7 @@ export default {
   delete_owner: 'Delete Owner',
   select_owner_required: 'Please select owner',
   authorized_users: 'Authorized Users',
+  display_authorizer: 'Display Authorizer',
+  add_authorizer: 'Add Authorizer',
+  delete_authorizer: 'Delete Authorizer',
 };

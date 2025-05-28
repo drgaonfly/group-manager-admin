@@ -225,4 +225,7 @@ export default {
   display_owner: '显示',
   no_owners: '无拥有者',
   authorized_users: '授权人',
+  display_authorizer: '显示',
+  add_authorizer: '添加',
+  delete_authorizer: '删除',
 };

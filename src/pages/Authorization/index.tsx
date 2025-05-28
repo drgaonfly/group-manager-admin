@@ -18,6 +18,9 @@ import GroupForm from './components/GroupForm';
 import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
 import DisplayOwnersModal from './components/DisplayOwnersModal';
+import AddAuthorizerForm from './components/AddAuthorizerForm';
+import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
+import DisplayAuthorizerForm from './components/DisplayAuthorizerForm';
 
 /**
  * @en-US Add node
@@ -125,6 +128,10 @@ const TableList: React.FC = () => {
   const [addOwnerModalVisible, setAddOwnerModalVisible] = useState<boolean>(false);
   const [deleteOwnerModalVisible, setDeleteOwnerModalVisible] = useState<boolean>(false);
   const [displayOwnersModalVisible, setDisplayOwnersModalVisible] = useState<boolean>(false);
+  const [displayAuthorizerModalVisible, setDisplayAuthorizerModalVisible] =
+    useState<boolean>(false);
+  const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
+  const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -201,27 +208,45 @@ const TableList: React.FC = () => {
       ),
     },
     // authorized_users
+    // authorized_users
     {
       title: intl.formatMessage({ id: 'authorized_users', defaultMessage: '授权人' }),
       dataIndex: 'authorized_users',
       hideInSearch: true,
       align: 'center',
-      render: (_, record) => {
-        if (!record.authorized_users?.length) {
-          return 0;
-        }
-        // 将授权用户数组转换为字符串显示
-        return (
-          <div>
-            {record.authorized_users.map((user: string, index: number) => (
-              <div key={index}>
-                {user}
-                <CopyToClipboard text={`@${user}`} />
-              </div>
-            ))}
-          </div>
-        );
-      },
+      render: (_, record) => (
+        <Space>
+          <a
+            key="display_authorizer"
+            onClick={() => {
+              setCurrentRow(record);
+              setDisplayAuthorizerModalVisible(true);
+            }}
+          >
+            {intl.formatMessage({ id: 'display_authorizer' })}
+          </a>
+
+          <a
+            key="add_authorizer"
+            onClick={() => {
+              setCurrentRow(record);
+              setAddAuthorizerModalVisible(true);
+            }}
+          >
+            {intl.formatMessage({ id: 'add_authorizer' })}
+          </a>
+
+          <a
+            key="delete_authorizer"
+            onClick={() => {
+              setCurrentRow(record);
+              setDeleteAuthorizerModalVisible(true);
+            }}
+          >
+            {intl.formatMessage({ id: 'delete_authorizer' })}
+          </a>
+        </Space>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
@@ -350,7 +375,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2500 }}
+        scroll={{ x: 4000 }}
         search={{
           collapsed: false,
         }}
@@ -530,6 +555,31 @@ const TableList: React.FC = () => {
         open={displayOwnersModalVisible}
         onCancel={setDisplayOwnersModalVisible}
         values={currentRow || {}}
+      />
+      <DisplayAuthorizerForm
+        open={displayAuthorizerModalVisible}
+        onCancel={setDisplayAuthorizerModalVisible}
+        values={currentRow || {}}
+      />
+      <AddAuthorizerForm
+        open={addAuthorizerModalVisible}
+        onCancel={setAddAuthorizerModalVisible}
+        values={currentRow || {}}
+        onSuccess={() => {
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+      />
+      <DeleteAuthorizerForm
+        open={deleteAuthorizerModalVisible}
+        onCancel={setDeleteAuthorizerModalVisible}
+        values={currentRow || {}}
+        onSuccess={() => {
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
       />
     </PageContainer>
   );
