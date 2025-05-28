@@ -219,7 +219,9 @@ export default {
   lastName: '姓氏',
   isAuthorized: '是否授权',
   bot_users_list: '机器人用户列表',
-  add_owner: '添加拥有者',
-  delete_owner: '删除拥有者',
+  add_owner: '添加',
+  delete_owner: '删除',
   select_owner_required: '请选择需要删除的拥有者',
+  display_owner: '显示',
+  no_owners: '无拥有者',
 };

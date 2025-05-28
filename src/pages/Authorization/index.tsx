@@ -17,6 +17,7 @@ import CopyToClipboard from '@/components/CopyToClipboard';
 import GroupForm from './components/GroupForm';
 import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
+import DisplayOwnersModal from './components/DisplayOwnersModal';
 
 /**
  * @en-US Add node
@@ -123,6 +124,7 @@ const TableList: React.FC = () => {
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [addOwnerModalVisible, setAddOwnerModalVisible] = useState<boolean>(false);
   const [deleteOwnerModalVisible, setDeleteOwnerModalVisible] = useState<boolean>(false);
+  const [displayOwnersModalVisible, setDisplayOwnersModalVisible] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -166,6 +168,16 @@ const TableList: React.FC = () => {
       align: 'center',
       render: (_, record) => (
         <Space>
+          <a
+            key="display_owner"
+            onClick={() => {
+              setCurrentRow(record);
+              setDisplayOwnersModalVisible(true);
+            }}
+          >
+            {intl.formatMessage({ id: 'display_owner' })}
+          </a>
+
           <a
             key="add_owner"
             onClick={() => {
@@ -315,7 +327,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2000 }}
+        scroll={{ x: 2500 }}
         search={{
           collapsed: false,
         }}
@@ -490,6 +502,11 @@ const TableList: React.FC = () => {
             actionRef.current.reload();
           }
         }}
+      />
+      <DisplayOwnersModal
+        open={displayOwnersModalVisible}
+        onCancel={setDisplayOwnersModalVisible}
+        values={currentRow || {}}
       />
     </PageContainer>
   );
