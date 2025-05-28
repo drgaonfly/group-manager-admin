@@ -22,6 +22,7 @@ export default {
   'menu.groups': 'Groups',
   'menu.subscriptions': 'Subscriptions',
   'menu.messages': 'Messages',
+  'menu.authorizations': 'Authorizations',
 
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',
@@ -45,4 +46,5 @@ export default {
   'menu.账单记录': 'Transaction Records',
   'menu.群组管理': 'Group Management',
   'menu.订阅管理': 'Subscription Management',
+  'menu.授权机器人管理': 'Authorization Management',
 };

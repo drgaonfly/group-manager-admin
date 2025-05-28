@@ -180,4 +180,11 @@ export default [
     icon: 'MessageOutlined',
     component: './Message',
   },
+  //
+  {
+    path: '/authorizations',
+    name: 'list.authorizations',
+    icon: 'TableOutlined',
+    component: './Authorization',
+  },
 ];

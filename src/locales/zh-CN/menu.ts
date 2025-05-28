@@ -20,6 +20,7 @@ export default {
   'menu.list.bots': '机器人列表',
   'menu.list.bot-users': '机器人用户列表',
   'menu.list.bot-messages': '机器人消息',
+  'menu.list.authorizations': '授权机器人管理',
 
   'menu.list.transactions': '账单记录',
   'menu.list.groups': '群组列表',
@@ -52,6 +53,7 @@ export default {
   'menu.subscriptions': '订阅',
   'menu.payments': '支付订单',
   'menu.messages': '消息',
+  'menu.authorizations': '授权机器人管理',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',
@@ -76,4 +78,5 @@ export default {
   'menu.群组管理': '群组管理',
   'menu.订阅管理': '订阅管理',
   'menu.支付订单': '支付订单',
+  'menu.授权机器人管理': '授权机器人管理',
 };
