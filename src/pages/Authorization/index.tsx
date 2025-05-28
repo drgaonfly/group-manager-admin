@@ -133,19 +133,16 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
       dataIndex: 'id',
-      hideInSearch: true,
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'owner_bot_display_name' }),
       dataIndex: 'botName',
-      hideInSearch: false,
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'owner_bot_identifier_name' }),
       dataIndex: 'userName',
-      hideInSearch: true,
       render: (_, record) => {
         const link = `@${record.userName}`;
         if (record.userName) {
