@@ -26,7 +26,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /www/wwwroot/forwarding-admin.2025fc.xyz/forwarding-admin-remote &&
+            cd /www/wwwroot/account-admin.2025fc.xyz/account-bot-admin-client &&
             git pull --rebase origin ${{ github.event.inputs.branch }}  &&
             /www/server/nodejs/v20.16.0/bin/pnpm install &&
             git checkout -f . &&
