@@ -30,7 +30,7 @@ const DisplayOwnersModal: React.FC<DisplayOwnersModalProps> = (props) => {
           dataSource={owners}
           renderItem={(item: any) => (
             <List.Item>
-              <Typography.Text copyable>{item}</Typography.Text>
+              <Typography.Text copyable>{`@${item}`}</Typography.Text>
             </List.Item>
           )}
         />

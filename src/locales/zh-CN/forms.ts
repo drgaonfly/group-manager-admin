@@ -224,4 +224,5 @@ export default {
   select_owner_required: '请选择需要删除的拥有者',
   display_owner: '显示',
   no_owners: '无拥有者',
+  authorized_users: '授权人',
 };

@@ -185,4 +185,5 @@ export default {
   add_owner: 'Add Owner',
   delete_owner: 'Delete Owner',
   select_owner_required: 'Please select owner',
+  authorized_users: 'Authorized Users',
 };

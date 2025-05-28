@@ -200,6 +200,29 @@ const TableList: React.FC = () => {
         </Space>
       ),
     },
+    // authorized_users
+    {
+      title: intl.formatMessage({ id: 'authorized_users', defaultMessage: '授权人' }),
+      dataIndex: 'authorized_users',
+      hideInSearch: true,
+      align: 'center',
+      render: (_, record) => {
+        if (!record.authorized_users?.length) {
+          return 0;
+        }
+        // 将授权用户数组转换为字符串显示
+        return (
+          <div>
+            {record.authorized_users.map((user: string, index: number) => (
+              <div key={index}>
+                {user}
+                <CopyToClipboard text={`@${user}`} />
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
