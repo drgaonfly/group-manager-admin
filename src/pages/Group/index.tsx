@@ -78,6 +78,12 @@ const GroupTableList: React.FC = () => {
       valueType: 'percent',
     },
     {
+      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
+      dataIndex: 'bot',
+      copyable: true,
+      renderText: (bot) => bot?.botName,
+    },
+    {
       title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
       dataIndex: 'operators',
       hideInSearch: true,
