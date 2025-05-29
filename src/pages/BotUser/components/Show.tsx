@@ -24,12 +24,12 @@ const Show: React.FC<Props> = (props) => {
     pageSize: number;
   }>({
     current: 1,
-    pageSize: 5,
+    pageSize: 20,
   });
   const [paymentPagination, setPaymentPagination] = useState<{ current: number; pageSize: number }>(
     {
       current: 1,
-      pageSize: 5,
+      pageSize: 20,
     },
   );
 

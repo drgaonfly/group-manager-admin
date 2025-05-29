@@ -100,7 +100,7 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
             columns={userColumns}
             dataSource={values.botUsers}
             rowKey="_id"
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: 20 }}
           />
         </>
       ) : (

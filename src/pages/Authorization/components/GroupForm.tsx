@@ -129,7 +129,7 @@ const GroupForm: React.FC<GroupFormProps> = (props) => {
               columns={groupColumns}
               dataSource={values.groups}
               rowKey="_id"
-              pagination={{ pageSize: 5 }}
+              pagination={{ pageSize: 20 }}
             />
           </>
         ) : (

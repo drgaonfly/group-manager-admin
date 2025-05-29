@@ -19,7 +19,7 @@ const Show: React.FC<Props> = (props) => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
     current: 1,
-    pageSize: 5,
+    pageSize: 20,
   });
 
   const query = async () => {

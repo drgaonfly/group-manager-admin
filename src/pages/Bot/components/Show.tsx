@@ -16,7 +16,7 @@ const Show: React.FC<Props> = (props) => {
 
   const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
     current: 1,
-    pageSize: 5,
+    pageSize: 20,
   });
 
   return (
