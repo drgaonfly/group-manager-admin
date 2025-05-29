@@ -56,6 +56,10 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
       hideInSearch: true,
+      valueEnum: {
+        deposit: { text: intl.formatMessage({ id: 'deposit', defaultMessage: '入款' }) },
+        withdraw: { text: intl.formatMessage({ id: 'withdraw', defaultMessage: '下发' }) },
+      },
     },
     {
       title: intl.formatMessage({ id: 'botUser', defaultMessage: '机器人用户' }),
