@@ -1,6 +1,14 @@
 import { useIntl } from '@umijs/max';
 import React from 'react';
-import { ProForm, ProFormText, ProFormSwitch, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormText,
+  ProFormSwitch,
+  ProFormTextArea,
+  ProFormSelect,
+  ProFormDependency,
+  ProFormDateTimePicker,
+} from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 
 interface Props {
@@ -45,6 +53,38 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="token"
           disabled={!newRecord}
         />
+
+        <ProFormSelect
+          rules={[{ required: true }]}
+          width="md"
+          label={intl.formatMessage({ id: 'type', defaultMessage: '类型' })}
+          name="type"
+          options={[
+            {
+              value: 'public',
+              label: intl.formatMessage({ id: 'type.public', defaultMessage: '公开' }),
+            },
+            {
+              value: 'custom',
+              label: intl.formatMessage({ id: 'type.custom', defaultMessage: '自定义' }),
+            },
+          ]}
+        />
+
+        <ProFormDependency name={['type']}>
+          {({ type }) =>
+            type === 'custom' ? (
+              <ProFormDateTimePicker
+                width="md"
+                label={intl.formatMessage({ id: 'expireAt', defaultMessage: '到期时间' })}
+                name="expireAt"
+                fieldProps={{
+                  format: 'YYYY-MM-DD HH:mm:ss',
+                }}
+              />
+            ) : null
+          }
+        </ProFormDependency>
 
         <ProFormTextArea
           width="md"
