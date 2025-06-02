@@ -217,6 +217,29 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
     },
     {
+      title: intl.formatMessage({ id: 'isExpired', defaultMessage: '是否已过期' }),
+      dataIndex: 'isExpired',
+      align: 'center',
+      valueEnum: {
+        '': { text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }) },
+        true: {
+          text: intl.formatMessage({ id: 'expired', defaultMessage: '已过期' }),
+          status: 'Error',
+        },
+        false: {
+          text: intl.formatMessage({ id: 'not_expired', defaultMessage: '未过期' }),
+          status: 'Success',
+        },
+      },
+      // render: (_, record) => {
+      //   // 判断是否过期
+      //   const expired = record.expireAt ? new Date(record.expireAt).getTime() < Date.now() : false;
+      //   return expired
+      //     ? intl.formatMessage({ id: 'expired', defaultMessage: '已过期' })
+      //     : intl.formatMessage({ id: 'not_expired', defaultMessage: '未过期' });
+      // },
+    },
+    {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
       hideInSearch: true,
