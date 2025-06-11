@@ -14,7 +14,7 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
-
+import MessageForm from './components/MessageForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -118,6 +118,7 @@ const TableList: React.FC = () => {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [configureModalVisible, setConfigureModalVisible] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -231,20 +232,35 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        access.canCreateBot && (
-          <a
-            key="configure"
-            onClick={() => {
-              setConfigureModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'configure',
-              defaultMessage: intl.formatMessage({ id: 'configure' }),
-            })}
-          </a>
-        ),
+        access.canCreateBot &&
+          (access.canCreateBot && (
+            <a
+              key="sendMessage"
+              onClick={() => {
+                setMessageModalOpen(true);
+                setCurrentRow(record);
+              }}
+            >
+              {intl.formatMessage({
+                id: 'sendMessage',
+                defaultMessage: intl.formatMessage({ id: 'sendMessage' }),
+              })}
+            </a>
+          ),
+          (
+            <a
+              key="configure"
+              onClick={() => {
+                setConfigureModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              {intl.formatMessage({
+                id: 'configure',
+                defaultMessage: intl.formatMessage({ id: 'configure' }),
+              })}
+            </a>
+          )),
         <a
           key="detail"
           onClick={() => {
@@ -437,6 +453,7 @@ const TableList: React.FC = () => {
         footer={null}
         width={800}
       ></Modal>
+      <MessageForm open={messageModalOpen} onCancel={setMessageModalOpen} currentRow={currentRow} />
     </PageContainer>
   );
 };
