@@ -228,4 +228,10 @@ export default {
   display_authorizer: '显示',
   add_authorizer: '添加',
   delete_authorizer: '删除',
+  sendMessage: '发送',
+  message_placeholder: '请输入消息内容',
+  please_input_message: '请输入消息内容',
+  message_content: '消息',
+  telegram_bot_warning:
+    '注意：消息只能发送给之前与机器人互动过的用户（例如发送过消息或点击过启动）。',
 };

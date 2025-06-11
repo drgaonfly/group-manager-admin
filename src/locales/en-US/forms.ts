@@ -189,4 +189,10 @@ export default {
   display_authorizer: 'Display Authorizer',
   add_authorizer: 'Add Authorizer',
   delete_authorizer: 'Delete Authorizer',
+  sendMessage: 'Send',
+  message_placeholder: 'Please input message content',
+  please_input_message: 'Please input message content',
+  message_content: 'Message',
+  telegram_bot_warning:
+    'Note: Messages can only be sent to users who have previously interacted with the bot (e.g., sent a message or clicked Start).',
 };
