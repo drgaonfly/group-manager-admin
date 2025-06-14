@@ -136,7 +136,7 @@ const GroupTableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="Detail" />
         </a>,
-        access.canSuperAdmin && (
+        access.canUpdateGroup && (
           <a
             key="edit"
             onClick={() => {

@@ -234,4 +234,5 @@ export default {
   message_content: '消息',
   telegram_bot_warning:
     '注意：消息只能发送给之前与机器人互动过的用户（例如发送过消息或点击过启动）。',
+  balance: '余额',
 };

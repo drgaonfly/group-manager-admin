@@ -187,4 +187,11 @@ export default [
     icon: 'TableOutlined',
     component: './Authorization',
   },
+  // wallet
+  {
+    path: '/wallets',
+    name: 'list.wallets',
+    icon: 'WalletOutlined',
+    component: './Wallet',
+  },
 ];

@@ -23,6 +23,7 @@ export default {
   'menu.subscriptions': 'Subscriptions',
   'menu.messages': 'Messages',
   'menu.authorizations': 'Authorizations',
+  'menu.wallets': 'Wallets',
 
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',
@@ -47,4 +48,5 @@ export default {
   'menu.群组管理': 'Group Management',
   'menu.订阅管理': 'Subscription Management',
   'menu.授权机器人管理': 'Authorization Management',
+  'menu.钱包管理': 'Wallet Management',
 };

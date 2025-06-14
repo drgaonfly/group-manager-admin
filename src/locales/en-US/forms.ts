@@ -195,4 +195,5 @@ export default {
   message_content: 'Message',
   telegram_bot_warning:
     'Note: Messages can only be sent to users who have previously interacted with the bot (e.g., sent a message or clicked Start).',
+  balance: 'Balance',
 };

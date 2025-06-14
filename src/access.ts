@@ -210,5 +210,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/messages/:id', 'PUT')),
     canGetMessage:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/messages', 'GET')),
+
+    // Wallet
+    canCreateWallet:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'POST')),
+    canDeleteWallet:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'DELETE')),
+    canUpdateWallet:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets/:id', 'PUT')),
+    canGetWallet:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'GET')),
   };
 }
