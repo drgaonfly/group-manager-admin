@@ -157,6 +157,22 @@ const TableList: React.FC = () => {
         }
       },
     },
+    {
+      title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '复制机器人' }),
+      dataIndex: 'clonedFrom',
+      renderText: (text: any) => {
+        return text?.botName || text?.userName;
+      },
+      hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+      dataIndex: 'creator',
+      renderText: (text: any) => {
+        return text?.botName || text?.userName;
+      },
+      hideInSearch: true,
+    },
     // add owners
     // {
     //   title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
