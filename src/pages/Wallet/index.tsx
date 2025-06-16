@@ -93,16 +93,14 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: 'botUser',
-      hideInSearch: true,
-      render: (text, record) => {
-        return record?.botUser?.firstName + ' ' + record?.botUser?.lastName;
-      },
+      copyable: true,
+      renderText: (botUser) => botUser?.userName || botUser?.displayName,
     },
     {
       title: intl.formatMessage({ id: 'bot' }),
-      dataIndex: ['bot', 'userName'],
-      hideInSearch: true,
+      dataIndex: 'bot',
       copyable: true,
+      renderText: (bot) => bot?.botName,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
@@ -158,7 +156,7 @@ const TableList: React.FC = () => {
         scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
-          collapsed: true,
+          collapsed: false,
         }}
         toolbar={{
           menu: {

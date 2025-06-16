@@ -44,6 +44,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
       copyable: true,
+      hideInSearch: true,
     },
     // wallet
     {
@@ -121,7 +122,7 @@ const TableList: React.FC = () => {
         scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
-          collapsed: true,
+          collapsed: false,
         }}
         request={(params, sort, filter) => queryList('/receipts', { ...params }, sort, filter)}
         columns={columns}
