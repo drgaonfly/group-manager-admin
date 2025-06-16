@@ -194,4 +194,11 @@ export default [
     icon: 'WalletOutlined',
     component: './Wallet',
   },
+  // receipt
+  {
+    path: '/receipts',
+    name: 'list.receipts',
+    icon: 'MoneyCollectOutlined',
+    component: './Receipt',
+  },
 ];

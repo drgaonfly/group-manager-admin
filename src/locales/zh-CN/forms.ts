@@ -239,4 +239,6 @@ export default {
   canBeCloned: '可克隆',
   noCanBeCloned: '不可克隆',
   clonedFrom: '克隆自',
+  hash: '哈希',
+  time: '时间',
 };

@@ -3,7 +3,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Tag } from 'antd';
+import { message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
@@ -57,8 +57,8 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'name' }),
-      dataIndex: 'name',
+      title: intl.formatMessage({ id: 'remark' }),
+      dataIndex: 'remark',
       copyable: true,
     },
     {
@@ -76,13 +76,19 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'status' }),
       dataIndex: 'isOnline',
       hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <Tag color={record.isOnline ? 'green' : 'red'}>
-            {intl.formatMessage({ id: record.isOnline ? 'online' : 'offline' })}
-          </Tag>
-        );
-      },
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
+          checked={record.isOnline}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'user' }),
@@ -97,12 +103,6 @@ const TableList: React.FC = () => {
       dataIndex: ['bot', 'userName'],
       hideInSearch: true,
       copyable: true,
-    },
-    // remark
-    {
-      title: intl.formatMessage({ id: 'remark' }),
-      dataIndex: 'remark',
-      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),

@@ -220,5 +220,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets/:id', 'PUT')),
     canGetWallet:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/wallets', 'GET')),
+
+    // Receipt
+    canCreateReceipt:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/receipts', 'POST')),
+    canDeleteReceipt:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/receipts', 'DELETE')),
+    canUpdateReceipt:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/receipts/:id', 'PUT')),
+    canGetReceipt:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/receipts', 'GET')),
   };
 }
