@@ -235,4 +235,8 @@ export default {
   telegram_bot_warning:
     '注意：消息只能发送给之前与机器人互动过的用户（例如发送过消息或点击过启动）。',
   balance: '余额',
+  is_canBeCloned: '是否可克隆',
+  canBeCloned: '可克隆',
+  noCanBeCloned: '不可克隆',
+  clonedFrom: '克隆自',
 };

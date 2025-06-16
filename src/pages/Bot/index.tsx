@@ -174,6 +174,36 @@ const TableList: React.FC = () => {
       ellipsis: true,
     },
     {
+      title: intl.formatMessage({ id: 'is_canBeCloned', defaultMessage: '是否可克隆' }),
+      dataIndex: 'canBeCloned',
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checkedChildren={intl.formatMessage({ id: 'canBeCloned' })}
+          unCheckedChildren={intl.formatMessage({ id: 'noCanBeCloned' })}
+          checked={record.canBeCloned}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canBeCloned: !record.canBeCloned });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    // clonedFrom
+    {
+      title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '克隆自' }),
+      dataIndex: 'clonedFrom',
+      hideInSearch: true,
+      renderText: (_, record: any) => {
+        if (record.clonedFrom) {
+          return record.clonedFrom.botName;
+        }
+        return '-';
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
       dataIndex: 'isOnline',
       hideInSearch: true,
@@ -299,7 +329,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2000 }}
+        scroll={{ x: 'max-content' }}
         search={{
           collapsed: false,
         }}

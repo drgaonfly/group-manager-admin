@@ -99,6 +99,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           checkedChildren={intl.formatMessage({ id: 'platform.online' })}
           unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
         />
+
+        <ProFormSwitch
+          label={intl.formatMessage({ id: 'is_canBeCloned', defaultMessage: '是否可克隆' })}
+          name="canBeCloned"
+          initialValue={false}
+          checkedChildren={intl.formatMessage({ id: 'canBeCloned' })}
+          unCheckedChildren={intl.formatMessage({ id: 'noCanBeCloned' })}
+        />
       </ProForm.Group>
 
       {!newRecord && (
