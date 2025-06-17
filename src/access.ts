@@ -230,5 +230,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/receipts/:id', 'PUT')),
     canGetReceipt:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/receipts', 'GET')),
+
+    // Exchange
+    canCreateExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'POST')),
+    canDeleteExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'DELETE')),
+    canUpdateExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'PUT')),
+    canGetExchange:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'GET')),
   };
 }

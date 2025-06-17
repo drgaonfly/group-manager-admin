@@ -201,4 +201,11 @@ export default [
     icon: 'MoneyCollectOutlined',
     component: './Receipt',
   },
+  // exchange
+  {
+    path: '/exchanges',
+    name: 'list.exchanges',
+    icon: 'SwapOutlined',
+    component: './Exchange',
+  },
 ];

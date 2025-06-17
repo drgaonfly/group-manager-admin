@@ -25,6 +25,7 @@ export default {
   'menu.authorizations': 'Authorizations',
   'menu.wallets': 'Wallets',
   'menu.receipts': 'Receipts',
+  'menu.exchanges': 'Exchanges',
 
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',
@@ -51,4 +52,5 @@ export default {
   'menu.授权机器人管理': 'Authorization Management',
   'menu.钱包管理': 'Wallet Management',
   'menu.钱包收据': 'Wallet Receipts',
+  'menu.兑换记录': 'Exchange Records',
 };

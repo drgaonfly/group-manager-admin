@@ -241,4 +241,11 @@ export default {
   clonedFrom: '克隆自',
   hash: '哈希',
   time: '时间',
+  failed: '失败',
+  from_crypt: '被兑换的币种',
+  to_crypt: '需兑换的币种',
+  from_amount: '被兑换的金额',
+  to_amount: '需兑换的金额',
+  rate: '汇率',
+  fee: '手续费',
 };
