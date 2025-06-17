@@ -164,6 +164,12 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               addonAfter: '%',
             }}
           />
+          <ProFormText.Password
+            rules={[{ message: intl.formatMessage({ id: 'enter_private_key' }) }]}
+            width="md"
+            label={intl.formatMessage({ id: 'private_key', defaultMessage: '私钥' })}
+            name="private_key"
+          />
         </ProFormGroup>
         <EditableProTable<menuItem>
           rowKey="_id"
