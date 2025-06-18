@@ -40,12 +40,6 @@ const TableList: React.FC = () => {
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
-    {
-      title: intl.formatMessage({ id: 'id' }),
-      dataIndex: 'id',
-      copyable: true,
-      hideInSearch: true,
-    },
     // wallet
     {
       title: intl.formatMessage({ id: 'wallet' }),
@@ -60,18 +54,17 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       renderText: (type) => (type === 'transferIn' ? '收入' : '支出'),
     },
+    // from_address
     {
-      title: intl.formatMessage({ id: 'amount' }),
-      dataIndex: 'amount',
+      title: intl.formatMessage({ id: 'from_address' }),
+      dataIndex: 'from_address',
       hideInSearch: true,
     },
+    // to_address
     {
-      title: intl.formatMessage({ id: 'hash' }),
-      dataIndex: 'hash',
-      width: 150,
+      title: intl.formatMessage({ id: 'to_address' }),
+      dataIndex: 'to_address',
       hideInSearch: true,
-      ellipsis: true,
-      copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'user' }),
@@ -91,6 +84,14 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
       hideInSearch: true,
       render: (_, record) => moment(record.time * 1000).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: intl.formatMessage({ id: 'hash' }),
+      dataIndex: 'hash',
+      width: 150,
+      hideInSearch: true,
+      ellipsis: true,
+      copyable: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
