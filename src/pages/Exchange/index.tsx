@@ -81,6 +81,9 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'isTransferIntoOther' }),
       dataIndex: 'isTransferIntoOther',
       hideInSearch: true,
+      renderText: (text, record) => {
+        return record.isTransferIntoOther ? '是' : '否';
+      },
     },
     {
       title: intl.formatMessage({ id: 'hash' }),
