@@ -135,16 +135,19 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
       dataIndex: 'id',
+      width: 120,
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'owner_bot_display_name' }),
       dataIndex: 'botName',
+      width: 150,
       copyable: true,
     },
     {
       title: intl.formatMessage({ id: 'owner_bot_identifier_name' }),
       dataIndex: 'userName',
+      width: 150,
       render: (_, record) => {
         const link = `@${record.userName}`;
         if (record.userName) {
@@ -160,6 +163,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '复制机器人' }),
       dataIndex: 'clonedFrom',
+      width: 120,
       renderText: (text: any) => {
         return text?.botName || text?.userName;
       },
@@ -167,6 +171,7 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+      width: 120,
       dataIndex: 'creator',
       renderText: (text: any) => {
         return text?.botName || text?.userName;
@@ -260,6 +265,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
+      width: 400,
       hideInSearch: true,
       copyable: true,
     },
@@ -267,6 +273,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
       dataIndex: 'groups',
+      width: 120,
       hideInSearch: true,
       align: 'center',
       render: (_, record) => (
@@ -292,6 +299,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
       dataIndex: 'isOnline',
+      width: 120,
       hideInSearch: true,
       valueEnum: {
         true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
@@ -321,6 +329,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
+      width: 150,
       hideInSearch: true,
       valueType: 'dateTime',
     },
@@ -329,6 +338,8 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
+      width: 200,
       render: (_, record) => [
         <a
           key="sendMessage"
@@ -397,7 +408,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2700 }}
+        scroll={{ x: 2000 }}
         search={{
           collapsed: false,
         }}
