@@ -7,6 +7,7 @@ import {
   ProFormGroup,
   ProFormText,
   ProFormDigit,
+  ProFormSwitch,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { FormattedMessage, useIntl, useModel } from '@umijs/max';
@@ -172,6 +173,11 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             width="md"
             label={intl.formatMessage({ id: 'private_key', defaultMessage: '私钥' })}
             name="private_key"
+          />
+          <ProFormSwitch
+            name="canBeCloned"
+            width="md"
+            label={intl.formatMessage({ id: 'can_be_cloned', defaultMessage: '是否可克隆' })}
           />
         </ProFormGroup>
         <EditableProTable<menuItem>
