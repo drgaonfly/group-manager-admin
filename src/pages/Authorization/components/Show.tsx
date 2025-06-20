@@ -1,5 +1,6 @@
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import BotUserTable from './BotUserTable';
+import GroupTable from './GroupTable';
 import { Modal } from 'antd';
 import React, { useState } from 'react';
 
@@ -15,6 +16,11 @@ const Show: React.FC<Props> = (props) => {
   const filteredColumns = cols.filter((col) => col.dataIndex !== 'option');
 
   const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
+    current: 1,
+    pageSize: 20,
+  });
+
+  const [groupPagination, setGroupPagination] = useState<{ current: number; pageSize: number }>({
     current: 1,
     pageSize: 20,
   });
@@ -59,6 +65,11 @@ const Show: React.FC<Props> = (props) => {
             botUsers={currentRow?.botUsers || []}
             pagination={pagination}
             setPagination={setPagination}
+          />
+          <GroupTable
+            groups={currentRow?.groups || []}
+            pagination={groupPagination}
+            setPagination={setGroupPagination}
           />
         </>
       )}
