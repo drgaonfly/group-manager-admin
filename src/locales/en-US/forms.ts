@@ -201,4 +201,5 @@ export default {
   from_address: 'From Address',
   to_address: 'To Address',
   isTransferIntoOther: 'Is Transfer Into Other',
+  intervalTime: 'Interval Time',
 };

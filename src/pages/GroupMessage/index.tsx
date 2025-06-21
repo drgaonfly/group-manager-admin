@@ -8,7 +8,6 @@ import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import MessageType from '@/enums/message';
 import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
@@ -41,39 +40,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
 
-  const messageTypeEnum = MessageType();
-
   const columns: ProColumns<API.ItemData>[] = [
-    {
-      title: intl.formatMessage({ id: 'messageType' }),
-      dataIndex: 'messageType',
-      hideInSearch: true,
-      renderText: (_, record) => {
-        return intl.formatMessage({ id: `${record.messageType}` });
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'content' }),
-      dataIndex: 'content',
-      ellipsis: true,
-      hideInSearch: true,
-      renderText: (_, record) => {
-        if (record.messageType === 'photo') {
-          return <Image src={record.content} alt="message" style={{ maxWidth: '100px' }} preview />;
-        }
-        return (
-          <div
-            style={{
-              maxWidth: '200px',
-              whiteSpace: 'normal',
-              wordBreak: 'break-word',
-            }}
-          >
-            {record.content}
-          </div>
-        );
-      },
-    },
     {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: 'botUser',
@@ -91,6 +58,33 @@ const TableList: React.FC = () => {
       dataIndex: 'group',
       copyable: true,
       renderText: (group) => group?.title,
+    },
+    {
+      title: intl.formatMessage({ id: 'content' }),
+      dataIndex: 'content',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    // image
+    {
+      title: intl.formatMessage({ id: 'image' }),
+      dataIndex: 'image',
+      hideInSearch: true,
+      renderText: (_, record) => {
+        return <Image src={record.image} alt="message" style={{ maxWidth: '100px' }} preview />;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'content' }),
+      dataIndex: 'content',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    // intervalTime
+    {
+      title: intl.formatMessage({ id: 'intervalTime' }),
+      dataIndex: 'intervalTime',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
@@ -142,18 +136,6 @@ const TableList: React.FC = () => {
           menu: {
             type: 'tab',
             activeKey: activeKey,
-            items: [
-              {
-                label: <FormattedMessage id="platform.all" defaultMessage="all" />,
-                key: '',
-              },
-              ...Object.keys(messageTypeEnum).map((key) => ({
-                label: intl.formatMessage({
-                  id: messageTypeEnum[key as keyof typeof messageTypeEnum].text,
-                }),
-                key: messageTypeEnum[key as keyof typeof messageTypeEnum].value,
-              })),
-            ],
             onChange: (key: any) => {
               setActiveKey(key);
               if (actionRef.current) {

@@ -251,4 +251,5 @@ export default {
   from_address: '发送地址',
   to_address: '接收地址',
   isTransferIntoOther: '兑换给他人',
+  intervalTime: '间隔时间',
 };
