@@ -20,7 +20,8 @@ import DeleteOwnerForm from './components/DeleteOwnerForm';
 import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 // import StringArrayWithActions from './components/StringArrayWithAction';
-import MessageForm from '../Bot/components/MessageForm';
+import MessageForm from './components/MessageForm';
+import GroupMessageForm from './components/GroupMessageForm';
 
 /**
  * @en-US Add node
@@ -130,6 +131,7 @@ const TableList: React.FC = () => {
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
   const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
+  const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -339,7 +341,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      width: 200,
+      width: 300,
       render: (_, record) => [
         <a
           key="sendMessage"
@@ -351,6 +353,21 @@ const TableList: React.FC = () => {
           {intl.formatMessage({
             id: 'sendMessage',
             defaultMessage: intl.formatMessage({ id: 'sendMessage' }),
+          })}
+        </a>,
+        <a
+          key="sendGroupMessage"
+          onClick={() => {
+            setGroupMessageModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          {intl.formatMessage({
+            id: 'sendGroupMessage',
+            defaultMessage: intl.formatMessage({
+              id: 'sendGroupMessage',
+              defaultMessage: 'Group Message',
+            }),
           })}
         </a>,
         access.canUpdateBot && (
@@ -605,6 +622,11 @@ const TableList: React.FC = () => {
         }}
       />
       <MessageForm open={messageModalOpen} onCancel={setMessageModalOpen} currentRow={currentRow} />
+      <GroupMessageForm
+        open={groupMessageModalOpen}
+        onCancel={setGroupMessageModalOpen}
+        currentRow={currentRow}
+      />
     </PageContainer>
   );
 };

@@ -14,7 +14,7 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import MessageForm from './components/MessageForm';
+import MessageForm from '../Authorization/components/MessageForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点

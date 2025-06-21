@@ -42,22 +42,16 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'user' }),
-      dataIndex: 'botUser',
-      copyable: true,
-      renderText: (botUser) => botUser?.userName || botUser?.displayName,
-    },
-    {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
       dataIndex: 'bot',
       copyable: true,
       renderText: (bot) => bot?.botName,
     },
     {
-      title: intl.formatMessage({ id: 'group', defaultMessage: '所属群组' }),
-      dataIndex: 'group',
+      title: intl.formatMessage({ id: 'groups', defaultMessage: '所属群组' }),
+      dataIndex: 'groups',
       copyable: true,
-      renderText: (group) => group?.title,
+      renderText: (groups) => groups?.map((group: any) => group?.title).join(','),
     },
     {
       title: intl.formatMessage({ id: 'content' }),

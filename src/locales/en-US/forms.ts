@@ -203,4 +203,11 @@ export default {
   isTransferIntoOther: 'Is Transfer Into Other',
   intervalTime: 'Interval Time',
   receive_address: 'Receive Address',
+  sendGroupMessage: 'Send Group Message',
+  add_group_message: 'Add Group Message',
+  group_message_info: 'This message will be sent to the selected groups.',
+  select_groups: 'Select Groups',
+  please_select_groups: 'Please select at least one group',
+  interval_time_hour: 'Interval Time (hours)',
+  is_real_time: 'Is Real Time',
 };
