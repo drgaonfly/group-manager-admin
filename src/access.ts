@@ -240,5 +240,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges/:id', 'PUT')),
     canGetExchange:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/exchanges', 'GET')),
+
+    // GroupMessage
+    canCreateGroupMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/group-messages', 'POST')),
+    canDeleteGroupMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/group-messages', 'DELETE')),
+    canUpdateGroupMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/group-messages/:id', 'PUT')),
+    canGetGroupMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/group-messages', 'GET')),
   };
 }

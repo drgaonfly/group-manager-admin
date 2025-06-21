@@ -208,4 +208,11 @@ export default [
     icon: 'SwapOutlined',
     component: './Exchange',
   },
+  // groupMessage
+  {
+    path: '/group-messages',
+    name: 'list.group-messages',
+    icon: 'MessageOutlined',
+    component: './GroupMessage',
+  },
 ];
