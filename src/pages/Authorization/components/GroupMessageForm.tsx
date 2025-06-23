@@ -77,7 +77,9 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           content: values.message,
           bot: currentRow?._id,
           intervalTime:
-            values.timeUnit === 'minutes' ? values.intervalTime / 60 : values.intervalTime,
+            values.timeUnit === 'minutes'
+              ? Number((values.intervalTime / 60).toFixed(2))
+              : values.intervalTime,
           groups: values.groups || [],
           image: imageUrl,
         };

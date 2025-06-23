@@ -101,6 +101,13 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
+      title: intl.formatMessage({ id: 'txid' }),
+      dataIndex: 'txid',
+      hideInSearch: true,
+      ellipsis: true,
+      copyable: true,
+    },
+    {
       title: intl.formatMessage({ id: 'rate' }),
       dataIndex: 'rate',
       hideInSearch: true,

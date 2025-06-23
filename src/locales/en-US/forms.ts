@@ -213,4 +213,6 @@ export default {
   private_key: 'Private Key',
   please_input_private_key: 'Please input private key',
   no_groups_joined: 'No groups joined',
+  txid: 'Exchange Hash',
+  interval_time: 'Interval Time',
 };
