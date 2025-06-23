@@ -214,8 +214,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item name="isRealTime" valuePropName="checked">
-          <Checkbox>
+        <Form.Item valuePropName="checked">
+          <Checkbox name="isRealtime">
             {intl.formatMessage({ id: 'is_real_time', defaultMessage: 'Send in real time' })}
           </Checkbox>
         </Form.Item>
