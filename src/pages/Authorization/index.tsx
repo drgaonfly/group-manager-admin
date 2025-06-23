@@ -197,6 +197,24 @@ const TableList: React.FC = () => {
         }
       },
     },
+    // canBeCloned
+    {
+      title: intl.formatMessage({ id: 'is_canBeCloned' }),
+      dataIndex: 'canBeCloned',
+      width: 120,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canBeCloned}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canBeCloned: !record.canBeCloned });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
     {
       title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '复制机器人' }),
       dataIndex: 'clonedFrom',
@@ -215,90 +233,6 @@ const TableList: React.FC = () => {
       },
       hideInSearch: true,
     },
-    // add owners
-    // {
-    //   title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
-    //   dataIndex: 'owners',
-    //   hideInSearch: true,
-    //   align: 'center',
-    //   render: (_, record) => (
-    //     <StringArrayWithActions
-    //       values={record.owners}
-    //       onAdd={() => {
-    //         setCurrentRow(record);
-    //         setAddOwnerModalVisible(true);
-    //       }}
-    //       onDelete={() => {
-    //         setCurrentRow(record);
-    //         setDeleteOwnerModalVisible(true);
-    //       }}
-    //       labelAdd={intl.formatMessage({ id: 'add_owner' })}
-    //       labelDelete={intl.formatMessage({ id: 'delete_owner' })}
-    //     />
-    //   ),
-    // },
-
-    // {
-    //   title: intl.formatMessage({ id: 'authorized_users', defaultMessage: '授权人' }),
-    //   dataIndex: 'authorized_users',
-    //   hideInSearch: true,
-    //   align: 'center',
-    //   render: (_, record) => (
-    //     <StringArrayWithActions
-    //       values={record.authorized_users}
-    //       onAdd={() => {
-    //         setCurrentRow(record);
-    //         setAddAuthorizerModalVisible(true);
-    //       }}
-    //       onDelete={() => {
-    //         setCurrentRow(record);
-    //         setDeleteAuthorizerModalVisible(true);
-    //       }}
-    //       labelAdd={intl.formatMessage({ id: 'add_authorizer' })}
-    //       labelDelete={intl.formatMessage({ id: 'delete_authorizer' })}
-    //       color="green"
-    //     />
-    //   ),
-    // },
-    // {
-    //   title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
-    //   dataIndex: 'type',
-    //   align: 'center',
-    //   valueEnum: {
-    //     '': { text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }) },
-    //     public: { text: intl.formatMessage({ id: 'type.public', defaultMessage: '公开' }) },
-    //     custom: { text: intl.formatMessage({ id: 'type.custom', defaultMessage: '定制' }) },
-    //   },
-    // },
-    // {
-    //   title: intl.formatMessage({ id: 'expireAt', defaultMessage: '到期时间' }),
-    //   dataIndex: 'expireAt',
-    //   hideInSearch: true,
-    //   valueType: 'dateTime',
-    // },
-    // {
-    //   title: intl.formatMessage({ id: 'isExpired', defaultMessage: '是否已过期' }),
-    //   dataIndex: 'isExpired',
-    //   align: 'center',
-    //   valueEnum: {
-    //     '': { text: intl.formatMessage({ id: 'all', defaultMessage: '所有' }) },
-    //     true: {
-    //       text: intl.formatMessage({ id: 'expired', defaultMessage: '已过期' }),
-    //       status: 'Error',
-    //     },
-    //     false: {
-    //       text: intl.formatMessage({ id: 'not_expired', defaultMessage: '未过期' }),
-    //       status: 'Success',
-    //     },
-    //   },
-    //   // render: (_, record) => {
-    //   //   // 判断是否过期
-    //   //   const expired = record.expireAt ? new Date(record.expireAt).getTime() < Date.now() : false;
-    //   //   return expired
-    //   //     ? intl.formatMessage({ id: 'expired', defaultMessage: '已过期' })
-    //   //     : intl.formatMessage({ id: 'not_expired', defaultMessage: '未过期' });
-    //   // },
-    // },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
