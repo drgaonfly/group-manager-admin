@@ -65,7 +65,14 @@ const TableList: React.FC = () => {
       dataIndex: 'image',
       hideInSearch: true,
       renderText: (_, record) => {
-        return <Image src={record.image} alt="message" style={{ maxWidth: '100px' }} preview />;
+        return (
+          <Image
+            src={`${process.env.UMI_APP_API_URL}/api/static/${record.image}`}
+            alt="message"
+            style={{ maxWidth: '100px' }}
+            preview
+          />
+        );
       },
     },
     {
