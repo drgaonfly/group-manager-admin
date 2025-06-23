@@ -248,7 +248,7 @@ export default {
   to_amount: 'trx',
   rate: '汇率',
   fee: '手续费',
-  from_address: '发送地址',
+  from_address: '自动闪兑地址',
   to_address: '转账地址',
   receive_address: '接收地址',
   isTransferIntoOther: '兑换给他人',
