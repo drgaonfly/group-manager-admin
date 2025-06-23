@@ -212,4 +212,5 @@ export default {
   is_real_time: 'Is Real Time',
   private_key: 'Private Key',
   please_input_private_key: 'Please input private key',
+  no_groups_joined: 'No groups joined',
 };

@@ -263,4 +263,5 @@ export default {
   isRealtime: '是否实时发送',
   private_key: '私钥',
   please_input_private_key: '请输入私钥',
+  no_groups_joined: '没有加入群组',
 };
