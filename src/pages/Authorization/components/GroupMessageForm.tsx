@@ -1,4 +1,4 @@
-import { message, Form } from 'antd';
+import { message, Form, Space } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
@@ -10,6 +10,7 @@ import {
   ProFormGroup,
   ProFormDigit,
   ProFormCheckbox,
+  ProFormSelect,
 } from '@ant-design/pro-components';
 
 const handleAdd = async (data: any) => {
@@ -75,10 +76,12 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         const data = {
           content: values.message,
           bot: currentRow?._id,
-          intervalTime: values.intervalTime || 0,
+          intervalTime:
+            values.timeUnit === 'minutes' ? values.intervalTime / 60 : values.intervalTime,
           groups: values.groups || [],
           image: imageUrl,
         };
+
         const success = await handleAdd(data);
         if (success) {
           form.resetFields();
@@ -92,11 +95,19 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         <ProFormTextArea
           name="message"
           label={intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
-          required
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({
+                id: 'please_input_message',
+                defaultMessage: 'Please input message content',
+              }),
+            },
+          ]}
           width="md"
         />
 
-        <Form.Item required label={intl.formatMessage({ id: 'image' })}>
+        <Form.Item label={intl.formatMessage({ id: 'image' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
               setImageUrl(signedUrl || url);
@@ -129,16 +140,37 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           />
         )}
 
-        <ProFormDigit
-          name="intervalTime"
-          width="md"
-          label={intl.formatMessage({
-            id: 'interval_time_hour',
-            defaultMessage: 'Interval Time (hours)',
-          })}
-          min={0}
-          fieldProps={{ style: { width: '100%' } }}
-        />
+        <ProFormGroup
+          title={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
+          size={8}
+        >
+          <Space>
+            <ProFormSelect
+              name="timeUnit"
+              width="xs"
+              initialValue="hours"
+              options={[
+                {
+                  label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                  value: 'minutes',
+                },
+                {
+                  label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                  value: 'hours',
+                },
+              ]}
+              noStyle
+            />
+
+            <ProFormDigit
+              name="intervalTime"
+              width="xs"
+              min={0}
+              fieldProps={{ style: { width: '100%' } }}
+              noStyle
+            />
+          </Space>
+        </ProFormGroup>
       </ProFormGroup>
     </ModalForm>
   );
