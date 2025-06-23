@@ -108,7 +108,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
       </ProFormGroup>
 
       <ProFormGroup>
-        {currentRow?.groups.length > 0 ? (
+        {currentRow?.groups?.length > 0 ? (
           <ProFormCheckbox.Group
             name="groups"
             width="md"
