@@ -260,4 +260,7 @@ export default {
   please_select_groups: '请选择至少一个群组',
   interval_time_hour: '间隔时间(小时)',
   is_real_time: '是否实时发送',
+  isRealtime: '是否实时发送',
+  private_key: '私钥',
+  please_input_private_key: '请输入私钥',
 };

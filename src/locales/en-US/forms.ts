@@ -210,4 +210,6 @@ export default {
   please_select_groups: 'Please select at least one group',
   interval_time_hour: 'Interval Time (hours)',
   is_real_time: 'Is Real Time',
+  private_key: 'Private Key',
+  please_input_private_key: 'Please input private key',
 };

@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, Switch } from 'antd';
+import { Button, message, Modal, Switch, Form, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
@@ -132,6 +132,41 @@ const TableList: React.FC = () => {
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
   const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
+  const [privateKeyModalOpen, setPrivateKeyModalOpen] = useState<boolean>(false);
+  const [privateKeyForm] = Form.useForm();
+
+  // 保存Private Key的方法
+  const handleSavePrivateKey = async () => {
+    try {
+      const values = await privateKeyForm.validateFields();
+      const hide = message.loading(<FormattedMessage id="saving" defaultMessage="Saving..." />);
+
+      try {
+        await updateItem(`/bots/${currentRow?._id}`, {
+          private_key: values.private_key,
+        });
+
+        hide();
+        message.success(
+          <FormattedMessage id="save_successful" defaultMessage="Saved successfully" />,
+        );
+        setPrivateKeyModalOpen(false);
+
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+      } catch (error: any) {
+        hide();
+        message.error(
+          error?.response?.data?.message ?? (
+            <FormattedMessage id="save_failed" defaultMessage="Save failed, please try again" />
+          ),
+        );
+      }
+    } catch (error) {
+      console.log('Validation failed:', error);
+    }
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -327,6 +362,29 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       valueType: 'text',
       ellipsis: true,
+    },
+    // private_key
+    // 如果record.private_key不为空，则显示修改，如果为空，则添加
+    {
+      title: intl.formatMessage({ id: 'private_key', defaultMessage: 'Private Key' }),
+      dataIndex: 'private_key',
+      hideInSearch: true,
+      valueType: 'text',
+      ellipsis: true,
+      render: (_, record) => [
+        <a
+          key="editPrivateKey"
+          onClick={() => {
+            setCurrentRow(record);
+            privateKeyForm.setFieldsValue({ private_key: record.private_key || '' });
+            setPrivateKeyModalOpen(true);
+          }}
+        >
+          {record.private_key
+            ? intl.formatMessage({ id: 'modify', defaultMessage: '修改' })
+            : intl.formatMessage({ id: 'add', defaultMessage: '添加' })}
+        </a>,
+      ],
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
@@ -627,6 +685,47 @@ const TableList: React.FC = () => {
         onCancel={setGroupMessageModalOpen}
         currentRow={currentRow}
       />
+
+      {/* Private Key 编辑 Modal */}
+      <Modal
+        title={
+          currentRow?.private_key
+            ? intl.formatMessage({ id: 'modify_private_key', defaultMessage: '修改私钥' })
+            : intl.formatMessage({ id: 'add_private_key', defaultMessage: '添加私钥' })
+        }
+        open={privateKeyModalOpen}
+        onOk={handleSavePrivateKey}
+        onCancel={() => setPrivateKeyModalOpen(false)}
+        destroyOnClose
+      >
+        <Form
+          form={privateKeyForm}
+          layout="vertical"
+          initialValues={{ private_key: currentRow?.private_key || '' }}
+        >
+          <Form.Item
+            name="private_key"
+            label={intl.formatMessage({ id: 'private_key', defaultMessage: 'Private Key' })}
+            rules={[
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'please_input_private_key',
+                  defaultMessage: 'Please input private key',
+                }),
+              },
+            ]}
+          >
+            <Input.TextArea
+              rows={6}
+              placeholder={intl.formatMessage({
+                id: 'please_input_private_key',
+                defaultMessage: 'Please input private key',
+              })}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </PageContainer>
   );
 };
