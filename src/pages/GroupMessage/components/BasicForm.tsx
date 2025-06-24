@@ -1,6 +1,6 @@
 import { useIntl } from '@umijs/max';
 import React, { useState, useEffect } from 'react';
-import { ProForm, ProFormSwitch, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
+import { ProForm, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
 import { Alert, Form, Input } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
@@ -103,17 +103,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'interval_time_hour', defaultMessage: '间隔时间(小时)' })}
           name="intervalTime"
           min={0}
-          fieldProps={{
-            precision: 0,
-          }}
-        />
-
-        <ProFormSwitch
-          label={intl.formatMessage({ id: 'isRealtime', defaultMessage: '是否实时' })}
-          name="isRealtime"
-          initialValue={false}
-          checkedChildren={intl.formatMessage({ id: 'yes', defaultMessage: '是' })}
-          unCheckedChildren={intl.formatMessage({ id: 'no', defaultMessage: '否' })}
         />
       </ProForm.Group>
 
