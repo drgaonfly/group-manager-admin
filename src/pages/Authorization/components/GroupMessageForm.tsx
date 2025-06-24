@@ -90,6 +90,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
               : values.intervalTime,
           groups: values.groups || [],
           image: imageUrl,
+          isRealtime: values.isRealtime,
           sendType: values.sendType,
         };
 
@@ -150,6 +151,13 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
             disabled
           />
         )}
+
+        <ProFormCheckbox
+          name="isRealtime"
+          label={intl.formatMessage({ id: 'is_realtime', defaultMessage: 'Is Realtime' })}
+          initialValue={false}
+          hidden
+        />
 
         <ProFormRadio.Group
           name="sendType"
