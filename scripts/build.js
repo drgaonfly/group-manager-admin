@@ -103,6 +103,16 @@ async function uploadAndExtract() {
     conn
       .on('ready', async () => {
         try {
+          // 先确保远程目录存在
+          await new Promise((res, rej) => {
+            conn.exec(`mkdir -p ${REMOTE_DEPLOY_PATH}`, (err, stream) => {
+              if (err) rej(err);
+              stream.on('close', res);
+              stream.on('data', (data) => {}); // 忽略输出
+              stream.stderr.on('data', (data) => {}); // 忽略错误输出
+            });
+          });
+
           // 上传文件
           await new Promise((res, rej) => {
             conn.sftp((err, sftp) => {
