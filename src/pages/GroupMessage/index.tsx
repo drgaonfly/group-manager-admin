@@ -1,5 +1,5 @@
 import { useIntl } from '@umijs/max';
-import { queryList, removeItem } from '@/services/ant-design-pro/api';
+import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
@@ -8,6 +8,7 @@ import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import Update from './components/Update';
 import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
@@ -25,6 +26,31 @@ const handleRemove = async (ids: string[]) => {
     message.error(
       error.response.data.message ?? (
         <FormattedMessage id="delete_failed" defaultMessage="Delete failed, please try again" />
+      ),
+    );
+    return false;
+  }
+};
+
+/**
+ * @en-US Update node
+ * @zh-CN 更新节点
+ *
+ * @param fields
+ */
+const handleUpdate = async (fields: any) => {
+  const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+  try {
+    await updateItem(`/group-messages/${fields._id}`, fields);
+    hide();
+
+    message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(
+      error?.response?.data?.message ?? (
+        <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
       ),
     );
     return false;
@@ -57,6 +83,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
@@ -136,6 +163,19 @@ const TableList: React.FC = () => {
             }}
           />
         ),
+        access.canUpdateGroupMessage && (
+          <a
+            key="edit"
+            onClick={() => {
+              console.log();
+
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            {intl.formatMessage({ id: 'edit' })}
+          </a>
+        ),
       ],
     },
   ];
@@ -193,6 +233,24 @@ const TableList: React.FC = () => {
             />
           )}
         </FooterToolbar>
+      )}
+
+      {(access.canSuperAdmin || access.canUpdateBot) && (
+        <Update
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalOpen(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+          onCancel={handleUpdateModalOpen}
+          updateModalOpen={updateModalOpen}
+          values={currentRow || ({} as any)}
+        />
       )}
 
       <Show
