@@ -47,6 +47,11 @@ const TableList: React.FC = () => {
       copyable: true,
       renderText: (wallet) => wallet?.address,
     },
+    {
+      title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
+      dataIndex: 'amount',
+      hideInSearch: true,
+    },
     // type
     {
       title: intl.formatMessage({ id: 'type' }),
