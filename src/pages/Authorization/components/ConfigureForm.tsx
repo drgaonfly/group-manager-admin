@@ -16,6 +16,12 @@ type menuItem = {
   _id: string;
 };
 
+type keyboardItem = {
+  _id: string;
+  command: string;
+  content: string;
+};
+
 export type FormValueType = Partial<API.ItemData>;
 
 export type UpdateFormProps = {
@@ -34,7 +40,9 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
   const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
+  const [keyboards, setKeyboards] = useState<keyboardItem[]>(values?.keyboards || []);
   console.log('values', values);
+
   const columns = [
     {
       title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
@@ -65,6 +73,50 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       ],
     },
   ];
+
+  const keyboard_columns = [
+    {
+      title: intl.formatMessage({ id: 'command', defaultMessage: '命令' }),
+      dataIndex: 'command',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'command_required', defaultMessage: '请输入命令' }),
+          },
+        ],
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'content', defaultMessage: '内容' }),
+      dataIndex: 'content',
+      valueType: 'textarea',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'content_required', defaultMessage: '请输入内容' }),
+          },
+        ],
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      valueType: 'option',
+      width: 200,
+      render: (text: any, record: any, _: any, action: any) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
+
   return (
     <ModalForm
       title={intl.formatMessage({ id: 'configure', defaultMessage: 'Configure' })}
@@ -78,6 +130,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       onFinish={async (values: any) => {
         await onSubmit({
           ...values,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          keyboards: keyboards.map(({ _id, ...rest }) => rest),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           menus: menus.map(({ _id, ...rest }) => rest),
         });
@@ -174,6 +228,32 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             label={intl.formatMessage({ id: 'can_be_cloned', defaultMessage: '是否可克隆' })}
           />
         </ProFormGroup>
+
+        <EditableProTable<keyboardItem>
+          rowKey="_id"
+          headerTitle={intl.formatMessage({
+            id: 'keyboard_config',
+            defaultMessage: '键盘配置',
+          })}
+          // @ts-ignore
+          columns={keyboard_columns}
+          value={keyboards}
+          name="keyboards"
+          onChange={(value: readonly keyboardItem[]) => setKeyboards([...value])}
+          editable={{
+            type: 'multiple',
+          }}
+          recordCreatorProps={{
+            newRecordType: 'dataSource',
+            position: 'bottom',
+            record: () => ({
+              _id: Date.now().toString(),
+              command: '',
+              content: '',
+            }),
+          }}
+        />
+
         <EditableProTable<menuItem>
           rowKey="_id"
           headerTitle={intl.formatMessage({
