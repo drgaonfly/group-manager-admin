@@ -45,10 +45,14 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: 'botUser',
       copyable: true,
-      renderText: (botUser) =>
-        botUser?.userName ||
-        botUser?.displayName ||
-        `${botUser?.firstName} ${botUser?.lastName}`?.trim(),
+      renderText: (botUser) => {
+        if (!botUser) return '-';
+        return (
+          botUser.userName ||
+          botUser.displayName ||
+          `${botUser.firstName ?? ''} ${botUser.lastName ?? ''}`.trim()
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'bot' }),
