@@ -216,4 +216,5 @@ export default {
   txid: 'Exchange Hash',
   interval_time: 'Interval Time',
   send_type: 'Send Type',
+  cancelled: 'Cancelled',
 };

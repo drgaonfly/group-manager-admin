@@ -271,4 +271,5 @@ export default {
   send_type: '发送类型',
   usdt_balance: 'USDT余额',
   trx_balance: 'TRX余额',
+  cancelled: '已取消',
 };
