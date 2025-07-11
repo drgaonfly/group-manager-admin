@@ -55,12 +55,14 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const [presets, setPresets] = useState<presetItem[]>(values?.presets || []);
 
   useEffect(() => {
-    if (updateModalOpen && values?.multi_image) {
-      setMultiImageUrl(values.multi_image);
-    } else if (updateModalOpen && !values?.multi_image) {
-      setMultiImageUrl('');
+    if (updateModalOpen) {
+      form.resetFields();
+      setKeyboards(values?.keyboards || []);
+      setPresets(values?.presets || []);
+      setmenu(values?.menus || []);
+      setMultiImageUrl(values?.multi_image || '');
     }
-  }, [updateModalOpen, values?.multi_image]);
+  }, [updateModalOpen, values]);
 
   console.log('values', values);
 
@@ -196,7 +198,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       open={updateModalOpen}
       onOpenChange={onCancel}
       onFinish={async () => {
-        const values = await form.validateFields();
         await onSubmit({
           ...values,
           multi_image: multiImageUrl,
@@ -208,7 +209,12 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           presets: presets.map(({ _id, ...rest }) => rest),
         });
       }}
-      initialValues={{ ...values }}
+      initialValues={{
+        ...values,
+        presets: values?.presets?.map((item: any) => item._id),
+        keyboards: values?.keyboards?.map((item: any) => item._id),
+        menus: values?.menus?.map((item: any) => item._id),
+      }}
     >
       {values && (
         <ProDescriptions<API.ItemData>
@@ -412,20 +418,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             position: 'bottom',
             record: () => ({
               _id: Date.now().toString(),
-              months: 0,
-              price: 0,
-              originalPrice: 0,
-              isOnline: false,
-              isCarSeat: false,
-              isExclusive: false,
-              exclusivePrice: 0,
-              exclusiveOriginalPrice: 0,
-              seatCount: 0,
-              user: values.user,
-              token: values.token,
-              name: values.name,
-              userName: values.userName,
-              url: process.env.UMI_APP_MENU_URL,
+              menuName: ' ',
+              url: '',
             }),
           }}
         />
