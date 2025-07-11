@@ -298,28 +298,28 @@ const TableList: React.FC = () => {
       ellipsis: true,
     },
     // private_key
-    // 如果record.private_key不为空，则显示修改，如果为空，则添加
-    {
-      title: intl.formatMessage({ id: 'private_key', defaultMessage: 'Private Key' }),
-      dataIndex: 'private_key',
-      hideInSearch: true,
-      valueType: 'text',
-      ellipsis: true,
-      render: (_, record) => [
-        <a
-          key="editPrivateKey"
-          onClick={() => {
-            setCurrentRow(record);
-            privateKeyForm.setFieldsValue({ private_key: record.private_key || '' });
-            setPrivateKeyModalOpen(true);
-          }}
-        >
-          {record.private_key
-            ? intl.formatMessage({ id: 'modify', defaultMessage: '修改' })
-            : intl.formatMessage({ id: 'add', defaultMessage: '添加' })}
-        </a>,
-      ],
-    },
+    // // 如果record.private_key不为空，则显示修改，如果为空，则添加
+    // {
+    //   title: intl.formatMessage({ id: 'private_key', defaultMessage: 'Private Key' }),
+    //   dataIndex: 'private_key',
+    //   hideInSearch: true,
+    //   valueType: 'text',
+    //   ellipsis: true,
+    //   render: (_, record) => [
+    //     <a
+    //       key="editPrivateKey"
+    //       onClick={() => {
+    //         setCurrentRow(record);
+    //         privateKeyForm.setFieldsValue({ private_key: record.private_key || '' });
+    //         setPrivateKeyModalOpen(true);
+    //       }}
+    //     >
+    //       {record.private_key
+    //         ? intl.formatMessage({ id: 'modify', defaultMessage: '修改' })
+    //         : intl.formatMessage({ id: 'add', defaultMessage: '添加' })}
+    //     </a>,
+    //   ],
+    // },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',

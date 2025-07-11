@@ -6,7 +6,7 @@ import {
   ProDescriptions,
   ProFormGroup,
   ProFormText,
-  ProFormDigit,
+  // ProFormDigit,
   // ProFormSwitch,
   type ProColumns,
 } from '@ant-design/pro-components';
@@ -270,7 +270,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             tooltip="格式示例: https://t.me/xxxx"
             placeholder="https://t.me/"
           />
-          <ProFormText
+          {/* <ProFormText
             rules={[{ required: false, message: intl.formatMessage({ id: 'enter_trx_address' }) }]}
             width="md"
             label={intl.formatMessage({
@@ -293,7 +293,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               precision: 0,
               addonAfter: '%',
             }}
-          />
+          /> */}
           {/* <ProFormSwitch
             name="canBeCloned"
             width="md"
