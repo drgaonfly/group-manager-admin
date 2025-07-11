@@ -1,7 +1,16 @@
-import { Modal, Form, Input, message, Alert } from 'antd';
+import { Modal, Form, message, Alert, Space } from 'antd';
 import { useIntl } from '@umijs/max';
 import { request } from '@umijs/max';
-import { EditableProTable, ProColumns } from '@ant-design/pro-components';
+import {
+  EditableProTable,
+  ProColumns,
+  ProFormDigit,
+  ProFormDependency,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormRadio,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
 import { useState, useEffect } from 'react';
 
 interface MessageFormProps {
@@ -43,6 +52,8 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
             ...values,
             menus: menus.map(({ menuName, url }) => ({ menuName, url })),
             menus_per_row: values.menus_per_row || 1,
+            intervalTime: values.intervalTime || 0,
+            send_type: values.sendType,
           },
         });
 
@@ -132,7 +143,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
         style={{ marginBottom: 16 }}
       />
       <Form form={form} layout="vertical">
-        <Form.Item
+        <ProFormTextArea
           name="message"
           label={intl.formatMessage({ id: 'message_content', defaultMessage: 'Message Content' })}
           rules={[
@@ -144,30 +155,88 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
               }),
             },
           ]}
-        >
-          <Input.TextArea
-            rows={8}
-            placeholder={intl.formatMessage({
-              id: 'message_placeholder',
-              defaultMessage: 'Please input message content',
-            })}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="menus_per_row"
-          label={intl.formatMessage({
-            id: 'menus_per_row',
-            defaultMessage: '每行菜单按钮数量',
+          placeholder={intl.formatMessage({
+            id: 'message_placeholder',
+            defaultMessage: 'Please input message content',
           })}
-          rules={[
-            {
-              required: false,
-            },
-          ]}
-        >
-          <Input type="number" placeholder="默认每行 1 个按钮" />
-        </Form.Item>
+          fieldProps={{
+            autoSize: { minRows: 8 },
+          }}
+        />
+
+        <ProFormGroup>
+          <ProFormDigit
+            name="menus_per_row"
+            label={intl.formatMessage({
+              id: 'menus_per_row',
+              defaultMessage: '每行菜单按钮数量',
+            })}
+            rules={[
+              {
+                required: false,
+              },
+            ]}
+            placeholder="默认每行 1 个按钮"
+          />
+
+          <ProFormRadio.Group
+            name="sendType"
+            width="md"
+            label={intl.formatMessage({ id: 'send_type', defaultMessage: 'Send Type' })}
+            initialValue="immediate"
+            options={[
+              {
+                label: intl.formatMessage({ id: 'immediate_send', defaultMessage: '立即发送' }),
+                value: 'immediate',
+              },
+              {
+                label: intl.formatMessage({ id: 'scheduled_send', defaultMessage: '定时发送' }),
+                value: 'scheduled',
+              },
+            ]}
+          />
+        </ProFormGroup>
+
+        <ProFormDependency name={['sendType']}>
+          {({ sendType }) =>
+            sendType === 'scheduled' && (
+              <ProFormGroup
+                label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
+                style={{
+                  marginBottom: 32,
+                }}
+              >
+                <Space>
+                  <ProFormSelect
+                    name="timeUnit"
+                    width="xs"
+                    initialValue="hours"
+                    options={[
+                      {
+                        label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                        value: 'minutes',
+                      },
+                      {
+                        label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                        value: 'hours',
+                      },
+                    ]}
+                    noStyle
+                  />
+
+                  <ProFormDigit
+                    name="intervalTime"
+                    width="xs"
+                    min={0}
+                    fieldProps={{ style: { width: '100%' } }}
+                    noStyle
+                  />
+                </Space>
+              </ProFormGroup>
+            )
+          }
+        </ProFormDependency>
+
         <EditableProTable<menuItem>
           rowKey="_id"
           headerTitle={intl.formatMessage({
