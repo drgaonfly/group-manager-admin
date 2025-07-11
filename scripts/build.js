@@ -10,7 +10,7 @@ const cliProgress = require('cli-progress');
 require('dotenv').config();
 
 // 远程部署目录
-const REMOTE_DEPLOY_PATH = '/www/wwwroot/swap-admin';
+const REMOTE_DEPLOY_PATH = '/www/wwwroot/multi-admin';
 
 // 远程服务器配置
 const sshConfig = {
