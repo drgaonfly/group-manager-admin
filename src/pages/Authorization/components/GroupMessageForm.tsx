@@ -13,7 +13,15 @@ import {
   ProFormSelect,
   ProFormRadio,
   ProFormDependency,
+  ProColumns,
+  EditableProTable,
 } from '@ant-design/pro-components';
+
+type menuItem = {
+  _id: string;
+  menuName: string;
+  url: string;
+};
 
 const handleAdd = async (data: any) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
@@ -48,11 +56,13 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
   const intl = useIntl();
   const [imageUrl, setImageUrl] = useState<string>('');
   const [form] = Form.useForm();
+  const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
 
   useEffect(() => {
     if (open && currentRow?._id) {
       form.resetFields();
       setImageUrl('');
+      setMenus(currentRow.menus || []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, currentRow]);
@@ -68,6 +78,51 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         },
       ]
     : [];
+
+  const menuColumns: ProColumns<menuItem>[] = [
+    {
+      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
+      dataIndex: 'menuName',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({
+              id: 'menu_name_required',
+              defaultMessage: '请输入按钮名称',
+            }),
+          },
+        ],
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
+      dataIndex: 'url',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }),
+          },
+        ],
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      valueType: 'option',
+      width: 200,
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
 
   return (
     <ModalForm
@@ -92,6 +147,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           image: imageUrl,
           isRealtime: values.isRealtime,
           sendType: values.sendType,
+          menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+          menus_per_row: values.menus_per_row,
         };
 
         const success = await handleAdd(data);
@@ -117,6 +174,9 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
             },
           ]}
           width="md"
+          fieldProps={{
+            autoSize: { minRows: 8 },
+          }}
         />
 
         <Form.Item label={intl.formatMessage({ id: 'image' })}>
@@ -159,6 +219,14 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           hidden
         />
 
+        <ProFormDigit
+          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: 'Menus Per Row' })}
+          name="menus_per_row"
+          width="md"
+          min={1}
+          fieldProps={{ style: { width: '100%' } }}
+        />
+
         <ProFormRadio.Group
           name="sendType"
           label={intl.formatMessage({ id: 'send_type', defaultMessage: 'Send Type' })}
@@ -174,43 +242,71 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
             },
           ]}
         />
-        <ProFormDependency name={['sendType']}>
-          {({ sendType }) =>
-            sendType === 'scheduled' && (
-              <ProFormGroup
-                label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
-              >
-                <Space>
-                  <ProFormSelect
-                    name="timeUnit"
-                    width="xs"
-                    initialValue="hours"
-                    options={[
-                      {
-                        label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
-                        value: 'minutes',
-                      },
-                      {
-                        label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
-                        value: 'hours',
-                      },
-                    ]}
-                    noStyle
-                  />
-
-                  <ProFormDigit
-                    name="intervalTime"
-                    width="xs"
-                    min={0}
-                    fieldProps={{ style: { width: '100%' } }}
-                    noStyle
-                  />
-                </Space>
-              </ProFormGroup>
-            )
-          }
-        </ProFormDependency>
       </ProFormGroup>
+
+      <ProFormDependency name={['sendType']}>
+        {({ sendType }) =>
+          sendType === 'scheduled' && (
+            <ProFormGroup
+              label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
+              style={{
+                marginBottom: 32,
+              }}
+            >
+              <Space>
+                <ProFormSelect
+                  name="timeUnit"
+                  width="xs"
+                  initialValue="hours"
+                  options={[
+                    {
+                      label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                      value: 'minutes',
+                    },
+                    {
+                      label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                      value: 'hours',
+                    },
+                  ]}
+                  noStyle
+                />
+
+                <ProFormDigit
+                  name="intervalTime"
+                  width="xs"
+                  min={0}
+                  fieldProps={{ style: { width: '100%' } }}
+                  noStyle
+                />
+              </Space>
+            </ProFormGroup>
+          )
+        }
+      </ProFormDependency>
+
+      <EditableProTable<menuItem>
+        rowKey="_id"
+        headerTitle={intl.formatMessage({
+          id: 'inline_menu_config',
+          defaultMessage: '内联菜单配置',
+        })}
+        columns={menuColumns}
+        value={menus}
+        name="menus"
+        onChange={(value: readonly menuItem[]) => setMenus([...value])}
+        editable={{
+          type: 'multiple',
+        }}
+        recordCreatorProps={{
+          newRecordType: 'dataSource',
+          position: 'bottom',
+          record: () => ({
+            _id: Date.now().toString(),
+            menuName: '',
+            url: '',
+          }),
+        }}
+      />
     </ModalForm>
   );
 };

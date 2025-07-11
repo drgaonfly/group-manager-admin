@@ -99,10 +99,17 @@ const TableList: React.FC = () => {
       copyable: true,
       renderText: (groups) => groups?.map((group: any) => group?.title).join(','),
     },
+    // 每行菜单数
+    {
+      title: intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' }),
+      dataIndex: 'menus_per_row',
+      hideInSearch: true,
+    },
     {
       title: intl.formatMessage({ id: 'content' }),
       dataIndex: 'content',
       ellipsis: true,
+      width: 250,
       hideInSearch: true,
     },
     // image

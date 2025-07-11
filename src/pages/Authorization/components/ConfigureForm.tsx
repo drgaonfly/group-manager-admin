@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   EditableProTable,
   ModalForm,
@@ -7,10 +7,13 @@ import {
   ProFormGroup,
   ProFormText,
   ProFormDigit,
-  ProFormSwitch,
+  // ProFormSwitch,
+  type ProColumns,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { FormattedMessage, useIntl, useModel } from '@umijs/max';
+import { UploadFile } from 'antd/es/upload/interface';
+import Upload from '@/components/Upload';
 
 type menuItem = {
   _id: string;
@@ -20,6 +23,12 @@ type keyboardItem = {
   _id: string;
   command: string;
   content: string;
+};
+
+type presetItem = {
+  _id: string;
+  keyword: string;
+  response: string;
 };
 
 export type FormValueType = Partial<API.ItemData>;
@@ -41,6 +50,17 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const currentUser = initialState?.currentUser;
   const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
   const [keyboards, setKeyboards] = useState<keyboardItem[]>(values?.keyboards || []);
+  const [multiImageUrl, setMultiImageUrl] = useState<string>(values?.multi_image || '');
+  const [presets, setPresets] = useState<presetItem[]>(values?.presets || []);
+
+  useEffect(() => {
+    if (updateModalOpen && values?.multi_image) {
+      setMultiImageUrl(values.multi_image);
+    } else if (updateModalOpen && !values?.multi_image) {
+      setMultiImageUrl('');
+    }
+  }, [updateModalOpen, values?.multi_image]);
+
   console.log('values', values);
 
   const columns = [
@@ -117,6 +137,52 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
     },
   ];
 
+  const preset_columns: ProColumns<presetItem>[] = [
+    {
+      title: intl.formatMessage({ id: 'keyword', defaultMessage: '关键词' }),
+      dataIndex: 'keyword',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'keyword_required', defaultMessage: '请输入关键词' }),
+          },
+        ],
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'response', defaultMessage: '回复内容' }),
+      dataIndex: 'response',
+      valueType: 'textarea' as const,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({
+              id: 'response_required',
+              defaultMessage: '请输入回复内容',
+            }),
+          },
+        ],
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      valueType: 'option',
+      width: 200,
+      render: (text: any, record: any, _: any, action: any) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
+
   return (
     <ModalForm
       title={intl.formatMessage({ id: 'configure', defaultMessage: 'Configure' })}
@@ -130,10 +196,13 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       onFinish={async (values: any) => {
         await onSubmit({
           ...values,
+          multi_image: multiImageUrl,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           keyboards: keyboards.map(({ _id, ...rest }) => rest),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           menus: menus.map(({ _id, ...rest }) => rest),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          presets: presets.map(({ _id, ...rest }) => rest),
         });
       }}
       initialValues={{ ...values }}
@@ -199,13 +268,13 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             placeholder="https://t.me/"
           />
           <ProFormText
-            rules={[{ message: intl.formatMessage({ id: 'enter_auto_exchange_address' }) }]}
+            rules={[{ required: false, message: intl.formatMessage({ id: 'enter_trx_address' }) }]}
             width="md"
             label={intl.formatMessage({
-              id: 'auto_exchange_address',
-              defaultMessage: '自动闪兑地址',
+              id: 'trx20_address',
+              defaultMessage: 'trx20_address地址',
             })}
-            name="auto_exchange_address"
+            name="trx20_address"
             tooltip="格式示例: T..."
             placeholder="请输入trx地址"
           />
@@ -222,12 +291,82 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               addonAfter: '%',
             }}
           />
-          <ProFormSwitch
+          {/* <ProFormSwitch
             name="canBeCloned"
             width="md"
             label={intl.formatMessage({ id: 'can_be_cloned', defaultMessage: '是否可克隆' })}
-          />
+          /> */}
         </ProFormGroup>
+
+        <ProFormGroup>
+          <ProFormTextArea
+            name="multi_content"
+            label={intl.formatMessage({ id: 'multi_content', defaultMessage: 'Multi Content' })}
+            rules={[
+              {
+                required: false,
+                message: intl.formatMessage({
+                  id: 'please_input_multi_content',
+                  defaultMessage: 'Please input lottery content',
+                }),
+              },
+            ]}
+            width="md"
+            fieldProps={{
+              autoSize: { minRows: 12 },
+            }}
+          />
+          <Form.Item
+            label={intl.formatMessage({ id: 'multi_image', defaultMessage: 'Multi Image' })}
+          >
+            <Upload
+              onFileUpload={(url: string) => {
+                setMultiImageUrl(url);
+              }}
+              accept=".jpg,.jpeg,.png,.gif"
+              defaultFileList={
+                multiImageUrl
+                  ? [
+                      {
+                        uid: '1',
+                        name: 'multi_image',
+                        status: 'done' as UploadFile['status'],
+                        url: multiImageUrl,
+                      },
+                    ]
+                  : []
+              }
+              onRemove={() => {
+                setMultiImageUrl('');
+                return true;
+              }}
+            />
+          </Form.Item>
+        </ProFormGroup>
+
+        <EditableProTable<presetItem>
+          rowKey="_id"
+          headerTitle={intl.formatMessage({
+            id: 'preset_config',
+            defaultMessage: '关键词自动回复配置',
+          })}
+          columns={preset_columns}
+          value={presets}
+          name="presets"
+          onChange={(value: readonly presetItem[]) => setPresets([...value])}
+          editable={{
+            type: 'multiple',
+          }}
+          recordCreatorProps={{
+            newRecordType: 'dataSource',
+            position: 'bottom',
+            record: () => ({
+              _id: Date.now().toString(),
+              keyword: '',
+              response: '',
+            }),
+          }}
+        />
 
         <EditableProTable<keyboardItem>
           rowKey="_id"

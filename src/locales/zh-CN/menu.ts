@@ -92,4 +92,8 @@ export default {
   'menu.钱包收据': '钱包收据',
   'menu.兑换记录': '兑换记录',
   'menu.群组消息': '群组消息管理',
+
+  'menu.list.bot-user-configs': '机器人用户配置',
+  'menu.bot-user-configs': '机器人用户配置',
+  'menu.机器人用户配置': '机器人用户配置',
 };

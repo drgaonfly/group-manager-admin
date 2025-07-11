@@ -272,4 +272,8 @@ export default {
   usdt_balance: 'USDT余额',
   trx_balance: 'TRX余额',
   cancelled: '已取消',
+  multi_content: 'start 内容',
+  multi_image: 'start 图片',
+  parent_botUser: '邀请人',
+  menus_per_row: '每行菜单数',
 };

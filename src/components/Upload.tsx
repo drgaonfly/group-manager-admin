@@ -10,9 +10,16 @@ interface MyUploadProps {
   accept?: string; // 使accept属性可选
   defaultFileList?: any;
   multiple?: boolean;
+  onRemove?: () => boolean;
 }
 
-const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, defaultFileList, multiple }) => {
+const MyUpload: React.FC<MyUploadProps> = ({
+  onFileUpload,
+  accept,
+  defaultFileList,
+  multiple,
+  onRemove,
+}) => {
   const intl = useIntl();
   // 定义默认的accept值
   const defaultAccept = '.png,.jpeg,.jpg,.gif';
@@ -61,6 +68,7 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, defaultFileLi
     multiple: multiple,
     customRequest,
     showUploadList: true,
+    onRemove: onRemove,
     onChange(info) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);

@@ -1,7 +1,5 @@
-import { useIntl } from '@umijs/max';
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import MenuTable from './MenuTable';
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal } from 'antd';
 
 interface Props {
@@ -13,16 +11,9 @@ interface Props {
 
 const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns } = props;
-  const intl = useIntl();
-  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
-    current: 1,
-    pageSize: 20,
-  });
-
-  // 省略 content 字段
   const filteredColumns = columns
     .filter((col) => col.dataIndex !== 'option')
-    .filter((col) => col.dataIndex !== 'content');
+    .filter((_, index) => index !== 3);
 
   return (
     <Modal
@@ -36,8 +27,8 @@ const Show: React.FC<Props> = (props) => {
       {currentRow && (
         <>
           <ProDescriptions<API.ItemData>
-            column={2}
-            title={intl.formatMessage({ id: 'detail' })}
+            column={1}
+            title={currentRow?.name}
             request={async () => ({
               data: currentRow || {},
             })}
@@ -47,12 +38,6 @@ const Show: React.FC<Props> = (props) => {
             columns={filteredColumns as ProDescriptionsItemProps<API.ItemData>[]}
             bordered
             size="middle"
-          />
-
-          <MenuTable
-            menus={currentRow?.menus || []}
-            pagination={pagination}
-            setPagination={setPagination}
           />
         </>
       )}

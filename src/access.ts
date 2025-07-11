@@ -254,5 +254,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetGroupMessage:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/group-messages', 'GET')),
+
+    // BotUserConfig
+    canCreateBotUserConfig:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-configs', 'POST')),
+    canDeleteBotUserConfig:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-configs', 'DELETE')),
+    canUpdateBotUserConfig:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-configs/:id', 'PUT')),
+    canGetBotUserConfig:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-configs', 'GET')),
   };
 }

@@ -104,6 +104,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="intervalTime"
           min={0}
         />
+
+        <ProFormDigit
+          width="md"
+          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '间隔时间(小时)' })}
+          name="menus_per_row"
+          min={0}
+        />
       </ProForm.Group>
 
       {!newRecord && (

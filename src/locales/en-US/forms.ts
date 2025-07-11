@@ -217,4 +217,8 @@ export default {
   interval_time: 'Interval Time',
   send_type: 'Send Type',
   cancelled: 'Cancelled',
+  multi_content: 'Start Content',
+  multi_image: 'Start Image',
+  parent_botUser: 'Parent',
+  menus_per_row: 'Menu Per Row',
 };

@@ -215,4 +215,11 @@ export default [
     icon: 'MessageOutlined',
     component: './GroupMessage',
   },
+  // botUserConfig
+  {
+    path: '/bot-user-configs',
+    name: 'list.bot-user-configs',
+    icon: 'SettingOutlined',
+    component: './BotUserConfig',
+  },
 ];
