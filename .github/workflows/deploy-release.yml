@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /www/wwwroot/swap-admin.2025fc.xyz/swap-admin &&
+            cd /www/wwwroot/multi-admin.2025fc.xyz/multi-admin &&
             git pull --rebase origin main &&
             /www/server/nodejs/v20.16.0/bin/pnpm install &&
             git checkout -f . &&
