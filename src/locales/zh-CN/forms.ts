@@ -276,4 +276,5 @@ export default {
   multi_image: 'start 图片',
   parent_botUser: '邀请人',
   menus_per_row: '每行菜单数',
+  invited_counts: '邀请人数',
 };
