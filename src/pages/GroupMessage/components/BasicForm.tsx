@@ -1,6 +1,13 @@
 import { useIntl } from '@umijs/max';
 import React, { useState, useEffect } from 'react';
-import { ProForm, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormTextArea,
+  ProFormDigit,
+  ProFormCheckbox,
+  ProFormText,
+  ProFormList,
+} from '@ant-design/pro-components';
 import { Alert, Form, Input } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
@@ -39,6 +46,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         ...values,
         bot: values?.bot?._id || values?.bot,
         groups: values?.groups?.map((g: any) => g?._id || g),
+        menus: values?.menus || [],
       }}
       onFinish={async (formValues) => {
         await onFinish({
@@ -111,6 +119,59 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="menus_per_row"
           min={0}
         />
+      </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormCheckbox.Group
+          name="groups"
+          width="md"
+          label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
+          options={values.bot.groups.map((group: any) => ({
+            label: group.title,
+            value: group._id,
+          }))}
+        />
+      </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormList
+          name="menus"
+          label={intl.formatMessage({ id: 'menu', defaultMessage: '内联菜单' })}
+          creatorButtonProps={{
+            position: 'bottom',
+            creatorButtonText: '添加菜单',
+          }}
+          itemRender={({ listDom, action }) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ flex: 1 }}>{listDom}</div>
+              {action}
+            </div>
+          )}
+        >
+          <ProForm.Group compact>
+            <ProFormText
+              name="menuName"
+              label="菜单名"
+              placeholder={intl.formatMessage({ id: 'menu_name', defaultMessage: '菜单名称' })}
+              rules={[{ required: true, message: '请输入菜单名称' }]}
+              width="md"
+            />
+            <ProFormText
+              name="url"
+              label={intl.formatMessage({ id: 'menu_url', defaultMessage: '菜单链接' })}
+              placeholder="请输入 URL，例如 https://example.com"
+              rules={[
+                { required: true, message: '请输入链接地址' },
+                {
+                  type: 'url',
+                  message: '请输入合法的 URL（必须以 http 或 https 开头）',
+                  validateTrigger: 'onBlur',
+                },
+              ]}
+              width="xl"
+            />
+          </ProForm.Group>
+        </ProFormList>
       </ProForm.Group>
 
       {!newRecord && (
