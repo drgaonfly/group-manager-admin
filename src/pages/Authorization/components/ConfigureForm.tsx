@@ -45,6 +45,7 @@ export type UpdateFormProps = {
 
 const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
+  const [form] = Form.useForm();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
@@ -185,6 +186,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <ModalForm
+      form={form}
       title={intl.formatMessage({ id: 'configure', defaultMessage: 'Configure' })}
       width="60%"
       modalProps={{
@@ -193,7 +195,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       }}
       open={updateModalOpen}
       onOpenChange={onCancel}
-      onFinish={async (values: any) => {
+      onFinish={async () => {
+        const values = await form.validateFields();
         await onSubmit({
           ...values,
           multi_image: multiImageUrl,
@@ -352,7 +355,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           })}
           columns={preset_columns}
           value={presets}
-          name="presets"
           onChange={(value: readonly presetItem[]) => setPresets([...value])}
           editable={{
             type: 'multiple',
@@ -377,7 +379,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           // @ts-ignore
           columns={keyboard_columns}
           value={keyboards}
-          name="keyboards"
           onChange={(value: readonly keyboardItem[]) => setKeyboards([...value])}
           editable={{
             type: 'multiple',
@@ -402,7 +403,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           // @ts-ignore
           columns={columns}
           value={menus}
-          name="menus"
           onChange={(value: readonly menuItem[]) => setmenu([...value])}
           editable={{
             type: 'multiple',
