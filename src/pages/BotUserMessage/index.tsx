@@ -61,10 +61,10 @@ const BotUserMessageTableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'botUsers', defaultMessage: 'Bot Users' }),
       dataIndex: 'botUsers',
+      hideInSearch: true,
       renderText: (_, record) =>
         record?.botUsers.map((botUser: any) => botUser?.displayName).join(', '),
     },
-
     {
       title: intl.formatMessage({ id: 'content', defaultMessage: 'Content' }),
       dataIndex: 'content',
