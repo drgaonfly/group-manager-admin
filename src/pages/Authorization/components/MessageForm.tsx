@@ -52,7 +52,10 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
             ...values,
             menus: menus.map(({ menuName, url }) => ({ menuName, url })),
             menus_per_row: values.menus_per_row || 1,
-            intervalTime: values.intervalTime || 0,
+            intervalTime:
+              values.timeUnit === 'minutes'
+                ? Number((values.intervalTime / 60).toFixed(2))
+                : values.intervalTime,
             send_type: values.sendType,
           },
         });

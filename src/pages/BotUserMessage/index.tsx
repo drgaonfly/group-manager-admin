@@ -65,6 +65,7 @@ const BotUserMessageTableList: React.FC = () => {
       renderText: (_, record) =>
         record?.botUsers.map((botUser: any) => botUser?.displayName).join(', '),
     },
+
     {
       title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
       dataIndex: 'weight',
@@ -75,6 +76,12 @@ const BotUserMessageTableList: React.FC = () => {
       dataIndex: 'content',
       ellipsis: true,
       width: 200,
+      hideInSearch: true,
+    },
+    // intervalTime
+    {
+      title: intl.formatMessage({ id: 'interval_time_hour' }),
+      dataIndex: 'intervalTime',
       hideInSearch: true,
     },
     {
@@ -127,7 +134,7 @@ const BotUserMessageTableList: React.FC = () => {
         headerTitle={intl.formatMessage({
           id: 'list',
         })}
-        scroll={{ x: 2000 }}
+        scroll={{ x: 1000 }}
         search={{
           labelWidth: 120,
           collapsed: false,
