@@ -83,6 +83,12 @@ const GroupTableList: React.FC = () => {
       copyable: true,
       renderText: (bot) => bot?.botName,
     },
+    // message
+    {
+      title: intl.formatMessage({ id: 'content_of_act', defaultMessage: '活动内容' }),
+      dataIndex: 'message',
+      hideInSearch: true,
+    },
     {
       title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
       dataIndex: 'operators',
