@@ -59,4 +59,8 @@ export default {
   'menu.list.bot-user-configs': 'Bot User Configs',
   'menu.bot-user-configs': 'Bot User Configs',
   'menu.机器人用户配置': 'Bot User Configs',
+
+  'menu.list.bot-user-messages': 'Bot User Message List',
+  'menu.bot-user-messages': 'Bot User Messages',
+  'menu.用户消息': 'User Messages',
 };

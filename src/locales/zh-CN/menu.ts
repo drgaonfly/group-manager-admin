@@ -96,4 +96,8 @@ export default {
   'menu.list.bot-user-configs': '机器人用户配置',
   'menu.bot-user-configs': '机器人用户配置',
   'menu.机器人用户配置': '机器人用户配置',
+
+  'menu.list.bot-user-messages': '用户消息列表',
+  'menu.bot-user-messages': '用户消息',
+  'menu.用户消息': '用户消息',
 };

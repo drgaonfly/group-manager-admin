@@ -222,4 +222,5 @@ export default {
   parent_botUser: 'Parent',
   menus_per_row: 'Menu Per Row',
   invited_counts: 'Invited Counts',
+  botUsers: 'Bot Users',
 };

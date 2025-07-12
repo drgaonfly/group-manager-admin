@@ -59,6 +59,13 @@ const TableList: React.FC = () => {
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
+    // id
+    {
+      title: intl.formatMessage({ id: 'id' }),
+      dataIndex: 'id',
+      hideInSearch: true,
+      renderText: (_, record) => record?.botUser?.id,
+    },
     {
       title: intl.formatMessage({ id: 'parent_botUser' }),
       dataIndex: 'parent',

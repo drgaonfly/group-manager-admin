@@ -268,5 +268,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetBotUserConfig:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-configs', 'GET')),
+
+    // BotUserMessage
+    canCreateBotUserMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-messages', 'POST')),
+    canDeleteBotUserMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-messages', 'DELETE')),
+    canUpdateBotUserMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-messages/:id', 'PUT')),
+    canGetBotUserMessage:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-messages', 'GET')),
   };
 }
