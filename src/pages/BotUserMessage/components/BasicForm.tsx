@@ -67,7 +67,13 @@ const BotUserMessageBasicForm: React.FC<Props> = ({ newRecord, onFinish, values 
           width="sm"
           label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
           min={1}
-          max={8}
+        />
+
+        <ProFormDigit
+          name="weight"
+          width="sm"
+          label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
+          min={0}
         />
       </ProFormGroup>
 

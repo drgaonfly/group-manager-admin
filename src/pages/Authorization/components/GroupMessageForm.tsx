@@ -141,6 +141,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
       }}
       onFinish={async (values: any) => {
         const data = {
+          ...values,
           content: values.message,
           bot: currentRow?._id,
           intervalTime:
@@ -238,6 +239,14 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           min={1}
           initialValue={1}
           fieldProps={{ style: { width: '100%' } }}
+        />
+
+        <ProFormDigit
+          name="weight"
+          width="sm"
+          label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
+          min={0}
+          initialValue={0}
         />
 
         <ProFormRadio.Group

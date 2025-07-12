@@ -99,6 +99,12 @@ const TableList: React.FC = () => {
       copyable: true,
       renderText: (groups) => groups?.map((group: any) => group?.title).join(','),
     },
+    // weight
+    {
+      title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
+      dataIndex: 'weight',
+      hideInSearch: true,
+    },
     // 每行菜单数
     {
       title: intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' }),
@@ -133,7 +139,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'content' }),
       dataIndex: 'content',
       ellipsis: true,
-      width: 250,
+      width: 200,
       hideInSearch: true,
     },
     // isRealtime
@@ -204,7 +210,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'groupMessage_list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: 2000 }}
         search={{
           labelWidth: 120,
           collapsed: false,

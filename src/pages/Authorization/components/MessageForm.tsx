@@ -195,6 +195,14 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
               },
             ]}
           />
+
+          <ProFormDigit
+            name="weight"
+            width="md"
+            label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
+            min={0}
+            initialValue={0}
+          />
         </ProFormGroup>
 
         <ProFormDependency name={['sendType']}>

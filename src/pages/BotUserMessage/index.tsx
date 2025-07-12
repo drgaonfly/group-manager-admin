@@ -66,9 +66,16 @@ const BotUserMessageTableList: React.FC = () => {
         record?.botUsers.map((botUser: any) => botUser?.displayName).join(', '),
     },
     {
+      title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
+      dataIndex: 'weight',
+      hideInSearch: true,
+    },
+    {
       title: intl.formatMessage({ id: 'content', defaultMessage: 'Content' }),
       dataIndex: 'content',
       ellipsis: true,
+      width: 200,
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'Created At' }),
@@ -120,6 +127,11 @@ const BotUserMessageTableList: React.FC = () => {
         headerTitle={intl.formatMessage({
           id: 'list',
         })}
+        scroll={{ x: 2000 }}
+        search={{
+          labelWidth: 120,
+          collapsed: false,
+        }}
         actionRef={actionRef}
         rowKey="_id"
         // toolbar={{

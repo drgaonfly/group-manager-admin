@@ -129,6 +129,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
           name="menus_per_row"
+          min={1}
+        />
+
+        <ProFormDigit
+          name="weight"
+          width="sm"
+          label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
           min={0}
         />
       </ProForm.Group>
