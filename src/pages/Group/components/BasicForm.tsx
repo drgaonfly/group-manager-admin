@@ -2,9 +2,9 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 import {
   ProForm,
-  ProFormText,
+  // ProFormText,
   ProFormDigit,
-  ProFormSelect,
+  // ProFormSelect,
   ProFormTextArea,
   ProFormGroup,
 } from '@ant-design/pro-components';
@@ -45,15 +45,15 @@ const GroupBasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProFormGroup>
-        <ProFormText
+        {/* <ProFormText
           name="title"
           width="md"
           label={intl.formatMessage({ id: 'groupTitle', defaultMessage: '群组名称' })}
           rules={[{ required: true, message: '请输入群组名称' }]}
           disabled
-        />
+        /> */}
 
-        <ProFormSelect
+        {/* <ProFormSelect
           name="type"
           width="md"
           label={intl.formatMessage({ id: 'type', defaultMessage: '群组类型' })}
@@ -61,22 +61,22 @@ const GroupBasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             group: intl.formatMessage({ id: 'group' }),
           }}
           disabled
-        />
+        /> */}
 
-        <ProFormSelect
+        {/* <ProFormSelect
           name="bot"
           width="md"
           label={intl.formatMessage({ id: 'groupBot', defaultMessage: '机器人ID' })}
           placeholder="请输入 bot 对象 ID"
           disabled
-        />
+        /> */}
 
-        <ProFormSelect
+        {/* <ProFormSelect
           name="creator"
           width="md"
           label={intl.formatMessage({ id: 'groupCreator', defaultMessage: '创建者ID' })}
           disabled
-        />
+        /> */}
 
         <ProFormTextArea
           name="message"
@@ -87,13 +87,13 @@ const GroupBasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           }}
         />
 
-        <ProFormSelect
+        {/* <ProFormSelect
           name="operators"
           width="md"
           label={intl.formatMessage({ id: 'groupOperators', defaultMessage: '操作人ID数组' })}
           mode="multiple"
           disabled
-        />
+        /> */}
 
         <ProFormDigit
           name="exchange_rate"
