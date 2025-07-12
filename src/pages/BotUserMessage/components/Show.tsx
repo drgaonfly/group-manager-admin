@@ -1,6 +1,7 @@
 import { ProDescriptions, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { Modal } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
+import MenuTable from './MenuTable';
 // import { queryList } from '@/services/ant-design-pro/api';
 
 interface Props {
@@ -12,6 +13,12 @@ interface Props {
 
 const Show: React.FC<Props> = (props) => {
   const { onClose, open, currentRow, columns: cols } = props;
+
+  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
+    current: 1,
+    pageSize: 20,
+  });
+
   const filteredColumns = cols.filter((col) => col.dataIndex !== 'option');
 
   return (
@@ -49,6 +56,12 @@ const Show: React.FC<Props> = (props) => {
             }}
             size="small"
             className="custom-descriptions"
+          />
+
+          <MenuTable
+            menus={currentRow?.menus || []}
+            pagination={pagination}
+            setPagination={setPagination}
           />
         </>
       )}
