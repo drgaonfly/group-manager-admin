@@ -247,6 +247,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
           min={0}
           initialValue={0}
+          tooltip={'数字越大, 越靠后发送'}
         />
 
         <ProFormRadio.Group
