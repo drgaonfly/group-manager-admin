@@ -20,25 +20,29 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const [imageUrl, setImageUrl] = useState<string>(values?.image || '');
+
+  // images: string[]
+  const [images, setImages] = useState<string[]>(
+    Array.isArray(values?.images) ? values.images : values?.image ? [values.image] : [],
+  );
 
   useEffect(() => {
-    if (values?.image) {
-      setImageUrl(values.image);
+    if (Array.isArray(values?.images)) {
+      setImages(values.images);
+    } else if (values?.image) {
+      setImages([values.image]);
+    } else {
+      setImages([]);
     }
-  }, [values?.image]);
+  }, [values?.images, values?.image]);
 
-  // Default file list for showing existing image
-  const defaultImageFileList = imageUrl
-    ? [
-        {
-          uid: '1',
-          name: 'image',
-          status: 'done' as UploadFile['status'],
-          url: imageUrl,
-        },
-      ]
-    : [];
+  // Default file list for showing existing images
+  const defaultImageFileList: UploadFile[] = images.map((img, idx) => ({
+    uid: String(idx + 1),
+    name: `image${idx + 1}`,
+    status: 'done' as UploadFile['status'],
+    url: img,
+  }));
 
   return (
     <ProForm
@@ -47,11 +51,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         bot: values?.bot?._id || values?.bot,
         groups: values?.groups?.map((g: any) => g?._id || g),
         menus: values?.menus || [],
+        images: images,
       }}
       onFinish={async (formValues) => {
+        // 兼容后端 images 字段
         await onFinish({
           ...formValues,
-          image: imageUrl, // Pass the image URL in form submission
+          images: images,
         });
       }}
       submitter={{
@@ -97,10 +103,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: '图片' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
-              setImageUrl(signedUrl || url);
+              // 支持多图
+              setImages((prev) => [...prev, signedUrl || url]);
             }}
             accept=".jpg,.jpeg,.png,.gif"
             defaultFileList={defaultImageFileList}
+            multiple
+            onRemove={(file: UploadFile) => {
+              setImages((prev) => prev.filter((img) => img !== file.url));
+              return true;
+            }}
           />
         </Form.Item>
       </ProForm.Group>
@@ -115,7 +127,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
         <ProFormDigit
           width="md"
-          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '间隔时间(小时)' })}
+          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
           name="menus_per_row"
           min={0}
         />

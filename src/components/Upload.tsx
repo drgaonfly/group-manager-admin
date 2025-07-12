@@ -2,7 +2,7 @@ import React from 'react';
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import { UploadProps } from 'antd/lib/upload/interface';
+import { UploadProps, UploadFile } from 'antd/lib/upload/interface';
 import { useIntl } from '@umijs/max';
 
 interface MyUploadProps {
@@ -10,7 +10,7 @@ interface MyUploadProps {
   accept?: string; // 使accept属性可选
   defaultFileList?: any;
   multiple?: boolean;
-  onRemove?: () => boolean;
+  onRemove?: (file: UploadFile) => boolean;
 }
 
 const MyUpload: React.FC<MyUploadProps> = ({

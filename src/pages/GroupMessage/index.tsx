@@ -105,25 +105,36 @@ const TableList: React.FC = () => {
       dataIndex: 'menus_per_row',
       hideInSearch: true,
     },
+    // image
+    {
+      title: intl.formatMessage({ id: 'image', defaultMessage: '图片' }),
+      dataIndex: 'images',
+      hideInSearch: true,
+      render: (_, record) => {
+        if (!record.images || !Array.isArray(record.images) || record.images.length === 0) {
+          return null;
+        }
+        return (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {record.images.map((img: string, idx: number) => (
+              <Image
+                key={img || idx}
+                src={img}
+                alt={`message-${idx}`}
+                style={{ maxWidth: '100px', maxHeight: '100px' }}
+                preview
+              />
+            ))}
+          </div>
+        );
+      },
+    },
     {
       title: intl.formatMessage({ id: 'content' }),
       dataIndex: 'content',
       ellipsis: true,
       width: 250,
       hideInSearch: true,
-    },
-    // image
-    {
-      title: intl.formatMessage({ id: 'image' }),
-      dataIndex: 'image',
-      hideInSearch: true,
-      render: (_, record) => {
-        if (!record.image) {
-          return null;
-        }
-
-        return <Image src={record.image} alt="message" style={{ maxWidth: '100px' }} preview />;
-      },
     },
     // isRealtime
     {

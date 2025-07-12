@@ -4,14 +4,16 @@ import { InboxOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import { UploadProps } from 'antd/lib/upload/interface';
 import { useIntl } from '@umijs/max';
+import { UploadFile } from 'antd/lib/upload/interface';
 
 interface MyUploadProps {
   onFileUpload: (url: string) => void;
   accept?: string; // 使accept属性可选
   url?: string;
+  onRemove?: (file: UploadFile) => boolean; // Add onRemove to props
 }
 
-const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/upload' }) => {
+const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/upload', onRemove }) => {
   const intl = useIntl();
   // 定义默认的accept值
   const defaultAccept = '*';
@@ -101,6 +103,7 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/uploa
       accept={accept || defaultAccept}
       maxCount={1}
       style={{ width: 328 }}
+      onRemove={onRemove}
     >
       <p className="ant-upload-drag-icon">
         <InboxOutlined />

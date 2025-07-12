@@ -54,29 +54,35 @@ interface GroupMessageFormProps {
 
 const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, currentRow }) => {
   const intl = useIntl();
-  const [imageUrl, setImageUrl] = useState<string>('');
+  // images: string[]，支持多图
+  const [images, setImages] = useState<string[]>([]);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
 
   useEffect(() => {
     if (open && currentRow?._id) {
       form.resetFields();
-      setImageUrl('');
+      // 兼容旧数据，currentRow.image 可能为单图
+      if (Array.isArray(currentRow.images)) {
+        setImages(currentRow.images);
+      } else if (currentRow.image) {
+        setImages([currentRow.image]);
+      } else {
+        setImages([]);
+      }
       setMenus(currentRow.menus || []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, currentRow]);
 
-  // Default file list for showing existing image
-  const defaultImageFileList = imageUrl
-    ? [
-        {
-          uid: '1',
-          name: 'image',
-          status: 'done' as UploadFile['status'],
-          url: imageUrl,
-        },
-      ]
+  // Default file list for showing existing images
+  const defaultImageFileList: UploadFile[] = images
+    ? images.filter(Boolean).map((url, idx) => ({
+        uid: `${idx + 1}`,
+        name: `image${idx + 1}`,
+        status: 'done' as UploadFile['status'],
+        url,
+      }))
     : [];
 
   const menuColumns: ProColumns<menuItem>[] = [
@@ -144,7 +150,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
               ? Number((values.intervalTime / 60).toFixed(2))
               : values.intervalTime,
           groups: values.groups || [],
-          image: imageUrl,
+          images: images, // 多图
           isRealtime: values.isRealtime,
           sendType: values.sendType,
           menus: menus.map(({ menuName, url }) => ({ menuName, url })),
@@ -154,7 +160,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         const success = await handleAdd(data);
         if (success) {
           form.resetFields();
-          setImageUrl('');
+          setImages([]);
           onCancel(false);
         }
         return success;
@@ -179,13 +185,19 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           }}
         />
 
-        <Form.Item label={intl.formatMessage({ id: 'image' })}>
+        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
-              setImageUrl(signedUrl || url);
+              // 支持多图上传
+              setImages((prev) => [...prev, signedUrl || url]);
             }}
             accept=".jpg,.jpeg,.png,.gif"
             defaultFileList={defaultImageFileList}
+            multiple
+            onRemove={(file: UploadFile) => {
+              setImages((prev) => prev.filter((img) => img !== file.url));
+              return true;
+            }}
           />
         </Form.Item>
       </ProFormGroup>
@@ -224,6 +236,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           name="menus_per_row"
           width="md"
           min={1}
+          initialValue={1}
           fieldProps={{ style: { width: '100%' } }}
         />
 
