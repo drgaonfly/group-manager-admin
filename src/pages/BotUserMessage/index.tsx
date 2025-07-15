@@ -4,7 +4,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Update from './components/Update';
 import Show from './components/Show';
@@ -48,7 +48,7 @@ const BotUserMessageTableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  // const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
@@ -71,6 +71,22 @@ const BotUserMessageTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
       dataIndex: 'weight',
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'isOnline' }),
+      dataIndex: 'isOnline',
+      hideInSearch: false,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.isOnline}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     {
       title: intl.formatMessage({ id: 'content', defaultMessage: 'Content' }),
@@ -142,24 +158,42 @@ const BotUserMessageTableList: React.FC = () => {
         }}
         actionRef={actionRef}
         rowKey="_id"
-        // toolbar={{
-        //   menu: {
-        //     type: 'tab',
-        //     activeKey,
-        //     items: [
-        //       { label: <FormattedMessage id="platform.all" defaultMessage="All" />, key: '' },
-        //       { label: <FormattedMessage id="sent" defaultMessage="Sent" />, key: 'sent' },
-        //       { label: <FormattedMessage id="received" defaultMessage="Received" />, key: 'received' },
-        //       { label: <FormattedMessage id="error" defaultMessage="Error" />, key: 'error' },
-        //     ],
-        //     onChange: (key : any) => {
-        //       setActiveKey(key);
-        //       actionRef.current?.reload();
-        //     },
-        //   },
-        // }}
+        toolbar={{
+          menu: {
+            type: 'tab',
+            activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="platform.all" defaultMessage="所有" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="platform.online" defaultMessage="Online" />,
+                key: 'true',
+              },
+              {
+                label: <FormattedMessage id="platform.offline" defaultMessage="Offline" />,
+                key: 'false',
+              },
+            ],
+            onChange: (key: any) => {
+              setActiveKey(key);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            },
+          },
+        }}
         request={(params, sort, filter) =>
-          queryList('/bot-user-messages', { ...params }, sort, filter)
+          queryList(
+            '/bot-user-messages',
+            {
+              ...params,
+              isOnline: activeKey, // 添加这个行
+            },
+            sort,
+            filter,
+          )
         }
         columns={columns}
         rowSelection={

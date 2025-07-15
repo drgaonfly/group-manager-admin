@@ -3,7 +3,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Image } from 'antd';
+import { message, Image, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
@@ -104,6 +104,22 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
       dataIndex: 'weight',
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'isOnline' }),
+      dataIndex: 'isOnline',
+      hideInSearch: false,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.isOnline}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
     },
     // 每行菜单数
     {
@@ -219,6 +235,20 @@ const TableList: React.FC = () => {
           menu: {
             type: 'tab',
             activeKey: activeKey,
+            items: [
+              {
+                label: <FormattedMessage id="platform.all" defaultMessage="所有" />,
+                key: '',
+              },
+              {
+                label: <FormattedMessage id="platform.online" defaultMessage="Online" />,
+                key: 'true',
+              },
+              {
+                label: <FormattedMessage id="platform.offline" defaultMessage="Offline" />,
+                key: 'false',
+              },
+            ],
             onChange: (key: any) => {
               setActiveKey(key);
               if (actionRef.current) {
@@ -228,7 +258,15 @@ const TableList: React.FC = () => {
           },
         }}
         request={(params, sort, filter) =>
-          queryList('/group-messages', { ...params, messageType: activeKey }, sort, filter)
+          queryList(
+            '/group-messages',
+            {
+              ...params,
+              isOnline: activeKey, // 添加这个行
+            },
+            sort,
+            filter,
+          )
         }
         columns={columns}
         rowSelection={{
