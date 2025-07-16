@@ -80,6 +80,13 @@ const TableList: React.FC = () => {
       dataIndex: 'spread_code',
       hideInSearch: true,
     },
+    // invited_group
+    {
+      title: intl.formatMessage({ id: 'invitedGroup' }),
+      dataIndex: 'invited_group',
+      hideInSearch: true,
+      renderText: (_, record) => record?.invited_group?.title,
+    },
     {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: 'botUser',
