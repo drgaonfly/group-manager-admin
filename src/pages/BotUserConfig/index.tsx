@@ -82,7 +82,7 @@ const TableList: React.FC = () => {
     },
     // invited_group
     {
-      title: intl.formatMessage({ id: 'invitedGroup' }),
+      title: intl.formatMessage({ id: 'invited_group' }),
       dataIndex: 'invited_group',
       hideInSearch: true,
       renderText: (_, record) => record?.invited_group?.title,

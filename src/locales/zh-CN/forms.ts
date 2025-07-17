@@ -277,5 +277,6 @@ export default {
   parent_botUser: '邀请人',
   menus_per_row: '每行菜单数',
   invited_counts: '邀请人数',
+  invited_group: '邀请群',
   botUsers: '用户',
 };
