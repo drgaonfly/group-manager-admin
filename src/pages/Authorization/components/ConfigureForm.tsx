@@ -198,8 +198,10 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       open={updateModalOpen}
       onOpenChange={onCancel}
       onFinish={async () => {
+        const formValues = form.getFieldsValue();
         await onSubmit({
           ...values,
+          ...formValues,
           multi_image: multiImageUrl,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           keyboards: keyboards.map(({ _id, ...rest }) => rest),
