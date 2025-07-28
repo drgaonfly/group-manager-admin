@@ -9,6 +9,8 @@ import {
   ProFormGroup,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
+import { UploadFile } from 'antd/es/upload/interface';
+import Upload from '@/components/Upload';
 
 interface Props {
   newRecord?: boolean;
@@ -18,15 +20,39 @@ interface Props {
 
 const BotUserMessageBasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
+  // images: string[]
+  const [images, setImages] = React.useState<string[]>(
+    Array.isArray(values?.images) ? values.images : values?.image ? [values.image] : [],
+  );
+
+  React.useEffect(() => {
+    if (Array.isArray(values?.images)) {
+      setImages(values.images);
+    } else if (values?.image) {
+      setImages([values.image]);
+    } else {
+      setImages([]);
+    }
+  }, [values?.images, values?.image]);
+
+  // Default file list for showing existing images
+  const defaultImageFileList: UploadFile[] = images.map((img, idx) => ({
+    uid: String(idx + 1),
+    name: `image${idx + 1}`,
+    status: 'done' as UploadFile['status'],
+    url: img,
+  }));
 
   return (
     <ProForm
       initialValues={{
         ...values,
+        images: images,
       }}
       onFinish={async (formData) => {
         await onFinish({
           ...formData,
+          images: images,
         });
       }}
       submitter={{
@@ -52,6 +78,23 @@ const BotUserMessageBasicForm: React.FC<Props> = ({ newRecord, onFinish, values 
           }}
         />
 
+        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: '图片' })}>
+          <Upload
+            onFileUpload={(url: string, signedUrl?: string) => {
+              setImages((prev) => [...prev, signedUrl || url]);
+            }}
+            accept=".jpg,.jpeg,.png,.gif"
+            defaultFileList={defaultImageFileList}
+            multiple
+            onRemove={(file: UploadFile) => {
+              setImages((prev) => prev.filter((img) => img !== file.url));
+              return true;
+            }}
+          />
+        </Form.Item>
+      </ProFormGroup>
+
+      <ProFormGroup>
         <ProFormDigit
           name="intervalTime"
           width="sm"

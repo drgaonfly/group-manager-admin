@@ -4,7 +4,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Switch } from 'antd';
+import { message, Switch, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import Update from './components/Update';
 import Show from './components/Show';
@@ -94,6 +94,30 @@ const BotUserMessageTableList: React.FC = () => {
       ellipsis: true,
       width: 200,
       hideInSearch: true,
+    },
+    // image
+    {
+      title: intl.formatMessage({ id: 'image', defaultMessage: '图片' }),
+      dataIndex: 'images',
+      hideInSearch: true,
+      render: (_, record) => {
+        if (!record.images || !Array.isArray(record.images) || record.images.length === 0) {
+          return null;
+        }
+        return (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {record.images.map((img: string, idx: number) => (
+              <Image
+                key={img || idx}
+                src={img}
+                alt={`message-${idx}`}
+                style={{ maxWidth: '100px', maxHeight: '100px' }}
+                preview
+              />
+            ))}
+          </div>
+        );
+      },
     },
     // intervalTime
     {

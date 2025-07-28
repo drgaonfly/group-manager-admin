@@ -1,7 +1,8 @@
-import { Modal, Form, message, Alert, Space } from 'antd';
+import { Form, message, Alert, Space } from 'antd';
 import { useIntl } from '@umijs/max';
 import { request } from '@umijs/max';
 import {
+  ModalForm,
   EditableProTable,
   ProColumns,
   ProFormDigit,
@@ -12,6 +13,8 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { useState, useEffect } from 'react';
+import { UploadFile } from 'antd/es/upload/interface';
+import Upload from '@/components/Upload';
 
 interface MessageFormProps {
   open: boolean;
@@ -29,55 +32,60 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
   const [form] = Form.useForm();
   const intl = useIntl();
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     if (open && currentRow?._id) {
       setMenus(currentRow.menus || []);
       form.resetFields();
+      // 兼容旧数据，currentRow.image 可能为单图
+      if (Array.isArray(currentRow.images)) {
+        setImages(currentRow.images);
+      } else if (currentRow.image) {
+        setImages([currentRow.image]);
+      } else {
+        setImages([]);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, currentRow]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (values: any) => {
+    const hide = message.loading(
+      intl.formatMessage({ id: 'sending', defaultMessage: 'Sending...' }),
+    );
     try {
-      const values = await form.validateFields();
-      const hide = message.loading(
-        intl.formatMessage({ id: 'sending', defaultMessage: 'Sending...' }),
+      await request(`/bots/${currentRow?._id}/send-message`, {
+        method: 'POST',
+        data: {
+          ...values,
+          images: images, // 多图
+          menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+          menus_per_row: values.menus_per_row || 1,
+          intervalTime:
+            values.timeUnit === 'minutes'
+              ? Number((values.intervalTime / 60).toFixed(2))
+              : values.intervalTime,
+          send_type: values.sendType,
+        },
+      });
+      hide();
+      message.success(
+        intl.formatMessage({
+          id: 'send_successful',
+          defaultMessage: 'Message sent successfully',
+        }),
       );
-
-      try {
-        await request(`/bots/${currentRow?._id}/send-message`, {
-          method: 'POST',
-          data: {
-            ...values,
-            menus: menus.map(({ menuName, url }) => ({ menuName, url })),
-            menus_per_row: values.menus_per_row || 1,
-            intervalTime:
-              values.timeUnit === 'minutes'
-                ? Number((values.intervalTime / 60).toFixed(2))
-                : values.intervalTime,
-            send_type: values.sendType,
-          },
-        });
-
-        hide();
-        message.success(
-          intl.formatMessage({
-            id: 'send_successful',
-            defaultMessage: 'Message sent successfully',
-          }),
-        );
-        form.resetFields();
-        onCancel(false);
-      } catch (error: any) {
-        hide();
-        message.error(
-          error?.response?.data?.message ||
-            intl.formatMessage({ id: 'send_failed', defaultMessage: 'Failed to send message' }),
-        );
-      }
-    } catch (error) {
-      console.log('Validation failed:', error);
+      form.resetFields();
+      onCancel(false);
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error(
+        error?.response?.data?.message ||
+          intl.formatMessage({ id: 'send_failed', defaultMessage: 'Failed to send message' }),
+      );
+      return false;
     }
   };
 
@@ -126,14 +134,26 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
     },
   ];
 
+  // Default file list for showing existing images
+  const defaultImageFileList: UploadFile[] = images
+    ? images.filter(Boolean).map((url, idx) => ({
+        uid: `${idx + 1}`,
+        name: `image${idx + 1}`,
+        status: 'done' as UploadFile['status'],
+        url,
+      }))
+    : [];
+
   return (
-    <Modal
+    <ModalForm
       title={intl.formatMessage({ id: 'send_message', defaultMessage: 'Send Message' })}
       open={open}
-      onOk={handleSubmit}
-      onCancel={() => onCancel(false)}
-      destroyOnClose
-      width={800}
+      form={form}
+      modalProps={{
+        destroyOnClose: true,
+        onCancel: () => onCancel(false),
+      }}
+      onFinish={handleSubmit}
     >
       <Alert
         message={intl.formatMessage({
@@ -145,9 +165,10 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
         showIcon
         style={{ marginBottom: 16 }}
       />
-      <Form form={form} layout="vertical">
+      <ProFormGroup>
         <ProFormTextArea
           name="message"
+          width="md"
           label={intl.formatMessage({ id: 'message_content', defaultMessage: 'Message Content' })}
           rules={[
             {
@@ -166,114 +187,123 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
             autoSize: { minRows: 8 },
           }}
         />
-
-        <ProFormGroup>
-          <ProFormDigit
-            name="menus_per_row"
-            label={intl.formatMessage({
-              id: 'menus_per_row',
-              defaultMessage: '每行菜单按钮数量',
-            })}
-            rules={[
-              {
-                required: false,
-              },
-            ]}
-            placeholder="默认每行 1 个按钮"
+        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}>
+          <Upload
+            onFileUpload={(url: string, signedUrl?: string) => {
+              setImages((prev) => [...prev, signedUrl || url]);
+            }}
+            accept=".jpg,.jpeg,.png,.gif"
+            defaultFileList={defaultImageFileList}
+            multiple
+            onRemove={(file: UploadFile) => {
+              setImages((prev) => prev.filter((img) => img !== file.url));
+              return true;
+            }}
           />
+        </Form.Item>
+      </ProFormGroup>
 
-          <ProFormRadio.Group
-            name="sendType"
-            width="md"
-            label={intl.formatMessage({ id: 'send_type', defaultMessage: 'Send Type' })}
-            initialValue="immediate"
-            options={[
-              {
-                label: intl.formatMessage({ id: 'immediate_send', defaultMessage: '立即发送' }),
-                value: 'immediate',
-              },
-              {
-                label: intl.formatMessage({ id: 'scheduled_send', defaultMessage: '定时发送' }),
-                value: 'scheduled',
-              },
-            ]}
-          />
-
-          <ProFormDigit
-            name="weight"
-            width="md"
-            label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
-            min={0}
-            initialValue={0}
-            tooltip={'数字越大, 越靠后发送'}
-          />
-        </ProFormGroup>
-
-        <ProFormDependency name={['sendType']}>
-          {({ sendType }) =>
-            sendType === 'scheduled' && (
-              <ProFormGroup
-                label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
-                style={{
-                  marginBottom: 32,
-                }}
-              >
-                <Space>
-                  <ProFormSelect
-                    name="timeUnit"
-                    width="xs"
-                    initialValue="hours"
-                    options={[
-                      {
-                        label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
-                        value: 'minutes',
-                      },
-                      {
-                        label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
-                        value: 'hours',
-                      },
-                    ]}
-                    noStyle
-                  />
-
-                  <ProFormDigit
-                    name="intervalTime"
-                    width="xs"
-                    min={0}
-                    fieldProps={{ style: { width: '100%' } }}
-                    noStyle
-                  />
-                </Space>
-              </ProFormGroup>
-            )
-          }
-        </ProFormDependency>
-
-        <EditableProTable<menuItem>
-          rowKey="_id"
-          headerTitle={intl.formatMessage({
-            id: 'inline_menu_config',
-            defaultMessage: '内联菜单配置',
+      <ProFormGroup>
+        <ProFormDigit
+          name="menus_per_row"
+          label={intl.formatMessage({
+            id: 'menus_per_row',
+            defaultMessage: '每行菜单按钮数量',
           })}
-          columns={menuColumns}
-          value={menus}
-          name="menus"
-          onChange={(value: readonly menuItem[]) => setMenus([...value])}
-          editable={{
-            type: 'multiple',
-          }}
-          recordCreatorProps={{
-            newRecordType: 'dataSource',
-            position: 'bottom',
-            record: () => ({
-              _id: Date.now().toString(),
-              menuName: '',
-              url: '',
-            }),
-          }}
+          rules={[
+            {
+              required: false,
+            },
+          ]}
+          placeholder="默认每行 1 个按钮"
         />
-      </Form>
-    </Modal>
+        <ProFormRadio.Group
+          name="sendType"
+          width="md"
+          label={intl.formatMessage({ id: 'send_type', defaultMessage: 'Send Type' })}
+          initialValue="immediate"
+          options={[
+            {
+              label: intl.formatMessage({ id: 'immediate_send', defaultMessage: '立即发送' }),
+              value: 'immediate',
+            },
+            {
+              label: intl.formatMessage({ id: 'scheduled_send', defaultMessage: '定时发送' }),
+              value: 'scheduled',
+            },
+          ]}
+        />
+        <ProFormDigit
+          name="weight"
+          width="md"
+          label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
+          min={0}
+          initialValue={0}
+          tooltip={'数字越大, 越靠后发送'}
+        />
+      </ProFormGroup>
+      <ProFormDependency name={['sendType']}>
+        {({ sendType }) =>
+          sendType === 'scheduled' && (
+            <ProFormGroup
+              label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
+              style={{
+                marginBottom: 32,
+              }}
+            >
+              <Space>
+                <ProFormSelect
+                  name="timeUnit"
+                  width="xs"
+                  initialValue="hours"
+                  options={[
+                    {
+                      label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                      value: 'minutes',
+                    },
+                    {
+                      label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                      value: 'hours',
+                    },
+                  ]}
+                  noStyle
+                />
+                <ProFormDigit
+                  name="intervalTime"
+                  width="xs"
+                  min={0}
+                  fieldProps={{ style: { width: '100%' } }}
+                  noStyle
+                />
+              </Space>
+            </ProFormGroup>
+          )
+        }
+      </ProFormDependency>
+      <EditableProTable<menuItem>
+        rowKey="_id"
+        headerTitle={intl.formatMessage({
+          id: 'inline_menu_config',
+          defaultMessage: '内联菜单配置',
+        })}
+        columns={menuColumns}
+        value={menus}
+        name="menus"
+        onChange={(value: readonly menuItem[]) => setMenus([...value])}
+        editable={{
+          type: 'multiple',
+        }}
+        recordCreatorProps={{
+          newRecordType: 'dataSource',
+          position: 'bottom',
+          record: () => ({
+            _id: Date.now().toString(),
+            menuName: '',
+            url: '',
+          }),
+        }}
+      />
+    </ModalForm>
   );
 };
 
