@@ -106,6 +106,14 @@ const GroupBasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'feeRate', defaultMessage: '费率（如0.02表示2%）' })}
         />
+
+        <ProFormDigit
+          label={intl.formatMessage({ id: 'intervalTime', defaultMessage: '间隔时间' })}
+          name="intervalTime"
+          width="xs"
+          min={0}
+          fieldProps={{ style: { width: '100%' } }}
+        />
       </ProFormGroup>
 
       {!newRecord && (

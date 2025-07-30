@@ -233,6 +233,12 @@ const TableList: React.FC = () => {
       },
       hideInSearch: true,
     },
+    // intervalTime
+    {
+      title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
+      dataIndex: 'intervalTime',
+      hideInSearch: true,
+    },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
@@ -417,7 +423,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2000 }}
+        scroll={{ x: 2100 }}
         search={{
           collapsed: false,
         }}

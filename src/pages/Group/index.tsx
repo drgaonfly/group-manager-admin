@@ -89,6 +89,12 @@ const GroupTableList: React.FC = () => {
       dataIndex: 'message',
       hideInSearch: true,
     },
+    // intervalTime
+    {
+      title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
+      dataIndex: 'intervalTime',
+      hideInSearch: true,
+    },
     {
       title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
       dataIndex: 'operators',

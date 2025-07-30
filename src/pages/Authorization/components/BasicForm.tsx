@@ -5,6 +5,7 @@ import {
   ProFormText,
   ProFormSwitch,
   ProFormTextArea,
+  ProFormDigit,
   // ProFormSelect,
   // ProFormDependency,
   // ProFormDateTimePicker,
@@ -54,42 +55,20 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           disabled={!newRecord}
         />
 
-        {/* <ProFormSelect
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'type', defaultMessage: '类型' })}
-          name="type"
-          options={[
-            {
-              value: 'public',
-              label: intl.formatMessage({ id: 'type.public', defaultMessage: '公开' }),
-            },
-            {
-              value: 'custom',
-              label: intl.formatMessage({ id: 'type.custom', defaultMessage: '定制' }),
-            },
-          ]}
-        />
-
-        <ProFormDependency name={['type']}>
-          {({ type }) =>
-            type === 'custom' ? (
-              <ProFormDateTimePicker
-                width="md"
-                label={intl.formatMessage({ id: 'expireAt', defaultMessage: '到期时间' })}
-                name="expireAt"
-                fieldProps={{
-                  format: 'YYYY-MM-DD HH:mm:ss',
-                }}
-              />
-            ) : null
-          }
-        </ProFormDependency> */}
-
         <ProFormTextArea
           width="md"
           label={intl.formatMessage({ id: 'remark', defaultMessage: '备注' })}
           name="remark"
+        />
+      </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormDigit
+          label={intl.formatMessage({ id: 'intervalTime', defaultMessage: '间隔时间' })}
+          name="intervalTime"
+          width="md"
+          min={0}
+          fieldProps={{ style: { width: '100%' } }}
         />
 
         <ProFormSwitch
