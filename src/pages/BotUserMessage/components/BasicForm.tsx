@@ -95,7 +95,7 @@ const BotUserMessageBasicForm: React.FC<Props> = ({ newRecord, onFinish, values 
       </ProFormGroup>
 
       <ProFormGroup>
-        <ProFormDigit
+        {/* <ProFormDigit
           name="intervalTime"
           width="sm"
           label={intl.formatMessage({
@@ -103,7 +103,7 @@ const BotUserMessageBasicForm: React.FC<Props> = ({ newRecord, onFinish, values 
             defaultMessage: '间隔时间(Hours)',
           })}
           min={0}
-        />
+        /> */}
 
         <ProFormDigit
           name="menus_per_row"
