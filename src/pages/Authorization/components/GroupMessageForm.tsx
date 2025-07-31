@@ -1,8 +1,9 @@
-import { message, Form, Space } from 'antd';
+import { message, Form, Space, Popover, Button } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
+import EmojiPicker from 'emoji-picker-react';
 import Upload from '@/components/Upload';
 import {
   ModalForm,
@@ -54,10 +55,19 @@ interface GroupMessageFormProps {
 
 const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, currentRow }) => {
   const intl = useIntl();
-  // images: string[]，支持多图
+  const [text, setText] = useState('');
+  const [visible, setVisible] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
+
+  const handleEmojiClick = (emojiData: any) => {
+    setText((prev) => prev + emojiData.emoji);
+  };
+
+  const handlePopoverVisibleChange = (visible: boolean) => {
+    setVisible(visible);
+  };
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -170,7 +180,22 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
       <ProFormGroup>
         <ProFormTextArea
           name="message"
-          label={intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
+          label={
+            <span>
+              {intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
+              <Popover
+                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
+                title="Pick an Emoji"
+                trigger="click"
+                visible={visible}
+                onVisibleChange={handlePopoverVisibleChange}
+              >
+                <Button size="small" style={{ marginLeft: 8 }}>
+                  😊
+                </Button>
+              </Popover>
+            </span>
+          }
           rules={[
             {
               required: true,
@@ -183,6 +208,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           width="md"
           fieldProps={{
             autoSize: { minRows: 8 },
+            value: text,
+            onChange: (e: any) => setText(e.target.value),
           }}
         />
 

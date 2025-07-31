@@ -1,4 +1,4 @@
-import { Form, message, Alert, Space } from 'antd';
+import { Form, message, Alert, Space, Popover, Button } from 'antd';
 import { useIntl } from '@umijs/max';
 import { request } from '@umijs/max';
 import {
@@ -13,6 +13,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { useState, useEffect } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 
@@ -29,10 +30,20 @@ type menuItem = {
 };
 
 const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow }) => {
-  const [form] = Form.useForm();
   const intl = useIntl();
+  const [form] = Form.useForm();
+  const [text, setText] = useState('');
+  const [visible, setVisible] = useState(false);
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
   const [images, setImages] = useState<string[]>([]);
+
+  const handleEmojiClick = (emojiData: any) => {
+    setText((prev) => prev + emojiData.emoji);
+  };
+
+  const handlePopoverVisibleChange = (visible: boolean) => {
+    setVisible(visible);
+  };
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -168,8 +179,22 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
       <ProFormGroup>
         <ProFormTextArea
           name="message"
-          width="md"
-          label={intl.formatMessage({ id: 'message_content', defaultMessage: 'Message Content' })}
+          label={
+            <span>
+              {intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
+              <Popover
+                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
+                title="Pick an Emoji"
+                trigger="click"
+                visible={visible}
+                onVisibleChange={handlePopoverVisibleChange}
+              >
+                <Button size="small" style={{ marginLeft: 8 }}>
+                  😊
+                </Button>
+              </Popover>
+            </span>
+          }
           rules={[
             {
               required: true,
@@ -179,12 +204,11 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
               }),
             },
           ]}
-          placeholder={intl.formatMessage({
-            id: 'message_placeholder',
-            defaultMessage: 'Please input message content',
-          })}
+          width="md"
           fieldProps={{
             autoSize: { minRows: 8 },
+            value: text,
+            onChange: (e: any) => setText(e.target.value),
           }}
         />
         <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}>
