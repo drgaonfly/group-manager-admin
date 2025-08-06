@@ -56,7 +56,9 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
 
   useEffect(() => {
     if (updateModalOpen) {
-      form.resetFields();
+      form.setFieldsValue({
+        ...values,
+      });
       setKeyboards(values?.keyboards || []);
       setPresets(values?.presets || []);
       setmenu(values?.menus || []);
