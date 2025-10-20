@@ -1,4 +1,4 @@
-import { useIntl } from '@umijs/max';
+import { useIntl, useModel } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -106,23 +106,16 @@ const handleRemove = async (ids: string[]) => {
 
 const TableList: React.FC = () => {
   const intl = useIntl();
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
+  const access = useAccess();
+  const { initialState } = useModel('@@initialState');
+  const currentUser = initialState?.currentUser;
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**2024fc.xyz
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [batchUploadPriceModalOpen, setBatchUploadPriceModalOpen] = useState<boolean>(false);
   const [groupModalVisible, setGroupModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const access = useAccess();
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [configureModalVisible, setConfigureModalVisible] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
@@ -173,7 +166,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'agent' }),
       dataIndex: 'agent',
       copyable: true,
-      hideInTable: !access.canSuperAdmin,
+      hideInTable: !currentUser?.isAdmin,
       hideInSearch: true,
       renderText: (_, record) => {
         return record?.proxy?.name;

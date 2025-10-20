@@ -1,4 +1,4 @@
-import { useIntl } from '@umijs/max';
+import { useIntl, useModel } from '@umijs/max';
 import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -50,20 +50,21 @@ const handleRemove = async (ids: string[]) => {
 
 const TableList: React.FC = () => {
   const intl = useIntl();
+  const access = useAccess();
+  const actionRef = useRef<ActionType>();
+  const { initialState } = useModel('@@initialState');
+  const currentUser = initialState?.currentUser;
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
-  const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
     {
       title: intl.formatMessage({ id: 'agent' }),
       dataIndex: 'agent',
       copyable: true,
-      hideInTable: !access.canSuperAdmin,
+      hideInTable: !currentUser?.isAdmin,
       hideInSearch: true,
       renderText: (_, record) => {
         return record?.proxy?.name;
