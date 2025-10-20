@@ -66,7 +66,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
       intl.formatMessage({ id: 'sending', defaultMessage: 'Sending...' }),
     );
     try {
-      await request(`/bots/${currentRow?._id}/send-message`, {
+      await request(`/bots/${currentRow?._id.toString()}/send-message`, {
         method: 'POST',
         data: {
           ...values,
