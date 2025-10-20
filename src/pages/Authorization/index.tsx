@@ -170,6 +170,16 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<any>[] = [
     {
+      title: intl.formatMessage({ id: 'agent' }),
+      dataIndex: 'agent',
+      copyable: true,
+      hideInTable: !access.canSuperAdmin,
+      hideInSearch: true,
+      renderText: (_, record) => {
+        return record?.proxy?.name;
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
       dataIndex: 'id',
       width: 120,
