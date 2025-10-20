@@ -53,6 +53,16 @@ const BotUserMessageTableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      title: intl.formatMessage({ id: 'agent' }),
+      dataIndex: 'agent',
+      copyable: true,
+      hideInTable: !access.canSuperAdmin,
+      hideInSearch: true,
+      renderText: (_, record) => {
+        return record?.proxy?.name;
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'bot', defaultMessage: 'Bot' }),
       dataIndex: 'bot',
       renderText: (_, record) => record.bot.botName,

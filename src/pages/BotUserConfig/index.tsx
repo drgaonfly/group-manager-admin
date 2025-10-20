@@ -59,6 +59,16 @@ const TableList: React.FC = () => {
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
+    {
+      title: intl.formatMessage({ id: 'agent' }),
+      dataIndex: 'agent',
+      copyable: true,
+      hideInTable: !access.canSuperAdmin,
+      hideInSearch: true,
+      renderText: (_, record) => {
+        return record?.proxy?.name;
+      },
+    },
     // id
     {
       title: intl.formatMessage({ id: 'id' }),

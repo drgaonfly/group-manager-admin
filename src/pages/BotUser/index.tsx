@@ -154,6 +154,17 @@ const TableList: React.FC = () => {
   // Define roles object with index signature
 
   const columns: ProColumns<any>[] = [
+    // proxy
+    {
+      title: intl.formatMessage({ id: 'agent' }),
+      dataIndex: 'agent',
+      copyable: true,
+      hideInTable: !access.canSuperAdmin,
+      hideInSearch: true,
+      renderText: (_, record) => {
+        return record?.proxy?.name;
+      },
+    },
     {
       title: intl.formatMessage({ id: 'id' }),
       dataIndex: 'id',
