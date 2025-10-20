@@ -198,32 +198,32 @@ const TableList: React.FC = () => {
       },
     },
     // canBeCloned
-    {
-      title: intl.formatMessage({ id: 'is_canBeCloned' }),
-      dataIndex: 'canBeCloned',
-      width: 120,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canBeCloned}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canBeCloned: !record.canBeCloned });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '复制机器人' }),
-      dataIndex: 'clonedFrom',
-      width: 120,
-      renderText: (text: any) => {
-        return text?.botName || text?.userName;
-      },
-      hideInSearch: true,
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'is_canBeCloned' }),
+    //   dataIndex: 'canBeCloned',
+    //   width: 120,
+    //   hideInSearch: true,
+    //   render: (_, record: any) => (
+    //     <Switch
+    //       checked={record.canBeCloned}
+    //       onChange={async () => {
+    //         await handleUpdate({ _id: record._id, canBeCloned: !record.canBeCloned });
+    //         if (actionRef.current) {
+    //           actionRef.current.reload();
+    //         }
+    //       }}
+    //     />
+    //   ),
+    // },
+    // {
+    //   title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '复制机器人' }),
+    //   dataIndex: 'clonedFrom',
+    //   width: 120,
+    //   renderText: (text: any) => {
+    //     return text?.botName || text?.userName;
+    //   },
+    //   hideInSearch: true,
+    // },
     {
       title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
       width: 120,
@@ -243,6 +243,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
       width: 400,
+      valueType: 'password',
       hideInSearch: true,
       copyable: true,
     },

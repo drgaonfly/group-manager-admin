@@ -70,12 +70,14 @@ const GroupTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: 'Exchange Rate' }),
       dataIndex: 'exchange_rate',
       hideInSearch: true,
+      hideInTable: false,
     },
     {
       title: intl.formatMessage({ id: 'fee_rate', defaultMessage: 'Fee Rate' }),
       dataIndex: 'fee_rate',
       hideInSearch: true,
       valueType: 'percent',
+      hideInTable: false,
     },
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
@@ -88,6 +90,7 @@ const GroupTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'content_of_act', defaultMessage: '活动内容' }),
       dataIndex: 'message',
       hideInSearch: true,
+      hideInTable: false,
     },
     // intervalTime
     {
