@@ -169,7 +169,7 @@ const TableList: React.FC = () => {
       hideInTable: !currentUser?.isAdmin,
       hideInSearch: true,
       renderText: (_, record) => {
-        return record?.proxy?.name;
+        return record?.user?.name;
       },
     },
     {
