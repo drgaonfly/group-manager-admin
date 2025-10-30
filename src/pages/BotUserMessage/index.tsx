@@ -132,14 +132,14 @@ const BotUserMessageTableList: React.FC = () => {
       },
     },
     // intervalTime
-    {
-      title: intl.formatMessage({ id: 'interval_time_hour' }),
-      dataIndex: 'bot',
-      hideInSearch: true,
-      renderText: (_, record) => {
-        return record.bot.intervalTime;
-      },
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'interval_time_hour' }),
+    //   dataIndex: 'bot',
+    //   hideInSearch: true,
+    //   renderText: (_, record) => {
+    //     return record.bot.intervalTime;
+    //   },
+    // },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'Created At' }),
       dataIndex: 'createdAt',
