@@ -67,7 +67,7 @@ const BotUserMessageTableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: 'Bot' }),
       dataIndex: 'bot',
-      renderText: (_, record) => record.bot.botName,
+      renderText: (_, record) => record.bot?.botName,
       copyable: true,
     },
     // botUsers
