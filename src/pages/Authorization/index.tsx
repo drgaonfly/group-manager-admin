@@ -183,6 +183,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'owner_bot_display_name' }),
       dataIndex: 'botName',
       width: 150,
+      fixed: 'left',
       copyable: true,
     },
     {
@@ -235,12 +236,6 @@ const TableList: React.FC = () => {
       renderText: (text: any) => {
         return text?.botName || text?.userName;
       },
-      hideInSearch: true,
-    },
-    // intervalTime
-    {
-      title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
-      dataIndex: 'intervalTime',
       hideInSearch: true,
     },
     {
