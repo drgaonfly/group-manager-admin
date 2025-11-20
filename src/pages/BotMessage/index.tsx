@@ -94,6 +94,32 @@ const TableList: React.FC = () => {
       renderText: (group) => group?.title,
     },
     {
+      title: intl.formatMessage({ id: 'telegramMessageId', defaultMessage: '电报消息ID' }),
+      dataIndex: 'telegramMessageId',
+      hideInSearch: true,
+      copyable: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'proxyUser', defaultMessage: '代理用户' }),
+      dataIndex: 'proxyUser',
+      hideInSearch: true,
+      renderText: (proxyUser) => proxyUser?.userName || proxyUser?.name || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'isOwnerReply', defaultMessage: '是否拥有者回复' }),
+      dataIndex: 'isOwnerReply',
+      hideInSearch: true,
+      valueType: 'select',
+      valueEnum: {
+        true: { text: intl.formatMessage({ id: 'yes', defaultMessage: '是' }), status: 'Success' },
+        false: { text: intl.formatMessage({ id: 'no', defaultMessage: '否' }), status: 'Default' },
+      },
+      renderText: (_, record) =>
+        record.isOwnerReply
+          ? intl.formatMessage({ id: 'yes', defaultMessage: '是' })
+          : intl.formatMessage({ id: 'no', defaultMessage: '否' }),
+    },
+    {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
