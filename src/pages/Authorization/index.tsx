@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import GroupForm from './components/GroupForm';
@@ -386,18 +387,20 @@ const TableList: React.FC = () => {
             })}
           </a>
         ),
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </a>,
+        </ActionButton>,
         access.canUpdateBot && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               console.log();
 
@@ -406,7 +409,7 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeleteBot && (
           <DeleteLink

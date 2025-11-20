@@ -10,6 +10,7 @@ import Update from './components/Update';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
@@ -148,25 +149,27 @@ const TableList: React.FC = () => {
       valueType: 'option',
       fixed: 'right',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
-        </a>,
+        </ActionButton>,
         access.canUpdateBotUserConfig && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
           >
             <FormattedMessage id="edit" defaultMessage="编辑" />
-          </a>
+          </ActionButton>
         ),
         access.canDeleteBotUserConfig && (
           <DeleteLink

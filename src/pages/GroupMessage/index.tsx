@@ -8,6 +8,7 @@ import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 import Update from './components/Update';
 import moment from 'moment';
 
@@ -197,15 +198,16 @@ const TableList: React.FC = () => {
       valueType: 'option',
       fixed: 'right',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
-        </a>,
+        </ActionButton>,
         access.canDeleteGroupMessage && (
           <DeleteLink
             key="delete"
@@ -216,8 +218,9 @@ const TableList: React.FC = () => {
           />
         ),
         access.canUpdateGroupMessage && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               console.log();
 
@@ -226,7 +229,7 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
       ],
     },

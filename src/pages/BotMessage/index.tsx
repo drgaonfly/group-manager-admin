@@ -8,6 +8,7 @@ import React, { useRef, useState } from 'react';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 import MessageType from '@/enums/message';
 import moment from 'moment';
 
@@ -105,15 +106,16 @@ const TableList: React.FC = () => {
       valueType: 'option',
       fixed: 'right',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
-        </a>,
+        </ActionButton>,
         access.canDeleteBotMessage && (
           <DeleteLink
             key="delete"

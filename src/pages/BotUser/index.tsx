@@ -14,6 +14,7 @@ import DeleteLink from '@/components/DeleteLink';
 import CopyToClipboard from '@/components/CopyToClipboard';
 // import { Input } from 'antd';
 import SendMessageModal from './components/SendMessageModal';
+import ActionButton from '@/components/ActionButton';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -223,17 +224,19 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </a>,
+        </ActionButton>,
         access.canDeleteBotUser && (
           <DeleteLink
+            key="delete"
             onOk={async () => {
               await handleRemove([record._id!]);
               setSelectedRows([]);
@@ -242,15 +245,16 @@ const TableList: React.FC = () => {
           />
         ),
         access.canUpdateBotUser && (
-          <a
+          <ActionButton
             key="sendMessage"
+            type="send_message"
             onClick={() => {
               setCurrentRow(record);
               setMessageModalOpen(true);
             }}
           >
             <FormattedMessage id="send_message" defaultMessage="发送消息" />
-          </a>
+          </ActionButton>
         ),
       ],
     },
