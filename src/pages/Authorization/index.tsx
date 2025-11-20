@@ -21,7 +21,6 @@ import DeleteOwnerForm from './components/DeleteOwnerForm';
 import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 // import StringArrayWithActions from './components/StringArrayWithAction';
-import MessageForm from './components/MessageForm';
 import GroupMessageForm from './components/GroupMessageForm';
 
 /**
@@ -124,7 +123,6 @@ const TableList: React.FC = () => {
   const [deleteOwnerModalVisible, setDeleteOwnerModalVisible] = useState<boolean>(false);
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
-  const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
   const [privateKeyModalOpen, setPrivateKeyModalOpen] = useState<boolean>(false);
   const [privateKeyForm] = Form.useForm();
@@ -341,19 +339,6 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: 300,
       render: (_, record) => [
-        <ActionButton
-          key="sendMessage"
-          type="sendMessage"
-          onClick={() => {
-            setMessageModalOpen(true);
-            setCurrentRow(record);
-          }}
-        >
-          {intl.formatMessage({
-            id: 'sendMessage',
-            defaultMessage: intl.formatMessage({ id: 'sendMessage' }),
-          })}
-        </ActionButton>,
         <ActionButton
           key="sendGroupMessage"
           type="sendGroupMessage"
@@ -624,7 +609,6 @@ const TableList: React.FC = () => {
           }
         }}
       />
-      <MessageForm open={messageModalOpen} onCancel={setMessageModalOpen} currentRow={currentRow} />
       <GroupMessageForm
         open={groupMessageModalOpen}
         onCancel={setGroupMessageModalOpen}

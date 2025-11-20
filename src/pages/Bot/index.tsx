@@ -14,7 +14,7 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import MessageForm from '../Authorization/components/MessageForm';
+import MessageForm from './components/MessageForm';
 import ActionButton from '@/components/ActionButton';
 /**
  * @en-US Add node
