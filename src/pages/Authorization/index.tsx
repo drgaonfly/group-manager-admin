@@ -20,7 +20,7 @@ import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
 import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
-// import StringArrayWithActions from './components/StringArrayWithAction';
+import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
 
 /**
@@ -199,6 +199,30 @@ const TableList: React.FC = () => {
           );
         }
       },
+    },
+    // add owners
+    {
+      title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
+      dataIndex: 'owners',
+      hideInSearch: true,
+      hideInTable: false,
+      align: 'center',
+      width: 150,
+      render: (_, record) => (
+        <StringArrayWithActions
+          values={record.owners || []}
+          onAdd={() => {
+            setCurrentRow(record);
+            setAddOwnerModalVisible(true);
+          }}
+          onDelete={() => {
+            setCurrentRow(record);
+            setDeleteOwnerModalVisible(true);
+          }}
+          labelAdd={intl.formatMessage({ id: 'add_owner' })}
+          labelDelete={intl.formatMessage({ id: 'delete_owner' })}
+        />
+      ),
     },
     // canBeCloned
     // {
