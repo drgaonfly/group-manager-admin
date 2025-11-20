@@ -49,7 +49,10 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       initialValues={{
         ...values,
         bot: values?.bot?._id || values?.bot,
-        groups: values?.groups?.map((g: any) => g?._id || g),
+        groups:
+          values?.groups && Array.isArray(values.groups)
+            ? values.groups.map((g: any) => g?._id || g)
+            : [],
         menus: values?.menus || [],
         images: images,
       }}
@@ -145,10 +148,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="groups"
           width="md"
           label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
-          options={values.bot.groups.map((group: any) => ({
-            label: group.title,
-            value: group._id,
-          }))}
+          options={
+            values?.bot?.groups && Array.isArray(values.bot.groups)
+              ? values.bot.groups.map((group: any) => ({
+                  label: group.title,
+                  value: group._id,
+                }))
+              : []
+          }
         />
       </ProForm.Group>
 
