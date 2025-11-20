@@ -346,8 +346,9 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: 300,
       render: (_, record) => [
-        <a
+        <ActionButton
           key="sendMessage"
+          type="sendMessage"
           onClick={() => {
             setMessageModalOpen(true);
             setCurrentRow(record);
@@ -357,9 +358,10 @@ const TableList: React.FC = () => {
             id: 'sendMessage',
             defaultMessage: intl.formatMessage({ id: 'sendMessage' }),
           })}
-        </a>,
-        <a
+        </ActionButton>,
+        <ActionButton
           key="sendGroupMessage"
+          type="sendGroupMessage"
           onClick={() => {
             setGroupMessageModalOpen(true);
             setCurrentRow(record);
@@ -372,10 +374,11 @@ const TableList: React.FC = () => {
               defaultMessage: 'Group Message',
             }),
           })}
-        </a>,
+        </ActionButton>,
         access.canUpdateBot && (
-          <a
+          <ActionButton
             key="configure"
+            type="configure"
             onClick={() => {
               setConfigureModalVisible(true);
               setCurrentRow(record);
@@ -385,7 +388,7 @@ const TableList: React.FC = () => {
               id: 'configure',
               defaultMessage: intl.formatMessage({ id: 'configure' }),
             })}
-          </a>
+          </ActionButton>
         ),
         <ActionButton
           key="detail"

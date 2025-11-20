@@ -12,6 +12,7 @@ import {
   UploadOutlined,
   ReloadOutlined,
   PlusOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import React from 'react';
@@ -21,6 +22,7 @@ export type ActionType =
   | 'edit'
   | 'delete'
   | 'sendMessage'
+  | 'sendGroupMessage'
   | 'configure'
   | 'send_message'
   | 'info'
@@ -60,6 +62,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     edit: <EditOutlined />,
     delete: <DeleteOutlined />,
     sendMessage: <SendOutlined />,
+    sendGroupMessage: <TeamOutlined />,
     configure: <SettingOutlined />,
     send_message: <MessageOutlined />,
     info: <InfoCircleOutlined />,
@@ -77,6 +80,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     edit: '#52c41a', // 绿色
     delete: '#ff4d4f', // 红色
     sendMessage: '#722ed1', // 紫色
+    sendGroupMessage: '#eb2f96', // 粉红色
     configure: '#fa8c16', // 橙色
     send_message: '#13c2c2', // 青色
     info: '#1890ff', // 蓝色
@@ -94,6 +98,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     edit: intl.formatMessage({ id: 'edit', defaultMessage: '编辑' }),
     delete: intl.formatMessage({ id: 'delete', defaultMessage: '删除' }),
     sendMessage: intl.formatMessage({ id: 'sendMessage', defaultMessage: '发送消息' }),
+    sendGroupMessage: intl.formatMessage({ id: 'sendGroupMessage', defaultMessage: '群发消息' }),
     configure: intl.formatMessage({ id: 'configure', defaultMessage: '配置' }),
     send_message: intl.formatMessage({ id: 'send_message', defaultMessage: '发送消息' }),
     info: intl.formatMessage({ id: 'info', defaultMessage: '信息' }),
