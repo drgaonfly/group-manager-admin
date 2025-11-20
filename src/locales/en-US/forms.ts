@@ -224,4 +224,18 @@ export default {
   invited_counts: 'Invited Counts',
   invited_group: 'Invited Group',
   botUsers: 'Bot Users',
+
+  // Send message related
+  'config.not.found': 'Configuration not found, cannot send message',
+  'bot.not.found': 'This configuration is not bound to a bot, cannot send message',
+  sending: 'Sending...',
+  send_successful: 'Message sent successfully',
+  send_failed: 'Failed to send message, please try again!',
+  'bot.not.bound': 'Not bound',
+  use_html: 'Use HTML Format',
+  use_html_description:
+    'When enabled, HTML tags can be used to format messages (e.g., <b>bold</b>, <i>italic</i>, etc.)',
+  select_emoji: 'Select Emoji',
+  enter_message: 'Please enter the message to send (HTML format supported)',
+  message_required: 'Please enter message content',
 };

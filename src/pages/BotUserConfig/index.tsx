@@ -170,7 +170,7 @@ const TableList: React.FC = () => {
               setMessageModalOpen(true);
             }}
           >
-            <FormattedMessage id="send_message" defaultMessage="发送消息" />
+            <FormattedMessage id="send_message" />
           </ActionButton>
         ),
         access.canUpdateBotUserConfig && (

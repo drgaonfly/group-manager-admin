@@ -26,21 +26,29 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
   };
 
   const handleFinish = async (values: any) => {
-    if (!currentRow?.bot?._id) {
+    // 检查配置ID是否存在
+    if (!currentRow?._id) {
       message.error({
-        content: (
-          <FormattedMessage id="bot.not.found" defaultMessage="该配置未绑定机器人，无法发送消息" />
-        ),
+        content: <FormattedMessage id="config.not.found" />,
+      });
+      return false;
+    }
+
+    // 检查是否绑定了机器人（后端会通过 populate 获取，这里只做前端提示）
+    if (!currentRow?.bot?._id && !currentRow?.bot) {
+      message.error({
+        content: <FormattedMessage id="bot.not.found" />,
       });
       return false;
     }
 
     const hide = message.loading({
-      content: <FormattedMessage id="sending" defaultMessage="发送中..." />,
+      content: <FormattedMessage id="sending" />,
       key: 'sendMessage',
     });
 
     try {
+      // 后端会通过 BotUserConfig 的 id 自动获取绑定的机器人信息，不需要前端传递
       await addItem(`/bot-user-configs/${currentRow._id}/send-message`, {
         message: values.message,
         parseMode: useHtml ? 'HTML' : undefined,
@@ -48,7 +56,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
 
       hide();
       message.success({
-        content: <FormattedMessage id="send_successful" defaultMessage="发送成功" />,
+        content: <FormattedMessage id="send_successful" />,
         key: 'sendMessage',
       });
       setMessageText('');
@@ -57,9 +65,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
     } catch (error: any) {
       hide();
       message.error({
-        content: error?.response?.data?.message ?? (
-          <FormattedMessage id="send_failed" defaultMessage="发送失败，请重试！" />
-        ),
+        content: error?.response?.data?.message ?? <FormattedMessage id="send_failed" />,
         key: 'sendMessage',
       });
       return false;
@@ -74,7 +80,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
 
   return (
     <ModalForm
-      title={<FormattedMessage id="send_message" defaultMessage="Send Message" />}
+      title={<FormattedMessage id="send_message" />}
       open={open}
       onOpenChange={(visible) => {
         if (!visible) {
@@ -92,23 +98,20 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
     >
       <div style={{ marginBottom: 16 }}>
         <strong>
-          <FormattedMessage id="bot" defaultMessage="机器人" />:{' '}
+          <FormattedMessage id="bot" />:{' '}
         </strong>
-        {currentRow?.bot?.botName || '-'}
+        <span style={{ color: currentRow?.bot?.botName ? 'inherit' : '#ff4d4f' }}>
+          {currentRow?.bot?.botName || <FormattedMessage id="bot.not.bound" />}
+        </span>
       </div>
       <ProFormSwitch
         name="useHtml"
-        label={<FormattedMessage id="use_html" defaultMessage="Use HTML Format" />}
+        label={<FormattedMessage id="use_html" />}
         fieldProps={{
           checked: useHtml,
           onChange: (checked) => setUseHtml(checked),
         }}
-        extra={
-          <FormattedMessage
-            id="use_html_description"
-            defaultMessage="When enabled, HTML tags can be used to format messages (e.g., <b>bold</b>, <i>italic</i>, etc.)"
-          />
-        }
+        extra={<FormattedMessage id="use_html_description" />}
       />
 
       <ProFormTextArea
@@ -116,11 +119,11 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
         label={
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>
-              <FormattedMessage id="message_content" defaultMessage="Message Content" />
+              <FormattedMessage id="message_content" />
             </span>
             <Popover
               content={emojiPicker}
-              title={<FormattedMessage id="select_emoji" defaultMessage="Select Emoji" />}
+              title={<FormattedMessage id="select_emoji" />}
               trigger="click"
               open={emojiVisible}
               onOpenChange={setEmojiVisible}
@@ -142,17 +145,11 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
           onChange: (e) => setMessageText(e.target.value),
           value: messageText,
         }}
-        placeholder={intl.formatMessage({
-          id: 'enter_message',
-          defaultMessage: 'Please enter the message to send (HTML format supported)',
-        })}
+        placeholder={intl.formatMessage({ id: 'enter_message' })}
         rules={[
           {
             required: true,
-            message: intl.formatMessage({
-              id: 'message_required',
-              defaultMessage: 'Please enter message content',
-            }),
+            message: intl.formatMessage({ id: 'message_required' }),
           },
         ]}
       />
