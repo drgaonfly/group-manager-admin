@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Modal, Switch } from 'antd';
+import { message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -194,24 +194,6 @@ const TableList: React.FC = () => {
       dataIndex: 'lastName',
       hideInSearch: true,
       copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'status', defaultMessage: '授权状态' }),
-      dataIndex: 'isAuthorized',
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'authorized', defaultMessage: '已授权' })}
-          unCheckedChildren={intl.formatMessage({ id: 'unauthorized', defaultMessage: '未授权' })}
-          checked={record.isAuthorized}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isAuthorized: !record.isAuthorized });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
