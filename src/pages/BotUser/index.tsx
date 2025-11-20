@@ -13,7 +13,6 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import CopyToClipboard from '@/components/CopyToClipboard';
 // import { Input } from 'antd';
-import SendMessageModal from './components/SendMessageModal';
 import ActionButton from '@/components/ActionButton';
 /**
  * @en-US Add node
@@ -96,35 +95,6 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
-const handleSendMessage = async (botUserId: string, messageContent: string) => {
-  const hide = message.loading({
-    content: <FormattedMessage id="sending" defaultMessage="发送中..." />,
-    key: 'sendMessage',
-  });
-
-  try {
-    await addItem(`/bot-users/${botUserId}/send-message`, {
-      message: messageContent, // 移除了多余的 botUserId
-    });
-
-    hide();
-    message.success({
-      content: <FormattedMessage id="send_successful" defaultMessage="发送成功" />,
-      key: 'sendMessage',
-    });
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error({
-      content: error?.response?.data?.message ?? (
-        <FormattedMessage id="send_failed" defaultMessage="发送失败，请重试！" />
-      ),
-      key: 'sendMessage',
-    });
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
@@ -138,8 +108,6 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [messageModalOpen, setMessageModalOpen] = useState(false);
-  const [messageText, setMessageText] = useState('');
 
   /**
    * @en-US International configuration
@@ -225,18 +193,6 @@ const TableList: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           />
-        ),
-        access.canUpdateBotUser && (
-          <ActionButton
-            key="sendMessage"
-            type="send_message"
-            onClick={() => {
-              setCurrentRow(record);
-              setMessageModalOpen(true);
-            }}
-          >
-            <FormattedMessage id="send_message" defaultMessage="发送消息" />
-          </ActionButton>
         ),
       ],
     },
@@ -371,18 +327,6 @@ const TableList: React.FC = () => {
         footer={null}
         width={800}
       ></Modal>
-
-      <SendMessageModal
-        open={messageModalOpen}
-        onClose={() => {
-          setMessageModalOpen(false);
-          setMessageText('');
-        }}
-        currentRow={currentRow}
-        onSendMessage={handleSendMessage}
-        messageText={messageText}
-        setMessageText={setMessageText}
-      />
     </PageContainer>
   );
 };
