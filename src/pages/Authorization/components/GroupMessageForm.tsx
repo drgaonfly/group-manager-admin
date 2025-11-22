@@ -27,6 +27,8 @@ type menuItem = {
 const handleAdd = async (data: any) => {
   const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
 
+  console.log('data', data);
+
   try {
     if (data.sendType === 'scheduled') {
       await addItem('/group-messages', data);

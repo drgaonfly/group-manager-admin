@@ -237,11 +237,11 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     // intervalTime
-    {
-      title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
-      dataIndex: 'intervalTime',
-      hideInSearch: true,
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
+    //   dataIndex: 'intervalTime',
+    //   hideInSearch: true,
+    // },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',

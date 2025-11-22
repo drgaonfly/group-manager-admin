@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import {
-  EditableProTable,
+  ProTable,
   ModalForm,
   ProFormTextArea,
   ProDescriptions,
   ProFormGroup,
   ProFormText,
+  type ProColumns,
   // ProFormDigit,
   // ProFormSwitch,
-  type ProColumns,
 } from '@ant-design/pro-components';
-import { Form, Input } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { FormattedMessage, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
+import KeyboardButtonsModal from './KeyboardButtonsModal';
+import { PlusOutlined } from '@ant-design/icons';
 
 type menuItem = {
   _id: string;
 };
 
-type keyboardItem = {
+type keyboardButton = {
   _id: string;
+  label: string;
   command: string;
   content: string;
+};
+
+type keyboardRow = {
+  _id: string;
+  row: number;
+  buttons: keyboardButton[];
 };
 
 type presetItem = {
@@ -50,7 +59,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
   const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
-  const [keyboards, setKeyboards] = useState<keyboardItem[]>(values?.keyboards || []);
+  const [keyboardRows, setKeyboardRows] = useState<keyboardRow[]>([]);
   const [multiImageUrl, setMultiImageUrl] = useState<string>(values?.multi_image || '');
   const [presets, setPresets] = useState<presetItem[]>(values?.presets || []);
 
@@ -59,7 +68,40 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       form.setFieldsValue({
         ...values,
       });
-      setKeyboards(values?.keyboards || []);
+
+      // 将扁平的 keyboards 数据转换为按行分组的结构
+      const keyboards = values?.keyboards || [];
+      const processedKeyboards = keyboards.map((kb: any, index: number) => ({
+        ...kb,
+        row: kb.row || Math.floor(index / 2) + 1,
+        label: kb.label || kb.command,
+      }));
+
+      // 按行号分组
+      const groupedByRow: { [key: number]: keyboardButton[] } = {};
+      processedKeyboards.forEach((kb: any) => {
+        const rowNum = kb.row || 1;
+        if (!groupedByRow[rowNum]) {
+          groupedByRow[rowNum] = [];
+        }
+        groupedByRow[rowNum].push({
+          _id: kb._id || Date.now().toString() + Math.random(),
+          label: kb.label,
+          command: kb.command,
+          content: kb.content,
+        });
+      });
+
+      // 转换为行数组
+      const rows: keyboardRow[] = Object.keys(groupedByRow)
+        .sort((a, b) => Number(a) - Number(b))
+        .map((rowKey) => ({
+          _id: `row_${rowKey}`,
+          row: Number(rowKey),
+          buttons: groupedByRow[Number(rowKey)],
+        }));
+
+      setKeyboardRows(rows);
       setPresets(values?.presets || []);
       setmenu(values?.menus || []);
       setMultiImageUrl(values?.multi_image || '');
@@ -68,125 +110,151 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
 
   console.log('values', values);
 
-  const columns = [
-    {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-      dataIndex: 'menuName',
-      hideInSearch: false,
-      width: 200,
-    },
-    {
-      title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
-      dataIndex: 'url',
-      hideInSearch: false,
-      copyable: true,
-      initialValue: process.env.UMI_APP_MENU_URL,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
-      valueType: 'option',
-      width: 200,
-      render: (text: any, record: any, _: any, action: any) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(`${record._id}`);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
-      ],
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
+  //     dataIndex: 'menuName',
+  //     hideInSearch: false,
+  //     width: 200,
+  //   },
+  //   {
+  //     title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
+  //     dataIndex: 'url',
+  //     hideInSearch: false,
+  //     copyable: true,
+  //     initialValue: process.env.UMI_APP_MENU_URL,
+  //   },
+  //   {
+  //     title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+  //     valueType: 'option',
+  //     width: 200,
+  //     render: (text: any, record: any, _: any, action: any) => [
+  //       <a
+  //         key="editable"
+  //         onClick={() => {
+  //           action?.startEditable?.(`${record._id}`);
+  //         }}
+  //       >
+  //         {intl.formatMessage({ id: 'edit' })}
+  //       </a>,
+  //     ],
+  //   },
+  // ];
 
-  const keyboard_columns = [
-    {
-      title: intl.formatMessage({ id: 'command', defaultMessage: '命令' }),
-      dataIndex: 'command',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'command_required', defaultMessage: '请输入命令' }),
-          },
-        ],
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'content', defaultMessage: '内容' }),
-      dataIndex: 'content',
-      valueType: 'textarea',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'content_required', defaultMessage: '请输入内容' }),
-          },
-        ],
-      },
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
-      valueType: 'option',
-      width: 200,
-      render: (text: any, record: any, _: any, action: any) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(`${record._id}`);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
-      ],
-    },
-  ];
+  // 按钮编辑弹窗状态
+  const [editingRow, setEditingRow] = useState<keyboardRow | null>(null);
+  const [buttonModalOpen, setButtonModalOpen] = useState(false);
 
-  const preset_columns: ProColumns<presetItem>[] = [
+  const keyboard_row_columns: ProColumns<keyboardRow>[] = [
     {
-      title: intl.formatMessage({ id: 'keyword', defaultMessage: '关键词' }),
-      dataIndex: 'keyword',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'keyword_required', defaultMessage: '请输入关键词' }),
-          },
-        ],
-      },
+      title: intl.formatMessage({ id: 'row', defaultMessage: '行号' }),
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      editable: false,
+      render: (_: any, record: keyboardRow) => `第 ${record.row} 行`,
     },
     {
-      title: intl.formatMessage({ id: 'response', defaultMessage: '回复内容' }),
-      dataIndex: 'response',
-      valueType: 'textarea' as const,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'response_required',
-              defaultMessage: '请输入回复内容',
-            }),
-          },
-        ],
+      title: intl.formatMessage({ id: 'buttons', defaultMessage: '按钮列表' }),
+      dataIndex: 'buttons',
+      editable: false,
+      render: (_: any, record: keyboardRow) => {
+        return (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {record.buttons && record.buttons.length > 0 ? (
+              record.buttons.map((btn: keyboardButton) => (
+                <span
+                  key={btn._id}
+                  style={{
+                    padding: '4px 12px',
+                    background: '#f0f0f0',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                  }}
+                >
+                  {btn.label || btn.command}
+                </span>
+              ))
+            ) : (
+              <span style={{ color: '#999' }}>暂无按钮</span>
+            )}
+          </div>
+        );
       },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
-      width: 200,
-      render: (text: any, record: any, _: any, action: any) => [
+      width: 150,
+      render: (_: any, record: keyboardRow) => [
         <a
-          key="editable"
+          key="edit"
           onClick={() => {
-            action?.startEditable?.(`${record._id}`);
+            setEditingRow(record);
+            setButtonModalOpen(true);
           }}
         >
-          {intl.formatMessage({ id: 'edit' })}
+          {intl.formatMessage({ id: 'edit_buttons', defaultMessage: '编辑按钮' })}
+        </a>,
+        <a
+          key="delete"
+          style={{ marginLeft: 8, color: 'red' }}
+          onClick={() => {
+            const newRows = keyboardRows.filter((row) => row._id !== record._id);
+            setKeyboardRows(newRows);
+          }}
+        >
+          {intl.formatMessage({ id: 'delete', defaultMessage: '删除' })}
         </a>,
       ],
     },
   ];
+
+  // const preset_columns: ProColumns<presetItem>[] = [
+  //   {
+  //     title: intl.formatMessage({ id: 'keyword', defaultMessage: '关键词' }),
+  //     dataIndex: 'keyword',
+  //     formItemProps: {
+  //       rules: [
+  //         {
+  //           required: true,
+  //           message: intl.formatMessage({ id: 'keyword_required', defaultMessage: '请输入关键词' }),
+  //         },
+  //       ],
+  //     },
+  //   },
+  //   {
+  //     title: intl.formatMessage({ id: 'response', defaultMessage: '回复内容' }),
+  //     dataIndex: 'response',
+  //     valueType: 'textarea' as const,
+  //     formItemProps: {
+  //       rules: [
+  //         {
+  //           required: true,
+  //           message: intl.formatMessage({
+  //             id: 'response_required',
+  //             defaultMessage: '请输入回复内容',
+  //           }),
+  //         },
+  //       ],
+  //     },
+  //   },
+  //   {
+  //     title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+  //     valueType: 'option',
+  //     width: 200,
+  //     render: (text: any, record: any, _: any, action: any) => [
+  //       <a
+  //         key="editable"
+  //         onClick={() => {
+  //           action?.startEditable?.(`${record._id}`);
+  //         }}
+  //       >
+  //         {intl.formatMessage({ id: 'edit' })}
+  //       </a>,
+  //     ],
+  //   },
+  // ];
 
   return (
     <ModalForm
@@ -201,12 +269,22 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
       onOpenChange={onCancel}
       onFinish={async () => {
         const formValues = form.getFieldsValue();
+
+        // 将分组的行数据转换回扁平的 keyboards 数组
+        const flatKeyboards = keyboardRows.flatMap((row) =>
+          row.buttons.map((btn) => ({
+            row: row.row,
+            label: btn.label || btn.command,
+            command: btn.command,
+            content: btn.content,
+          })),
+        );
+
         await onSubmit({
           ...values,
           ...formValues,
           multi_image: multiImageUrl,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          keyboards: keyboards.map(({ _id, ...rest }) => rest),
+          keyboards: flatKeyboards,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           menus: menus.map(({ _id, ...rest }) => rest),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -312,23 +390,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
         </ProFormGroup>
 
         <ProFormGroup>
-          <ProFormTextArea
-            name="multi_content"
-            label={intl.formatMessage({ id: 'multi_content', defaultMessage: 'Multi Content' })}
-            rules={[
-              {
-                required: false,
-                message: intl.formatMessage({
-                  id: 'please_input_multi_content',
-                  defaultMessage: 'Please input lottery content',
-                }),
-              },
-            ]}
-            width="md"
-            fieldProps={{
-              autoSize: { minRows: 12 },
-            }}
-          />
           <Form.Item
             label={intl.formatMessage({ id: 'multi_image', defaultMessage: 'Multi Image' })}
           >
@@ -357,7 +418,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           </Form.Item>
         </ProFormGroup>
 
-        <EditableProTable<presetItem>
+        {/* <EditableProTable<presetItem>
           rowKey="_id"
           headerTitle={intl.formatMessage({
             id: 'preset_config',
@@ -378,33 +439,66 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               response: '',
             }),
           }}
-        />
+        /> */}
 
-        <EditableProTable<keyboardItem>
+        <ProTable<keyboardRow>
           rowKey="_id"
           headerTitle={intl.formatMessage({
             id: 'keyboard_config',
             defaultMessage: '键盘配置',
           })}
+          tooltip={intl.formatMessage({
+            id: 'keyboard_config_tooltip',
+            defaultMessage: '每一行可以包含多个按钮。点击"编辑按钮"可以管理该行的按钮。',
+          })}
           // @ts-ignore
-          columns={keyboard_columns}
-          value={keyboards}
-          onChange={(value: readonly keyboardItem[]) => setKeyboards([...value])}
-          editable={{
-            type: 'multiple',
-          }}
-          recordCreatorProps={{
-            newRecordType: 'dataSource',
-            position: 'bottom',
-            record: () => ({
-              _id: Date.now().toString(),
-              command: '',
-              content: '',
-            }),
+          columns={keyboard_row_columns}
+          dataSource={keyboardRows}
+          search={false}
+          pagination={false}
+          toolBarRender={() => [
+            <Button
+              key="button"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                const newRow: keyboardRow = {
+                  _id: `row_${Date.now()}`,
+                  row:
+                    keyboardRows.length > 0 ? Math.max(...keyboardRows.map((r) => r.row)) + 1 : 1,
+                  buttons: [],
+                };
+                setKeyboardRows([...keyboardRows, newRow]);
+              }}
+              type="primary"
+            >
+              {intl.formatMessage({
+                id: 'add_keyboard_row',
+                defaultMessage: '添加新行',
+              })}
+            </Button>,
+          ]}
+        />
+
+        {/* 按钮编辑弹窗 */}
+        <KeyboardButtonsModal
+          open={buttonModalOpen}
+          onOpenChange={setButtonModalOpen}
+          editingRow={editingRow}
+          onButtonsChange={(buttons) => {
+            if (editingRow) {
+              const newRows = keyboardRows.map((row) => {
+                if (row._id === editingRow._id) {
+                  return { ...row, buttons };
+                }
+                return row;
+              });
+              setKeyboardRows(newRows);
+              setEditingRow({ ...editingRow, buttons });
+            }
           }}
         />
 
-        <EditableProTable<menuItem>
+        {/* <EditableProTable<menuItem>
           rowKey="_id"
           headerTitle={intl.formatMessage({
             id: 'inline_menu_config',
@@ -426,7 +520,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               url: '',
             }),
           }}
-        />
+        /> */}
 
         <Form.Item name="_id" label={false}>
           <Input type="hidden" />
