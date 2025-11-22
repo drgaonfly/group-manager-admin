@@ -12,6 +12,7 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import useQueryList from '@/hooks/useQueryList';
+import ActionButton from '@/components/ActionButton';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -175,8 +176,9 @@ const TableList: React.FC = () => {
             padding: '4px 0',
           }}
         >
-          <a
+          <ActionButton
             key="detail"
+            type="detail"
             onClick={() => {
               setCurrentRow(record);
               setShowDetail(true);
@@ -184,10 +186,11 @@ const TableList: React.FC = () => {
             style={{ width: '100%', textAlign: 'center' }}
           >
             <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-          </a>
+          </ActionButton>
           {access.canUpdateCustomer && (
-            <a
+            <ActionButton
               key="edit"
+              type="edit"
               onClick={() => {
                 handleUpdateModalOpen(true);
                 setCurrentRow(record);
@@ -195,10 +198,11 @@ const TableList: React.FC = () => {
               style={{ width: '100%', textAlign: 'center' }}
             >
               {intl.formatMessage({ id: 'edit' })}
-            </a>
+            </ActionButton>
           )}
           {access.canDeleteCustomer && (
             <DeleteLink
+              key="delete"
               onOk={async () => {
                 await handleRemove([record._id!]);
                 setSelectedRows([]);

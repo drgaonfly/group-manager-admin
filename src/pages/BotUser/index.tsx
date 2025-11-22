@@ -3,7 +3,7 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Modal, Switch } from 'antd';
+import { message, Modal } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -13,7 +13,7 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import CopyToClipboard from '@/components/CopyToClipboard';
 // import { Input } from 'antd';
-import SendMessageModal from './components/SendMessageModal';
+import ActionButton from '@/components/ActionButton';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -95,35 +95,6 @@ const handleRemove = async (ids: string[]) => {
   }
 };
 
-const handleSendMessage = async (botUserId: string, messageContent: string) => {
-  const hide = message.loading({
-    content: <FormattedMessage id="sending" defaultMessage="发送中..." />,
-    key: 'sendMessage',
-  });
-
-  try {
-    await addItem(`/bot-users/${botUserId}/send-message`, {
-      message: messageContent, // 移除了多余的 botUserId
-    });
-
-    hide();
-    message.success({
-      content: <FormattedMessage id="send_successful" defaultMessage="发送成功" />,
-      key: 'sendMessage',
-    });
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error({
-      content: error?.response?.data?.message ?? (
-        <FormattedMessage id="send_failed" defaultMessage="发送失败，请重试！" />
-      ),
-      key: 'sendMessage',
-    });
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
@@ -135,10 +106,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [messageModalOpen, setMessageModalOpen] = useState(false);
-  const [messageText, setMessageText] = useState('');
 
   /**
    * @en-US International configuration
@@ -195,24 +163,6 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'status', defaultMessage: '授权状态' }),
-      dataIndex: 'isAuthorized',
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'authorized', defaultMessage: '已授权' })}
-          unCheckedChildren={intl.formatMessage({ id: 'unauthorized', defaultMessage: '未授权' })}
-          checked={record.isAuthorized}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isAuthorized: !record.isAuthorized });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       hideInSearch: true,
@@ -223,34 +173,25 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </a>,
+        </ActionButton>,
         access.canDeleteBotUser && (
           <DeleteLink
+            key="delete"
             onOk={async () => {
               await handleRemove([record._id!]);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
           />
-        ),
-        access.canUpdateBotUser && (
-          <a
-            key="sendMessage"
-            onClick={() => {
-              setCurrentRow(record);
-              setMessageModalOpen(true);
-            }}
-          >
-            <FormattedMessage id="send_message" defaultMessage="发送消息" />
-          </a>
         ),
       ],
     },
@@ -266,45 +207,7 @@ const TableList: React.FC = () => {
         search={{
           collapsed: false,
         }}
-        toolbar={{
-          menu: {
-            type: 'tab',
-            activeKey: activeKey,
-            items: [
-              {
-                label: <FormattedMessage id="all" defaultMessage="all" />,
-                key: '',
-              },
-              {
-                label: <FormattedMessage id="authorized" defaultMessage="authorized" />,
-                key: 'true',
-              },
-              {
-                label: <FormattedMessage id="unauthorized" defaultMessage="unauthorized" />,
-                key: 'false',
-              },
-            ],
-            onChange: (key: any) => {
-              setActiveKey(key);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            },
-          },
-        }}
-        request={async (params, sort, filter) => {
-          // 处理isAuthorized参数
-          let isAuthorized;
-          if (activeKey === '') {
-            isAuthorized = undefined; // 全部
-          } else if (activeKey === 'true') {
-            isAuthorized = true; // 已授权
-          } else if (activeKey === 'false') {
-            isAuthorized = false; // 未授权
-          }
-
-          return queryList('/bot-users', { ...params, isAuthorized }, sort, filter);
-        }}
+        request={(params, sort, filter) => queryList('/bot-users', params, sort, filter)}
         columns={columns}
         rowSelection={
           access.canSuperAdmin && {
@@ -385,18 +288,6 @@ const TableList: React.FC = () => {
         footer={null}
         width={800}
       ></Modal>
-
-      <SendMessageModal
-        open={messageModalOpen}
-        onClose={() => {
-          setMessageModalOpen(false);
-          setMessageText('');
-        }}
-        currentRow={currentRow}
-        onSendMessage={handleSendMessage}
-        messageText={messageText}
-        setMessageText={setMessageText}
-      />
     </PageContainer>
   );
 };

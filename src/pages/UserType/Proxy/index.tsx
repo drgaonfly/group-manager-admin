@@ -13,6 +13,7 @@ import Show from './components/Show';
 // import Recharge from './components/Recharge';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 
 /**
  * @en-US Add node
@@ -168,29 +169,32 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         access.canGetProxyDetail && (
-          <a
+          <ActionButton
             key="detail"
+            type="detail"
             onClick={() => {
               setCurrentRow(record);
               setShowDetail(true);
             }}
           >
             <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-          </a>
+          </ActionButton>
         ),
         access.canUpdateProxy && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeleteProxy && (
           <DeleteLink
+            key="delete"
             onOk={async () => {
               await handleRemove([record._id!]);
               setSelectedRows([]);

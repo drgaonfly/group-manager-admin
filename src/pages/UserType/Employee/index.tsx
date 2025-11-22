@@ -13,6 +13,7 @@ import Show from './components/Show';
 // import { Role } from '@/apiDataStructures/ApiDataStructure';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 
 /**
  * @en-US Add node
@@ -167,19 +168,21 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         access.canGetEmployeeDetail && (
-          <a
+          <ActionButton
             key="detail"
+            type="detail"
             onClick={() => {
               setCurrentRow(record);
               setShowDetail(true);
             }}
           >
             <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-          </a>
+          </ActionButton>
         ),
         access.canUpdateEmployee && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
               handleUpdateModalOpen(true);
@@ -187,10 +190,11 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeleteEmployee && (
           <DeleteLink
+            key="delete"
             onOk={async () => {
               await handleRemove([record._id!]);
               setSelectedRows([]);

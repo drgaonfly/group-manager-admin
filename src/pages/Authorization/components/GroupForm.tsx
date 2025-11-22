@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useIntl } from '@umijs/max';
-import { Modal, Typography, Card, Descriptions, Badge } from 'antd';
+import { Modal, Typography, Card, Descriptions, Badge, message } from 'antd';
 import { FormattedMessage } from '@umijs/max';
 import { ProTable, type ProColumns } from '@ant-design/pro-components';
+import { queryList } from '@/services/ant-design-pro/api';
 import BotUserForm from './BotUserForm';
 
 interface GroupFormProps {
@@ -79,10 +80,28 @@ const GroupForm: React.FC<GroupFormProps> = (props) => {
         // 查看成员 (botUsers)
         <a
           key="users"
-          onClick={() => {
+          onClick={async () => {
             setCurrentGroup(record);
-            setCurrentBotUsers(values.botUsers || []);
-            setBotUserModalVisible(true);
+            // 通过 API 获取群组的详细信息，包括完整的 botUsers 数据
+            try {
+              const hide = message.loading(
+                <FormattedMessage id="loading" defaultMessage="加载中..." />,
+              );
+              const { data, success } = (await queryList(`/groups/${record._id}`, {}, {})) as any;
+              hide();
+              if (success && data) {
+                setCurrentBotUsers(data.botUsers || data.members || []);
+                setBotUserModalVisible(true);
+              } else {
+                // 如果 API 失败，尝试使用 record 中的数据
+                setCurrentBotUsers(record.botUsers || record.members || []);
+                setBotUserModalVisible(true);
+              }
+            } catch (error) {
+              // 如果 API 失败，尝试使用 record 中的数据
+              setCurrentBotUsers(record.botUsers || record.members || []);
+              setBotUserModalVisible(true);
+            }
           }}
         >
           {intl.formatMessage({ id: 'view_members', defaultMessage: '查看成员' })}

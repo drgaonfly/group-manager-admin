@@ -9,6 +9,7 @@ import Update from './components/Update';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 import SubscriptionPlan from '@/enums/subscriptionPlan';
 
 const handleUpdate = async (fields: any) => {
@@ -122,25 +123,27 @@ const SubscriptionTableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="Detail" />
-        </a>,
+        </ActionButton>,
         access.canUpdateSubscription && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeleteSubscription && (
           <DeleteLink

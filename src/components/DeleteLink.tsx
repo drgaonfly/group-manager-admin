@@ -1,5 +1,6 @@
 import { Modal } from 'antd';
 import { useIntl } from '@umijs/max';
+import ActionButton from './ActionButton';
 
 interface DeleteLinkProps {
   onOk: () => Promise<void>;
@@ -9,8 +10,8 @@ const DeleteLink: React.FC<DeleteLinkProps> = ({ onOk }) => {
   const intl = useIntl();
 
   return (
-    <a
-      key="delete"
+    <ActionButton
+      type="delete"
       onClick={() => {
         return Modal.confirm({
           title: intl.formatMessage({ id: 'confirm_delete' }),
@@ -20,9 +21,7 @@ const DeleteLink: React.FC<DeleteLinkProps> = ({ onOk }) => {
           cancelText: intl.formatMessage({ id: 'cancel' }),
         });
       }}
-    >
-      {intl.formatMessage({ id: 'delete' })}
-    </a>
+    />
   );
 };
 

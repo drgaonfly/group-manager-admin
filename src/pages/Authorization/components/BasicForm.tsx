@@ -5,7 +5,6 @@ import {
   ProFormText,
   ProFormSwitch,
   ProFormTextArea,
-  ProFormDigit,
   // ProFormSelect,
   // ProFormDependency,
   // ProFormDateTimePicker,
@@ -63,14 +62,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProFormDigit
-          label={intl.formatMessage({ id: 'intervalTime', defaultMessage: '间隔时间' })}
-          name="intervalTime"
-          width="md"
-          min={0}
-          fieldProps={{ style: { width: '100%' } }}
-        />
-
         <ProFormSwitch
           label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
           name="isOnline"

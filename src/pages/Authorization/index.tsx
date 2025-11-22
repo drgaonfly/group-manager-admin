@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import GroupForm from './components/GroupForm';
@@ -19,8 +20,7 @@ import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
 import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
-// import StringArrayWithActions from './components/StringArrayWithAction';
-import MessageForm from './components/MessageForm';
+import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
 
 /**
@@ -123,7 +123,6 @@ const TableList: React.FC = () => {
   const [deleteOwnerModalVisible, setDeleteOwnerModalVisible] = useState<boolean>(false);
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
-  const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
   const [privateKeyModalOpen, setPrivateKeyModalOpen] = useState<boolean>(false);
   const [privateKeyForm] = Form.useForm();
@@ -182,6 +181,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'owner_bot_display_name' }),
       dataIndex: 'botName',
       width: 150,
+      fixed: 'left',
       copyable: true,
     },
     {
@@ -199,6 +199,30 @@ const TableList: React.FC = () => {
           );
         }
       },
+    },
+    // add owners
+    {
+      title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
+      dataIndex: 'owners',
+      hideInSearch: true,
+      hideInTable: false,
+      align: 'center',
+      width: 150,
+      render: (_, record) => (
+        <StringArrayWithActions
+          values={record.owners || []}
+          onAdd={() => {
+            setCurrentRow(record);
+            setAddOwnerModalVisible(true);
+          }}
+          onDelete={() => {
+            setCurrentRow(record);
+            setDeleteOwnerModalVisible(true);
+          }}
+          labelAdd={intl.formatMessage({ id: 'add_owner' })}
+          labelDelete={intl.formatMessage({ id: 'delete_owner' })}
+        />
+      ),
     },
     // canBeCloned
     // {
@@ -345,20 +369,9 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: 300,
       render: (_, record) => [
-        <a
-          key="sendMessage"
-          onClick={() => {
-            setMessageModalOpen(true);
-            setCurrentRow(record);
-          }}
-        >
-          {intl.formatMessage({
-            id: 'sendMessage',
-            defaultMessage: intl.formatMessage({ id: 'sendMessage' }),
-          })}
-        </a>,
-        <a
+        <ActionButton
           key="sendGroupMessage"
+          type="sendGroupMessage"
           onClick={() => {
             setGroupMessageModalOpen(true);
             setCurrentRow(record);
@@ -371,10 +384,11 @@ const TableList: React.FC = () => {
               defaultMessage: 'Group Message',
             }),
           })}
-        </a>,
+        </ActionButton>,
         access.canUpdateBot && (
-          <a
+          <ActionButton
             key="configure"
+            type="configure"
             onClick={() => {
               setConfigureModalVisible(true);
               setCurrentRow(record);
@@ -384,20 +398,22 @@ const TableList: React.FC = () => {
               id: 'configure',
               defaultMessage: intl.formatMessage({ id: 'configure' }),
             })}
-          </a>
+          </ActionButton>
         ),
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </a>,
+        </ActionButton>,
         access.canUpdateBot && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               console.log();
 
@@ -406,7 +422,7 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeleteBot && (
           <DeleteLink
@@ -623,7 +639,6 @@ const TableList: React.FC = () => {
           }
         }}
       />
-      <MessageForm open={messageModalOpen} onCancel={setMessageModalOpen} currentRow={currentRow} />
       <GroupMessageForm
         open={groupMessageModalOpen}
         onCancel={setGroupMessageModalOpen}

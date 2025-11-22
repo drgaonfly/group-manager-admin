@@ -279,4 +279,17 @@ export default {
   invited_counts: '邀请人数',
   invited_group: '邀请群',
   botUsers: '用户',
+
+  // 发送消息相关
+  'config.not.found': '配置不存在，无法发送消息',
+  'bot.not.found': '该配置未绑定机器人，无法发送消息',
+  sending: '发送中...',
+  send_successful: '发送成功',
+  send_failed: '发送失败，请重试！',
+  'bot.not.bound': '未绑定',
+  use_html: '使用 HTML 格式',
+  use_html_description: '启用后，可以使用 HTML 标签格式化消息（例如：<b>粗体</b>、<i>斜体</i> 等）',
+  select_emoji: '选择表情',
+  enter_message: '请输入要发送的消息（支持 HTML 格式）',
+  message_required: '请输入消息内容',
 };

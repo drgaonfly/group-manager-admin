@@ -13,6 +13,7 @@ import useQueryList from '@/hooks/useQueryList';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
 
 /**
  * @en-US Add node
@@ -177,8 +178,9 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="edit"
+          type="edit"
           onClick={() => {
             // Replace `handleUpdateModalOpen` and `setCurrentRow` with your actual functions
             handleUpdateModalOpen(true);
@@ -186,7 +188,7 @@ const TableList: React.FC = () => {
           }}
         >
           {intl.formatMessage({ id: 'edit' })}
-        </a>,
+        </ActionButton>,
         access.canDeletePermission && (
           <DeleteLink
             onOk={async () => {

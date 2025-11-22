@@ -10,6 +10,8 @@ import Update from './components/Update';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import ActionButton from '@/components/ActionButton';
+import SendMessageModal from './components/SendMessageModal';
 
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
@@ -58,6 +60,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
+  const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<API.ItemData>[] = [
     {
@@ -148,25 +151,39 @@ const TableList: React.FC = () => {
       valueType: 'option',
       fixed: 'right',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
-        </a>,
+        </ActionButton>,
         access.canUpdateBotUserConfig && (
-          <a
+          <ActionButton
+            key="sendMessage"
+            type="send_message"
+            onClick={() => {
+              setCurrentRow(record);
+              setMessageModalOpen(true);
+            }}
+          >
+            <FormattedMessage id="send_message" />
+          </ActionButton>
+        ),
+        access.canUpdateBotUserConfig && (
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
           >
             <FormattedMessage id="edit" defaultMessage="编辑" />
-          </a>
+          </ActionButton>
         ),
         access.canDeleteBotUserConfig && (
           <DeleteLink
@@ -246,6 +263,14 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+      <SendMessageModal
+        open={messageModalOpen}
+        onClose={() => {
+          setMessageModalOpen(false);
+          setCurrentRow(undefined);
+        }}
+        currentRow={currentRow}
       />
     </PageContainer>
   );

@@ -14,7 +14,8 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import MessageForm from '../Authorization/components/MessageForm';
+import MessageForm from './components/MessageForm';
+import ActionButton from '@/components/ActionButton';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -272,8 +273,9 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="sendMessage"
+          type="sendMessage"
           onClick={() => {
             setMessageModalOpen(true);
             setCurrentRow(record);
@@ -283,10 +285,11 @@ const TableList: React.FC = () => {
             id: 'sendMessage',
             defaultMessage: intl.formatMessage({ id: 'sendMessage' }),
           })}
-        </a>,
+        </ActionButton>,
         access.canUpdateBot && (
-          <a
+          <ActionButton
             key="configure"
+            type="configure"
             onClick={() => {
               setConfigureModalVisible(true);
               setCurrentRow(record);
@@ -296,20 +299,22 @@ const TableList: React.FC = () => {
               id: 'configure',
               defaultMessage: intl.formatMessage({ id: 'configure' }),
             })}
-          </a>
+          </ActionButton>
         ),
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </a>,
+        </ActionButton>,
         access.canUpdateBot && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               console.log();
 
@@ -318,10 +323,11 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeleteBot && (
           <DeleteLink
+            key="delete"
             onOk={async () => {
               await handleRemove([record._id!]);
               setSelectedRows([]);
