@@ -243,6 +243,7 @@ export default {
   bidirectional: 'Bidirectional',
   groupMessage: 'Group Message',
   menuConfig: 'Menu Config',
-  botCount: 'Bot Count',
+  botCount: 'Current Bot Count',
+  availableBotCount: 'Available Bot Count',
   botFeatures: 'Bot Features',
 };

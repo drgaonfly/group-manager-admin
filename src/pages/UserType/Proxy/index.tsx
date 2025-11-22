@@ -204,6 +204,13 @@ const TableList: React.FC = () => {
       render: (value) => value ?? 0,
     },
     {
+      title: intl.formatMessage({ id: 'availableBotCount' }),
+      dataIndex: 'availableBotCount',
+      hideInSearch: true,
+      hideInForm: true,
+      render: (value) => value ?? 0,
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
