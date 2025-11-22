@@ -15,7 +15,24 @@ import { FormattedMessage, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 import KeyboardButtonsModal from './KeyboardButtonsModal';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, HolderOutlined } from '@ant-design/icons';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type menuItem = {
   _id: string;
@@ -145,7 +162,96 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const [editingRow, setEditingRow] = useState<keyboardRow | null>(null);
   const [buttonModalOpen, setButtonModalOpen] = useState(false);
 
+  // Row Context for drag handle
+  interface RowContextValue {
+    setActivatorNodeRef?: (element: HTMLElement | null) => void;
+    listeners?: any;
+    attributes?: any;
+  }
+
+  const RowContext = React.createContext<RowContextValue>({});
+
+  // 拖拽传感器
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleRowDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = keyboardRows.findIndex((item) => item._id === active.id);
+      const newIndex = keyboardRows.findIndex((item) => item._id === over.id);
+      const newRows = arrayMove(keyboardRows, oldIndex, newIndex);
+      // 重新计算行号
+      const reordered = newRows.map((row, index) => ({ ...row, row: index + 1 }));
+      setKeyboardRows(reordered);
+    }
+  };
+
+  // 可拖拽的行组件
+  const SortableRow = (props: any) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      setActivatorNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({
+      id: props['data-row-key'],
+    });
+
+    const style: React.CSSProperties = {
+      ...props.style,
+      transform: CSS.Transform.toString(transform),
+      transition,
+      ...(isDragging ? { position: 'relative' as const, zIndex: 9999, opacity: 0.5 } : {}),
+    };
+
+    return (
+      <RowContext.Provider value={{ setActivatorNodeRef, listeners, attributes }}>
+        <tr {...props} ref={setNodeRef} style={style} />
+      </RowContext.Provider>
+    );
+  };
+
+  // 拖拽手柄组件
+  const DragHandle: React.FC = () => {
+    const { setActivatorNodeRef, listeners, attributes } = React.useContext(RowContext);
+
+    return (
+      <div
+        ref={setActivatorNodeRef}
+        {...listeners}
+        {...attributes}
+        style={{
+          cursor: 'grab',
+          padding: '8px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          touchAction: 'none',
+        }}
+      >
+        <HolderOutlined style={{ fontSize: 16, color: '#999' }} />
+      </div>
+    );
+  };
+
   const keyboard_row_columns: ProColumns<keyboardRow>[] = [
+    {
+      title: <HolderOutlined />,
+      dataIndex: 'sort',
+      width: 60,
+      render: () => <DragHandle />,
+    },
     {
       title: intl.formatMessage({ id: 'row', defaultMessage: '行号' }),
       dataIndex: 'row',
@@ -201,7 +307,9 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           style={{ marginLeft: 8, color: 'red' }}
           onClick={() => {
             const newRows = keyboardRows.filter((row) => row._id !== record._id);
-            setKeyboardRows(newRows);
+            // 重新计算行号
+            const reordered = newRows.map((row, idx) => ({ ...row, row: idx + 1 }));
+            setKeyboardRows(reordered);
           }}
         >
           {intl.formatMessage({ id: 'delete', defaultMessage: '删除' })}
@@ -447,43 +555,61 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           }}
         /> */}
 
-        <ProTable<keyboardRow>
-          rowKey="_id"
-          headerTitle={intl.formatMessage({
-            id: 'keyboard_config',
-            defaultMessage: '键盘配置',
-          })}
-          tooltip={intl.formatMessage({
-            id: 'keyboard_config_tooltip',
-            defaultMessage: '每一行可以包含多个按钮。点击"编辑按钮"可以管理该行的按钮。',
-          })}
-          // @ts-ignore
-          columns={keyboard_row_columns}
-          dataSource={keyboardRows}
-          search={false}
-          pagination={false}
-          toolBarRender={() => [
-            <Button
-              key="button"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                const newRow: keyboardRow = {
-                  _id: `row_${Date.now()}`,
-                  row:
-                    keyboardRows.length > 0 ? Math.max(...keyboardRows.map((r) => r.row)) + 1 : 1,
-                  buttons: [],
-                };
-                setKeyboardRows([...keyboardRows, newRow]);
-              }}
-              type="primary"
-            >
-              {intl.formatMessage({
-                id: 'add_keyboard_row',
-                defaultMessage: '添加新行',
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleRowDragEnd}
+        >
+          <SortableContext
+            items={keyboardRows.map((item) => item._id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <ProTable<keyboardRow>
+              rowKey="_id"
+              headerTitle={intl.formatMessage({
+                id: 'keyboard_config',
+                defaultMessage: '键盘配置',
               })}
-            </Button>,
-          ]}
-        />
+              tooltip={intl.formatMessage({
+                id: 'keyboard_config_tooltip',
+                defaultMessage: '每一行可以包含多个按钮。拖动排序图标可调整行的顺序。',
+              })}
+              // @ts-ignore
+              columns={keyboard_row_columns}
+              dataSource={keyboardRows}
+              search={false}
+              pagination={false}
+              components={{
+                body: {
+                  row: SortableRow,
+                },
+              }}
+              toolBarRender={() => [
+                <Button
+                  key="button"
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    const newRow: keyboardRow = {
+                      _id: `row_${Date.now()}`,
+                      row:
+                        keyboardRows.length > 0
+                          ? Math.max(...keyboardRows.map((r) => r.row)) + 1
+                          : 1,
+                      buttons: [],
+                    };
+                    setKeyboardRows([...keyboardRows, newRow]);
+                  }}
+                  type="primary"
+                >
+                  {intl.formatMessage({
+                    id: 'add_keyboard_row',
+                    defaultMessage: '添加新行',
+                  })}
+                </Button>,
+              ]}
+            />
+          </SortableContext>
+        </DndContext>
 
         {/* 按钮编辑弹窗 */}
         <KeyboardButtonsModal

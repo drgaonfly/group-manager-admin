@@ -367,7 +367,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      width: 300,
+      width: 350,
       render: (_, record) => [
         <ActionButton
           key="sendGroupMessage"
@@ -443,7 +443,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2100 }}
+        scroll={{ x: 2500 }}
         search={{
           collapsed: false,
         }}
