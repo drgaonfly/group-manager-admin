@@ -343,12 +343,18 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             width="md"
             label={intl.formatMessage({ id: 'start_message', defaultMessage: '开始消息' })}
             name="message"
+            fieldProps={{
+              autoSize: { minRows: 6 },
+            }}
           />
           <ProFormTextArea
             rules={[{ message: intl.formatMessage({ id: 'enter_contact' }) }]}
             width="md"
             label={intl.formatMessage({ id: 'contact_message', defaultMessage: '联系客服信息' })}
             name="contact"
+            fieldProps={{
+              autoSize: { minRows: 6 },
+            }}
           />
           <ProFormText
             rules={[{ message: intl.formatMessage({ id: 'enter_customer_service_link' }) }]}
