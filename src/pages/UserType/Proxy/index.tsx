@@ -164,6 +164,46 @@ const TableList: React.FC = () => {
       // },
     },
     {
+      title: intl.formatMessage({ id: 'botFeatures' }),
+      dataIndex: 'botFeatures',
+      hideInSearch: true,
+      hideInForm: true,
+      render: (_, record) => {
+        const features = [
+          {
+            name: intl.formatMessage({ id: 'bidirectional' }),
+            enabled: record.bidirectional,
+          },
+          {
+            name: intl.formatMessage({ id: 'groupMessage' }),
+            enabled: record.groupMessage,
+          },
+          {
+            name: intl.formatMessage({ id: 'menuConfig' }),
+            enabled: record.menuConfig,
+          },
+        ];
+
+        return (
+          <div style={{ lineHeight: '24px' }}>
+            {features.map((feature, index) => (
+              <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: 4 }}>{feature.enabled ? '✅' : '❌'}</span>
+                <span>{feature.name}</span>
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'botCount' }),
+      dataIndex: 'botCount',
+      hideInSearch: true,
+      hideInForm: true,
+      render: (value) => value ?? 0,
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',

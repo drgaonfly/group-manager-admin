@@ -292,4 +292,11 @@ export default {
   select_emoji: '选择表情',
   enter_message: '请输入要发送的消息（支持 HTML 格式）',
   message_required: '请输入消息内容',
+
+  // 代理配置相关
+  bidirectional: '双向',
+  groupMessage: '群发',
+  menuConfig: '菜单配置',
+  botCount: '机器人数量',
+  botFeatures: '机器人功能',
 };

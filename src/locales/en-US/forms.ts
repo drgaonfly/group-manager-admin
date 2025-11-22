@@ -238,4 +238,11 @@ export default {
   select_emoji: 'Select Emoji',
   enter_message: 'Please enter the message to send (HTML format supported)',
   message_required: 'Please enter message content',
+
+  // Proxy configuration related
+  bidirectional: 'Bidirectional',
+  groupMessage: 'Group Message',
+  menuConfig: 'Menu Config',
+  botCount: 'Bot Count',
+  botFeatures: 'Bot Features',
 };
