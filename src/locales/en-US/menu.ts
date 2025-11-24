@@ -13,7 +13,9 @@ export default {
   'menu.user-type.employees': 'Employees',
   'menu.user-type.customers': 'Customers',
 
-  'menu.change-password': 'Change Password',
+  'menu.account.change-password': 'Change Password',
+  'menu.account.function-config': 'Function Config',
+  'menu.account.two-factor-auth': 'Two Factor Auth',
 
   'menu.bots': 'Bots',
   'menu.bot-users': 'Bot Users',

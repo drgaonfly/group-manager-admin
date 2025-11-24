@@ -296,7 +296,7 @@ export default {
   // 代理配置相关
   bidirectional: '双向',
   groupMessage: '群发',
-  menuConfig: '菜单配置',
+  keyboardConfig: '自由键盘',
   botCount: '当前机器人数量',
   availableBotCount: '可用机器人数量',
   botFeatures: '机器人功能',

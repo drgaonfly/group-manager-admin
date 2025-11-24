@@ -11,7 +11,7 @@ import {
   // ProFormSwitch,
 } from '@ant-design/pro-components';
 import { Form, Input, Button } from 'antd';
-import { FormattedMessage, useIntl, useModel } from '@umijs/max';
+import { FormattedMessage, useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 import KeyboardButtonsModal from './KeyboardButtonsModal';
@@ -71,6 +71,7 @@ export type UpdateFormProps = {
 
 const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
+  const access = useAccess();
   const [form] = Form.useForm();
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const { initialState } = useModel('@@initialState');
@@ -452,7 +453,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             label={intl.formatMessage({ id: 'start_message', defaultMessage: '开始消息' })}
             name="message"
             fieldProps={{
-              autoSize: { minRows: 6 },
+              autoSize: { minRows: 8 },
             }}
           />
           <ProFormTextArea
@@ -461,17 +462,10 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             label={intl.formatMessage({ id: 'contact_message', defaultMessage: '联系客服信息' })}
             name="contact"
             fieldProps={{
-              autoSize: { minRows: 6 },
+              autoSize: { minRows: 8 },
             }}
           />
-          <ProFormText
-            rules={[{ message: intl.formatMessage({ id: 'enter_customer_service_link' }) }]}
-            width="md"
-            label={intl.formatMessage({ id: 'customer_service_link', defaultMessage: '客服链接' })}
-            name="customer_service_link"
-            tooltip="格式示例: https://t.me/xxxx"
-            placeholder="https://t.me/"
-          />
+
           {/* <ProFormText
             rules={[{ required: false, message: intl.formatMessage({ id: 'enter_trx_address' }) }]}
             width="md"
@@ -501,9 +495,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             width="md"
             label={intl.formatMessage({ id: 'can_be_cloned', defaultMessage: '是否可克隆' })}
           /> */}
-        </ProFormGroup>
 
-        <ProFormGroup>
           <Form.Item
             label={intl.formatMessage({ id: 'multi_image', defaultMessage: 'Multi Image' })}
           >
@@ -530,6 +522,20 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               }}
             />
           </Form.Item>
+
+          {access.canSuperAdmin && (
+            <ProFormText
+              rules={[{ message: intl.formatMessage({ id: 'enter_customer_service_link' }) }]}
+              width="md"
+              label={intl.formatMessage({
+                id: 'customer_service_link',
+                defaultMessage: '客服链接',
+              })}
+              name="customer_service_link"
+              tooltip="格式示例: https://t.me/xxxx"
+              placeholder="https://t.me/"
+            />
+          )}
         </ProFormGroup>
 
         {/* <EditableProTable<presetItem>
@@ -555,80 +561,83 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           }}
         /> */}
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleRowDragEnd}
-        >
-          <SortableContext
-            items={keyboardRows.map((item) => item._id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <ProTable<keyboardRow>
-              rowKey="_id"
-              headerTitle={intl.formatMessage({
-                id: 'keyboard_config',
-                defaultMessage: '键盘配置',
-              })}
-              tooltip={intl.formatMessage({
-                id: 'keyboard_config_tooltip',
-                defaultMessage: '每一行可以包含多个按钮。拖动排序图标可调整行的顺序。',
-              })}
-              // @ts-ignore
-              columns={keyboard_row_columns}
-              dataSource={keyboardRows}
-              search={false}
-              pagination={false}
-              components={{
-                body: {
-                  row: SortableRow,
-                },
-              }}
-              toolBarRender={() => [
-                <Button
-                  key="button"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    const newRow: keyboardRow = {
-                      _id: `row_${Date.now()}`,
-                      row:
-                        keyboardRows.length > 0
-                          ? Math.max(...keyboardRows.map((r) => r.row)) + 1
-                          : 1,
-                      buttons: [],
-                    };
-                    setKeyboardRows([...keyboardRows, newRow]);
-                  }}
-                  type="primary"
-                >
-                  {intl.formatMessage({
-                    id: 'add_keyboard_row',
-                    defaultMessage: '添加新行',
+        {(access.canSuperAdmin || currentUser?.keyboardConfig) && (
+          <>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleRowDragEnd}
+            >
+              <SortableContext
+                items={keyboardRows.map((item) => item._id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <ProTable<keyboardRow>
+                  rowKey="_id"
+                  headerTitle={intl.formatMessage({
+                    id: 'keyboard_config',
+                    defaultMessage: '键盘配置',
                   })}
-                </Button>,
-              ]}
-            />
-          </SortableContext>
-        </DndContext>
-
-        {/* 按钮编辑弹窗 */}
-        <KeyboardButtonsModal
-          open={buttonModalOpen}
-          onOpenChange={setButtonModalOpen}
-          editingRow={editingRow}
-          onButtonsChange={(buttons) => {
-            if (editingRow) {
-              const newRows = keyboardRows.map((row) => {
-                if (row._id === editingRow._id) {
-                  return { ...row, buttons };
+                  tooltip={intl.formatMessage({
+                    id: 'keyboard_config_tooltip',
+                    defaultMessage: '每一行可以包含多个按钮。拖动排序图标可调整行的顺序。',
+                  })}
+                  // @ts-ignore
+                  columns={keyboard_row_columns}
+                  dataSource={keyboardRows}
+                  search={false}
+                  pagination={false}
+                  components={{
+                    body: {
+                      row: SortableRow,
+                    },
+                  }}
+                  toolBarRender={() => [
+                    <Button
+                      key="button"
+                      icon={<PlusOutlined />}
+                      onClick={() => {
+                        const newRow: keyboardRow = {
+                          _id: `row_${Date.now()}`,
+                          row:
+                            keyboardRows.length > 0
+                              ? Math.max(...keyboardRows.map((r) => r.row)) + 1
+                              : 1,
+                          buttons: [],
+                        };
+                        setKeyboardRows([...keyboardRows, newRow]);
+                      }}
+                      type="primary"
+                    >
+                      {intl.formatMessage({
+                        id: 'add_keyboard_row',
+                        defaultMessage: '添加新行',
+                      })}
+                    </Button>,
+                  ]}
+                />
+              </SortableContext>
+            </DndContext>
+            {/* 按钮编辑弹窗 */}
+            <KeyboardButtonsModal
+              open={buttonModalOpen}
+              onOpenChange={setButtonModalOpen}
+              editingRow={editingRow}
+              onButtonsChange={(buttons) => {
+                if (editingRow) {
+                  const newRows = keyboardRows.map((row) => {
+                    if (row._id === editingRow._id) {
+                      return { ...row, buttons };
+                    }
+                    return row;
+                  });
+                  setKeyboardRows(newRows);
+                  setEditingRow({ ...editingRow, buttons });
                 }
-                return row;
-              });
-              setKeyboardRows(newRows);
-              setEditingRow({ ...editingRow, buttons });
-            }
-          }}
-        />
+              }}
+            />
+          </>
+        )}
 
         {/* <EditableProTable<menuItem>
           rowKey="_id"
@@ -653,7 +662,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             }),
           }}
         /> */}
-
         <Form.Item name="_id" label={false}>
           <Input type="hidden" />
         </Form.Item>

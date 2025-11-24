@@ -242,7 +242,7 @@ export default {
   // Proxy configuration related
   bidirectional: 'Bidirectional',
   groupMessage: 'Group Message',
-  menuConfig: 'Menu Config',
+  keyboardConfig: 'Keyboard Config',
   botCount: 'Current Bot Count',
   availableBotCount: 'Available Bot Count',
   botFeatures: 'Bot Features',

@@ -35,6 +35,7 @@ const handleAdd = async (fields: any) => {
     await addItem('/bots', { ...fields });
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
+
     return true;
   } catch (error: any) {
     hide();
@@ -369,22 +370,24 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: 350,
       render: (_, record) => [
-        <ActionButton
-          key="sendGroupMessage"
-          type="sendGroupMessage"
-          onClick={() => {
-            setGroupMessageModalOpen(true);
-            setCurrentRow(record);
-          }}
-        >
-          {intl.formatMessage({
-            id: 'sendGroupMessage',
-            defaultMessage: intl.formatMessage({
+        (access.canSuperAdmin || currentUser?.groupMessage) && (
+          <ActionButton
+            key="sendGroupMessage"
+            type="sendGroupMessage"
+            onClick={() => {
+              setGroupMessageModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            {intl.formatMessage({
               id: 'sendGroupMessage',
-              defaultMessage: 'Group Message',
-            }),
-          })}
-        </ActionButton>,
+              defaultMessage: intl.formatMessage({
+                id: 'sendGroupMessage',
+                defaultMessage: 'Group Message',
+              }),
+            })}
+          </ActionButton>
+        ),
         access.canUpdateBot && (
           <ActionButton
             key="configure"
@@ -448,7 +451,9 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin || access.canCreateBot) && (
+          (access.canSuperAdmin ||
+            (access.canCreateBot &&
+              (currentUser?.availableBotCount ?? 0) > (currentUser?.botCount ?? 0))) && (
             <Button
               type="primary"
               key="primary"

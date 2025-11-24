@@ -31,6 +31,11 @@ declare namespace API {
     balance?: number;
     serviceLink?: string;
     serviceLinks?: string;
+    bidirectional?: boolean;
+    groupMessage?: boolean;
+    keyboardConfig?: boolean;
+    availableBotCount?: number;
+    botCount?: number;
   };
 
   // Example type definition

@@ -179,8 +179,8 @@ const TableList: React.FC = () => {
             enabled: record.groupMessage,
           },
           {
-            name: intl.formatMessage({ id: 'menuConfig' }),
-            enabled: record.menuConfig,
+            name: intl.formatMessage({ id: 'keyboardConfig' }),
+            enabled: record.keyboardConfig,
           },
         ];
 

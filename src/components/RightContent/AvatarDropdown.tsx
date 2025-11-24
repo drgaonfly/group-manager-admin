@@ -3,8 +3,9 @@ import {
   SettingOutlined,
   UserOutlined,
   CustomerServiceOutlined,
+  VerifiedOutlined,
 } from '@ant-design/icons';
-import { FormattedMessage, history, useModel } from '@umijs/max';
+import { FormattedMessage, history, useAccess, useModel } from '@umijs/max';
 import { Spin } from 'antd';
 import { createStyles } from 'antd-style';
 import { stringify } from 'querystring';
@@ -42,6 +43,8 @@ const useStyles = createStyles(({ token }) => {
 });
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
+  const access = useAccess();
+
   /**
    * 退出登录，并且将当前的 url 保存
    */
@@ -125,14 +128,18 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       icon: <SettingOutlined />,
       label: <FormattedMessage id="menu.account.change-password" defaultMessage="修改密码" />,
     },
-    {
-      key: 'service-link',
-      icon: <CustomerServiceOutlined />,
-      label: <FormattedMessage id="menu.account.serviceLink" defaultMessage="服务链接" />,
-    },
+    ...(access.canSuperAdmin
+      ? [
+          {
+            key: 'function-config',
+            icon: <CustomerServiceOutlined />,
+            label: <FormattedMessage id="menu.account.function-config" defaultMessage="功能配置" />,
+          },
+        ]
+      : []),
     {
       key: 'two-factor-auth',
-      icon: <SettingOutlined />,
+      icon: <VerifiedOutlined />,
       label: <FormattedMessage id="menu.account.two-factor-auth" defaultMessage="二步认证" />,
     },
     {

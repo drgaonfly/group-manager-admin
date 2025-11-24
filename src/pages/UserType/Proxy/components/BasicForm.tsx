@@ -132,7 +132,10 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         <ProForm.Group>
           <ProFormSwitch label={intl.formatMessage({ id: 'bidirectional' })} name="bidirectional" />
           <ProFormSwitch label={intl.formatMessage({ id: 'groupMessage' })} name="groupMessage" />
-          <ProFormSwitch label={intl.formatMessage({ id: 'menuConfig' })} name="menuConfig" />
+          <ProFormSwitch
+            label={intl.formatMessage({ id: 'keyboardConfig' })}
+            name="keyboardConfig"
+          />
         </ProForm.Group>
       </div>
 

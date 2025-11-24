@@ -1,32 +1,56 @@
-import { Card, message, Typography, Button, Space } from 'antd';
+import { Card, message, Typography, Button, Space, Descriptions, Tag } from 'antd';
 import React, { useState } from 'react';
-import { useIntl } from '@umijs/max';
+import { useIntl, useAccess } from '@umijs/max';
 import { useModel } from '@umijs/max';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormSwitch } from '@ant-design/pro-components';
 import { updateItem } from '@/services/ant-design-pro/api';
-import { EditOutlined, CloseOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  CloseOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons';
 
 const { Text } = Typography;
 
 const ServiceLink: React.FC = () => {
   const intl = useIntl();
+  const access = useAccess();
   const { initialState, refresh } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSubmit = async (values: { serviceLink: string }) => {
+  const handleSubmit = async (values: {
+    bidirectional: boolean;
+    groupMessage: boolean;
+    keyboardConfig: boolean;
+  }) => {
     try {
       setLoading(true);
       await updateItem('/auth/profile', values);
-      message.success(intl.formatMessage({ id: 'update.success' }));
+      message.success(intl.formatMessage({ id: 'update.success', defaultMessage: '更新成功' }));
       await refresh();
       setIsEditing(false);
     } catch (error: any) {
-      message.error(error.message || intl.formatMessage({ id: 'update.failed' }));
+      message.error(
+        error.message || intl.formatMessage({ id: 'update.failed', defaultMessage: '更新失败' }),
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderStatusTag = (enabled: boolean) => {
+    return enabled ? (
+      <Tag icon={<CheckCircleOutlined />} color="success">
+        {intl.formatMessage({ id: 'enabled', defaultMessage: '已开启' })}
+      </Tag>
+    ) : (
+      <Tag icon={<CloseCircleOutlined />} color="default">
+        {intl.formatMessage({ id: 'disabled', defaultMessage: '未开启' })}
+      </Tag>
+    );
   };
 
   return (
@@ -34,15 +58,19 @@ const ServiceLink: React.FC = () => {
       <Card
         title={
           <Space>
-            {intl.formatMessage({ id: 'menu.account.serviceLink', defaultMessage: '服务链接' })}
-            {isEditing ? (
-              <Button type="link" icon={<CloseOutlined />} onClick={() => setIsEditing(false)}>
-                {intl.formatMessage({ id: 'cancel', defaultMessage: '取消' })}
-              </Button>
-            ) : (
-              <Button type="link" icon={<EditOutlined />} onClick={() => setIsEditing(true)}>
-                {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
-              </Button>
+            {intl.formatMessage({ id: 'menu.account.functionConfig', defaultMessage: '功能配置' })}
+            {access.canSuperAdmin && (
+              <>
+                {isEditing ? (
+                  <Button type="link" icon={<CloseOutlined />} onClick={() => setIsEditing(false)}>
+                    {intl.formatMessage({ id: 'cancel', defaultMessage: '取消' })}
+                  </Button>
+                ) : (
+                  <Button type="link" icon={<EditOutlined />} onClick={() => setIsEditing(true)}>
+                    {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
+                  </Button>
+                )}
+              </>
             )}
           </Space>
         }
@@ -51,7 +79,9 @@ const ServiceLink: React.FC = () => {
           <ProForm
             onFinish={handleSubmit}
             initialValues={{
-              serviceLink: currentUser?.serviceLink || currentUser?.serviceLinks || '',
+              bidirectional: currentUser?.bidirectional || false,
+              groupMessage: currentUser?.groupMessage || false,
+              keyboardConfig: currentUser?.keyboardConfig || false,
             }}
             submitter={{
               submitButtonProps: {
@@ -59,22 +89,67 @@ const ServiceLink: React.FC = () => {
               },
             }}
           >
-            <ProFormText
-              width="xl"
-              name="serviceLink"
-              label={intl.formatMessage({ id: 'service.links', defaultMessage: '服务链接' })}
-              placeholder={intl.formatMessage({
-                id: 'please.enter.service.links',
-                defaultMessage: '请输入服务链接',
+            <ProFormSwitch
+              name="bidirectional"
+              label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
+              tooltip={intl.formatMessage({
+                id: 'bidirectional.tooltip',
+                defaultMessage: '开启后，拥有者可以回复客户消息，回复会自动转发给客户',
               })}
-              fieldProps={{}}
-              rules={[{ required: true }]}
+            />
+            <ProFormSwitch
+              name="groupMessage"
+              label={intl.formatMessage({ id: 'groupMessage', defaultMessage: '群发消息' })}
+              tooltip={intl.formatMessage({
+                id: 'groupMessage.tooltip',
+                defaultMessage: '开启后，客户的消息会自动转发给所有拥有者',
+              })}
+            />
+            <ProFormSwitch
+              name="keyboardConfig"
+              label={intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '自定义键盘' })}
+              tooltip={intl.formatMessage({
+                id: 'keyboardConfig.tooltip',
+                defaultMessage: '开启后，可以在机器人配置中自定义 Telegram 键盘按钮',
+              })}
             />
           </ProForm>
         ) : (
-          <div style={{ padding: '8px 0' }}>
-            <Text>{currentUser?.serviceLink || currentUser?.serviceLinks || '-'}</Text>
-          </div>
+          <Descriptions column={1} bordered>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
+            >
+              {renderStatusTag(currentUser?.bidirectional || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'bidirectional.tooltip',
+                  defaultMessage: '开启后，拥有者可以回复客户消息，回复会自动转发给客户',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'groupMessage', defaultMessage: '群发消息' })}
+            >
+              {renderStatusTag(currentUser?.groupMessage || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'groupMessage.tooltip',
+                  defaultMessage: '开启后，客户的消息会自动转发给所有拥有者',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '自定义键盘' })}
+            >
+              {renderStatusTag(currentUser?.keyboardConfig || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'keyboardConfig.tooltip',
+                  defaultMessage: '开启后，可以在机器人配置中自定义 Telegram 键盘按钮',
+                })}
+              </Text>
+            </Descriptions.Item>
+          </Descriptions>
         )}
       </Card>
     </div>

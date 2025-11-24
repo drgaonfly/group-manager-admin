@@ -44,10 +44,9 @@ export default {
   'menu.user-type.employees': '渠道',
   'menu.user-type.customers': '客户',
 
-  'menu.change-password': '修改密码',
-  'menu.list.change-password': '修改密码',
-  'list.change-password': '修改密码',
+  'menu.account.change-password': '修改密码',
   'menu.account.two-factor-auth': '二步认证',
+  'menu.account.function-config': '功能配置',
 
   'menu.bots': '机器人',
   'menu.bot-users': '机器人用户',
