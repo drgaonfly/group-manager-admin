@@ -108,7 +108,7 @@ const handleRemove = async (ids: string[]) => {
 const TableList: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
-  const { initialState } = useModel('@@initialState');
+  const { initialState, refresh } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -433,6 +433,8 @@ const TableList: React.FC = () => {
               await handleRemove([record._id!]);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
+              // 刷新用户信息（更新 botCount）
+              await refresh();
             }}
           />
         ),
@@ -529,6 +531,8 @@ const TableList: React.FC = () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
                 setSelectedRows([]);
                 actionRef.current?.reloadAndRest?.();
+                // 刷新用户信息（更新 botCount）
+                await refresh();
               }}
             />
           )}
@@ -547,6 +551,8 @@ const TableList: React.FC = () => {
               if (actionRef.current) {
                 actionRef.current.reload();
               }
+              // 刷新用户信息（更新 botCount）
+              await refresh();
             }
           }}
         />
