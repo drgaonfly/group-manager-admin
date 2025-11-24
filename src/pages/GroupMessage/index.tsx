@@ -171,19 +171,14 @@ const TableList: React.FC = () => {
       width: 200,
       hideInSearch: true,
     },
-    // isRealtime
-    {
-      title: intl.formatMessage({ id: 'isRealtime' }),
-      dataIndex: 'isRealtime',
-      hideInSearch: true,
-      renderText: (isRealtime) =>
-        isRealtime ? intl.formatMessage({ id: 'yes' }) : intl.formatMessage({ id: 'no' }),
-    },
     // intervalTime
     {
       title: intl.formatMessage({ id: 'interval_time_hour' }),
       dataIndex: 'intervalTime',
       hideInSearch: true,
+      renderText: (intervalTime) => {
+        return intervalTime > 1 ? `${intervalTime} 小时` : `${intervalTime * 60} 分钟`;
+      },
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
