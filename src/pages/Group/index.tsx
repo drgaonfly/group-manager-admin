@@ -106,15 +106,16 @@ const GroupTableList: React.FC = () => {
       hideInTable: true,
     },
     // intervalTime
-    {
-      title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
-      dataIndex: 'intervalTime',
-      hideInSearch: true,
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
+    //   dataIndex: 'intervalTime',
+    //   hideInSearch: true,
+    // },
     {
       title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
       dataIndex: 'operators',
       hideInSearch: true,
+      hideInTable: true,
       render: (text) =>
         Array.isArray(text)
           ? text.map((op: any) => op.userName || op.firstName || op.lastName).join(', ')

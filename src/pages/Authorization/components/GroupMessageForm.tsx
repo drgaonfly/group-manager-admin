@@ -173,7 +173,9 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         const success = await handleAdd(data);
         if (success) {
           form.resetFields();
+          setText('');
           setImages([]);
+          setMenus([]);
           onCancel(false);
         }
         return success;
@@ -253,13 +255,13 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
             disabled
           />
         )}
-
+        {/* 
         <ProFormCheckbox
           name="isRealtime"
           label={intl.formatMessage({ id: 'is_realtime', defaultMessage: 'Is Realtime' })}
           initialValue={false}
           hidden
-        />
+        /> */}
 
         <ProFormDigit
           label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: 'Menus Per Row' })}
