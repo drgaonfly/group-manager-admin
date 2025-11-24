@@ -561,7 +561,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           }}
         /> */}
 
-        {(access.canSuperAdmin || currentUser?.keyboardConfig) && (
+        {currentUser?.keyboardConfig && (
           <>
             <DndContext
               sensors={sensors}
