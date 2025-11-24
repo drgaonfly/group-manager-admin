@@ -370,7 +370,7 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: 350,
       render: (_, record) => [
-        (access.canSuperAdmin || currentUser?.groupMessage) && (
+        currentUser?.groupMessage && (
           <ActionButton
             key="sendGroupMessage"
             type="sendGroupMessage"
