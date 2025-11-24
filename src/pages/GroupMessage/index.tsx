@@ -113,11 +113,11 @@ const TableList: React.FC = () => {
       renderText: (groups) => groups?.map((group: any) => group?.title).join(','),
     },
     // weight
-    {
-      title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
-      dataIndex: 'weight',
-      hideInSearch: true,
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
+    //   dataIndex: 'weight',
+    //   hideInSearch: true,
+    // },
     {
       title: intl.formatMessage({ id: 'isOnline' }),
       dataIndex: 'isOnline',
