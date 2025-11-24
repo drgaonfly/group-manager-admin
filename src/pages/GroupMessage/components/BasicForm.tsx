@@ -121,12 +121,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       </ProForm.Group>
 
       <ProForm.Group>
-        {/* <ProFormDigit
+        <ProFormDigit
           width="md"
           label={intl.formatMessage({ id: 'interval_time_hour', defaultMessage: '间隔时间(小时)' })}
           name="intervalTime"
           min={0}
-        /> */}
+        />
 
         <ProFormDigit
           width="md"
@@ -134,13 +134,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="menus_per_row"
           min={1}
         />
-
+        {/* 
         <ProFormDigit
           name="weight"
           width="sm"
           label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
           min={0}
-        />
+        /> */}
       </ProForm.Group>
 
       <ProForm.Group>
