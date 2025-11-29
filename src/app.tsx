@@ -115,6 +115,7 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   PayCircleOutlined: <PayCircleOutlined />,
   OrderedListOutlined: <OrderedListOutlined />,
   VerifiedOutlined: <VerifiedOutlined />,
+  LinkOutlined: <LinkOutlined />,
 };
 
 const loopMenuItem = (menus: MenuDataItem[]): MenuDataItem[] =>
