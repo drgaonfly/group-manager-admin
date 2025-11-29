@@ -282,5 +282,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetBotUserMessage:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/bot-user-messages', 'GET')),
+
+    // PromotionLink
+    canCreatePromotionLink:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/promotion-links', 'POST')),
+    canDeletePromotionLink:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/promotion-links', 'DELETE')),
+    canUpdatePromotionLink:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/promotion-links/:id', 'PUT')),
+    canGetPromotionLink:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/promotion-links', 'GET')),
   };
 }

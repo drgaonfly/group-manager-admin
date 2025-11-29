@@ -99,4 +99,8 @@ export default {
   'menu.list.bot-user-messages': '用户消息列表',
   'menu.bot-user-messages': '用户消息',
   'menu.用户消息': '用户消息',
+
+  'menu.list.promotion-links': '推广链接',
+  'menu.promotion-links': '推广链接',
+  'menu.推广链接': '推广链接',
 };

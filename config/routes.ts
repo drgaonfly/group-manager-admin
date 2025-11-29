@@ -229,4 +229,11 @@ export default [
     icon: 'SettingOutlined',
     component: './BotUserConfig',
   },
+  // promotion link
+  {
+    path: '/promotion-links',
+    name: 'list.promotion-links',
+    icon: 'LinkOutlined',
+    component: './PromotionLink',
+  },
 ];

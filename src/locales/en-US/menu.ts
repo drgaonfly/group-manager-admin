@@ -29,6 +29,7 @@ export default {
   'menu.receipts': 'Receipts',
   'menu.exchanges': 'Exchanges',
   'menu.group-messages': 'Group Messages',
+  'menu.promotion-links': 'Promotion Links',
 
   'menu.工作台管理': 'Dashboard Management',
   'menu.认证管理': 'Authentication',
