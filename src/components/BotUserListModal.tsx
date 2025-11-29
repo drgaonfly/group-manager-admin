@@ -3,6 +3,7 @@ import { Modal } from 'antd';
 import { useIntl } from '@umijs/max';
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 export interface BotUserListModalProps {
   open: boolean;
@@ -19,13 +20,34 @@ const BotUserListModal: React.FC<BotUserListModalProps> = ({ open, title, onClos
       title: intl.formatMessage({ id: 'id', defaultMessage: 'ID' }),
       dataIndex: ['botUser', 'id'],
       hideInSearch: true,
+      copyable: true,
     },
     {
-      title: intl.formatMessage({ id: 'user', defaultMessage: '用户' }),
+      title: intl.formatMessage({ id: 'user', defaultMessage: '用户名' }),
       dataIndex: ['botUser', 'userName'],
       hideInSearch: true,
-      render: (_, record: any) =>
-        record?.botUser?.userName || record?.botUser?.firstName || record?.botUser?.lastName || '-',
+      render: (_, record: any) => {
+        const userName = record?.botUser?.userName;
+        if (!userName) return '-';
+        return (
+          <span>
+            {userName}
+            <CopyToClipboard text={userName} />
+          </span>
+        );
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'first_name_user_telegram', defaultMessage: '名' }),
+      dataIndex: ['botUser', 'firstName'],
+      hideInSearch: true,
+      render: (_, record: any) => record?.botUser?.firstName || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'last_name_user_telegram', defaultMessage: '姓' }),
+      dataIndex: ['botUser', 'lastName'],
+      hideInSearch: true,
+      render: (_, record: any) => record?.botUser?.lastName || '-',
     },
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
