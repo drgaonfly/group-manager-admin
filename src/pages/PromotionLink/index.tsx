@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -117,8 +117,51 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'title', defaultMessage: '标题' }),
       dataIndex: 'title',
-      width: 200,
+      width: 220,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => {
+        if (!text) return '-';
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
+      dataIndex: 'userCount',
+      width: 120,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const count = record.userCount ?? 0;
+        return count;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'bot_link', defaultMessage: '机器人链接' }),
+      dataIndex: 'botLink',
+      width: 320,
+      hideInSearch: true,
       ellipsis: true,
+      render: (_, record: any) => {
+        const bot = record.bot;
+        const code = record.code;
+        if (!bot || !bot.userName || !code) {
+          return '-';
+        }
+        const botLink = `https://t.me/${bot.userName}?start=${code}`;
+        return (
+          <span>
+            <a href={botLink} target="_blank" rel="noopener noreferrer">
+              {botLink}
+            </a>
+            <CopyToClipboard text={botLink} />
+          </span>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'link', defaultMessage: '链接' }),
@@ -166,39 +209,6 @@ const TableList: React.FC = () => {
         const botName = bot.botName || bot.userName || '-';
         const botUsername = bot.userName ? `(@${bot.userName})` : '';
         return `${botName} ${botUsername}`.trim();
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'bot_link', defaultMessage: '机器人链接' }),
-      dataIndex: 'botLink',
-      width: 350,
-      hideInSearch: true,
-      ellipsis: true,
-      render: (_, record: any) => {
-        const bot = record.bot;
-        const code = record.code;
-        if (!bot || !bot.userName || !code) {
-          return '-';
-        }
-        const botLink = `https://t.me/${bot.userName}?start=${code}`;
-        return (
-          <span>
-            <a href={botLink} target="_blank" rel="noopener noreferrer">
-              {botLink}
-            </a>
-            <CopyToClipboard text={botLink} />
-          </span>
-        );
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
-      dataIndex: 'userCount',
-      width: 120,
-      hideInSearch: true,
-      render: (_, record: any) => {
-        const count = record.userCount ?? 0;
-        return count;
       },
     },
     {
