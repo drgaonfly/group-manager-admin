@@ -13,6 +13,7 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import CopyToClipboard from '@/components/CopyToClipboard';
+import ActionButton from '@/components/ActionButton';
 
 /**
  * @en-US Add node
@@ -116,10 +117,14 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'title', defaultMessage: '标题' }),
       dataIndex: 'title',
+      width: 200,
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'link', defaultMessage: '链接' }),
       dataIndex: 'link',
+      width: 300,
+      ellipsis: true,
       render: (_, record: any) => {
         if (!record.link) {
           return '-';
@@ -144,12 +149,15 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'invite_code', defaultMessage: '邀请码' }),
       dataIndex: 'code',
+      width: 120,
       hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
       dataIndex: 'bot',
+      width: 200,
       hideInSearch: true,
+      ellipsis: true,
       render: (_, record: any) => {
         const bot = record.bot;
         if (!bot) {
@@ -163,7 +171,9 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'bot_link', defaultMessage: '机器人链接' }),
       dataIndex: 'botLink',
+      width: 350,
       hideInSearch: true,
+      ellipsis: true,
       render: (_, record: any) => {
         const bot = record.bot;
         const code = record.code;
@@ -184,12 +194,15 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
       dataIndex: 'remark',
+      width: 200,
       hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
+      width: 180,
       hideInSearch: true,
     },
     {
@@ -199,26 +212,30 @@ const TableList: React.FC = () => {
       }),
       dataIndex: 'option',
       valueType: 'option',
+      width: 150,
+      fixed: 'right',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="Detail" />
-        </a>,
+        </ActionButton>,
         access.canUpdatePromotionLink && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeletePromotionLink && (
           <DeleteLink
@@ -239,6 +256,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
+        scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
           collapsed: false,

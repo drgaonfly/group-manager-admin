@@ -3,7 +3,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Tooltip, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -96,10 +96,23 @@ const TableList: React.FC = () => {
         if (!promotionLink) {
           return '-';
         }
+        const title = promotionLink.title || '-';
         return (
           <div>
             <div>
-              <strong>{promotionLink.title || '-'}</strong>
+              {title !== '-' ? (
+                <Tooltip title={title}>
+                  <Typography.Text
+                    strong
+                    ellipsis
+                    style={{ maxWidth: 200, display: 'inline-block' }}
+                  >
+                    {title}
+                  </Typography.Text>
+                </Tooltip>
+              ) : (
+                <strong>{title}</strong>
+              )}
             </div>
             {promotionLink.link && (
               <div>
