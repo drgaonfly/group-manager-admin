@@ -1,29 +1,18 @@
 import React from 'react';
 import { Modal } from 'antd';
 import { useIntl } from '@umijs/max';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { simpleGet } from '@/services/ant-design-pro/api';
-
-export type BotUserListModalQueryType = 'bot' | 'promotionLink';
 
 export interface BotUserListModalProps {
   open: boolean;
   title?: string;
   onClose: () => void;
-  queryType: BotUserListModalQueryType;
-  id?: string;
+  data: any[]; // 直接传入的 BotUserConfig 数据
 }
 
-const BotUserListModal: React.FC<BotUserListModalProps> = ({
-  open,
-  title,
-  onClose,
-  queryType,
-  id,
-}) => {
+const BotUserListModal: React.FC<BotUserListModalProps> = ({ open, title, onClose, data }) => {
   const intl = useIntl();
-  const actionRef = React.useRef<ActionType>();
 
   const columns: ProColumns<any>[] = [
     {
@@ -52,14 +41,6 @@ const BotUserListModal: React.FC<BotUserListModalProps> = ({
     },
   ];
 
-  const getEndpoint = () => {
-    if (!id) return '';
-    if (queryType === 'promotionLink') {
-      return `/bot-user-configs/by-promotion-link/${id}`;
-    }
-    return `/bot-user-configs/by-bot/${id}`;
-  };
-
   return (
     <Modal
       open={open}
@@ -73,27 +54,8 @@ const BotUserListModal: React.FC<BotUserListModalProps> = ({
         search={false}
         options={false}
         toolBarRender={false}
-        actionRef={actionRef}
-        pagination={{ pageSize: 10 }}
-        request={async (params) => {
-          const endpoint = getEndpoint();
-          if (!endpoint) {
-            return { data: [], success: true, total: 0 } as any;
-          }
-          const res = await simpleGet<{
-            success: boolean;
-            data: any[];
-            total: number;
-          }>(endpoint, {
-            current: params.current,
-            pageSize: params.pageSize,
-          });
-          return {
-            data: Array.isArray(res.data) ? res.data : (res as any).data?.data ?? [],
-            success: (res as any).success ?? true,
-            total: (res as any).total ?? 0,
-          } as any;
-        }}
+        pagination={{ pageSize: 10, total: data.length }}
+        dataSource={data}
         columns={columns}
       />
     </Modal>

@@ -130,7 +130,7 @@ const TableList: React.FC = () => {
   const [privateKeyForm] = Form.useForm();
   const [userListVisible, setUserListVisible] = useState<boolean>(false);
   const [userListTitle, setUserListTitle] = useState<string>('');
-  const [userListBotId, setUserListBotId] = useState<string>();
+  const [userListData, setUserListData] = useState<any[]>([]);
 
   // 保存Private Key的方法
   const handleSavePrivateKey = async () => {
@@ -207,11 +207,11 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
-      dataIndex: 'userCount',
+      dataIndex: 'botUserConfigs',
       width: 120,
       hideInSearch: true,
       render: (_, record: any) => {
-        const count = record.userCount ?? 0;
+        const count = Array.isArray(record.botUserConfigs) ? record.botUserConfigs.length : 0;
         if (!count) {
           return 0;
         }
@@ -226,7 +226,7 @@ const TableList: React.FC = () => {
                     record.botName || record.userName || '-'
                   }`,
                 );
-                setUserListBotId(record._id);
+                setUserListData(record.botUserConfigs || []);
                 setUserListVisible(true);
               }}
             />
@@ -691,11 +691,10 @@ const TableList: React.FC = () => {
       <BotUserListModal
         open={userListVisible}
         title={userListTitle}
-        queryType="bot"
-        id={userListBotId}
+        data={userListData}
         onClose={() => {
           setUserListVisible(false);
-          setUserListBotId(undefined);
+          setUserListData([]);
         }}
       />
 

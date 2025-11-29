@@ -111,7 +111,7 @@ const TableList: React.FC = () => {
   const access = useAccess();
   const [userListVisible, setUserListVisible] = useState<boolean>(false);
   const [userListTitle, setUserListTitle] = useState<string>('');
-  const [userListPromotionLinkId, setUserListPromotionLinkId] = useState<string>();
+  const [userListData, setUserListData] = useState<any[]>([]);
 
   /**
    * @en-US International configuration
@@ -137,11 +137,11 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
-      dataIndex: 'userCount',
+      dataIndex: 'botUserConfigs',
       width: 120,
       hideInSearch: true,
       render: (_, record: any) => {
-        const count = record.userCount ?? 0;
+        const count = Array.isArray(record.botUserConfigs) ? record.botUserConfigs.length : 0;
         if (!count) {
           return 0;
         }
@@ -156,7 +156,7 @@ const TableList: React.FC = () => {
                     record.title || '-'
                   }`,
                 );
-                setUserListPromotionLinkId(record._id);
+                setUserListData(record.botUserConfigs || []);
                 setUserListVisible(true);
               }}
             />
@@ -344,11 +344,10 @@ const TableList: React.FC = () => {
       <BotUserListModal
         open={userListVisible}
         title={userListTitle}
-        queryType="promotionLink"
-        id={userListPromotionLinkId}
+        data={userListData}
         onClose={() => {
           setUserListVisible(false);
-          setUserListPromotionLinkId(undefined);
+          setUserListData([]);
         }}
       />
       {selectedRowsState?.length > 0 && (
