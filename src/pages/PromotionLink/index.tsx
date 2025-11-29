@@ -122,8 +122,7 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'title', defaultMessage: '标题' }),
       dataIndex: 'title',
-      width: 220,
-      ellipsis: true,
+      width: 300,
       render: (text) => {
         if (!text) return '-';
         return (
