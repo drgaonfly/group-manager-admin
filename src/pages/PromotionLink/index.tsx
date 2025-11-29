@@ -12,6 +12,7 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 /**
  * @en-US Add node
@@ -124,6 +125,27 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'invite_code', defaultMessage: '邀请码' }),
       dataIndex: 'code',
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'bot_link', defaultMessage: '机器人链接' }),
+      dataIndex: 'botLink',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const bot = record.bot;
+        const code = record.code;
+        if (!bot || !bot.userName || !code) {
+          return '-';
+        }
+        const botLink = `https://t.me/${bot.userName}?start=${code}`;
+        return (
+          <span>
+            <a href={botLink} target="_blank" rel="noopener noreferrer">
+              {botLink}
+            </a>
+            <CopyToClipboard text={botLink} />
+          </span>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
