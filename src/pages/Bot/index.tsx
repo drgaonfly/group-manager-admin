@@ -4,7 +4,7 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal, Switch } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -16,6 +16,7 @@ import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import MessageForm from './components/MessageForm';
 import ActionButton from '@/components/ActionButton';
+import BotUserListModal from '@/components/BotUserListModal';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -120,6 +121,9 @@ const TableList: React.FC = () => {
   const [configureModalVisible, setConfigureModalVisible] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [messageModalOpen, setMessageModalOpen] = useState<boolean>(false);
+  const [userListVisible, setUserListVisible] = useState<boolean>(false);
+  const [userListTitle, setUserListTitle] = useState<string>('');
+  const [userListBotId, setUserListBotId] = useState<string>();
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -174,6 +178,34 @@ const TableList: React.FC = () => {
             </span>
           );
         }
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
+      dataIndex: 'userCount',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const count = record.userCount ?? 0;
+        if (!count) {
+          return 0;
+        }
+        return (
+          <span>
+            {count}{' '}
+            <UserOutlined
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setUserListTitle(
+                  `${intl.formatMessage({ id: 'user', defaultMessage: '用户' })} - ${
+                    record.botName || record.userName || '-'
+                  }`,
+                );
+                setUserListBotId(record._id);
+                setUserListVisible(true);
+              }}
+            />
+          </span>
+        );
       },
     },
     {
@@ -497,6 +529,16 @@ const TableList: React.FC = () => {
         width={800}
       ></Modal>
       <MessageForm open={messageModalOpen} onCancel={setMessageModalOpen} currentRow={currentRow} />
+      <BotUserListModal
+        open={userListVisible}
+        title={userListTitle}
+        queryType="bot"
+        id={userListBotId}
+        onClose={() => {
+          setUserListVisible(false);
+          setUserListBotId(undefined);
+        }}
+      />
     </PageContainer>
   );
 };

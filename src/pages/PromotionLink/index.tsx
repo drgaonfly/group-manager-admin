@@ -5,6 +5,8 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Tooltip } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import BotUserListModal from '@/components/BotUserListModal';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -107,6 +109,9 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
+  const [userListVisible, setUserListVisible] = useState<boolean>(false);
+  const [userListTitle, setUserListTitle] = useState<string>('');
+  const [userListPromotionLinkId, setUserListPromotionLinkId] = useState<string>();
 
   /**
    * @en-US International configuration
@@ -137,7 +142,26 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (_, record: any) => {
         const count = record.userCount ?? 0;
-        return count;
+        if (!count) {
+          return 0;
+        }
+        return (
+          <span>
+            {count}{' '}
+            <UserOutlined
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setUserListTitle(
+                  `${intl.formatMessage({ id: 'user', defaultMessage: '用户' })} - ${
+                    record.title || '-'
+                  }`,
+                );
+                setUserListPromotionLinkId(record._id);
+                setUserListVisible(true);
+              }}
+            />
+          </span>
+        );
       },
     },
     {
@@ -316,6 +340,16 @@ const TableList: React.FC = () => {
             },
           }
         }
+      />
+      <BotUserListModal
+        open={userListVisible}
+        title={userListTitle}
+        queryType="promotionLink"
+        id={userListPromotionLinkId}
+        onClose={() => {
+          setUserListVisible(false);
+          setUserListPromotionLinkId(undefined);
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
