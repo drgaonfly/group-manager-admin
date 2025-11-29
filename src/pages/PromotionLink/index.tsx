@@ -192,6 +192,16 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
+      dataIndex: 'userCount',
+      width: 120,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const count = record.userCount ?? 0;
+        return count;
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
       dataIndex: 'remark',
       width: 200,
