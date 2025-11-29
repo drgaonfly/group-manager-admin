@@ -127,6 +127,20 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
+      dataIndex: 'bot',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const bot = record.bot;
+        if (!bot) {
+          return '-';
+        }
+        const botName = bot.botName || bot.userName || '-';
+        const botUsername = bot.userName ? `(@${bot.userName})` : '';
+        return `${botName} ${botUsername}`.trim();
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'bot_link', defaultMessage: '机器人链接' }),
       dataIndex: 'botLink',
       hideInSearch: true,

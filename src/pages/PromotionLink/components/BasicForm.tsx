@@ -52,19 +52,18 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'link', defaultMessage: '链接' })}
           name="link"
         />
+        <ProFormTextArea
+          rules={[]}
+          width="md"
+          label={intl.formatMessage({ id: 'remark', defaultMessage: '备注' })}
+          name="remark"
+          fieldProps={{
+            autoSize: {
+              minRows: 3,
+            },
+          }}
+        />
       </ProForm.Group>
-
-      <ProFormTextArea
-        rules={[]}
-        width="xl"
-        label={intl.formatMessage({ id: 'remark', defaultMessage: '备注' })}
-        name="remark"
-        fieldProps={{
-          autoSize: {
-            minRows: 8,
-          },
-        }}
-      />
 
       {!newRecord && (
         <Form.Item name="_id" hidden>
