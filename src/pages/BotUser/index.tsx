@@ -163,6 +163,32 @@ const TableList: React.FC = () => {
       copyable: true,
     },
     {
+      title: intl.formatMessage({ id: 'promotion_link', defaultMessage: '推广链接' }),
+      dataIndex: 'promotionLink',
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const promotionLink = record.promotionLink;
+        if (!promotionLink) {
+          return '-';
+        }
+        return (
+          <div>
+            <div>
+              <strong>{promotionLink.title || '-'}</strong>
+            </div>
+            {promotionLink.link && (
+              <div>
+                <a href={promotionLink.link} target="_blank" rel="noopener noreferrer">
+                  {promotionLink.link}
+                </a>
+                <CopyToClipboard text={promotionLink.link} />
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       hideInSearch: true,
