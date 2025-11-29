@@ -117,13 +117,13 @@ const TableList: React.FC = () => {
       dataIndex: 'title',
     },
     {
-      title: intl.formatMessage({ id: 'code', defaultMessage: '邀请码' }),
-      dataIndex: 'code',
-      hideInSearch: true,
-    },
-    {
       title: intl.formatMessage({ id: 'link', defaultMessage: '链接' }),
       dataIndex: 'link',
+    },
+    {
+      title: intl.formatMessage({ id: 'invite_code', defaultMessage: '邀请码' }),
+      dataIndex: 'code',
+      hideInSearch: true,
     },
     {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
