@@ -120,6 +120,26 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'link', defaultMessage: '链接' }),
       dataIndex: 'link',
+      render: (_, record: any) => {
+        if (!record.link) {
+          return '-';
+        }
+
+        const isValidUrl = record.link.startsWith('http://') || record.link.startsWith('https://');
+
+        return (
+          <span>
+            {isValidUrl ? (
+              <a href={record.link} target="_blank" rel="noopener noreferrer">
+                {record.link}
+              </a>
+            ) : (
+              <span>{record.link}</span>
+            )}
+            <CopyToClipboard text={record.link} />
+          </span>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'invite_code', defaultMessage: '邀请码' }),
