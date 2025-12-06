@@ -149,7 +149,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo1.svg" />}
+          logo={<img alt="logo" src="/logo.svg" />}
           title={process.env.UMI_APP_APP_NAME || 'antd-ts-admin'}
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           onFinish={async (values) => {
