@@ -4,7 +4,7 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Modal, Switch, Form, Input } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -22,6 +22,7 @@ import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
+import BotUserListModal from '@/components/BotUserListModal';
 
 /**
  * @en-US Add node
@@ -127,6 +128,9 @@ const TableList: React.FC = () => {
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
   const [privateKeyModalOpen, setPrivateKeyModalOpen] = useState<boolean>(false);
   const [privateKeyForm] = Form.useForm();
+  const [userListVisible, setUserListVisible] = useState<boolean>(false);
+  const [userListTitle, setUserListTitle] = useState<string>('');
+  const [userListData, setUserListData] = useState<any[]>([]);
 
   // 保存Private Key的方法
   const handleSavePrivateKey = async () => {
@@ -199,6 +203,35 @@ const TableList: React.FC = () => {
             </span>
           );
         }
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
+      dataIndex: 'botUserConfigs',
+      width: 120,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const count = Array.isArray(record.botUserConfigs) ? record.botUserConfigs.length : 0;
+        if (!count) {
+          return 0;
+        }
+        return (
+          <span>
+            {count}{' '}
+            <UserOutlined
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setUserListTitle(
+                  `${intl.formatMessage({ id: 'user', defaultMessage: '用户' })} - ${
+                    record.botName || record.userName || '-'
+                  }`,
+                );
+                setUserListData(record.botUserConfigs || []);
+                setUserListVisible(true);
+              }}
+            />
+          </span>
+        );
       },
     },
     // add owners
@@ -654,6 +687,15 @@ const TableList: React.FC = () => {
         open={groupMessageModalOpen}
         onCancel={setGroupMessageModalOpen}
         currentRow={currentRow}
+      />
+      <BotUserListModal
+        open={userListVisible}
+        title={userListTitle}
+        data={userListData}
+        onClose={() => {
+          setUserListVisible(false);
+          setUserListData([]);
+        }}
       />
 
       {/* Private Key 编辑 Modal */}

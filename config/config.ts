@@ -14,6 +14,8 @@ export default defineConfig({
    */
   hash: true,
 
+  outputPath: process.env.OUTPUT_PATH || 'dist',
+
   jsMinifier: 'terser',
 
   jsMinifierOptions: {

@@ -4,7 +4,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import BotUserListModal from '@/components/BotUserListModal';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -12,6 +14,8 @@ import Create from './components/Create';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
+import CopyToClipboard from '@/components/CopyToClipboard';
+import ActionButton from '@/components/ActionButton';
 
 /**
  * @en-US Add node
@@ -105,6 +109,9 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
+  const [userListVisible, setUserListVisible] = useState<boolean>(false);
+  const [userListTitle, setUserListTitle] = useState<string>('');
+  const [userListData, setUserListData] = useState<any[]>([]);
 
   /**
    * @en-US International configuration
@@ -115,25 +122,128 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'title', defaultMessage: '标题' }),
       dataIndex: 'title',
+      width: 300,
+      render: (text) => {
+        if (!text) return '-';
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
+      dataIndex: 'botUserConfigs',
+      width: 120,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const count = Array.isArray(record.botUserConfigs) ? record.botUserConfigs.length : 0;
+        if (!count) {
+          return 0;
+        }
+        return (
+          <span>
+            {count}{' '}
+            <UserOutlined
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setUserListTitle(
+                  `${intl.formatMessage({ id: 'user', defaultMessage: '用户' })} - ${
+                    record.title || '-'
+                  }`,
+                );
+                setUserListData(record.botUserConfigs || []);
+                setUserListVisible(true);
+              }}
+            />
+          </span>
+        );
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'bot_link', defaultMessage: '机器人链接' }),
+      dataIndex: 'botLink',
+      width: 320,
+      hideInSearch: true,
+      ellipsis: true,
+      render: (_, record: any) => {
+        const bot = record.bot;
+        const code = record.code;
+        if (!bot || !bot.userName || !code) {
+          return '-';
+        }
+        const botLink = `https://t.me/${bot.userName}?start=${code}`;
+        return (
+          <span>
+            <a href={botLink} target="_blank" rel="noopener noreferrer">
+              {botLink}
+            </a>
+            <CopyToClipboard text={botLink} />
+          </span>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'link', defaultMessage: '链接' }),
       dataIndex: 'link',
+      width: 300,
+      ellipsis: true,
+      render: (_, record: any) => {
+        if (!record.link) {
+          return '-';
+        }
+
+        const isValidUrl = record.link.startsWith('http://') || record.link.startsWith('https://');
+
+        return (
+          <span>
+            {isValidUrl ? (
+              <a href={record.link} target="_blank" rel="noopener noreferrer">
+                {record.link}
+              </a>
+            ) : (
+              <span>{record.link}</span>
+            )}
+            <CopyToClipboard text={record.link} />
+          </span>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'invite_code', defaultMessage: '邀请码' }),
       dataIndex: 'code',
+      width: 120,
       hideInSearch: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
+      dataIndex: 'bot',
+      width: 200,
+      hideInSearch: true,
+      ellipsis: true,
+      render: (_, record: any) => {
+        const bot = record.bot;
+        if (!bot) {
+          return '-';
+        }
+        const botName = bot.botName || bot.userName || '-';
+        const botUsername = bot.userName ? `(@${bot.userName})` : '';
+        return `${botName} ${botUsername}`.trim();
+      },
     },
     {
       title: intl.formatMessage({ id: 'remark', defaultMessage: '备注' }),
       dataIndex: 'remark',
+      width: 200,
       hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
       valueType: 'dateTime',
+      width: 180,
       hideInSearch: true,
     },
     {
@@ -143,26 +253,30 @@ const TableList: React.FC = () => {
       }),
       dataIndex: 'option',
       valueType: 'option',
+      width: 150,
+      fixed: 'right',
       render: (_, record) => [
-        <a
+        <ActionButton
           key="detail"
+          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="Detail" />
-        </a>,
+        </ActionButton>,
         access.canUpdatePromotionLink && (
-          <a
+          <ActionButton
             key="edit"
+            type="edit"
             onClick={() => {
               handleUpdateModalOpen(true);
               setCurrentRow(record);
             }}
           >
             {intl.formatMessage({ id: 'edit' })}
-          </a>
+          </ActionButton>
         ),
         access.canDeletePromotionLink && (
           <DeleteLink
@@ -183,6 +297,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
+        scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
           collapsed: false,
@@ -222,6 +337,15 @@ const TableList: React.FC = () => {
             },
           }
         }
+      />
+      <BotUserListModal
+        open={userListVisible}
+        title={userListTitle}
+        data={userListData}
+        onClose={() => {
+          setUserListVisible(false);
+          setUserListData([]);
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

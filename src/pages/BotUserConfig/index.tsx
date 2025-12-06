@@ -3,7 +3,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message } from 'antd';
+import { message, Tooltip, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -12,6 +12,7 @@ import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
 import SendMessageModal from './components/SendMessageModal';
+import CopyToClipboard from '@/components/CopyToClipboard';
 
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
@@ -81,37 +82,49 @@ const TableList: React.FC = () => {
       renderText: (_, record) => record?.botUser?.id,
     },
     {
-      title: intl.formatMessage({ id: 'parent_botUser' }),
-      dataIndex: 'parent',
-      hideInSearch: true,
-      render: (_, record) => {
-        return record?.parent?.botUser?.displayName;
-      },
-    },
-    // spread_code
-    {
-      title: intl.formatMessage({ id: 'inviteCode' }),
-      dataIndex: 'spread_code',
-      hideInSearch: true,
-    },
-    // invited_group
-    {
-      title: intl.formatMessage({ id: 'invited_group' }),
-      dataIndex: 'invited_group',
-      hideInSearch: true,
-      renderText: (_, record) => record?.invited_group?.title,
-    },
-    {
       title: intl.formatMessage({ id: 'user' }),
       dataIndex: 'botUser',
       copyable: true,
       renderText: (botUser) => botUser?.userName || botUser?.displayName,
     },
-    // invited_counts
     {
-      title: intl.formatMessage({ id: 'invited_counts' }),
-      dataIndex: 'invited_counts',
+      title: intl.formatMessage({ id: 'promotion_link', defaultMessage: '推广链接' }),
+      dataIndex: 'promotionLink',
       hideInSearch: true,
+      render: (_, record: any) => {
+        const promotionLink = record.promotionLink;
+        if (!promotionLink) {
+          return '-';
+        }
+        const title = promotionLink.title || '-';
+        return (
+          <div>
+            <div>
+              {title !== '-' ? (
+                <Tooltip title={title}>
+                  <Typography.Text
+                    strong
+                    ellipsis
+                    style={{ maxWidth: 200, display: 'inline-block' }}
+                  >
+                    {title}
+                  </Typography.Text>
+                </Tooltip>
+              ) : (
+                <strong>{title}</strong>
+              )}
+            </div>
+            {promotionLink.link && (
+              <div>
+                <a href={promotionLink.link} target="_blank" rel="noopener noreferrer">
+                  {promotionLink.link}
+                </a>
+                <CopyToClipboard text={promotionLink.link} />
+              </div>
+            )}
+          </div>
+        );
+      },
     },
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
