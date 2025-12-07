@@ -185,6 +185,20 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: intl.formatMessage({ id: 'promotion_content', defaultMessage: '推广内容' }),
+      dataIndex: 'promotionContent',
+      width: 120,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        const bot = record.bot;
+        const message = bot?.message;
+        if (!message) {
+          return '-';
+        }
+        return <CopyToClipboard text={message} />;
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'link', defaultMessage: '链接' }),
       dataIndex: 'link',
       width: 300,
