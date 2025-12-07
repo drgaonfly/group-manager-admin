@@ -192,10 +192,18 @@ const TableList: React.FC = () => {
       render: (_, record: any) => {
         const bot = record.bot;
         const message = bot?.message;
+        const code = record.code;
         if (!message) {
           return '-';
         }
-        return <CopyToClipboard text={message} />;
+        // 替换 @机器人用户名 为推广链接
+        let processedMessage = message;
+        if (bot?.userName && code) {
+          const botMention = `@${bot.userName}`;
+          const promotionLink = `https://t.me/${bot.userName}?start=${code}`;
+          processedMessage = message.replace(botMention, promotionLink);
+        }
+        return <CopyToClipboard text={processedMessage} />;
       },
     },
     {
