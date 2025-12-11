@@ -34,6 +34,7 @@ declare namespace API {
     bidirectional?: boolean;
     groupMessage?: boolean;
     keyboardConfig?: boolean;
+    speech_static?: boolean;
     availableBotCount?: number;
     botCount?: number;
   };

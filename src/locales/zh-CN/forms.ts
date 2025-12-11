@@ -297,6 +297,7 @@ export default {
   bidirectional: '双向',
   groupMessage: '群发',
   keyboardConfig: '自由键盘',
+  speech_static: '群组内发言统计',
   botCount: '当前机器人数量',
   availableBotCount: '可用机器人数量',
   botFeatures: '机器人功能',
