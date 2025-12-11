@@ -25,6 +25,7 @@ const ServiceLink: React.FC = () => {
     bidirectional: boolean;
     groupMessage: boolean;
     keyboardConfig: boolean;
+    speech_static: boolean;
   }) => {
     try {
       setLoading(true);
@@ -82,6 +83,7 @@ const ServiceLink: React.FC = () => {
               bidirectional: currentUser?.bidirectional || false,
               groupMessage: currentUser?.groupMessage || false,
               keyboardConfig: currentUser?.keyboardConfig || false,
+              speech_static: currentUser?.speech_static || false,
             }}
             submitter={{
               submitButtonProps: {
@@ -111,6 +113,14 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'keyboardConfig.tooltip',
                 defaultMessage: '开启后，可以在机器人配置中自定义 Telegram 键盘按钮',
+              })}
+            />
+            <ProFormSwitch
+              name="speech_static"
+              label={intl.formatMessage({ id: 'speech_static', defaultMessage: '群组内发言统计' })}
+              tooltip={intl.formatMessage({
+                id: 'speech_static.tooltip',
+                defaultMessage: '开启后，可以统计群组内成员的发言情况',
               })}
             />
           </ProForm>
@@ -146,6 +156,17 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'keyboardConfig.tooltip',
                   defaultMessage: '开启后，可以在机器人配置中自定义 Telegram 键盘按钮',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'speech_static', defaultMessage: '群组内发言统计' })}
+            >
+              {renderStatusTag(currentUser?.speech_static || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'speech_static.tooltip',
+                  defaultMessage: '开启后，可以统计群组内成员的发言情况',
                 })}
               </Text>
             </Descriptions.Item>
