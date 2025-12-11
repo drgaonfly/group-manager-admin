@@ -243,6 +243,7 @@ export default {
   bidirectional: 'Bidirectional',
   groupMessage: 'Group Message',
   keyboardConfig: 'Keyboard Config',
+  speech_static: 'Speech Static',
   botCount: 'Current Bot Count',
   availableBotCount: 'Available Bot Count',
   botFeatures: 'Bot Features',
