@@ -6,9 +6,9 @@ import {
   ProDescriptions,
   ProFormGroup,
   ProFormText,
-  type ProColumns,
-  // ProFormDigit,
-  // ProFormSwitch,
+  ProColumns,
+  ProFormDigit,
+  ProFormSwitch,
 } from '@ant-design/pro-components';
 import { Form, Input, Button } from 'antd';
 import { FormattedMessage, useAccess, useIntl, useModel } from '@umijs/max';
@@ -536,6 +536,26 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               placeholder="https://t.me/"
             />
           )}
+
+          <ProFormDigit
+            width="sm"
+            label={intl.formatMessage({
+              id: 'minSpeechLength',
+              defaultMessage: '发言超过多少字才纳入统计',
+            })}
+            name="minSpeechLength"
+            min={1}
+            placeholder="发言超过多少字才纳入统计"
+          />
+          <ProFormSwitch
+            label={intl.formatMessage({
+              id: 'allowPureNumberSpeech',
+              defaultMessage: '是否允许纯数字发言纳入统计',
+            })}
+            name="allowPureNumberSpeech"
+            initialValue={true}
+            placeholder="是否允许纯数字发言才进入统计"
+          />
         </ProFormGroup>
 
         {/* <EditableProTable<presetItem>
