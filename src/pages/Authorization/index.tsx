@@ -248,7 +248,7 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'canBidirectional', defaultMessage: '双向功能' }),
+      title: intl.formatMessage({ id: 'canBidirectional', defaultMessage: '双向通信' }),
       dataIndex: 'canBidirectional',
       hideInTable: !currentUser?.bidirectional,
       hideInSearch: true,
@@ -257,6 +257,24 @@ const TableList: React.FC = () => {
           checked={record.canBidirectional}
           onChange={async () => {
             await handleUpdate({ _id: record._id, canBidirectional: !record.canBidirectional });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    // 欢迎入群
+    {
+      title: intl.formatMessage({ id: 'welcomeGroup', defaultMessage: '欢迎入群' }),
+      dataIndex: 'canGroupWelcome',
+      hideInTable: !currentUser?.groupWelcome,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canWelcomeGroup}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canGroupWelcome: !record.canGroupWelcome });
             if (actionRef.current) {
               actionRef.current.reload();
             }

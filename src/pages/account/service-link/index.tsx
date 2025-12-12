@@ -26,6 +26,7 @@ const ServiceLink: React.FC = () => {
     groupMessage: boolean;
     keyboardConfig: boolean;
     speech_static: boolean;
+    groupWelcome: boolean;
   }) => {
     try {
       setLoading(true);
@@ -84,6 +85,7 @@ const ServiceLink: React.FC = () => {
               groupMessage: currentUser?.groupMessage || false,
               keyboardConfig: currentUser?.keyboardConfig || false,
               speech_static: currentUser?.speech_static || false,
+              groupWelcome: currentUser?.groupWelcome || false,
             }}
             submitter={{
               submitButtonProps: {
@@ -121,6 +123,14 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'speech_static.tooltip',
                 defaultMessage: '开启后，可以统计群组内成员的发言情况',
+              })}
+            />
+            <ProFormSwitch
+              name="groupWelcome"
+              label={intl.formatMessage({ id: 'groupWelcome', defaultMessage: '欢迎入群' })}
+              tooltip={intl.formatMessage({
+                id: 'groupWelcome.tooltip',
+                defaultMessage: '开启后，新成员加入群组时会自动发送欢迎消息',
               })}
             />
           </ProForm>
@@ -167,6 +177,17 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'speech_static.tooltip',
                   defaultMessage: '开启后，可以统计群组内成员的发言情况',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'groupWelcome', defaultMessage: '欢迎入群' })}
+            >
+              {renderStatusTag(currentUser?.groupWelcome || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'groupWelcome.tooltip',
+                  defaultMessage: '开启后，新成员加入群组时会自动发送欢迎消息',
                 })}
               </Text>
             </Descriptions.Item>

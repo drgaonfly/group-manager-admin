@@ -186,6 +186,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'speech_static' }),
             enabled: record.speech_static,
           },
+          {
+            name: intl.formatMessage({ id: 'groupWelcome' }),
+            enabled: record.groupWelcome,
+          },
         ];
 
         return (
