@@ -301,4 +301,5 @@ export default {
   botCount: '当前机器人数量',
   availableBotCount: '可用机器人数量',
   botFeatures: '机器人功能',
+  groupWelcome: '欢迎入群',
 };

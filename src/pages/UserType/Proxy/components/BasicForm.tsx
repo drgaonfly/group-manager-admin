@@ -137,6 +137,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             name="keyboardConfig"
           />
           <ProFormSwitch label={intl.formatMessage({ id: 'speech_static' })} name="speech_static" />
+          <ProFormSwitch label={intl.formatMessage({ id: 'groupWelcome' })} name="groupWelcome" />
         </ProForm.Group>
       </div>
 

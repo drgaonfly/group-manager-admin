@@ -3,8 +3,8 @@ import { addItem, queryList, removeItem, updateItem } from '@/services/ant-desig
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { Button, message, Modal, Switch, Form, Input } from 'antd';
-import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, message, Switch } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -15,15 +15,15 @@ import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
 import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
-import GroupForm from './components/GroupForm';
 import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
 import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
-import BotUserListModal from '@/components/BotUserListModal';
 
+import FreeKeyboardForm from './components/FreeKeyboardForm';
+import SpeechStatisticsModal from './components/SpeechStatisticsModal';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -113,12 +113,11 @@ const TableList: React.FC = () => {
   const currentUser = initialState?.currentUser;
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [groupModalVisible, setGroupModalVisible] = useState<boolean>(false);
+
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [configureModalVisible, setConfigureModalVisible] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [addOwnerModalVisible, setAddOwnerModalVisible] = useState<boolean>(false);
@@ -126,44 +125,8 @@ const TableList: React.FC = () => {
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
-  const [privateKeyModalOpen, setPrivateKeyModalOpen] = useState<boolean>(false);
-  const [privateKeyForm] = Form.useForm();
-  const [userListVisible, setUserListVisible] = useState<boolean>(false);
-  const [userListTitle, setUserListTitle] = useState<string>('');
-  const [userListData, setUserListData] = useState<any[]>([]);
-
-  // 保存Private Key的方法
-  const handleSavePrivateKey = async () => {
-    try {
-      const values = await privateKeyForm.validateFields();
-      const hide = message.loading(<FormattedMessage id="saving" defaultMessage="Saving..." />);
-
-      try {
-        await updateItem(`/bots/${currentRow?._id}`, {
-          private_key: values.private_key,
-        });
-
-        hide();
-        message.success(
-          <FormattedMessage id="save_successful" defaultMessage="Saved successfully" />,
-        );
-        setPrivateKeyModalOpen(false);
-
-        if (actionRef.current) {
-          actionRef.current.reload();
-        }
-      } catch (error: any) {
-        hide();
-        message.error(
-          error?.response?.data?.message ?? (
-            <FormattedMessage id="save_failed" defaultMessage="Save failed, please try again" />
-          ),
-        );
-      }
-    } catch (error) {
-      console.log('Validation failed:', error);
-    }
-  };
+  const [keyboardModalOpen, setKeyboardModalOpen] = useState<boolean>(false);
+  const [speechStatisticsModalOpen, setSpeechStatisticsModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -208,30 +171,17 @@ const TableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
       dataIndex: 'botUserConfigs',
-      width: 120,
       hideInSearch: true,
-      render: (_, record: any) => {
-        const count = Array.isArray(record.botUserConfigs) ? record.botUserConfigs.length : 0;
-        if (!count) {
-          return 0;
-        }
-        return (
-          <span>
-            {count}{' '}
-            <UserOutlined
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                setUserListTitle(
-                  `${intl.formatMessage({ id: 'user', defaultMessage: '用户' })} - ${
-                    record.botName || record.userName || '-'
-                  }`,
-                );
-                setUserListData(record.botUserConfigs || []);
-                setUserListVisible(true);
-              }}
-            />
-          </span>
-        );
+      renderText: (botUserConfigs) => {
+        return botUserConfigs.length;
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
+      dataIndex: 'groups',
+      hideInSearch: true,
+      renderText: (groups) => {
+        return groups.length;
       },
     },
     // add owners
@@ -258,33 +208,6 @@ const TableList: React.FC = () => {
         />
       ),
     },
-    // canBeCloned
-    // {
-    //   title: intl.formatMessage({ id: 'is_canBeCloned' }),
-    //   dataIndex: 'canBeCloned',
-    //   width: 120,
-    //   hideInSearch: true,
-    //   render: (_, record: any) => (
-    //     <Switch
-    //       checked={record.canBeCloned}
-    //       onChange={async () => {
-    //         await handleUpdate({ _id: record._id, canBeCloned: !record.canBeCloned });
-    //         if (actionRef.current) {
-    //           actionRef.current.reload();
-    //         }
-    //       }}
-    //     />
-    //   ),
-    // },
-    // {
-    //   title: intl.formatMessage({ id: 'clonedFrom', defaultMessage: '复制机器人' }),
-    //   dataIndex: 'clonedFrom',
-    //   width: 120,
-    //   renderText: (text: any) => {
-    //     return text?.botName || text?.userName;
-    //   },
-    //   hideInSearch: true,
-    // },
     {
       title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
       width: 120,
@@ -294,46 +217,12 @@ const TableList: React.FC = () => {
       },
       hideInSearch: true,
     },
-    // intervalTime
-    // {
-    //   title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
-    //   dataIndex: 'intervalTime',
-    //   hideInSearch: true,
-    // },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
-      width: 400,
       valueType: 'password',
       hideInSearch: true,
       copyable: true,
-    },
-    // groups
-    {
-      title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
-      dataIndex: 'groups',
-      width: 120,
-      hideInSearch: true,
-      align: 'center',
-      render: (_, record) => (
-        <a
-          key="group"
-          onClick={() => {
-            setCurrentRow(record);
-            setGroupModalVisible(true);
-          }}
-        >
-          {intl.formatMessage({ id: 'display' })}
-        </a>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'BotStartMessage', defaultMessage: 'BotStartMessage' }),
-      dataIndex: 'message',
-      hideInSearch: true,
-      hideInTable: true,
-      valueType: 'text',
-      ellipsis: true,
     },
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
@@ -359,68 +248,110 @@ const TableList: React.FC = () => {
       ),
     },
     {
+      title: intl.formatMessage({ id: 'canBidirectional', defaultMessage: '双向通信' }),
+      dataIndex: 'canBidirectional',
+      hideInTable: !currentUser?.bidirectional,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canBidirectional}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canBidirectional: !record.canBidirectional });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    // 欢迎入群
+    {
+      title: intl.formatMessage({ id: 'welcomeGroup', defaultMessage: '欢迎入群' }),
+      dataIndex: 'canGroupWelcome',
+      hideInTable: !currentUser?.groupWelcome,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canWelcomeGroup}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canGroupWelcome: !record.canGroupWelcome });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'speechStatic', defaultMessage: '发言统计' }),
+      dataIndex: 'canSpeechStatic',
+      hideInTable: !currentUser?.speech_static,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canSpeechStatic}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canSpeechStatic: !record.canSpeechStatic });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '键盘配置' }),
+      dataIndex: 'canFreeKeyboard',
+      hideInTable: !currentUser?.keyboardConfig,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canFreeKeyboard}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canFreeKeyboard: !record.canFreeKeyboard });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'groupMessage', defaultMessage: '群发消息' }),
+      dataIndex: 'canGroupMessaging',
+      hideInTable: !currentUser?.groupMessage,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canGroupMessaging}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canGroupMessaging: !record.canGroupMessaging });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: 'Remark' }),
       dataIndex: 'remark',
       hideInSearch: true,
       valueType: 'text',
       ellipsis: true,
     },
-    // private_key
-    // // 如果record.private_key不为空，则显示修改，如果为空，则添加
-    // {
-    //   title: intl.formatMessage({ id: 'private_key', defaultMessage: 'Private Key' }),
-    //   dataIndex: 'private_key',
-    //   hideInSearch: true,
-    //   valueType: 'text',
-    //   ellipsis: true,
-    //   render: (_, record) => [
-    //     <a
-    //       key="editPrivateKey"
-    //       onClick={() => {
-    //         setCurrentRow(record);
-    //         privateKeyForm.setFieldsValue({ private_key: record.private_key || '' });
-    //         setPrivateKeyModalOpen(true);
-    //       }}
-    //     >
-    //       {record.private_key
-    //         ? intl.formatMessage({ id: 'modify', defaultMessage: '修改' })
-    //         : intl.formatMessage({ id: 'add', defaultMessage: '添加' })}
-    //     </a>,
-    //   ],
-    // },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
       dataIndex: 'createdAt',
-      width: 150,
       hideInSearch: true,
       valueType: 'dateTime',
     },
-
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      width: 350,
       render: (_, record) => [
-        currentUser?.groupMessage && (
-          <ActionButton
-            key="sendGroupMessage"
-            type="sendGroupMessage"
-            onClick={() => {
-              setGroupMessageModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'sendGroupMessage',
-              defaultMessage: intl.formatMessage({
-                id: 'sendGroupMessage',
-                defaultMessage: 'Group Message',
-              }),
-            })}
-          </ActionButton>
-        ),
         access.canUpdateBot && (
           <ActionButton
             key="configure"
@@ -432,7 +363,52 @@ const TableList: React.FC = () => {
           >
             {intl.formatMessage({
               id: 'configure',
-              defaultMessage: intl.formatMessage({ id: 'configure' }),
+              defaultMessage: 'Configure',
+            })}
+          </ActionButton>
+        ),
+        record.canGroupMessaging && currentUser?.groupMessage && (
+          <ActionButton
+            key="sendGroupMessage"
+            type="sendGroupMessage"
+            onClick={() => {
+              setGroupMessageModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'sendGroupMessage',
+              defaultMessage: 'Send Message',
+            })}
+          </ActionButton>
+        ),
+        record.canFreeKeyboard && currentUser?.keyboardConfig && (
+          <ActionButton
+            key="keyboardConfig"
+            type="keyboard"
+            onClick={() => {
+              setCurrentRow(record);
+              setKeyboardModalOpen(true);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'keyboard_config',
+              defaultMessage: '键盘配置',
+            })}
+          </ActionButton>
+        ),
+        record.canSpeechStatic && currentUser?.speech_static && (
+          <ActionButton
+            key="speechStatistics"
+            type="statistics"
+            onClick={() => {
+              setCurrentRow(record);
+              setSpeechStatisticsModalOpen(true);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'speech_statistics',
+              defaultMessage: '发言统计',
             })}
           </ActionButton>
         ),
@@ -481,7 +457,7 @@ const TableList: React.FC = () => {
         headerTitle={intl.formatMessage({ id: 'list' })}
         actionRef={actionRef}
         rowKey="_id"
-        scroll={{ x: 2500 }}
+        scroll={{ x: 'max-content' }}
         search={{
           collapsed: false,
         }}
@@ -558,7 +534,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          {(access.canSuperAdmin || access.canDeleteBot) && (
+          {access.canDeleteBot && (
             <DeleteButton
               onOk={async () => {
                 await handleRemove(selectedRowsState?.map((item: any) => item._id!));
@@ -571,7 +547,7 @@ const TableList: React.FC = () => {
           )}
         </FooterToolbar>
       )}
-      {(access.canSuperAdmin || access.canCreateBot) && (
+      {access.canCreateBot && (
         <Create
           open={createModalOpen}
           onOpenChange={handleModalOpen}
@@ -590,7 +566,7 @@ const TableList: React.FC = () => {
           }}
         />
       )}
-      {(access.canSuperAdmin || access.canUpdateBot) && (
+      {access.canUpdateBot && (
         <Update
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
@@ -631,18 +607,6 @@ const TableList: React.FC = () => {
         updateModalOpen={configureModalVisible}
         values={currentRow || {}}
       />
-      <GroupForm
-        open={groupModalVisible}
-        onCancel={setGroupModalVisible}
-        values={currentRow || {}}
-      />
-      <Modal
-        title={intl.formatMessage({ id: 'video_player', defaultMessage: '视频播放' })}
-        open={videoModalOpen}
-        onCancel={() => setVideoModalOpen(false)}
-        footer={null}
-        width={800}
-      ></Modal>
       <AddOwnerForm
         open={addOwnerModalVisible}
         onCancel={setAddOwnerModalVisible}
@@ -683,61 +647,40 @@ const TableList: React.FC = () => {
           }
         }}
       />
+
       <GroupMessageForm
         open={groupMessageModalOpen}
         onCancel={setGroupMessageModalOpen}
         currentRow={currentRow}
       />
-      <BotUserListModal
-        open={userListVisible}
-        title={userListTitle}
-        data={userListData}
-        onClose={() => {
-          setUserListVisible(false);
-          setUserListData([]);
+
+      <FreeKeyboardForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
+            setKeyboardModalOpen(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
         }}
+        onCancel={setKeyboardModalOpen}
+        updateModalOpen={keyboardModalOpen}
+        values={currentRow || {}}
       />
 
-      {/* Private Key 编辑 Modal */}
-      <Modal
-        title={
-          currentRow?.private_key
-            ? intl.formatMessage({ id: 'modify_private_key', defaultMessage: '修改私钥' })
-            : intl.formatMessage({ id: 'add_private_key', defaultMessage: '添加私钥' })
-        }
-        open={privateKeyModalOpen}
-        onOk={handleSavePrivateKey}
-        onCancel={() => setPrivateKeyModalOpen(false)}
-        destroyOnClose
-      >
-        <Form
-          form={privateKeyForm}
-          layout="vertical"
-          initialValues={{ private_key: currentRow?.private_key || '' }}
-        >
-          <Form.Item
-            name="private_key"
-            label={intl.formatMessage({ id: 'private_key', defaultMessage: 'Private Key' })}
-            rules={[
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'please_input_private_key',
-                  defaultMessage: 'Please input private key',
-                }),
-              },
-            ]}
-          >
-            <Input.TextArea
-              rows={6}
-              placeholder={intl.formatMessage({
-                id: 'please_input_private_key',
-                defaultMessage: 'Please input private key',
-              })}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <SpeechStatisticsModal
+        open={speechStatisticsModalOpen}
+        onOpenChange={setSpeechStatisticsModalOpen}
+        currentRow={currentRow}
+        onSave={async (values) => {
+          await handleUpdate(values);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+      />
     </PageContainer>
   );
 };

@@ -247,4 +247,5 @@ export default {
   botCount: 'Current Bot Count',
   availableBotCount: 'Available Bot Count',
   botFeatures: 'Bot Features',
+  groupWelcome: 'Group Welcome',
 };

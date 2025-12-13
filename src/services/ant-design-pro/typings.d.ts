@@ -37,6 +37,7 @@ declare namespace API {
     speech_static?: boolean;
     availableBotCount?: number;
     botCount?: number;
+    groupWelcome?: boolean;
   };
 
   // Example type definition
