@@ -21,9 +21,9 @@ import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
-
 import FreeKeyboardForm from './components/FreeKeyboardForm';
 import SpeechStatisticsModal from './components/SpeechStatisticsModal';
+import ChannelPostCreateForm from './components/ChannelPostCreateForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -127,6 +127,7 @@ const TableList: React.FC = () => {
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
   const [keyboardModalOpen, setKeyboardModalOpen] = useState<boolean>(false);
   const [speechStatisticsModalOpen, setSpeechStatisticsModalOpen] = useState<boolean>(false);
+  const [channelPostModalOpen, setChannelPostModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -272,7 +273,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (_, record: any) => (
         <Switch
-          checked={record.canWelcomeGroup}
+          checked={record.canGroupWelcome}
           onChange={async () => {
             await handleUpdate({ _id: record._id, canGroupWelcome: !record.canGroupWelcome });
             if (actionRef.current) {
@@ -326,6 +327,23 @@ const TableList: React.FC = () => {
           checked={record.canGroupMessaging}
           onChange={async () => {
             await handleUpdate({ _id: record._id, canGroupMessaging: !record.canGroupMessaging });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'channelPost', defaultMessage: '频道推广' }),
+      dataIndex: 'canOpenChannelPost',
+      hideInTable: !currentUser?.channelPost,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canOpenChannelPost}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canOpenChannelPost: !record.canOpenChannelPost });
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -409,6 +427,21 @@ const TableList: React.FC = () => {
             {intl.formatMessage({
               id: 'speech_statistics',
               defaultMessage: '发言统计',
+            })}
+          </ActionButton>
+        ),
+        record.canOpenChannelPost && currentUser?.channelPost && (
+          <ActionButton
+            key="channelPost"
+            type="channel"
+            onClick={() => {
+              setCurrentRow(record);
+              setChannelPostModalOpen(true);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'channel_post_management',
+              defaultMessage: '频道推广',
             })}
           </ActionButton>
         ),
@@ -679,6 +712,16 @@ const TableList: React.FC = () => {
           if (actionRef.current) {
             actionRef.current.reload();
           }
+        }}
+      />
+
+      <ChannelPostCreateForm
+        open={channelPostModalOpen}
+        onOpenChange={setChannelPostModalOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setChannelPostModalOpen(false);
+          message.success('频道推广添加成功');
         }}
       />
     </PageContainer>

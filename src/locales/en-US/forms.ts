@@ -248,4 +248,5 @@ export default {
   availableBotCount: 'Available Bot Count',
   botFeatures: 'Bot Features',
   groupWelcome: 'Group Welcome',
+  channelPost: '频道推广',
 };

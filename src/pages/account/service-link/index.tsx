@@ -27,6 +27,7 @@ const ServiceLink: React.FC = () => {
     keyboardConfig: boolean;
     speech_static: boolean;
     groupWelcome: boolean;
+    channelPost: boolean;
   }) => {
     try {
       setLoading(true);
@@ -86,6 +87,7 @@ const ServiceLink: React.FC = () => {
               keyboardConfig: currentUser?.keyboardConfig || false,
               speech_static: currentUser?.speech_static || false,
               groupWelcome: currentUser?.groupWelcome || false,
+              channelPost: currentUser?.channelPost || false,
             }}
             submitter={{
               submitButtonProps: {
@@ -131,6 +133,14 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'groupWelcome.tooltip',
                 defaultMessage: '开启后，新成员加入群组时会自动发送欢迎消息',
+              })}
+            />
+            <ProFormSwitch
+              name="channelPost"
+              label={intl.formatMessage({ id: 'channelPost', defaultMessage: '频道推广' })}
+              tooltip={intl.formatMessage({
+                id: 'channelPost.tooltip',
+                defaultMessage: '开启后，可以创建和管理频道推广任务',
               })}
             />
           </ProForm>
@@ -188,6 +198,17 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'groupWelcome.tooltip',
                   defaultMessage: '开启后，新成员加入群组时会自动发送欢迎消息',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'channelPost', defaultMessage: '频道推广' })}
+            >
+              {renderStatusTag(currentUser?.channelPost || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'channelPost.tooltip',
+                  defaultMessage: '开启后，可以创建和管理频道推广任务',
                 })}
               </Text>
             </Descriptions.Item>

@@ -236,4 +236,10 @@ export default [
     icon: 'LinkOutlined',
     component: './PromotionLink',
   },
+  {
+    path: '/channel-posts',
+    name: 'list.channel-posts',
+    icon: 'AppstoreOutlined',
+    component: './ChannelPost',
+  },
 ];

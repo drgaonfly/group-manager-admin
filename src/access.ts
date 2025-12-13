@@ -296,5 +296,18 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetPromotionLink:
       currentUser &&
       (currentUser.isAdmin || checkPermission(currentUser, '/promotion-links', 'GET')),
+
+    // channelpost
+    canCreateChannelPost:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts', 'POST')),
+    canDeleteChannelPost:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts', 'DELETE')),
+    canUpdateChannelPost:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts/:id', 'PUT')),
+    canGetChannelPost:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts', 'GET')),
   };
 }
