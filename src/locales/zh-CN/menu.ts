@@ -61,6 +61,7 @@ export default {
   'menu.receipts': '钱包收据',
   'menu.exchanges': '兑换记录',
   'menu.group-messages': '群组消息',
+  'menu.channel-posts': '频道推广',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',

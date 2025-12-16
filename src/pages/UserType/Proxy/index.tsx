@@ -190,6 +190,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'groupWelcome' }),
             enabled: record.groupWelcome,
           },
+          {
+            name: intl.formatMessage({ id: 'channelPost' }),
+            enabled: record.channelPost,
+          },
         ];
 
         return (
