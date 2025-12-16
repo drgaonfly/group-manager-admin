@@ -371,4 +371,21 @@ export default {
   '2fa.disabled': '已禁用双因素认证',
   'disable.2fa': '禁用双因素认证',
   'qr.code': '二维码',
+
+  // Group Welcome related keys
+  group_welcome: '欢迎入群',
+  group_welcome_config: '群欢迎配置',
+  welcome_message: '欢迎消息',
+  welcome_message_placeholder:
+    '请输入欢迎消息内容，每行一条消息\n可使用变量：{username} {memberName}',
+  welcome_message_tip:
+    '每行一条消息，支持多条消息。可使用变量：{username}（@用户名）、{memberName}（真实姓名）',
+  welcome_medias: '欢迎媒体',
+  welcome_medias_tip: '支持多个图片、视频等媒体文件',
+  welcome_menu_config: '欢迎菜单配置',
+  media_caption: '媒体说明',
+  media_caption_placeholder: '请输入媒体文件的说明文字\n可使用变量：{username} {memberName}',
+  media_caption_tip:
+    '此文字将作为媒体文件的说明显示。可使用变量：{username}（@用户名）、{memberName}（真实姓名）',
+  welcomeGroup: '欢迎入群',
 };

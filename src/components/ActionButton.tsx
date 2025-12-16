@@ -16,6 +16,7 @@ import {
   AppstoreOutlined,
   BarChartOutlined,
   BranchesOutlined,
+  UserAddOutlined,
 } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import React from 'react';
@@ -37,6 +38,7 @@ export type ActionType =
   | 'keyboard'
   | 'statistics'
   | 'channel'
+  | 'group_welcome'
   | 'custom';
 
 interface ActionButtonProps {
@@ -80,6 +82,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     keyboard: <AppstoreOutlined />,
     statistics: <BarChartOutlined />,
     channel: <BranchesOutlined />,
+    group_welcome: <UserAddOutlined />,
     custom: icon || null,
   };
 
@@ -101,6 +104,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     keyboard: '#9254de', // 紫色
     statistics: '#f759ab', // 粉色
     channel: '#13c2c2', // 青色
+    group_welcome: '#52c41a', // 绿色
     custom: color || '#1890ff',
   };
 
@@ -122,6 +126,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     keyboard: intl.formatMessage({ id: 'keyboard_config', defaultMessage: '键盘配置' }),
     statistics: intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' }),
     channel: intl.formatMessage({ id: 'channel_post_management', defaultMessage: '频道推广' }),
+    group_welcome: intl.formatMessage({ id: 'group_welcome', defaultMessage: '欢迎入群' }),
     custom: '',
   };
 
