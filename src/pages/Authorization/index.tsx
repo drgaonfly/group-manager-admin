@@ -287,24 +287,6 @@ const TableList: React.FC = () => {
         />
       ),
     },
-    // 群组验证
-    {
-      title: intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' }),
-      dataIndex: 'canGroupVerify',
-      hideInTable: !currentUser?.groupVerify,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canGroupVerify}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canGroupVerify: !record.canGroupVerify });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
     {
       title: intl.formatMessage({ id: 'speechStatic', defaultMessage: '发言统计' }),
       dataIndex: 'canSpeechStatic',
