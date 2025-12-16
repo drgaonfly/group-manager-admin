@@ -24,6 +24,7 @@ import GroupMessageForm from './components/GroupMessageForm';
 import FreeKeyboardForm from './components/FreeKeyboardForm';
 import SpeechStatisticsModal from './components/SpeechStatisticsModal';
 import ChannelPostCreateForm from './components/ChannelPostCreateForm';
+import GroupWelcomeForm from './components/GroupWelcomeForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -128,6 +129,7 @@ const TableList: React.FC = () => {
   const [keyboardModalOpen, setKeyboardModalOpen] = useState<boolean>(false);
   const [speechStatisticsModalOpen, setSpeechStatisticsModalOpen] = useState<boolean>(false);
   const [channelPostModalOpen, setChannelPostModalOpen] = useState<boolean>(false);
+  const [groupWelcomeModalOpen, setGroupWelcomeModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -445,6 +447,21 @@ const TableList: React.FC = () => {
             })}
           </ActionButton>
         ),
+        record.canGroupWelcome && currentUser?.groupWelcome && (
+          <ActionButton
+            key="groupWelcome"
+            type="group_welcome"
+            onClick={() => {
+              setCurrentRow(record);
+              setGroupWelcomeModalOpen(true);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'group_welcome',
+              defaultMessage: '欢迎入群',
+            })}
+          </ActionButton>
+        ),
         <ActionButton
           key="detail"
           type="detail"
@@ -722,6 +739,17 @@ const TableList: React.FC = () => {
         onSuccess={() => {
           setChannelPostModalOpen(false);
           message.success('频道推广添加成功');
+        }}
+      />
+
+      <GroupWelcomeForm
+        open={groupWelcomeModalOpen}
+        onCancel={setGroupWelcomeModalOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
         }}
       />
     </PageContainer>
