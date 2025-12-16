@@ -25,6 +25,7 @@ import FreeKeyboardForm from './components/FreeKeyboardForm';
 import SpeechStatisticsModal from './components/SpeechStatisticsModal';
 import ChannelPostCreateForm from './components/ChannelPostCreateForm';
 import GroupWelcomeForm from './components/GroupWelcomeForm';
+import GroupVerifyForm from './components/GroupVerifyForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -130,6 +131,7 @@ const TableList: React.FC = () => {
   const [speechStatisticsModalOpen, setSpeechStatisticsModalOpen] = useState<boolean>(false);
   const [channelPostModalOpen, setChannelPostModalOpen] = useState<boolean>(false);
   const [groupWelcomeModalOpen, setGroupWelcomeModalOpen] = useState<boolean>(false);
+  const [groupVerifyModalOpen, setGroupVerifyModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -285,6 +287,24 @@ const TableList: React.FC = () => {
         />
       ),
     },
+    // 群组验证
+    {
+      title: intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' }),
+      dataIndex: 'canGroupVerify',
+      hideInTable: !currentUser?.groupVerify,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canGroupVerify}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canGroupVerify: !record.canGroupVerify });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
     {
       title: intl.formatMessage({ id: 'speechStatic', defaultMessage: '发言统计' }),
       dataIndex: 'canSpeechStatic',
@@ -329,6 +349,23 @@ const TableList: React.FC = () => {
           checked={record.canGroupMessaging}
           onChange={async () => {
             await handleUpdate({ _id: record._id, canGroupMessaging: !record.canGroupMessaging });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
+      title: intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' }),
+      dataIndex: 'canGroupVerify',
+      hideInTable: !currentUser?.groupVerify,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canGroupVerify}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canGroupVerify: !record.canGroupVerify });
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -442,7 +479,7 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({
-              id: 'channel_post_management',
+              id: 'channel_post',
               defaultMessage: '频道推广',
             })}
           </ActionButton>
@@ -459,6 +496,21 @@ const TableList: React.FC = () => {
             {intl.formatMessage({
               id: 'group_welcome',
               defaultMessage: '欢迎入群',
+            })}
+          </ActionButton>
+        ),
+        record.canGroupVerify && currentUser?.groupVerify && (
+          <ActionButton
+            key="groupVerify"
+            type="group_verify"
+            onClick={() => {
+              setCurrentRow(record);
+              setGroupVerifyModalOpen(true);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'group_verify',
+              defaultMessage: '群组验证',
             })}
           </ActionButton>
         ),
@@ -745,6 +797,17 @@ const TableList: React.FC = () => {
       <GroupWelcomeForm
         open={groupWelcomeModalOpen}
         onCancel={setGroupWelcomeModalOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+      />
+
+      <GroupVerifyForm
+        open={groupVerifyModalOpen}
+        onCancel={setGroupVerifyModalOpen}
         currentRow={currentRow}
         onSuccess={() => {
           if (actionRef.current) {

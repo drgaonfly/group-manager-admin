@@ -138,6 +138,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           />
           <ProFormSwitch label={intl.formatMessage({ id: 'speech_static' })} name="speech_static" />
           <ProFormSwitch label={intl.formatMessage({ id: 'groupWelcome' })} name="groupWelcome" />
+          <ProFormSwitch label={intl.formatMessage({ id: 'groupVerify' })} name="groupVerify" />
           <ProFormSwitch label={intl.formatMessage({ id: 'channelPost' })} name="channelPost" />
         </ProForm.Group>
       </div>

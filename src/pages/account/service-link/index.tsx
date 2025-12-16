@@ -28,6 +28,7 @@ const ServiceLink: React.FC = () => {
     speech_static: boolean;
     groupWelcome: boolean;
     channelPost: boolean;
+    groupVerify: boolean;
   }) => {
     try {
       setLoading(true);
@@ -88,6 +89,7 @@ const ServiceLink: React.FC = () => {
               speech_static: currentUser?.speech_static || false,
               groupWelcome: currentUser?.groupWelcome || false,
               channelPost: currentUser?.channelPost || false,
+              groupVerify: currentUser?.groupVerify || false,
             }}
             submitter={{
               submitButtonProps: {
@@ -141,6 +143,14 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'channelPost.tooltip',
                 defaultMessage: '开启后，可以创建和管理频道推广任务',
+              })}
+            />
+            <ProFormSwitch
+              name="groupVerify"
+              label={intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' })}
+              tooltip={intl.formatMessage({
+                id: 'groupVerify.tooltip',
+                defaultMessage: '开启后，新成员加入群组时需要通过验证问题才能加入',
               })}
             />
           </ProForm>
@@ -209,6 +219,17 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'channelPost.tooltip',
                   defaultMessage: '开启后，可以创建和管理频道推广任务',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' })}
+            >
+              {renderStatusTag(currentUser?.groupVerify || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'groupVerify.tooltip',
+                  defaultMessage: '开启后，新成员加入群组时需要通过验证问题才能加入',
                 })}
               </Text>
             </Descriptions.Item>

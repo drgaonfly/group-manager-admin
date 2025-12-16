@@ -302,5 +302,6 @@ export default {
   availableBotCount: '可用机器人数量',
   botFeatures: '机器人功能',
   groupWelcome: '欢迎入群',
+  groupVerify: '群组验证',
   channelPost: '频道推广',
 };
