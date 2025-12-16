@@ -17,6 +17,7 @@ import {
   BarChartOutlined,
   BranchesOutlined,
   UserAddOutlined,
+  SafetyCertificateOutlined,
 } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import React from 'react';
@@ -39,6 +40,7 @@ export type ActionType =
   | 'statistics'
   | 'channel'
   | 'group_welcome'
+  | 'group_verify'
   | 'custom';
 
 interface ActionButtonProps {
@@ -83,6 +85,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     statistics: <BarChartOutlined />,
     channel: <BranchesOutlined />,
     group_welcome: <UserAddOutlined />,
+    group_verify: <SafetyCertificateOutlined />,
     custom: icon || null,
   };
 
@@ -105,6 +108,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     statistics: '#f759ab', // 粉色
     channel: '#13c2c2', // 青色
     group_welcome: '#52c41a', // 绿色
+    group_verify: '#fa541c', // 橙红色
     custom: color || '#1890ff',
   };
 
@@ -127,6 +131,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     statistics: intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' }),
     channel: intl.formatMessage({ id: 'channel_post_management', defaultMessage: '频道推广' }),
     group_welcome: intl.formatMessage({ id: 'group_welcome', defaultMessage: '欢迎入群' }),
+    group_verify: intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' }),
     custom: '',
   };
 

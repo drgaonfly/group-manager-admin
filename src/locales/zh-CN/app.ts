@@ -388,4 +388,22 @@ export default {
   media_caption_tip:
     '此文字将作为媒体文件的说明显示。可使用变量：{username}（@用户名）、{memberName}（真实姓名）',
   welcomeGroup: '欢迎入群',
+
+  // Group Verify related keys
+  group_verify: '群组验证',
+  group_verify_config: '群验证配置',
+  groupVerify: '群组验证',
+  verify_question: '验证问题',
+  verify_question_placeholder: '请输入验证问题',
+  verify_question_required: '请输入验证问题',
+  verify_question_tip: '新用户加入群组时需要回答的验证问题',
+  verify_answers_config: '答案选项配置',
+  verify_answer: '答案选项',
+  verify_answer_required: '请输入答案选项',
+  is_correct: '是否正确',
+  is_correct_required: '请选择是否正确',
+  correct: '正确',
+  incorrect: '错误',
+  at_least_one_correct_answer: '至少需要一个正确答案',
+  'groupVerify.tooltip': '开启后，新成员加入群组时需要通过验证问题才能加入',
 };

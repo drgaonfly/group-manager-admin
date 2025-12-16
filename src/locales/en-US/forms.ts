@@ -248,5 +248,6 @@ export default {
   availableBotCount: 'Available Bot Count',
   botFeatures: 'Bot Features',
   groupWelcome: 'Group Welcome',
+  groupVerify: 'Group Verify',
   channelPost: '频道推广',
 };

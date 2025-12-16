@@ -39,6 +39,7 @@ declare namespace API {
     botCount?: number;
     groupWelcome?: boolean;
     channelPost?: boolean;
+    groupVerify?: boolean;
   };
 
   // Example type definition

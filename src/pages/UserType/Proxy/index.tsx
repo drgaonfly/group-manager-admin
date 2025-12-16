@@ -191,6 +191,10 @@ const TableList: React.FC = () => {
             enabled: record.groupWelcome,
           },
           {
+            name: intl.formatMessage({ id: 'groupVerify' }),
+            enabled: record.groupVerify,
+          },
+          {
             name: intl.formatMessage({ id: 'channelPost' }),
             enabled: record.channelPost,
           },
