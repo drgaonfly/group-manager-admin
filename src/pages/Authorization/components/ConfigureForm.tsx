@@ -5,9 +5,11 @@ import {
   ProDescriptions,
   ProFormGroup,
   ProFormText,
+  ProColumns,
+  EditableProTable,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import { useAccess, useIntl, useModel } from '@umijs/max';
+import { FormattedMessage, useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 
@@ -89,51 +91,51 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   //   },
   // ];
 
-  // const preset_columns: ProColumns<presetItem>[] = [
-  //   {
-  //     title: intl.formatMessage({ id: 'keyword', defaultMessage: '关键词' }),
-  //     dataIndex: 'keyword',
-  //     formItemProps: {
-  //       rules: [
-  //         {
-  //           required: true,
-  //           message: intl.formatMessage({ id: 'keyword_required', defaultMessage: '请输入关键词' }),
-  //         },
-  //       ],
-  //     },
-  //   },
-  //   {
-  //     title: intl.formatMessage({ id: 'response', defaultMessage: '回复内容' }),
-  //     dataIndex: 'response',
-  //     valueType: 'textarea' as const,
-  //     formItemProps: {
-  //       rules: [
-  //         {
-  //           required: true,
-  //           message: intl.formatMessage({
-  //             id: 'response_required',
-  //             defaultMessage: '请输入回复内容',
-  //           }),
-  //         },
-  //       ],
-  //     },
-  //   },
-  //   {
-  //     title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-  //     valueType: 'option',
-  //     width: 200,
-  //     render: (text: any, record: any, _: any, action: any) => [
-  //       <a
-  //         key="editable"
-  //         onClick={() => {
-  //           action?.startEditable?.(`${record._id}`);
-  //         }}
-  //       >
-  //         {intl.formatMessage({ id: 'edit' })}
-  //       </a>,
-  //     ],
-  //   },
-  // ];
+  const preset_columns: ProColumns<presetItem>[] = [
+    {
+      title: intl.formatMessage({ id: 'keyword', defaultMessage: '关键词' }),
+      dataIndex: 'keyword',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'keyword_required', defaultMessage: '请输入关键词' }),
+          },
+        ],
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'response', defaultMessage: '回复内容' }),
+      dataIndex: 'response',
+      valueType: 'textarea' as const,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({
+              id: 'response_required',
+              defaultMessage: '请输入回复内容',
+            }),
+          },
+        ],
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      valueType: 'option',
+      width: 200,
+      render: (text: any, record: any, _: any, action: any) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
 
   return (
     <ModalForm
@@ -296,7 +298,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           )}
         </ProFormGroup>
 
-        {/* <EditableProTable<presetItem>
+        <EditableProTable<presetItem>
           rowKey="_id"
           headerTitle={intl.formatMessage({
             id: 'preset_config',
@@ -317,7 +319,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               response: '',
             }),
           }}
-        /> */}
+        />
 
         {/* <EditableProTable<menuItem>
           rowKey="_id"
