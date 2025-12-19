@@ -2,7 +2,7 @@ import { Card, message, Typography, Button, Space, Descriptions, Tag } from 'ant
 import React, { useState } from 'react';
 import { useIntl, useAccess } from '@umijs/max';
 import { useModel } from '@umijs/max';
-import { ProForm, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormSwitch, ProFormDigit } from '@ant-design/pro-components';
 import { updateItem } from '@/services/ant-design-pro/api';
 import {
   EditOutlined,
@@ -29,6 +29,8 @@ const ServiceLink: React.FC = () => {
     groupWelcome: boolean;
     channelPost: boolean;
     groupVerify: boolean;
+    botCount: number;
+    availableBotCount: number;
   }) => {
     try {
       setLoading(true);
@@ -90,6 +92,8 @@ const ServiceLink: React.FC = () => {
               groupWelcome: currentUser?.groupWelcome || false,
               channelPost: currentUser?.channelPost || false,
               groupVerify: currentUser?.groupVerify || false,
+              botCount: currentUser?.botCount || 0,
+              availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
               submitButtonProps: {
@@ -97,6 +101,21 @@ const ServiceLink: React.FC = () => {
               },
             }}
           >
+            <ProFormDigit
+              name="availableBotCount"
+              label={intl.formatMessage({
+                id: 'availableBotCount',
+                defaultMessage: '可用机器人数量',
+              })}
+              min={0}
+              fieldProps={{ precision: 0 }}
+            />
+            <ProFormDigit
+              name="botCount"
+              label={intl.formatMessage({ id: 'botCount', defaultMessage: '当前机器人数量' })}
+              min={0}
+              fieldProps={{ precision: 0 }}
+            />
             <ProFormSwitch
               name="bidirectional"
               label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
@@ -156,6 +175,19 @@ const ServiceLink: React.FC = () => {
           </ProForm>
         ) : (
           <Descriptions column={1} bordered>
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'availableBotCount',
+                defaultMessage: '可用机器人数量',
+              })}
+            >
+              {currentUser?.availableBotCount || 0}
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'botCount', defaultMessage: '当前机器人数量' })}
+            >
+              {currentUser?.botCount || 0}
+            </Descriptions.Item>
             <Descriptions.Item
               label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
             >
