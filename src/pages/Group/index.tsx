@@ -98,19 +98,6 @@ const GroupTableList: React.FC = () => {
       copyable: true,
       renderText: (bot) => bot?.botName,
     },
-    // message
-    {
-      title: intl.formatMessage({ id: 'content_of_act', defaultMessage: '活动内容' }),
-      dataIndex: 'message',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    // intervalTime
-    // {
-    //   title: intl.formatMessage({ id: 'intervalTime', defaultMessage: 'Interval Time' }),
-    //   dataIndex: 'intervalTime',
-    //   hideInSearch: true,
-    // },
     {
       title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
       dataIndex: 'operators',
@@ -126,6 +113,7 @@ const GroupTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: 'Is Online' }),
       dataIndex: 'isOnline',
       hideInSearch: true,
+      hideInTable: true,
       render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'online' })}

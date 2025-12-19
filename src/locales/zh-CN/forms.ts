@@ -304,4 +304,5 @@ export default {
   groupWelcome: '欢迎入群',
   groupVerify: '群组验证',
   channelPost: '频道推广',
+  reportGroupMemberNameUpdated: '报道群内成员名称变更',
 };
