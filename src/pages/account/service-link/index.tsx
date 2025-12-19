@@ -29,6 +29,7 @@ const ServiceLink: React.FC = () => {
     groupWelcome: boolean;
     channelPost: boolean;
     groupVerify: boolean;
+    reportGroupMemberNameUpdated: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -92,6 +93,7 @@ const ServiceLink: React.FC = () => {
               groupWelcome: currentUser?.groupWelcome || false,
               channelPost: currentUser?.channelPost || false,
               groupVerify: currentUser?.groupVerify || false,
+              reportGroupMemberNameUpdated: currentUser?.reportGroupMemberNameUpdated || false,
               botCount: currentUser?.botCount || 0,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
@@ -170,6 +172,17 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'groupVerify.tooltip',
                 defaultMessage: '开启后，新成员加入群组时需要通过验证问题才能加入',
+              })}
+            />
+            <ProFormSwitch
+              name="reportGroupMemberNameUpdated"
+              label={intl.formatMessage({
+                id: 'reportGroupMemberNameUpdated',
+                defaultMessage: '群成员改名通知',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'reportGroupMemberNameUpdated.tooltip',
+                defaultMessage: '开启后，群成员修改用户名、名字或姓氏时会在群里通知',
               })}
             />
           </ProForm>
@@ -262,6 +275,20 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'groupVerify.tooltip',
                   defaultMessage: '开启后，新成员加入群组时需要通过验证问题才能加入',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'reportGroupMemberNameUpdated',
+                defaultMessage: '群成员改名通知',
+              })}
+            >
+              {renderStatusTag(currentUser?.reportGroupMemberNameUpdated || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'reportGroupMemberNameUpdated.tooltip',
+                  defaultMessage: '开启后，群成员修改用户名、名字或姓氏时会在群里通知',
                 })}
               </Text>
             </Descriptions.Item>

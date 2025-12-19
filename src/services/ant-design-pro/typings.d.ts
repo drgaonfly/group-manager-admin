@@ -40,6 +40,7 @@ declare namespace API {
     groupWelcome?: boolean;
     channelPost?: boolean;
     groupVerify?: boolean;
+    reportGroupMemberNameUpdated?: boolean;
   };
 
   // Example type definition

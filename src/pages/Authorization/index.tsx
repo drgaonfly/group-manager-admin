@@ -269,6 +269,29 @@ const TableList: React.FC = () => {
         />
       ),
     },
+    {
+      title: intl.formatMessage({
+        id: 'canReportMemberNameUpdated',
+        defaultMessage: '报道群成员名称变更',
+      }),
+      dataIndex: 'canReportMemberNameUpdated',
+      hideInTable: !currentUser?.reportGroupMemberNameUpdated,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canReportMemberNameUpdated}
+          onChange={async () => {
+            await handleUpdate({
+              _id: record._id,
+              canReportMemberNameUpdated: !record.canReportMemberNameUpdated,
+            });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
     // 欢迎入群
     {
       title: intl.formatMessage({ id: 'welcomeGroup', defaultMessage: '欢迎入群' }),
