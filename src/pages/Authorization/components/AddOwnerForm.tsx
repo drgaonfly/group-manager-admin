@@ -65,14 +65,14 @@ const AddOwnerForm: React.FC<AddOwnerFormProps> = (props) => {
         label={intl.formatMessage({ id: 'owner', defaultMessage: '拥有者' })}
         placeholder={intl.formatMessage({
           id: 'enter_owner',
-          defaultMessage: '请输入电报机器人id',
+          defaultMessage: '用户名',
         })}
         rules={[
           {
             required: true,
             message: intl.formatMessage({
               id: 'enter_owner_required',
-              defaultMessage: '请输入电报机器人id',
+              defaultMessage: '用户名',
             }),
           },
         ]}
