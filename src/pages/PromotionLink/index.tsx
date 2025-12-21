@@ -126,9 +126,12 @@ const TableList: React.FC = () => {
       render: (text) => {
         if (!text) return '-';
         return (
-          <Tooltip placement="topLeft" title={text}>
-            <span>{text}</span>
-          </Tooltip>
+          <span>
+            <Tooltip placement="topLeft" title={text}>
+              <span>{text}</span>
+            </Tooltip>
+            <CopyToClipboard text={text} />
+          </span>
         );
       },
     },
