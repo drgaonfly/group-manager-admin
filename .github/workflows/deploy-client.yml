@@ -26,7 +26,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /www/wwwroot/multi-admin.2040fc.xyz/multi-admin-remote &&
+            cd /www/wwwroot/manager-admin.2040fc.xyz/manager-admin-remote &&
             git pull --rebase origin ${{ github.event.inputs.branch }}  &&
             /www/server/nodejs/v22.21.1/bin/pnpm install &&
             git checkout -f . &&
