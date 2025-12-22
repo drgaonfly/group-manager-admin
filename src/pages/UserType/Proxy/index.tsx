@@ -198,6 +198,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'channelPost' }),
             enabled: record.channelPost,
           },
+          {
+            name: intl.formatMessage({ id: 'reportGroupMemberNameUpdated' }),
+            enabled: record.reportGroupMemberNameUpdated,
+          },
         ];
 
         return (

@@ -249,5 +249,6 @@ export default {
   botFeatures: 'Bot Features',
   groupWelcome: 'Group Welcome',
   groupVerify: 'Group Verify',
-  channelPost: '频道推广',
+  channelPost: 'Channel Post',
+  reportGroupMemberNameUpdated: 'Report Group Member Name Updated',
 };
