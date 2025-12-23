@@ -110,7 +110,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
       width: 200,
-      render: (text, record, _, action) => [
+      render: (_, record, __, action) => [
         <a
           key="editable"
           onClick={() => {
@@ -256,7 +256,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             url: '',
           }),
         }}
-        toolBarRender={false}
       />
     </ModalForm>
   );
