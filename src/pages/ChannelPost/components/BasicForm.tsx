@@ -33,21 +33,12 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleOptions }) => {
   const intl = useIntl();
-  const [title, setTitle] = useState(values?.title || '');
   const [content, setContent] = useState(values?.content || '');
-  const [emojiVisible, setEmojiVisible] = useState(false);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(values?.menus || []);
   const [medias, setMedias] = useState<string[]>(
     Array.isArray(values?.medias) ? values.medias : [],
   );
-
-  const handleEmojiClick = (emojiData: any) => {
-    const newTitle = title + emojiData.emoji;
-    setTitle(newTitle);
-    form.setFieldsValue({ title: newTitle });
-    setEmojiVisible(false);
-  };
 
   const handleContentEmojiClick = (emojiData: any) => {
     const newContent = content + emojiData.emoji;
@@ -56,9 +47,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
   };
 
   useEffect(() => {
-    if (values?.title !== undefined) {
-      setTitle(values.title);
-    }
     if (values?.content !== undefined) {
       setContent(values.content);
     }
@@ -68,7 +56,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
     if (Array.isArray(values?.medias)) {
       setMedias(values.medias);
     }
-  }, [values?.title, values?.content, values?.menus, values?.medias]);
+  }, [values?.content, values?.menus, values?.medias]);
 
   const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
     uid: String(idx + 1),
@@ -106,7 +94,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
       onFinish={async (formValues) => {
         await onFinish({
           ...formValues,
-          title: title,
           content: content,
           menus: menus.map(({ name, url }) => ({ name, url })),
           medias: medias,
@@ -123,32 +110,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
       />
 
       <ProFormGroup>
-        <ProFormText
-          width="md"
-          name="title"
-          label={
-            <span>
-              {intl.formatMessage({ id: 'title' })}
-              <Popover
-                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
-                title="选择表情"
-                trigger="click"
-                open={emojiVisible}
-                onOpenChange={setEmojiVisible}
-              >
-                <Button size="small" style={{ marginLeft: 8 }}>
-                  😊
-                </Button>
-              </Popover>
-            </span>
-          }
-          rules={[{ required: true, message: intl.formatMessage({ id: 'title.required' }) }]}
-          fieldProps={{
-            value: title,
-            onChange: (e: any) => setTitle(e.target.value),
-          }}
-        />
-
         <ProFormText
           name="url"
           label={intl.formatMessage({ id: 'url' })}

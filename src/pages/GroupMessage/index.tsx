@@ -145,21 +145,47 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'media', defaultMessage: '媒体' }),
       dataIndex: 'medias',
       hideInSearch: true,
+      width: 150,
       render: (_, record) => {
         if (!record.medias || !Array.isArray(record.medias) || record.medias.length === 0) {
-          return null;
+          return '-';
         }
+
+        const getMediaType = (filename: string): 'photo' | 'video' => {
+          const ext = filename.toLowerCase().split('.').pop();
+          const videoExtensions = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv'];
+          return videoExtensions.includes(ext || '') ? 'video' : 'photo';
+        };
+
         return (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {record.medias.map((media: string, idx: number) => (
-              <Image
-                key={media || idx}
-                src={media}
-                alt={`media-${idx}`}
-                style={{ maxWidth: '100px', maxHeight: '100px' }}
-                preview
-              />
-            ))}
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {record.medias.slice(0, 3).map((media: string, idx: number) => {
+              const mediaUrl = media.startsWith('http') ? media : `/api/static/${media}`;
+              const mediaType = getMediaType(media);
+
+              if (mediaType === 'video') {
+                return (
+                  <video
+                    key={media || idx}
+                    src={mediaUrl}
+                    style={{ maxWidth: '40px', maxHeight: '40px', objectFit: 'cover' }}
+                    muted
+                  />
+                );
+              }
+              return (
+                <Image
+                  key={media || idx}
+                  src={mediaUrl}
+                  alt={`media-${idx}`}
+                  style={{ maxWidth: '40px', maxHeight: '40px' }}
+                  preview
+                />
+              );
+            })}
+            {record.medias.length > 3 && (
+              <span style={{ fontSize: 12, color: '#999' }}>+{record.medias.length - 3}</span>
+            )}
           </div>
         );
       },
