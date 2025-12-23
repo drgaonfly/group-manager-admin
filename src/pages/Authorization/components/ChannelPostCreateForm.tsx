@@ -34,10 +34,19 @@ interface Props {
 
 const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
   const intl = useIntl();
+  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [emojiVisible, setEmojiVisible] = useState(false);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [medias, setMedias] = useState<string[]>([]);
+
+  const handleEmojiClick = (emojiData: any) => {
+    const newTitle = title + emojiData.emoji;
+    setTitle(newTitle);
+    form.setFieldsValue({ title: newTitle });
+    setEmojiVisible(false);
+  };
 
   const handleContentEmojiClick = (emojiData: any) => {
     const newContent = content + emojiData.emoji;
@@ -59,6 +68,7 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
       const sendType = values.sendType || 'scheduled';
       const formData = {
         ...values,
+        title: title,
         content: content,
         bot: currentRow?._id,
         menus: menus.map(({ name, url }) => ({ name, url })),
@@ -90,6 +100,7 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
       onSuccess();
       // 重置表单
       form.resetFields();
+      setTitle('');
       setContent('');
       setMenus([]);
       setMedias([]);
@@ -113,6 +124,7 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
         if (!visible) {
           // 关闭时重置状态
           form.resetFields();
+          setTitle('');
           setContent('');
           setMenus([]);
           setMedias([]);
@@ -153,6 +165,33 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
       />
 
       <ProFormGroup>
+        <ProFormText
+          name="title"
+          width="md"
+          label={
+            <span>
+              {intl.formatMessage({ id: 'title' })}
+              <Popover
+                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
+                title="选择表情"
+                trigger="click"
+                open={emojiVisible}
+                onOpenChange={setEmojiVisible}
+              >
+                <Button size="small" style={{ marginLeft: 8 }}>
+                  😊
+                </Button>
+              </Popover>
+            </span>
+          }
+          rules={[{ required: true, message: '请输入频道标题' }]}
+          fieldProps={{
+            value: title,
+            onChange: (e: any) => setTitle(e.target.value),
+            placeholder: '请输入频道标题',
+          }}
+        />
+
         <ProFormText
           name="url"
           width="md"
