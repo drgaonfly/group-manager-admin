@@ -3,7 +3,7 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Switch } from 'antd';
+import { message, Switch, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -101,6 +101,34 @@ const TableList: React.FC = () => {
       width: 200,
       renderText: (_, record) => {
         return record?.content || '-';
+      },
+    },
+    // medias
+    {
+      title: intl.formatMessage({ id: 'media', defaultMessage: '媒体' }),
+      dataIndex: 'medias',
+      hideInSearch: true,
+      width: 150,
+      render: (_, record) => {
+        if (!record.medias || !Array.isArray(record.medias) || record.medias.length === 0) {
+          return '-';
+        }
+        return (
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {record.medias.slice(0, 3).map((media: string, idx: number) => (
+              <Image
+                key={media || idx}
+                src={media.startsWith('http') ? media : `/api/static/${media}`}
+                alt={`media-${idx}`}
+                style={{ maxWidth: '40px', maxHeight: '40px' }}
+                preview
+              />
+            ))}
+            {record.medias.length > 3 && (
+              <span style={{ fontSize: 12, color: '#999' }}>+{record.medias.length - 3}</span>
+            )}
+          </div>
+        );
       },
     },
     {

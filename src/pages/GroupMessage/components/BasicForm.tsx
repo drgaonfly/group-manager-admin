@@ -21,27 +21,27 @@ interface Props {
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
 
-  // images: string[]
-  const [images, setImages] = useState<string[]>(
-    Array.isArray(values?.images) ? values.images : values?.image ? [values.image] : [],
+  // medias: string[]
+  const [medias, setMedias] = useState<string[]>(
+    Array.isArray(values?.medias) ? values.medias : values?.image ? [values.image] : [],
   );
 
   useEffect(() => {
-    if (Array.isArray(values?.images)) {
-      setImages(values.images);
+    if (Array.isArray(values?.medias)) {
+      setMedias(values.medias);
     } else if (values?.image) {
-      setImages([values.image]);
+      setMedias([values.image]);
     } else {
-      setImages([]);
+      setMedias([]);
     }
-  }, [values?.images, values?.image]);
+  }, [values?.medias, values?.image]);
 
-  // Default file list for showing existing images
-  const defaultImageFileList: UploadFile[] = images.map((img, idx) => ({
+  // Default file list for showing existing medias
+  const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
     uid: String(idx + 1),
-    name: `image${idx + 1}`,
+    name: `media${idx + 1}`,
     status: 'done' as UploadFile['status'],
-    url: img,
+    url: media,
   }));
 
   return (
@@ -54,13 +54,13 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             ? values.groups.map((g: any) => g?._id || g)
             : [],
         menus: values?.menus || [],
-        images: images,
+        medias: medias,
       }}
       onFinish={async (formValues) => {
-        // 兼容后端 images 字段
+        // 兼容后端 medias 字段
         await onFinish({
           ...formValues,
-          images: images,
+          medias: medias,
         });
       }}
       submitter={{
@@ -103,17 +103,17 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           }}
         />
 
-        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: '图片' })}>
+        <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
-              // 支持多图
-              setImages((prev) => [...prev, signedUrl || url]);
+              // 支持多媒体
+              setMedias((prev) => [...prev, signedUrl || url]);
             }}
-            accept=".jpg,.jpeg,.png,.gif"
-            defaultFileList={defaultImageFileList}
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            defaultFileList={defaultMediaFileList}
             multiple
             onRemove={(file: UploadFile) => {
-              setImages((prev) => prev.filter((img) => img !== file.url));
+              setMedias((prev) => prev.filter((media) => media !== file.url));
               return true;
             }}
           />

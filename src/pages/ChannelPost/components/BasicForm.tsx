@@ -8,11 +8,15 @@ import {
   ProFormGroup,
   EditableProTable,
   ProFormSwitch,
+  ProFormRadio,
+  ProFormDependency,
+  ProFormSelect,
 } from '@ant-design/pro-components';
-import { Form, Input, Popover, Button } from 'antd';
-import { FormInstance } from 'antd/es/form';
+import { Form, Input, Popover, Button, Space, Alert } from 'antd';
+import { UploadFile } from 'antd/es/upload/interface';
 import EmojiPicker from 'emoji-picker-react';
 import { FormattedMessage } from '@umijs/max';
+import Upload from '@/components/Upload';
 
 type menuItem = {
   _id: string;
@@ -21,24 +25,26 @@ type menuItem = {
 };
 
 interface Props {
-  form?: FormInstance<any>;
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
+  hideScheduleOptions?: boolean;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleOptions }) => {
   const intl = useIntl();
   const [title, setTitle] = useState(values?.title || '');
   const [content, setContent] = useState(values?.content || '');
   const [emojiVisible, setEmojiVisible] = useState(false);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(values?.menus || []);
+  const [medias, setMedias] = useState<string[]>(
+    Array.isArray(values?.medias) ? values.medias : [],
+  );
 
   const handleEmojiClick = (emojiData: any) => {
     const newTitle = title + emojiData.emoji;
     setTitle(newTitle);
-    // 同步更新表单字段值
     form.setFieldsValue({ title: newTitle });
     setEmojiVisible(false);
   };
@@ -49,7 +55,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     form.setFieldsValue({ content: newContent });
   };
 
-  // 当组件初始化或values变化时，更新状态
   useEffect(() => {
     if (values?.title !== undefined) {
       setTitle(values.title);
@@ -60,7 +65,17 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     if (values?.menus !== undefined) {
       setMenus(values.menus || []);
     }
-  }, [values?.title, values?.content, values?.menus]);
+    if (Array.isArray(values?.medias)) {
+      setMedias(values.medias);
+    }
+  }, [values?.title, values?.content, values?.menus, values?.medias]);
+
+  const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
+    uid: String(idx + 1),
+    name: `media${idx + 1}`,
+    status: 'done' as UploadFile['status'],
+    url: media.startsWith('http') ? media : `/api/static/${media}`,
+  }));
 
   return (
     <ProForm
@@ -73,30 +88,40 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         isClearLastPost: values?.isClearLastPost ?? false,
         interval: values?.interval ?? 60,
         weight: values?.weight ?? 0,
+        sendType: 'scheduled',
+        timeUnit: 'minutes',
+        menus_per_row: values?.menus_per_row ?? 1,
       }}
       submitter={{
-        render: (props, dom) => {
-          return (
-            <div style={{ textAlign: 'right' }}>
-              {dom.map((button, index) => (
-                <span key={index} style={{ marginLeft: 8 }}>
-                  {button}
-                </span>
-              ))}
-            </div>
-          );
-        },
+        render: (_, dom) => (
+          <div style={{ textAlign: 'right' }}>
+            {dom.map((button, index) => (
+              <span key={index} style={{ marginLeft: 8 }}>
+                {button}
+              </span>
+            ))}
+          </div>
+        ),
       }}
-      onFinish={async (values) => {
-        // 确保使用当前的状态值
+      onFinish={async (formValues) => {
         await onFinish({
-          ...values,
+          ...formValues,
           title: title,
           content: content,
           menus: menus.map(({ name, url }) => ({ name, url })),
+          medias: medias,
         });
       }}
     >
+      <Alert
+        message={
+          '支持的 Telegram 标签：<b>加粗</b>、<i>斜体</i>、<u>下划线</u>、<s>删除线</s>、<code>代码</code>、<pre>预格式化</pre>、<a>链接</a>'
+        }
+        type="warning"
+        showIcon
+        style={{ marginBottom: 16 }}
+      />
+
       <ProFormGroup>
         <ProFormText
           width="md"
@@ -134,12 +159,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             {
               validator: (_, value) => {
                 if (!value) return Promise.resolve();
-
-                // 支持多种格式：t.me链接、@用户名、频道ID
                 const telegramPattern = /^https:\/\/t\.me\/[a-zA-Z0-9_]+$/;
                 const usernamePattern = /^@[a-zA-Z0-9_]+$/;
                 const channelIdPattern = /^-?\d+$/;
-
                 if (
                   telegramPattern.test(value) ||
                   usernamePattern.test(value) ||
@@ -147,31 +169,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
                 ) {
                   return Promise.resolve();
                 }
-
                 return Promise.reject(
                   new Error('频道链接格式错误，支持格式：https://t.me/用户名、@用户名 或 频道ID'),
                 );
               },
             },
           ]}
-        />
-      </ProFormGroup>
-
-      <ProFormGroup>
-        <ProFormDigit
-          width="md"
-          name="interval"
-          label={intl.formatMessage({ id: 'interval', defaultMessage: '发送间隔(分钟)' })}
-          min={1}
-          tooltip="设置自动发送的时间间隔，单位为分钟"
-        />
-
-        <ProFormDigit
-          width="md"
-          name="weight"
-          label={intl.formatMessage({ id: 'weight' })}
-          min={0}
-          tooltip="权重越小越靠前显示"
         />
       </ProFormGroup>
 
@@ -202,26 +205,144 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           }}
         />
 
-        <ProFormSwitch
-          name="isOnline"
-          label={intl.formatMessage({ id: 'status', defaultMessage: '启用状态' })}
-          tooltip="是否启用自动发送"
-        />
-
-        <ProFormSwitch
-          name="isClearLastPost"
-          label={intl.formatMessage({ id: 'clearLastPost', defaultMessage: '清除上条消息' })}
-          tooltip="开启后，发送新消息前会删除上一条消息"
-        />
-
-        {!newRecord && (
-          <Form.Item name="_id" label={false}>
-            <Input type="hidden" />
-          </Form.Item>
-        )}
+        <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
+          <Upload
+            onFileUpload={(url: string) => {
+              setMedias((prev) => [...prev, url]);
+            }}
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            defaultFileList={defaultMediaFileList}
+            multiple
+            onRemove={(file: UploadFile) => {
+              const fileUrl = file.url || '';
+              const fileName = fileUrl.includes('/api/static/')
+                ? fileUrl.replace('/api/static/', '')
+                : fileUrl;
+              setMedias((prev) => prev.filter((media) => media !== fileName && media !== fileUrl));
+              return true;
+            }}
+          />
+        </Form.Item>
       </ProFormGroup>
 
-      {/* 菜单配置 */}
+      {!hideScheduleOptions && (
+        <ProFormGroup>
+          <ProFormRadio.Group
+            name="sendType"
+            label={intl.formatMessage({ id: 'send_type', defaultMessage: '发送类型' })}
+            options={[
+              {
+                label: intl.formatMessage({ id: 'immediate_send', defaultMessage: '立即发送' }),
+                value: 'immediate',
+              },
+              {
+                label: intl.formatMessage({ id: 'scheduled_send', defaultMessage: '定时发送' }),
+                value: 'scheduled',
+              },
+            ]}
+          />
+          <ProFormDigit
+            width="md"
+            name="menus_per_row"
+            label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
+            min={1}
+            tooltip="设置内联菜单每行显示的按钮数量"
+          />
+        </ProFormGroup>
+      )}
+
+      {hideScheduleOptions && (
+        <ProFormGroup>
+          <ProFormDigit
+            width="md"
+            name="menus_per_row"
+            label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
+            min={1}
+            tooltip="设置内联菜单每行显示的按钮数量"
+          />
+          <ProFormDigit
+            width="md"
+            name="interval"
+            label={intl.formatMessage({ id: 'interval', defaultMessage: '发送间隔(分钟)' })}
+            min={1}
+            tooltip="设置自动发送的时间间隔，单位为分钟"
+          />
+          <ProFormDigit
+            width="md"
+            name="weight"
+            label={intl.formatMessage({ id: 'weight' })}
+            min={0}
+            tooltip="权重越小越靠前显示"
+          />
+          <ProFormSwitch
+            name="isOnline"
+            label={intl.formatMessage({ id: 'status', defaultMessage: '启用状态' })}
+            tooltip="是否启用自动发送"
+          />
+          <ProFormSwitch
+            name="isClearLastPost"
+            label={intl.formatMessage({ id: 'clearLastPost', defaultMessage: '清除上条消息' })}
+            tooltip="开启后，发送新消息前会删除上一条消息"
+          />
+        </ProFormGroup>
+      )}
+
+      {!hideScheduleOptions && (
+        <ProFormDependency name={['sendType']}>
+          {({ sendType }) =>
+            sendType === 'scheduled' && (
+              <>
+                <ProFormGroup
+                  label={intl.formatMessage({ id: 'interval_time', defaultMessage: '发送间隔' })}
+                  style={{ marginBottom: 16 }}
+                >
+                  <Space>
+                    <ProFormSelect
+                      name="timeUnit"
+                      width="xs"
+                      options={[
+                        {
+                          label: intl.formatMessage({ id: 'minutes', defaultMessage: '分钟' }),
+                          value: 'minutes',
+                        },
+                        {
+                          label: intl.formatMessage({ id: 'hours', defaultMessage: '小时' }),
+                          value: 'hours',
+                        },
+                      ]}
+                      noStyle
+                    />
+                    <ProFormDigit name="interval" width="xs" min={1} noStyle />
+                  </Space>
+                </ProFormGroup>
+                <ProFormGroup>
+                  <ProFormDigit
+                    width="md"
+                    name="weight"
+                    label={intl.formatMessage({ id: 'weight' })}
+                    min={0}
+                    tooltip="权重越小越靠前显示"
+                  />
+                  <ProFormSwitch
+                    name="isOnline"
+                    label={intl.formatMessage({ id: 'status', defaultMessage: '启用状态' })}
+                    tooltip="是否启用自动发送"
+                  />
+                  <ProFormSwitch
+                    name="isClearLastPost"
+                    label={intl.formatMessage({
+                      id: 'clearLastPost',
+                      defaultMessage: '清除上条消息',
+                    })}
+                    tooltip="开启后，发送新消息前会删除上一条消息"
+                  />
+                </ProFormGroup>
+              </>
+            )
+          }
+        </ProFormDependency>
+      )}
+
       <EditableProTable<menuItem>
         rowKey="_id"
         headerTitle={intl.formatMessage({
@@ -233,31 +354,21 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
             dataIndex: 'name',
             formItemProps: {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入按钮名称',
-                },
-              ],
+              rules: [{ required: true, message: '请输入按钮名称' }],
             },
           },
           {
             title: intl.formatMessage({ id: 'url', defaultMessage: '链接地址' }),
             dataIndex: 'url',
             formItemProps: {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入链接地址',
-                },
-              ],
+              rules: [{ required: true, message: '请输入链接地址' }],
             },
           },
           {
             title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
             valueType: 'option',
             width: 200,
-            render: (text, record, _, action) => [
+            render: (_, record, __, action) => [
               <a
                 key="editable"
                 onClick={() => {
@@ -271,9 +382,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         ]}
         value={menus}
         onChange={(value: readonly menuItem[]) => setMenus([...value])}
-        editable={{
-          type: 'multiple',
-        }}
+        editable={{ type: 'multiple' }}
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
@@ -285,6 +394,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         }}
         size="small"
       />
+
+      {!newRecord && (
+        <Form.Item name="_id" label={false}>
+          <Input type="hidden" />
+        </Form.Item>
+      )}
     </ProForm>
   );
 };

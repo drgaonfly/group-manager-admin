@@ -59,7 +59,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
   const intl = useIntl();
   const [text, setText] = useState('');
   const [visible, setVisible] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [medias, setMedias] = useState<string[]>([]);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
 
@@ -74,24 +74,24 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
   useEffect(() => {
     if (open && currentRow?._id) {
       form.resetFields();
-      // 兼容旧数据，currentRow.image 可能为单图
-      if (Array.isArray(currentRow.images)) {
-        setImages(currentRow.images);
+      // 兼容旧数据
+      if (Array.isArray(currentRow.medias)) {
+        setMedias(currentRow.medias);
       } else if (currentRow.image) {
-        setImages([currentRow.image]);
+        setMedias([currentRow.image]);
       } else {
-        setImages([]);
+        setMedias([]);
       }
       setMenus(currentRow.menus || []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, currentRow]);
 
-  // Default file list for showing existing images
-  const defaultImageFileList: UploadFile[] = images
-    ? images.filter(Boolean).map((url, idx) => ({
+  // Default file list for showing existing medias
+  const defaultMediaFileList: UploadFile[] = medias
+    ? medias.filter(Boolean).map((url, idx) => ({
         uid: `${idx + 1}`,
-        name: `image${idx + 1}`,
+        name: `media${idx + 1}`,
         status: 'done' as UploadFile['status'],
         url,
       }))
@@ -163,7 +163,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
               ? Number((values.intervalTime / 60).toFixed(2))
               : values.intervalTime,
           groups: values.groups || [],
-          images: images, // 多图
+          medias: medias, // 多媒体
           isRealtime: values.isRealtime,
           sendType: values.sendType,
           menus: menus.map(({ menuName, url }) => ({ menuName, url })),
@@ -174,7 +174,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         if (success) {
           form.resetFields();
           setText('');
-          setImages([]);
+          setMedias([]);
           setMenus([]);
           onCancel(false);
         }
@@ -217,17 +217,17 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           }}
         />
 
-        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}>
+        <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
-              // 支持多图上传
-              setImages((prev) => [...prev, signedUrl || url]);
+              // 支持多媒体上传
+              setMedias((prev) => [...prev, signedUrl || url]);
             }}
-            accept=".jpg,.jpeg,.png,.gif"
-            defaultFileList={defaultImageFileList}
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            defaultFileList={defaultMediaFileList}
             multiple
             onRemove={(file: UploadFile) => {
-              setImages((prev) => prev.filter((img) => img !== file.url));
+              setMedias((prev) => prev.filter((media) => media !== file.url));
               return true;
             }}
           />

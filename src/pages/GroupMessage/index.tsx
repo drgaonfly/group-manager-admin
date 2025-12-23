@@ -140,22 +140,22 @@ const TableList: React.FC = () => {
       dataIndex: 'menus_per_row',
       hideInSearch: true,
     },
-    // image
+    // medias
     {
-      title: intl.formatMessage({ id: 'image', defaultMessage: '图片' }),
-      dataIndex: 'images',
+      title: intl.formatMessage({ id: 'media', defaultMessage: '媒体' }),
+      dataIndex: 'medias',
       hideInSearch: true,
       render: (_, record) => {
-        if (!record.images || !Array.isArray(record.images) || record.images.length === 0) {
+        if (!record.medias || !Array.isArray(record.medias) || record.medias.length === 0) {
           return null;
         }
         return (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {record.images.map((img: string, idx: number) => (
+            {record.medias.map((media: string, idx: number) => (
               <Image
-                key={img || idx}
-                src={img}
-                alt={`message-${idx}`}
+                key={media || idx}
+                src={media}
+                alt={`media-${idx}`}
                 style={{ maxWidth: '100px', maxHeight: '100px' }}
                 preview
               />
