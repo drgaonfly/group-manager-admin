@@ -3,8 +3,10 @@ import { FormattedMessage, useIntl } from '@umijs/max';
 import { ModalForm, ProFormTextArea, ProFormSwitch } from '@ant-design/pro-components';
 import { Button, Popover, message, Form } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
+import { UploadFile } from 'antd/es/upload/interface';
 import EmojiPicker from 'emoji-picker-react';
 import { addItem } from '@/services/ant-design-pro/api';
+import Upload from '@/components/Upload';
 
 interface SendMessageModalProps {
   open: boolean;
@@ -17,11 +19,20 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
   const [form] = Form.useForm();
   const [emojiVisible, setEmojiVisible] = useState(false);
   const [text, setText] = useState('');
+  const [medias, setMedias] = useState<string[]>([]);
+  const [uploadKey, setUploadKey] = useState(0);
 
   const handleEmojiClick = (emojiData: any) => {
     setText((prev) => prev + emojiData.emoji);
     setEmojiVisible(false);
   };
+
+  const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
+    uid: String(idx + 1),
+    name: `media${idx + 1}`,
+    status: 'done' as UploadFile['status'],
+    url: media.startsWith('http') ? media : `/api/static/${media}`,
+  }));
 
   const handleFinish = async (values: any) => {
     // 检查配置ID是否存在
@@ -50,6 +61,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
       await addItem(`/bot-user-configs/${currentRow._id}/send-message`, {
         message: text,
         parseMode: values.useHtml ? 'HTML' : undefined,
+        medias: medias,
       });
 
       hide();
@@ -59,6 +71,8 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
       });
       form.resetFields();
       setText('');
+      setMedias([]);
+      setUploadKey((prev) => prev + 1); // 强制 Upload 组件重新渲染
       return true;
     } catch (error: any) {
       hide();
@@ -81,6 +95,8 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
           onClose();
           setEmojiVisible(false);
           setText('');
+          setMedias([]);
+          setUploadKey((prev) => prev + 1);
         },
       }}
       onFinish={handleFinish}
@@ -129,6 +145,32 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
           },
         ]}
       />
+
+      <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
+        <Upload
+          key={uploadKey}
+          onFileUpload={(url: string) => {
+            setMedias((prev) => {
+              // 去重，避免重复添加
+              if (prev.includes(url)) {
+                return prev;
+              }
+              return [...prev, url];
+            });
+          }}
+          accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+          defaultFileList={defaultMediaFileList}
+          multiple
+          onRemove={(file: UploadFile) => {
+            const fileUrl = file.url || '';
+            const fileName = fileUrl.includes('/api/static/')
+              ? fileUrl.replace('/api/static/', '')
+              : fileUrl;
+            setMedias((prev) => prev.filter((media) => media !== fileName && media !== fileUrl));
+            return true;
+          }}
+        />
+      </Form.Item>
     </ModalForm>
   );
 };
