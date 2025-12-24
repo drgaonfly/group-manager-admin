@@ -237,6 +237,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
       <EditableProTable<MenuItem>
         rowKey="_id"
+        name="menus"
         headerTitle={intl.formatMessage({
           id: 'welcome_menu_config',
           defaultMessage: '欢迎菜单配置',
