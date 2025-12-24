@@ -14,7 +14,7 @@ import {
 
 type menuItem = {
   _id: string;
-  menuName: string;
+  name: string;
   url: string;
 };
 
@@ -54,7 +54,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         setMenus(
           (welcomeData.menus || []).map((item: any, index: number) => ({
             _id: item._id || `${Date.now()}-${index}`,
-            menuName: item.menuName || item.name || '',
+            name: item.name || item.name || '',
             url: item.url || '',
           })),
         );
@@ -79,8 +79,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   // ✅ columns 完全按 GroupMessageForm
   const menuColumns: ProColumns<menuItem>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-      dataIndex: 'menuName',
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
+      dataIndex: 'name',
       formItemProps: {
         rules: [
           {
@@ -137,7 +137,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           : [],
         caption: values.caption || '',
         medias,
-        menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+        menus: menus.map(({ name, url }) => ({ name, url })),
       };
 
       await updateItem(`/bots/${currentRow._id}`, {
@@ -234,7 +234,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           position: 'bottom',
           record: () => ({
             _id: Date.now().toString(),
-            menuName: '',
+            name: '',
             url: '',
           }),
         }}
