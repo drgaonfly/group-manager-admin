@@ -120,14 +120,22 @@ const iconEnum: { [key: string]: ReactElement<any, any> } = {
   AppstoreOutlined: <AppstoreOutlined />,
 };
 
-const loopMenuItem = (menus: MenuDataItem[]): MenuDataItem[] =>
-  menus.map(({ icon, children, ...item }) => {
-    return {
-      ...item,
-      icon: icon && iconEnum[icon as string],
-      children: children && loopMenuItem(children),
-    };
-  });
+const loopMenuItem = (menus: MenuDataItem[], currentUser?: API.CurrentUser): MenuDataItem[] =>
+  menus
+    .filter((item) => {
+      // 根據用戶權限過濾菜單
+      if (item.path === '/channel-posts') {
+        return currentUser?.isAdmin || currentUser?.channelPost === true;
+      }
+      return true;
+    })
+    .map(({ icon, children, ...item }) => {
+      return {
+        ...item,
+        icon: icon && iconEnum[icon as string],
+        children: children && loopMenuItem(children, currentUser),
+      };
+    });
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -185,7 +193,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         // initialState.currentUser 中包含了所有用户信息
         const { data, success } = await fetchMenuData();
         if (success) {
-          return loopMenuItem(data);
+          return loopMenuItem(data, initialState?.currentUser);
         } else {
           return [];
         }

@@ -309,8 +309,5 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts/:id', 'PUT')),
     canGetChannelPost:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts', 'GET')),
-
-    // 频道推广菜单显示权限（基于用户 channelPost 字段）
-    canShowChannelPost: currentUser && (currentUser.isAdmin || currentUser.channelPost === true),
   };
 }
