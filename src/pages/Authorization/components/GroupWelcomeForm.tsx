@@ -35,6 +35,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const [form] = Form.useForm();
   const [medias, setMedias] = useState<string[]>([]);
   const [menus, setMenus] = useState<menuItem[]>([]);
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -218,6 +219,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       {/* ✅ EditableProTable 完全照 GroupMessageForm */}
       <EditableProTable<menuItem>
         rowKey="_id"
+        name="menus"
         headerTitle={intl.formatMessage({
           id: 'welcome_menu_config',
           defaultMessage: '欢迎菜单配置',
@@ -227,6 +229,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         onChange={(value: readonly menuItem[]) => setMenus([...value])}
         editable={{
           type: 'multiple',
+      editableKeys,
+    onChange: setEditableRowKeys,
         }}
         recordCreatorProps={{
           newRecordType: 'dataSource',
