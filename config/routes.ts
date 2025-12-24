@@ -241,5 +241,6 @@ export default [
     name: 'list.channel-posts',
     icon: 'AppstoreOutlined',
     component: './ChannelPost',
+    access: 'canShowChannelPost',
   },
 ];
