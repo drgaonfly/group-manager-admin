@@ -34,7 +34,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const intl = useIntl();
   const [form] = Form.useForm();
   const [medias, setMedias] = useState<string[]>([]);
-  const [menus, setMenus] = useState<menuItem[]>([]);
+  
+  // ✅ 关键：管理正在编辑的行 ID
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
@@ -43,29 +44,29 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
       if (currentRow.groupWelcome) {
         const welcomeData = currentRow.groupWelcome;
+        const formattedMenus = (welcomeData.menus || []).map((item: any, index: number) => ({
+          _id: item._id || `${Date.now()}-${index}`,
+          name: item.name || '',
+          url: item.url || '',
+        }));
 
         form.setFieldsValue({
           contents: welcomeData.contents?.join('\n') || '',
           caption: welcomeData.caption || '',
+          menus: formattedMenus, // ✅ 设置到表单中
         });
 
         setMedias(welcomeData.medias || []);
-
-        // ✅ 和 GroupMessageForm 一样，保证 _id 存在
-        setMenus(
-          (welcomeData.menus || []).map((item: any, index: number) => ({
-            _id: item._id || `${Date.now()}-${index}`,
-            name: item.name || item.name || '',
-            url: item.url || '',
-          })),
-        );
+        // 重置编辑状态
+        setEditableRowKeys([]);
       } else {
         form.setFieldsValue({
           contents: '',
           caption: '',
+          menus: [],
         });
         setMedias([]);
-        setMenus([]);
+        setEditableRowKeys([]);
       }
     }
   }, [open, currentRow, form]);
@@ -77,50 +78,45 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
     url,
   }));
 
-  // ✅ columns 完全按 GroupMessageForm
   const menuColumns: ProColumns<menuItem>[] = [
     {
       title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
       dataIndex: 'name',
       formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'menu_name_required',
-              defaultMessage: '请输入按钮名称',
-            }),
-          },
-        ],
+        rules: [{ required: true, message: intl.formatMessage({ id: 'menu_name_required', defaultMessage: '请输入按钮名称' }) }],
       },
     },
     {
       title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
       dataIndex: 'url',
       formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'url_required',
-              defaultMessage: '请输入菜单链接',
-            }),
-          },
-        ],
+        rules: [{ required: true, message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }) }],
       },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
-      width: 200,
-      render: (_, record, __, action) => [
+      width: 150,
+      render: (text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(`${record._id}`);
+            action?.startEditable?.(record._id);
           }}
         >
           {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
+        </a>,
+        <a
+          key="delete"
+          onClick={() => {
+            // 从表单数据中过滤掉当前行
+            const currentMenus = form.getFieldValue('menus') || [];
+            form.setFieldsValue({
+              menus: currentMenus.filter((item: menuItem) => item._id !== record._id),
+            });
+          }}
+        >
+          {intl.formatMessage({ id: 'delete', defaultMessage: '删除' })}
         </a>,
       ],
     },
@@ -138,7 +134,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           : [],
         caption: values.caption || '',
         medias,
-        menus: menus.map(({ name, url }) => ({ name, url })),
+        // ✅ 直接从 values 中拿取 menus
+        menus: (values.menus || []).map(({ name, url }: any) => ({ name, url })),
       };
 
       await updateItem(`/bots/${currentRow._id}`, {
@@ -146,36 +143,23 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       });
 
       hide();
-      message.success(
-        <FormattedMessage id="update_successful" defaultMessage="Update successful" />,
-      );
+      message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
 
       form.resetFields();
       setMedias([]);
-      setMenus([]);
       onCancel(false);
       onSuccess?.();
 
       return true;
     } catch (error: any) {
-      message.error(
-        error?.response?.data?.message ?? (
-          <FormattedMessage
-            id="update_failed"
-            defaultMessage="Update failed, please try again"
-          />
-        ),
-      );
+      message.error(error?.response?.data?.message ?? <FormattedMessage id="update_failed" defaultMessage="Update failed" />);
       return false;
     }
   };
 
   return (
     <ModalForm
-      title={intl.formatMessage({
-        id: 'group_welcome_config',
-        defaultMessage: '群欢迎配置',
-      })}
+      title={intl.formatMessage({ id: 'group_welcome_config', defaultMessage: '群欢迎配置' })}
       open={open}
       form={form}
       width={800}
@@ -216,22 +200,11 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         </Form.Item>
       </ProFormGroup>
 
-      {/* ✅ EditableProTable 完全照 GroupMessageForm */}
       <EditableProTable<menuItem>
+        name="menus" // ✅ 必须加上，与 Form 联动
         rowKey="_id"
-        name="menus"
-        headerTitle={intl.formatMessage({
-          id: 'welcome_menu_config',
-          defaultMessage: '欢迎菜单配置',
-        })}
+        headerTitle={intl.formatMessage({ id: 'welcome_menu_config', defaultMessage: '欢迎菜单配置' })}
         columns={menuColumns}
-        value={menus}
-        onChange={(value: readonly menuItem[]) => setMenus([...value])}
-        editable={{
-          type: 'multiple',
-      editableKeys,
-    onChange: setEditableRowKeys,
-        }}
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
@@ -240,6 +213,15 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             name: '',
             url: '',
           }),
+        }}
+        editable={{
+          type: 'multiple',
+          editableKeys,
+          onChange: setEditableRowKeys, // ✅ 必须加上，控制编辑状态
+          actionRender: (row, config, defaultDom) => [
+            defaultDom.save,
+            defaultDom.cancel,
+          ],
         }}
       />
     </ModalForm>
