@@ -9,9 +9,7 @@ import Show from './components/Show';
 import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import ActionButton from '@/components/ActionButton';
 import Update from './components/Update';
-import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
@@ -92,57 +90,44 @@ const TableList: React.FC = () => {
   const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<API.ItemData>[] = [
+    // 代理
     {
       title: intl.formatMessage({ id: 'agent' }),
       dataIndex: 'agent',
-      copyable: true,
       hideInTable: !currentUser?.isAdmin,
-      hideInSearch: true,
-      renderText: (_, record) => {
-        return record?.proxy?.name;
-      },
+      hideInSearch: !currentUser?.isAdmin,
+      renderText: (_, record) => record?.proxy?.name,
     },
+    // 机器人
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
       dataIndex: 'bot',
-      copyable: true,
       renderText: (bot) => bot?.botName,
     },
+    // 群组
     {
       title: intl.formatMessage({ id: 'groups', defaultMessage: '所属群组' }),
       dataIndex: 'groups',
-      copyable: true,
-      renderText: (groups) => groups?.map((group: any) => group?.title).join(','),
+      hideInSearch: true,
+      ellipsis: true,
+      width: 200,
+      renderText: (groups) => groups?.map((group: any) => group?.title).join(', '),
     },
-    // weight
-    // {
-    //   title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
-    //   dataIndex: 'weight',
-    //   hideInSearch: true,
-    // },
+    // 内容
     {
-      title: intl.formatMessage({ id: 'isOnline' }),
-      dataIndex: 'isOnline',
-      hideInSearch: false,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.isOnline}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
+      title: intl.formatMessage({ id: 'content' }),
+      dataIndex: 'content',
+      hideInSearch: true,
+      ellipsis: true,
+      width: 200,
+      render: (_, record) => (
+        <div
+          style={{ maxWidth: 200 }}
+          dangerouslySetInnerHTML={{ __html: record.content || '-' }}
         />
       ),
     },
-    // 每行菜单数
-    {
-      title: intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' }),
-      dataIndex: 'menus_per_row',
-      hideInSearch: true,
-    },
-    // medias
+    // 媒体
     {
       title: intl.formatMessage({ id: 'media', defaultMessage: '媒体' }),
       dataIndex: 'medias',
@@ -192,29 +177,40 @@ const TableList: React.FC = () => {
         );
       },
     },
-    {
-      title: intl.formatMessage({ id: 'content' }),
-      dataIndex: 'content',
-      ellipsis: true,
-      width: 200,
-      hideInSearch: true,
-    },
-    // intervalTime
+    // 间隔时间
     {
       title: intl.formatMessage({ id: 'interval_time_hour' }),
       dataIndex: 'intervalTime',
       hideInSearch: true,
-      renderText: (intervalTime) => {
-        return intervalTime > 1 ? `${intervalTime} 小时` : `${intervalTime * 60} 分钟`;
-      },
+      width: 100,
+      renderText: (intervalTime) =>
+        intervalTime > 1 ? `${intervalTime} 小时` : `${intervalTime * 60} 分钟`,
     },
+    // 状态
+    {
+      title: intl.formatMessage({ id: 'isOnline' }),
+      dataIndex: 'isOnline',
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.isOnline}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    // 创建时间
     {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
-      valueType: 'dateTime',
       hideInSearch: true,
-      render: (_, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      valueType: 'dateTime',
     },
+    // 操作
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
@@ -222,16 +218,15 @@ const TableList: React.FC = () => {
       width: 300,
       fixed: 'right',
       render: (_, record) => [
-        <ActionButton
+        <a
           key="detail"
-          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
-        </ActionButton>,
+        </a>,
         <a
           key="history"
           onClick={() => {
@@ -241,6 +236,17 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="send_history" defaultMessage="发送历史" />
         </a>,
+        access.canUpdateGroupMessage && (
+          <a
+            key="edit"
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            <FormattedMessage id="edit" defaultMessage="编辑" />
+          </a>
+        ),
         access.canDeleteGroupMessage && (
           <DeleteLink
             key="delete"
@@ -249,20 +255,6 @@ const TableList: React.FC = () => {
               actionRef.current?.reload();
             }}
           />
-        ),
-        access.canUpdateGroupMessage && (
-          <ActionButton
-            key="edit"
-            type="edit"
-            onClick={() => {
-              console.log();
-
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </ActionButton>
         ),
       ],
     },

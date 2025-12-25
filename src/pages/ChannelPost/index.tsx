@@ -106,9 +106,12 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       ellipsis: true,
       width: 200,
-      renderText: (_, record) => {
-        return record?.content || '-';
-      },
+      render: (_, record) => (
+        <div
+          style={{ maxWidth: 200 }}
+          dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+        />
+      ),
     },
     // medias
     {
