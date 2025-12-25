@@ -6,6 +6,7 @@ import { FormattedMessage, useAccess } from '@umijs/max';
 import { message, Image, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
+import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
@@ -88,6 +89,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<API.ItemData>[] = [
     {
@@ -217,6 +219,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
+      width: 300,
       fixed: 'right',
       render: (_, record) => [
         <ActionButton
@@ -229,6 +232,15 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
         </ActionButton>,
+        <a
+          key="history"
+          onClick={() => {
+            setCurrentRow(record);
+            setHistoryModalOpen(true);
+          }}
+        >
+          <FormattedMessage id="send_history" defaultMessage="发送历史" />
+        </a>,
         access.canDeleteGroupMessage && (
           <DeleteLink
             key="delete"
@@ -359,6 +371,15 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+
+      <HistoryModal
+        open={historyModalOpen}
+        onClose={() => {
+          setHistoryModalOpen(false);
+          setCurrentRow(undefined);
+        }}
+        groupMessageId={currentRow?._id}
       />
     </PageContainer>
   );

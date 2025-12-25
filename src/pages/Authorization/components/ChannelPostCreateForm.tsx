@@ -2,8 +2,6 @@ import { useIntl } from '@umijs/max';
 import React, { useState } from 'react';
 import {
   ModalForm,
-  ProFormText,
-  ProFormTextArea,
   ProFormDigit,
   ProFormGroup,
   EditableProTable,
@@ -11,13 +9,14 @@ import {
   ProFormRadio,
   ProFormDependency,
   ProFormSelect,
+  ProFormCheckbox,
 } from '@ant-design/pro-components';
-import { Form, Input, Popover, Button, message, Space, Alert } from 'antd';
+import { Form, Input, message, Space } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
-import EmojiPicker from 'emoji-picker-react';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
+import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
 
 type menuItem = {
   _id: string;
@@ -34,25 +33,10 @@ interface Props {
 
 const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
   const intl = useIntl();
-  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [emojiVisible, setEmojiVisible] = useState(false);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [medias, setMedias] = useState<string[]>([]);
-
-  const handleEmojiClick = (emojiData: any) => {
-    const newTitle = title + emojiData.emoji;
-    setTitle(newTitle);
-    form.setFieldsValue({ title: newTitle });
-    setEmojiVisible(false);
-  };
-
-  const handleContentEmojiClick = (emojiData: any) => {
-    const newContent = content + emojiData.emoji;
-    setContent(newContent);
-    form.setFieldsValue({ content: newContent });
-  };
 
   // Default file list for showing existing medias
   const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
@@ -66,10 +50,10 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
     const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
     try {
       const sendType = values.sendType || 'scheduled';
+      const telegramContent = convertToTelegramHtml(content);
       const formData = {
         ...values,
-        title: title,
-        content: content,
+        content: telegramContent,
         bot: currentRow?._id,
         menus: menus.map(({ name, url }) => ({ name, url })),
         medias: medias,
@@ -100,7 +84,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
       onSuccess();
       // 重置表单
       form.resetFields();
-      setTitle('');
       setContent('');
       setMenus([]);
       setMedias([]);
@@ -124,7 +107,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
         if (!visible) {
           // 关闭时重置状态
           form.resetFields();
-          setTitle('');
           setContent('');
           setMenus([]);
           setMedias([]);
@@ -148,109 +130,41 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
         menus_per_row: 1,
       }}
     >
-      <Alert
-        message={
-          '支持的 Telegram 标签：' +
-          '<b>加粗</b>、' +
-          '<i>斜体</i>、' +
-          '<u>下划线</u>、' +
-          '<s>删除线</s>、' +
-          '<code>代码</code>、' +
-          '<pre>预格式化</pre>、' +
-          '<a>链接</a>'
-        }
-        type="warning"
-        showIcon
-        style={{ marginBottom: 16 }}
-      />
+      {/* 富文本编辑器 - 单独占满一行 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'content', defaultMessage: '推广内容' })}
+        required
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入频道推广内容..."
+          height={200}
+          variables="groupOnly"
+        />
+      </Form.Item>
 
       <ProFormGroup>
-        <ProFormText
-          name="title"
-          width="md"
-          label={
-            <span>
-              {intl.formatMessage({ id: 'title' })}
-              <Popover
-                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
-                title="选择表情"
-                trigger="click"
-                open={emojiVisible}
-                onOpenChange={setEmojiVisible}
-              >
-                <Button size="small" style={{ marginLeft: 8 }}>
-                  😊
-                </Button>
-              </Popover>
-            </span>
+        <ProFormCheckbox.Group
+          name="channels"
+          width="lg"
+          label={intl.formatMessage({ id: 'select_channels', defaultMessage: '选择频道' })}
+          rules={[{ required: true, message: '请选择至少一个频道' }]}
+          options={
+            currentRow?.groups && Array.isArray(currentRow.groups)
+              ? currentRow.groups
+                  .filter((group: any) => group.type === 'channel')
+                  .map((channel: any) => ({
+                    label: channel.title,
+                    value: channel._id,
+                  }))
+              : []
           }
-          rules={[{ required: true, message: '请输入频道标题' }]}
-          fieldProps={{
-            value: title,
-            onChange: (e: any) => setTitle(e.target.value),
-            placeholder: '请输入频道标题',
-          }}
-        />
-
-        <ProFormText
-          name="url"
-          width="md"
-          label={intl.formatMessage({ id: 'url' })}
-          placeholder="https://t.me/alpha 或 @channelname 或 -1001234567890"
-          rules={[
-            { required: true, message: '请输入频道链接' },
-            {
-              validator: (_, value) => {
-                if (!value) return Promise.resolve();
-
-                const telegramPattern = /^https:\/\/t\.me\/[a-zA-Z0-9_]+$/;
-                const usernamePattern = /^@[a-zA-Z0-9_]+$/;
-                const channelIdPattern = /^-?\d+$/;
-
-                if (
-                  telegramPattern.test(value) ||
-                  usernamePattern.test(value) ||
-                  channelIdPattern.test(value)
-                ) {
-                  return Promise.resolve();
-                }
-
-                return Promise.reject(
-                  new Error('频道链接格式错误，支持格式：https://t.me/用户名、@用户名 或 频道ID'),
-                );
-              },
-            },
-          ]}
         />
       </ProFormGroup>
 
       <ProFormGroup>
-        <ProFormTextArea
-          name="content"
-          width="md"
-          label={
-            <span>
-              {intl.formatMessage({ id: 'content', defaultMessage: '推广内容' })}
-              <Popover
-                content={<EmojiPicker onEmojiClick={handleContentEmojiClick} />}
-                title="选择表情"
-                trigger="click"
-              >
-                <Button size="small" style={{ marginLeft: 8 }}>
-                  😊
-                </Button>
-              </Popover>
-            </span>
-          }
-          rules={[{ required: true, message: '请输入推广内容' }]}
-          fieldProps={{
-            autoSize: { minRows: 8 },
-            value: content,
-            onChange: (e: any) => setContent(e.target.value),
-            placeholder: '请输入频道推广内容...',
-          }}
-        />
-
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string) => {

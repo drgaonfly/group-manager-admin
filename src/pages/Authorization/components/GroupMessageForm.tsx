@@ -1,13 +1,12 @@
-import { message, Form, Space, Popover, Button } from 'antd';
+import { message, Form, Space } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
-import EmojiPicker from 'emoji-picker-react';
 import Upload from '@/components/Upload';
+import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
 import {
   ModalForm,
-  ProFormTextArea,
   ProFormGroup,
   ProFormDigit,
   ProFormCheckbox,
@@ -57,19 +56,10 @@ interface GroupMessageFormProps {
 
 const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, currentRow }) => {
   const intl = useIntl();
-  const [text, setText] = useState('');
-  const [visible, setVisible] = useState(false);
+  const [content, setContent] = useState('');
   const [medias, setMedias] = useState<string[]>([]);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
-
-  const handleEmojiClick = (emojiData: any) => {
-    setText((prev) => prev + emojiData.emoji);
-  };
-
-  const handlePopoverVisibleChange = (visible: boolean) => {
-    setVisible(visible);
-  };
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -83,6 +73,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         setMedias([]);
       }
       setMenus(currentRow.menus || []);
+      setContent('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, currentRow]);
@@ -152,9 +143,10 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         onCancel: () => onCancel(false),
       }}
       onFinish={async (values: any) => {
+        const telegramContent = convertToTelegramHtml(content);
         const data = {
           ...values,
-          content: values.message,
+          content: telegramContent,
           bot: currentRow?._id,
           intervalTime:
             values.sendType === 'immediate'
@@ -173,7 +165,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         const success = await handleAdd(data);
         if (success) {
           form.resetFields();
-          setText('');
+          setContent('');
           setMedias([]);
           setMenus([]);
           onCancel(false);
@@ -181,42 +173,22 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         return success;
       }}
     >
-      <ProFormGroup>
-        <ProFormTextArea
-          name="message"
-          label={
-            <span>
-              {intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
-              <Popover
-                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
-                title="Pick an Emoji"
-                trigger="click"
-                visible={visible}
-                onVisibleChange={handlePopoverVisibleChange}
-              >
-                <Button size="small" style={{ marginLeft: 8 }}>
-                  😊
-                </Button>
-              </Popover>
-            </span>
-          }
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_input_message',
-                defaultMessage: 'Please input message content',
-              }),
-            },
-          ]}
-          width="md"
-          fieldProps={{
-            autoSize: { minRows: 8 },
-            value: text,
-            onChange: (e: any) => setText(e.target.value),
-          }}
+      {/* 富文本编辑器 - 单独占满一行 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
+        required
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入消息内容..."
+          height={200}
+          variables="withUser"
         />
+      </Form.Item>
 
+      <ProFormGroup>
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {

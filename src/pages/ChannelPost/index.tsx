@@ -8,6 +8,7 @@ import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Show from './components/Show';
+import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -54,6 +55,7 @@ const TableList: React.FC = () => {
   const intl = useIntl();
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -81,11 +83,22 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: intl.formatMessage({ id: 'url' }),
-      dataIndex: 'url',
+      title: intl.formatMessage({ id: 'channels', defaultMessage: '频道' }),
+      dataIndex: 'channels',
       hideInSearch: true,
       ellipsis: true,
-      copyable: true,
+      width: 200,
+      render: (_, record) => {
+        // 优先显示 channels 数组
+        if (record?.channels && record.channels.length > 0) {
+          return record.channels.map((c: any) => c.title || c).join(', ');
+        }
+        // 兼容旧数据：显示单个 channel
+        if (record?.channel?.title) {
+          return record.channel.title;
+        }
+        return record?.url || '-';
+      },
     },
     {
       title: intl.formatMessage({ id: 'content', defaultMessage: '推广内容' }),
@@ -208,6 +221,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
+      width: 300,
       fixed: 'right',
       render: (_, record) => [
         <a
@@ -218,6 +232,15 @@ const TableList: React.FC = () => {
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
+        </a>,
+        <a
+          key="history"
+          onClick={() => {
+            setCurrentRow(record);
+            setHistoryModalOpen(true);
+          }}
+        >
+          <FormattedMessage id="send_history" defaultMessage="发送历史" />
         </a>,
         access.canUpdateChannelPost && (
           <a
@@ -311,6 +334,15 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+
+      <HistoryModal
+        open={historyModalOpen}
+        onClose={() => {
+          setHistoryModalOpen(false);
+          setCurrentRow(undefined);
+        }}
+        channelPostId={currentRow?._id}
       />
     </PageContainer>
   );

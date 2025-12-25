@@ -4,13 +4,8 @@ import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
-import {
-  ModalForm,
-  ProFormTextArea,
-  ProFormGroup,
-  ProColumns,
-  EditableProTable,
-} from '@ant-design/pro-components';
+import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import { ModalForm, ProFormGroup, ProColumns, EditableProTable } from '@ant-design/pro-components';
 
 type menuItem = {
   _id: string;
@@ -35,6 +30,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const [form] = Form.useForm();
   const [medias, setMedias] = useState<string[]>([]);
   const [menus, setMenus] = useState<menuItem[]>([]);
+  const [content, setContent] = useState('');
+  const [caption, setCaption] = useState('');
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -48,18 +45,14 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           url: item.url || '',
         }));
 
-        form.setFieldsValue({
-          contents: welcomeData.contents?.join('\n') || '',
-          caption: welcomeData.caption || '',
-        });
-
+        // 设置内容
+        setContent(welcomeData.contents?.join('\n') || '');
+        setCaption(welcomeData.caption || '');
         setMedias(welcomeData.medias || []);
         setMenus(formattedMenus);
       } else {
-        form.setFieldsValue({
-          contents: '',
-          caption: '',
-        });
+        setContent('');
+        setCaption('');
         setMedias([]);
         setMenus([]);
       }
@@ -118,15 +111,18 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
     },
   ];
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async () => {
     try {
       const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
 
+      const telegramContent = convertToTelegramHtml(content);
+      const telegramCaption = convertToTelegramHtml(caption);
+
       const groupWelcomeData = {
-        contents: values.contents
-          ? values.contents.split('\n').filter((v: string) => v.trim())
+        contents: telegramContent
+          ? telegramContent.split('\n').filter((v: string) => v.trim())
           : [],
-        caption: values.caption || '',
+        caption: telegramCaption || '',
         medias,
         menus: menus.map(({ name, url }) => ({ name, url })),
       };
@@ -141,6 +137,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       );
 
       form.resetFields();
+      setContent('');
+      setCaption('');
       setMedias([]);
       setMenus([]);
       onCancel(false);
@@ -169,21 +167,34 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       }}
       onFinish={handleSubmit}
     >
+      {/* 富文本编辑器 - 单独占满一行 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入欢迎消息..."
+          height={150}
+          variables="withUser"
+        />
+      </Form.Item>
+
+      <Form.Item
+        label={intl.formatMessage({ id: 'media_caption', defaultMessage: '媒体说明' })}
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={caption}
+          onChange={setCaption}
+          placeholder="请输入媒体说明..."
+          height={100}
+          variables="withUser"
+        />
+      </Form.Item>
+
       <ProFormGroup>
-        <ProFormTextArea
-          name="contents"
-          label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
-          width="xl"
-          fieldProps={{ autoSize: { minRows: 6 } }}
-        />
-
-        <ProFormTextArea
-          name="caption"
-          label={intl.formatMessage({ id: 'media_caption', defaultMessage: '媒体说明' })}
-          width="xl"
-          fieldProps={{ autoSize: { minRows: 3 } }}
-        />
-
         <Form.Item label={intl.formatMessage({ id: 'welcome_medias', defaultMessage: '欢迎媒体' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {

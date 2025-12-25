@@ -2,15 +2,15 @@ import { useIntl } from '@umijs/max';
 import React, { useState, useEffect } from 'react';
 import {
   ProForm,
-  ProFormTextArea,
   ProFormDigit,
   ProFormCheckbox,
   ProFormText,
   ProFormList,
 } from '@ant-design/pro-components';
-import { Alert, Form, Input } from 'antd';
+import { Form, Input } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
+import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
 
 interface Props {
   newRecord?: boolean;
@@ -20,6 +20,7 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
+  const [content, setContent] = useState(values?.content || '');
 
   // medias: string[]
   const [medias, setMedias] = useState<string[]>(
@@ -27,6 +28,9 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   );
 
   useEffect(() => {
+    if (values?.content !== undefined) {
+      setContent(values.content);
+    }
     if (Array.isArray(values?.medias)) {
       setMedias(values.medias);
     } else if (values?.image) {
@@ -34,7 +38,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     } else {
       setMedias([]);
     }
-  }, [values?.medias, values?.image]);
+  }, [values?.content, values?.medias, values?.image]);
 
   // Default file list for showing existing medias
   const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
@@ -57,9 +61,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         medias: medias,
       }}
       onFinish={async (formValues) => {
-        // 兼容后端 medias 字段
+        // 转换为 Telegram HTML 格式
+        const telegramContent = convertToTelegramHtml(content);
         await onFinish({
           ...formValues,
+          content: telegramContent,
           medias: medias,
         });
       }}
@@ -77,32 +83,22 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         },
       }}
     >
+      {/* 富文本编辑器 - 单独占满一行 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'content', defaultMessage: '消息内容' })}
+        required
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入消息内容..."
+          height={200}
+          variables="withUser"
+        />
+      </Form.Item>
+
       <ProForm.Group>
-        <Alert
-          message={
-            '支持的 Telegram 标签：' +
-            '<b>加粗</b>、' +
-            '<i>斜体</i>、' +
-            '<u>下划线</u>、' +
-            '<s>删除线</s>、' +
-            '<code>代码</code>、' +
-            '<pre>预格式化</pre>、' +
-            '<a>链接</a>'
-          }
-          type="warning"
-          showIcon
-        />
-
-        <ProFormTextArea
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'content', defaultMessage: '消息内容' })}
-          name="content"
-          fieldProps={{
-            autoSize: { minRows: 10 },
-          }}
-        />
-
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {

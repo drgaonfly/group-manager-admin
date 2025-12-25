@@ -30,6 +30,7 @@ const ServiceLink: React.FC = () => {
     channelPost: boolean;
     groupVerify: boolean;
     reportGroupMemberNameUpdated: boolean;
+    replyRule: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -94,6 +95,7 @@ const ServiceLink: React.FC = () => {
               channelPost: currentUser?.channelPost || false,
               groupVerify: currentUser?.groupVerify || false,
               reportGroupMemberNameUpdated: currentUser?.reportGroupMemberNameUpdated || false,
+              replyRule: currentUser?.replyRule || false,
               botCount: currentUser?.botCount || 0,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
@@ -183,6 +185,17 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'reportGroupMemberNameUpdated.tooltip',
                 defaultMessage: '开启后，群成员修改用户名、名字或姓氏时会在群里通知',
+              })}
+            />
+            <ProFormSwitch
+              name="replyRule"
+              label={intl.formatMessage({
+                id: 'replyRule',
+                defaultMessage: '关键词回复',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'replyRule.tooltip',
+                defaultMessage: '开启后，可以配置关键词自动回复规则',
               })}
             />
           </ProForm>
@@ -289,6 +302,20 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'reportGroupMemberNameUpdated.tooltip',
                   defaultMessage: '开启后，群成员修改用户名、名字或姓氏时会在群里通知',
+                })}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'replyRule',
+                defaultMessage: '关键词回复',
+              })}
+            >
+              {renderStatusTag(currentUser?.replyRule || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'replyRule.tooltip',
+                  defaultMessage: '开启后，可以配置关键词自动回复规则',
                 })}
               </Text>
             </Descriptions.Item>

@@ -26,6 +26,7 @@ import SpeechStatisticsModal from './components/SpeechStatisticsModal';
 import ChannelPostCreateForm from './components/ChannelPostCreateForm';
 import GroupWelcomeForm from './components/GroupWelcomeForm';
 import GroupVerifyForm from './components/GroupVerifyForm';
+import ReplyRuleCreateForm from './components/ReplyRuleCreateForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -132,6 +133,7 @@ const TableList: React.FC = () => {
   const [channelPostModalOpen, setChannelPostModalOpen] = useState<boolean>(false);
   const [groupWelcomeModalOpen, setGroupWelcomeModalOpen] = useState<boolean>(false);
   const [groupVerifyModalOpen, setGroupVerifyModalOpen] = useState<boolean>(false);
+  const [replyRuleModalOpen, setReplyRuleModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -396,6 +398,23 @@ const TableList: React.FC = () => {
       ),
     },
     {
+      title: intl.formatMessage({ id: 'replyRule', defaultMessage: '关键词回复' }),
+      dataIndex: 'canReplyRule',
+      hideInTable: !currentUser?.replyRule,
+      hideInSearch: true,
+      render: (_, record: any) => (
+        <Switch
+          checked={record.canReplyRule}
+          onChange={async () => {
+            await handleUpdate({ _id: record._id, canReplyRule: !record.canReplyRule });
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        />
+      ),
+    },
+    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: 'Remark' }),
       dataIndex: 'remark',
       hideInSearch: true,
@@ -516,6 +535,21 @@ const TableList: React.FC = () => {
             {intl.formatMessage({
               id: 'group_verify',
               defaultMessage: '群组验证',
+            })}
+          </ActionButton>
+        ),
+        record.canReplyRule && currentUser?.replyRule && (
+          <ActionButton
+            key="replyRule"
+            type="reply_rule"
+            onClick={() => {
+              setCurrentRow(record);
+              setReplyRuleModalOpen(true);
+            }}
+          >
+            {intl.formatMessage({
+              id: 'reply_rule',
+              defaultMessage: '关键词回复',
             })}
           </ActionButton>
         ),
@@ -818,6 +852,16 @@ const TableList: React.FC = () => {
           if (actionRef.current) {
             actionRef.current.reload();
           }
+        }}
+      />
+
+      <ReplyRuleCreateForm
+        open={replyRuleModalOpen}
+        onOpenChange={setReplyRuleModalOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setReplyRuleModalOpen(false);
+          message.success('回复规则添加成功');
         }}
       />
     </PageContainer>
