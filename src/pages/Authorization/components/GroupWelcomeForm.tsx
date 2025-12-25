@@ -34,9 +34,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const intl = useIntl();
   const [form] = Form.useForm();
   const [medias, setMedias] = useState<string[]>([]);
-  
-  // ✅ 关键：管理正在编辑的行 ID
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const [menus, setMenus] = useState<menuItem[]>([]);
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -53,20 +51,17 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         form.setFieldsValue({
           contents: welcomeData.contents?.join('\n') || '',
           caption: welcomeData.caption || '',
-          menus: formattedMenus, // ✅ 设置到表单中
         });
 
         setMedias(welcomeData.medias || []);
-        // 重置编辑状态
-        setEditableRowKeys([]);
+        setMenus(formattedMenus);
       } else {
         form.setFieldsValue({
           contents: '',
           caption: '',
-          menus: [],
         });
         setMedias([]);
-        setEditableRowKeys([]);
+        setMenus([]);
       }
     }
   }, [open, currentRow, form]);
@@ -83,21 +78,34 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
       dataIndex: 'name',
       formItemProps: {
-        rules: [{ required: true, message: intl.formatMessage({ id: 'menu_name_required', defaultMessage: '请输入按钮名称' }) }],
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({
+              id: 'menu_name_required',
+              defaultMessage: '请输入按钮名称',
+            }),
+          },
+        ],
       },
     },
     {
       title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
       dataIndex: 'url',
       formItemProps: {
-        rules: [{ required: true, message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }) }],
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }),
+          },
+        ],
       },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
       width: 150,
-      render: (text, record, _, action) => [
+      render: (_, record, __, action) => [
         <a
           key="editable"
           onClick={() => {
@@ -106,27 +114,13 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         >
           {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
         </a>,
-        <a
-          key="delete"
-          onClick={() => {
-            // 从表单数据中过滤掉当前行
-            const currentMenus = form.getFieldValue('menus') || [];
-            form.setFieldsValue({
-              menus: currentMenus.filter((item: menuItem) => item._id !== record._id),
-            });
-          }}
-        >
-          {intl.formatMessage({ id: 'delete', defaultMessage: '删除' })}
-        </a>,
       ],
     },
   ];
 
   const handleSubmit = async (values: any) => {
     try {
-      const hide = message.loading(
-        <FormattedMessage id="updating" defaultMessage="Updating..." />,
-      );
+      const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
 
       const groupWelcomeData = {
         contents: values.contents
@@ -134,8 +128,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           : [],
         caption: values.caption || '',
         medias,
-        // ✅ 直接从 values 中拿取 menus
-        menus: (values.menus || []).map(({ name, url }: any) => ({ name, url })),
+        menus: menus.map(({ name, url }) => ({ name, url })),
       };
 
       await updateItem(`/bots/${currentRow._id}`, {
@@ -143,16 +136,23 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       });
 
       hide();
-      message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
+      message.success(
+        <FormattedMessage id="update_successful" defaultMessage="Update successful" />,
+      );
 
       form.resetFields();
       setMedias([]);
+      setMenus([]);
       onCancel(false);
       onSuccess?.();
 
       return true;
     } catch (error: any) {
-      message.error(error?.response?.data?.message ?? <FormattedMessage id="update_failed" defaultMessage="Update failed" />);
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="update_failed" defaultMessage="Update failed" />
+        ),
+      );
       return false;
     }
   };
@@ -201,10 +201,14 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       </ProFormGroup>
 
       <EditableProTable<menuItem>
-        name="menus" // ✅ 必须加上，与 Form 联动
         rowKey="_id"
-        headerTitle={intl.formatMessage({ id: 'welcome_menu_config', defaultMessage: '欢迎菜单配置' })}
+        headerTitle={intl.formatMessage({
+          id: 'welcome_menu_config',
+          defaultMessage: '欢迎菜单配置',
+        })}
         columns={menuColumns}
+        value={menus}
+        onChange={(value) => setMenus([...value])}
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
@@ -216,12 +220,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         }}
         editable={{
           type: 'multiple',
-          editableKeys,
-          onChange: setEditableRowKeys, // ✅ 必须加上，控制编辑状态
-          actionRender: (row, config, defaultDom) => [
-            defaultDom.save,
-            defaultDom.cancel,
-          ],
         }}
       />
     </ModalForm>
