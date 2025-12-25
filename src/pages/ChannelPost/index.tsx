@@ -343,6 +343,7 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
         }}
         channelPostId={currentRow?._id}
+        currentRow={currentRow}
       />
     </PageContainer>
   );

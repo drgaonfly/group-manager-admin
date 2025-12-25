@@ -380,6 +380,7 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
         }}
         groupMessageId={currentRow?._id}
+        currentRow={currentRow}
       />
     </PageContainer>
   );

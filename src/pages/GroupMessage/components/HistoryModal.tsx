@@ -1,20 +1,25 @@
-import { Modal, Table, Tag, Image, Space, message } from 'antd';
+import { Modal, Table, Tag, Image, Space, message, Button } from 'antd';
 import { useIntl } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
-import { queryList } from '@/services/ant-design-pro/api';
+import { queryList, addItem } from '@/services/ant-design-pro/api';
 import type { ColumnsType } from 'antd/es/table';
+import { CopyOutlined } from '@ant-design/icons';
+import BasicForm from './BasicForm';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   groupMessageId?: string;
+  currentRow?: any; // 当前 GroupMessage 的完整数据，用于获取 bot.groups
 }
 
-const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId }) => {
+const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId, currentRow }) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any[]>([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
 
   const fetchData = async (page = 1, pageSize = 10) => {
     if (!groupMessageId) return;
@@ -39,6 +44,35 @@ const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId }) => {
       fetchData(1, 10);
     }
   }, [open, groupMessageId]);
+
+  const handleCopyCreate = (record: any) => {
+    setSelectedRecord({
+      ...record,
+      bot: currentRow?.bot,
+      groups: currentRow?.groups,
+      menus: currentRow?.menus || [],
+      menus_per_row: currentRow?.menus_per_row || 1,
+      intervalTime: currentRow?.intervalTime || 1,
+    });
+    setCreateModalOpen(true);
+  };
+
+  const handleCreateFinish = async (formData: any) => {
+    const hide = message.loading('创建中...');
+    try {
+      await addItem('/group-messages', {
+        ...formData,
+        bot: currentRow?.bot?._id || currentRow?.bot,
+      });
+      hide();
+      message.success('创建成功');
+      setCreateModalOpen(false);
+      setSelectedRecord(null);
+    } catch (error: any) {
+      hide();
+      message.error(error?.response?.data?.message || '创建失败');
+    }
+  };
 
   const columns: ColumnsType<any> = [
     {
@@ -100,32 +134,66 @@ const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId }) => {
       width: 160,
       render: (_, record) => (record?.sentAt ? new Date(record.sentAt).toLocaleString() : '-'),
     },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      width: 100,
+      fixed: 'right',
+      render: (_, record) => (
+        <Button
+          type="link"
+          size="small"
+          icon={<CopyOutlined />}
+          onClick={() => handleCopyCreate(record)}
+        >
+          复制创建
+        </Button>
+      ),
+    },
   ];
 
   return (
-    <Modal
-      title={intl.formatMessage({ id: 'send_history', defaultMessage: '发送历史' })}
-      open={open}
-      onCancel={onClose}
-      footer={null}
-      width={1000}
-      destroyOnClose
-    >
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="_id"
-        loading={loading}
-        pagination={{
-          ...pagination,
-          showSizeChanger: true,
-          showTotal: (total) => `共 ${total} 条`,
-          onChange: (page, pageSize) => fetchData(page, pageSize),
+    <>
+      <Modal
+        title={intl.formatMessage({ id: 'send_history', defaultMessage: '发送历史' })}
+        open={open}
+        onCancel={onClose}
+        footer={null}
+        width={1100}
+        destroyOnClose
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="_id"
+          loading={loading}
+          pagination={{
+            ...pagination,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+            onChange: (page, pageSize) => fetchData(page, pageSize),
+          }}
+          scroll={{ x: 'max-content' }}
+          size="small"
+        />
+      </Modal>
+
+      <Modal
+        title="复制创建群发消息"
+        open={createModalOpen}
+        onCancel={() => {
+          setCreateModalOpen(false);
+          setSelectedRecord(null);
         }}
-        scroll={{ x: 'max-content' }}
-        size="small"
-      />
-    </Modal>
+        footer={null}
+        width="50%"
+        destroyOnClose
+      >
+        {selectedRecord && (
+          <BasicForm values={selectedRecord} onFinish={handleCreateFinish} newRecord />
+        )}
+      </Modal>
+    </>
   );
 };
 
