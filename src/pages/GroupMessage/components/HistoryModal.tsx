@@ -46,10 +46,12 @@ const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId, currentR
   }, [open, groupMessageId]);
 
   const handleCopyCreate = (record: any) => {
+    // 确保 bot 对象包含 groups 数据
     setSelectedRecord({
-      ...record,
-      bot: currentRow?.bot,
-      groups: currentRow?.groups,
+      content: record.content,
+      medias: record.medias || [],
+      bot: currentRow?.bot, // 完整的 bot 对象，包含 groups
+      groups: currentRow?.groups?.map((g: any) => g._id || g) || [],
       menus: currentRow?.menus || [],
       menus_per_row: currentRow?.menus_per_row || 1,
       intervalTime: currentRow?.intervalTime || 1,
