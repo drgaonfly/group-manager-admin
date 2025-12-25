@@ -10,7 +10,10 @@ import {
 import { Form, Input } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
-import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import RichTextEditor, {
+  convertToTelegramHtml,
+  convertFromTelegramHtml,
+} from '@/components/RichTextEditor';
 
 interface Props {
   newRecord?: boolean;
@@ -20,7 +23,7 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
-  const [content, setContent] = useState(values?.content || '');
+  const [content, setContent] = useState(convertFromTelegramHtml(values?.content || ''));
 
   // medias: string[]
   const [medias, setMedias] = useState<string[]>(
@@ -29,7 +32,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
   useEffect(() => {
     if (values?.content !== undefined) {
-      setContent(values.content);
+      setContent(convertFromTelegramHtml(values.content));
     }
     if (Array.isArray(values?.medias)) {
       setMedias(values.medias);
