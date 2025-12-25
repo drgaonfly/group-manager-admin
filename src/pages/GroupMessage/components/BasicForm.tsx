@@ -146,10 +146,12 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
           options={
             values?.bot?.groups && Array.isArray(values.bot.groups)
-              ? values.bot.groups.map((group: any) => ({
-                  label: group.title,
-                  value: group._id,
-                }))
+              ? values.bot.groups
+                  .filter((group: any) => group.type !== 'channel')
+                  .map((group: any) => ({
+                    label: group.title,
+                    value: group._id,
+                  }))
               : []
           }
         />

@@ -212,10 +212,12 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
             name="groups"
             width="md"
             label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
-            options={currentRow.groups.map((group: any) => ({
-              label: group.title,
-              value: group._id,
-            }))}
+            options={currentRow.groups
+              .filter((group: any) => group.type !== 'channel')
+              .map((group: any) => ({
+                label: group.title,
+                value: group._id,
+              }))}
           />
         ) : (
           <ProFormCheckbox
