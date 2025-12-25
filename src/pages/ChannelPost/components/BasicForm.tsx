@@ -15,10 +15,7 @@ import { Form, Input, Space } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
-import RichTextEditor, {
-  convertToTelegramHtml,
-  convertFromTelegramHtml,
-} from '@/components/RichTextEditor';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 
 type menuItem = {
   _id: string;
@@ -35,7 +32,7 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleOptions }) => {
   const intl = useIntl();
-  const [content, setContent] = useState(convertFromTelegramHtml(values?.content || ''));
+  const [content, setContent] = useState(toQuillHtml(values?.content || ''));
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(values?.menus || []);
   const [medias, setMedias] = useState<string[]>(
@@ -44,7 +41,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
 
   useEffect(() => {
     if (values?.content !== undefined) {
-      setContent(convertFromTelegramHtml(values.content));
+      setContent(toQuillHtml(values.content));
     }
     if (values?.menus !== undefined) {
       setMenus(values.menus || []);

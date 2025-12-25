@@ -109,18 +109,14 @@ export const convertToTelegramHtml = (html: string): string => {
     .trim();
 };
 
-// 将 Telegram HTML 转换回 Quill 可编辑的 HTML 格式
-export const convertFromTelegramHtml = (telegramHtml: string): string => {
-  if (!telegramHtml) return '';
-  return telegramHtml
-    .replace(/<b>/g, '<strong>')
-    .replace(/<\/b>/g, '</strong>')
-    .replace(/<i>/g, '<em>')
-    .replace(/<\/i>/g, '</em>')
-    .split('\n')
-    .map((line) => `<p>${line || '<br>'}</p>`)
-    .join('');
-};
+// 将换行符文本转换为 Quill HTML
+export const toQuillHtml = (text: string): string =>
+  text
+    ? text
+        .split('\n')
+        .map((line) => `<p>${line || '<br>'}</p>`)
+        .join('')
+    : '';
 
 const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
   (

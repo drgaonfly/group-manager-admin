@@ -4,10 +4,7 @@ import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
-import RichTextEditor, {
-  convertToTelegramHtml,
-  convertFromTelegramHtml,
-} from '@/components/RichTextEditor';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import { ModalForm, ProFormGroup, ProColumns, EditableProTable } from '@ant-design/pro-components';
 
 type menuItem = {
@@ -49,8 +46,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         }));
 
         // 设置内容
-        setContent(convertFromTelegramHtml(welcomeData.contents?.join('\n') || ''));
-        setCaption(convertFromTelegramHtml(welcomeData.caption || ''));
+        setContent(toQuillHtml(welcomeData.contents?.join('\n') || ''));
+        setCaption(toQuillHtml(welcomeData.caption || ''));
         setMedias(welcomeData.medias || []);
         setMenus(formattedMenus);
       } else {
