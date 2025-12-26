@@ -306,6 +306,7 @@ const TableList: React.FC = () => {
           record.canFreeKeyboard ||
           record.canSpeechStatic ||
           record.canGroupWelcome ||
+          record.canBidirectional ||
           record.canGroupVerify) && (
           <ActionButton
             key="botConfig"
