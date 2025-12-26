@@ -67,4 +67,6 @@ export default {
   'menu.list.bot-user-messages': 'Bot User Message List',
   'menu.bot-user-messages': 'Bot User Messages',
   'menu.用户消息': 'User Messages',
+
+  'menu.reply-rules': 'Reply Rules',
 };

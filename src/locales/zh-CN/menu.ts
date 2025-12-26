@@ -104,4 +104,6 @@ export default {
   'menu.list.promotion-links': '推广链接',
   'menu.promotion-links': '推广链接',
   'menu.推广链接': '推广链接',
+
+  'menu.reply-rules': '回复规则',
 };
