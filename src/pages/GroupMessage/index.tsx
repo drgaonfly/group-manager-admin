@@ -182,7 +182,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'interval_time_hour' }),
       dataIndex: 'intervalTime',
       hideInSearch: true,
-      width: 100,
+      width: 150,
       renderText: (intervalTime) =>
         intervalTime > 1 ? `${intervalTime} 小时` : `${intervalTime * 60} 分钟`,
     },
@@ -215,7 +215,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
-      width: 300,
+      width: 250,
       fixed: 'right',
       render: (_, record) => [
         <a

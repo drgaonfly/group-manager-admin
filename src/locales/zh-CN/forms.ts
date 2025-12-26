@@ -266,6 +266,7 @@ export default {
   no_groups_joined: '没有加入群组',
   minutes: 'N分钟',
   hours: 'N小时',
+  weeks: 'N周',
   txid: '兑换哈希',
   interval_time: '间隔时间',
   send_type: '发送类型',

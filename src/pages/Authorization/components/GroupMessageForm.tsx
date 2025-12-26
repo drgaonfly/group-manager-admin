@@ -5,6 +5,8 @@ import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { toISOString } from '@/utils/dateUtils';
 import {
   ModalForm,
   ProFormGroup,
@@ -15,6 +17,7 @@ import {
   ProFormDependency,
   ProColumns,
   EditableProTable,
+  ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 
 type menuItem = {
@@ -151,15 +154,15 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           intervalTime:
             values.sendType === 'immediate'
               ? 0
-              : values.timeUnit === 'minutes'
-              ? Number((values.intervalTime / 60).toFixed(2))
-              : values.intervalTime,
+              : timeUnitToMinutes(values.intervalTime || 0, values.timeUnit as TimeUnit),
           groups: values.groups || [],
-          medias: medias, // 多媒体
+          medias: medias,
           isRealtime: values.isRealtime,
           sendType: values.sendType,
           menus: menus.map(({ menuName, url }) => ({ menuName, url })),
           menus_per_row: values.menus_per_row,
+          startAt: toISOString(values.startAt),
+          endAt: toISOString(values.endAt),
         };
 
         const success = await handleAdd(data);
@@ -275,39 +278,62 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
       <ProFormDependency name={['sendType']}>
         {({ sendType }) =>
           sendType === 'scheduled' && (
-            <ProFormGroup
-              label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
-              style={{
-                marginBottom: 32,
-              }}
-            >
-              <Space>
-                <ProFormSelect
-                  name="timeUnit"
-                  width="xs"
-                  initialValue="hours"
-                  options={[
-                    {
-                      label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
-                      value: 'minutes',
-                    },
-                    {
-                      label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
-                      value: 'hours',
-                    },
-                  ]}
-                  noStyle
-                />
+            <>
+              <ProFormGroup
+                label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
+                style={{
+                  marginBottom: 32,
+                }}
+              >
+                <Space>
+                  <ProFormSelect
+                    name="timeUnit"
+                    width="xs"
+                    initialValue="hours"
+                    options={[
+                      {
+                        label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                        value: 'minutes',
+                      },
+                      {
+                        label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                        value: 'hours',
+                      },
+                      {
+                        label: intl.formatMessage({ id: 'weeks', defaultMessage: 'Weeks' }),
+                        value: 'weeks',
+                      },
+                    ]}
+                    noStyle
+                  />
 
-                <ProFormDigit
-                  name="intervalTime"
-                  width="xs"
-                  min={0}
-                  fieldProps={{ style: { width: '100%' } }}
-                  noStyle
+                  <ProFormDigit
+                    name="intervalTime"
+                    width="xs"
+                    min={0}
+                    fieldProps={{ style: { width: '100%' } }}
+                    noStyle
+                  />
+                </Space>
+              </ProFormGroup>
+
+              <ProFormGroup>
+                <ProFormDateTimePicker
+                  width="md"
+                  name="startAt"
+                  label="发送开始时间"
+                  fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+                  tooltip="允许发送消息的开始时间"
                 />
-              </Space>
-            </ProFormGroup>
+                <ProFormDateTimePicker
+                  width="md"
+                  name="endAt"
+                  label="发送结束时间"
+                  fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+                  tooltip="允许发送消息的结束时间"
+                />
+              </ProFormGroup>
+            </>
           )
         }
       </ProFormDependency>

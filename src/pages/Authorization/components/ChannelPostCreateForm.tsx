@@ -10,6 +10,8 @@ import {
   ProFormDependency,
   ProFormSelect,
   ProFormCheckbox,
+  ProFormDateTimePicker,
+  ProColumns,
 } from '@ant-design/pro-components';
 import { Form, Input, message, Space } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
@@ -17,6 +19,8 @@ import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { toISOString } from '@/utils/dateUtils';
 
 type menuItem = {
   _id: string;
@@ -39,12 +43,59 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
   const [medias, setMedias] = useState<string[]>([]);
 
   // Default file list for showing existing medias
-  const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
-    uid: String(idx + 1),
-    name: `media${idx + 1}`,
-    status: 'done' as UploadFile['status'],
-    url: media.startsWith('http') ? media : `/api/static/${media}`,
-  }));
+  const defaultMediaFileList: UploadFile[] = medias
+    ? medias.filter(Boolean).map((media, idx) => ({
+        uid: String(idx + 1),
+        name: `media${idx + 1}`,
+        status: 'done' as UploadFile['status'],
+        url: media.startsWith('http') ? media : `/api/static/${media}`,
+      }))
+    : [];
+
+  const menuColumns: ProColumns<menuItem>[] = [
+    {
+      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
+      dataIndex: 'name',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({
+              id: 'menu_name_required',
+              defaultMessage: '请输入按钮名称',
+            }),
+          },
+        ],
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'url', defaultMessage: '链接地址' }),
+      dataIndex: 'url',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入链接地址' }),
+          },
+        ],
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      valueType: 'option',
+      width: 200,
+      render: (_, record, __, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
 
   const handleSubmit = async (values: any) => {
     const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
@@ -61,15 +112,14 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
       };
 
       if (sendType === 'immediate') {
-        // 立即发送 - 使用 bot 的 send-channel-post 路由
         await updateItem(`/bots/${currentRow?._id}/send-channel-post`, formData);
       } else {
-        // 定时发送 - 处理间隔时间
-        const interval =
-          values.timeUnit === 'hours' ? (values.interval || 1) * 60 : values.interval || 60;
+        const interval = timeUnitToMinutes(values.interval || 1, values.timeUnit as TimeUnit);
         await addItem('/channel-posts', {
           ...formData,
           interval,
+          startAt: toISOString(values.startAt),
+          endAt: toISOString(values.endAt),
         });
       }
 
@@ -82,7 +132,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
         ),
       );
       onSuccess();
-      // 重置表单
       form.resetFields();
       setContent('');
       setMenus([]);
@@ -103,9 +152,13 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
     <ModalForm
       title={intl.formatMessage({ id: 'add_channel_post', defaultMessage: '添加频道推广' })}
       open={open}
+      form={form}
+      modalProps={{
+        destroyOnClose: true,
+        onCancel: () => onOpenChange(false),
+      }}
       onOpenChange={(visible) => {
         if (!visible) {
-          // 关闭时重置状态
           form.resetFields();
           setContent('');
           setMenus([]);
@@ -113,24 +166,18 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
         }
         onOpenChange(visible);
       }}
-      form={form}
-      width={800}
-      modalProps={{
-        destroyOnClose: true,
-        maskClosable: false,
-      }}
       onFinish={handleSubmit}
       initialValues={{
-        interval: 60,
+        interval: 1,
         weight: 0,
         isOnline: true,
         isClearLastPost: false,
-        sendType: 'scheduled',
-        timeUnit: 'minutes',
+        sendType: 'immediate',
+        timeUnit: 'hours',
         menus_per_row: 1,
       }}
     >
-      {/* 富文本编辑器 - 单独占满一行 */}
+      {/* 富文本编辑器 */}
       <Form.Item
         label={intl.formatMessage({ id: 'content', defaultMessage: '推广内容' })}
         required
@@ -144,25 +191,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
           variables="groupOnly"
         />
       </Form.Item>
-
-      <ProFormGroup>
-        <ProFormCheckbox.Group
-          name="channels"
-          width="lg"
-          label={intl.formatMessage({ id: 'select_channels', defaultMessage: '选择频道' })}
-          rules={[{ required: true, message: '请选择至少一个频道' }]}
-          options={
-            currentRow?.groups && Array.isArray(currentRow.groups)
-              ? currentRow.groups
-                  .filter((group: any) => group.type === 'channel')
-                  .map((channel: any) => ({
-                    label: channel.title,
-                    value: channel._id,
-                  }))
-              : []
-          }
-        />
-      </ProFormGroup>
 
       <ProFormGroup>
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
@@ -186,6 +214,38 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
       </ProFormGroup>
 
       <ProFormGroup>
+        {currentRow?.groups?.length > 0 ? (
+          <ProFormCheckbox.Group
+            name="channels"
+            width="md"
+            label={intl.formatMessage({ id: 'select_channels', defaultMessage: '选择频道' })}
+            rules={[{ required: true, message: '请选择至少一个频道' }]}
+            options={currentRow.groups
+              .filter((group: any) => group.type === 'channel')
+              .map((channel: any) => ({
+                label: channel.title,
+                value: channel._id,
+              }))}
+          />
+        ) : (
+          <ProFormCheckbox
+            width="md"
+            label={intl.formatMessage({
+              id: 'no_channels_joined',
+              defaultMessage: '暂无频道',
+            })}
+            disabled
+          />
+        )}
+
+        <ProFormDigit
+          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
+          name="menus_per_row"
+          width="md"
+          min={1}
+          fieldProps={{ style: { width: '100%' } }}
+        />
+
         <ProFormRadio.Group
           name="sendType"
           label={intl.formatMessage({ id: 'send_type', defaultMessage: '发送类型' })}
@@ -200,14 +260,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
             },
           ]}
         />
-
-        <ProFormDigit
-          width="md"
-          name="menus_per_row"
-          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
-          min={1}
-          tooltip="设置内联菜单每行显示的按钮数量"
-        />
       </ProFormGroup>
 
       <ProFormDependency name={['sendType']}>
@@ -216,35 +268,63 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
             <>
               <ProFormGroup
                 label={intl.formatMessage({ id: 'interval_time', defaultMessage: '发送间隔' })}
-                style={{ marginBottom: 16 }}
+                style={{ marginBottom: 32 }}
               >
                 <Space>
                   <ProFormSelect
                     name="timeUnit"
                     width="xs"
+                    initialValue="hours"
                     options={[
                       {
-                        label: intl.formatMessage({ id: 'minutes', defaultMessage: '分钟' }),
+                        label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
                         value: 'minutes',
                       },
                       {
-                        label: intl.formatMessage({ id: 'hours', defaultMessage: '小时' }),
+                        label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
                         value: 'hours',
+                      },
+                      {
+                        label: intl.formatMessage({ id: 'weeks', defaultMessage: 'Weeks' }),
+                        value: 'weeks',
                       },
                     ]}
                     noStyle
                   />
-                  <ProFormDigit name="interval" width="xs" min={1} noStyle />
+                  <ProFormDigit
+                    name="interval"
+                    width="xs"
+                    min={1}
+                    fieldProps={{ style: { width: '100%' } }}
+                    noStyle
+                  />
                 </Space>
+              </ProFormGroup>
+
+              <ProFormGroup>
+                <ProFormDateTimePicker
+                  width="md"
+                  name="startAt"
+                  label="发送开始时间"
+                  fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+                  tooltip="允许发送消息的开始时间"
+                />
+                <ProFormDateTimePicker
+                  width="md"
+                  name="endAt"
+                  label="发送结束时间"
+                  fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+                  tooltip="允许发送消息的结束时间"
+                />
               </ProFormGroup>
 
               <ProFormGroup>
                 <ProFormDigit
                   name="weight"
                   width="md"
-                  label={intl.formatMessage({ id: 'weight' })}
+                  label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
                   min={0}
-                  tooltip="权重越小越靠前显示"
+                  tooltip="权重越小越靠前发送"
                 />
 
                 <ProFormSwitch
@@ -267,55 +347,15 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
         }
       </ProFormDependency>
 
-      {/* 菜单配置 */}
       <EditableProTable<menuItem>
         rowKey="_id"
         headerTitle={intl.formatMessage({
           id: 'inline_menu_config',
           defaultMessage: '内联菜单配置',
         })}
-        columns={[
-          {
-            title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
-            dataIndex: 'name',
-            formItemProps: {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入按钮名称',
-                },
-              ],
-            },
-          },
-          {
-            title: intl.formatMessage({ id: 'url', defaultMessage: '链接地址' }),
-            dataIndex: 'url',
-            formItemProps: {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入链接地址',
-                },
-              ],
-            },
-          },
-          {
-            title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-            valueType: 'option',
-            width: 200,
-            render: (_, record, __, action) => [
-              <a
-                key="editable"
-                onClick={() => {
-                  action?.startEditable?.(`${record._id}`);
-                }}
-              >
-                {intl.formatMessage({ id: 'edit' })}
-              </a>,
-            ],
-          },
-        ]}
+        columns={menuColumns}
         value={menus}
+        name="menus"
         onChange={(value: readonly menuItem[]) => setMenus([...value])}
         editable={{
           type: 'multiple',
@@ -329,10 +369,8 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
             url: '',
           }),
         }}
-        size="small"
       />
 
-      {/* 隐藏字段 */}
       <Form.Item name="bot" hidden>
         <Input value={currentRow?._id} />
       </Form.Item>
