@@ -21,12 +21,13 @@ import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
-import FreeKeyboardForm from './components/FreeKeyboardForm';
-import SpeechStatisticsModal from './components/SpeechStatisticsModal';
 import ChannelPostCreateForm from './components/ChannelPostCreateForm';
-import GroupWelcomeForm from './components/GroupWelcomeForm';
-import GroupVerifyForm from './components/GroupVerifyForm';
 import ReplyRuleCreateForm from './components/ReplyRuleCreateForm';
+import BotConfigManager from './components/BotConfigManager';
+// Update 组件
+import GroupMessageUpdate from '@/pages/GroupMessage/components/Update';
+import ChannelPostUpdate from '@/pages/ChannelPost/components/Update';
+import ReplyRuleUpdate from '@/pages/ReplyRule/components/Update';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -128,12 +129,22 @@ const TableList: React.FC = () => {
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
   const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
-  const [keyboardModalOpen, setKeyboardModalOpen] = useState<boolean>(false);
-  const [speechStatisticsModalOpen, setSpeechStatisticsModalOpen] = useState<boolean>(false);
   const [channelPostModalOpen, setChannelPostModalOpen] = useState<boolean>(false);
-  const [groupWelcomeModalOpen, setGroupWelcomeModalOpen] = useState<boolean>(false);
-  const [groupVerifyModalOpen, setGroupVerifyModalOpen] = useState<boolean>(false);
   const [replyRuleModalOpen, setReplyRuleModalOpen] = useState<boolean>(false);
+  const [botConfigManagerOpen, setBotConfigManagerOpen] = useState<boolean>(false);
+  const [configRefreshKey, setConfigRefreshKey] = useState<number>(0);
+  // 编辑相关 state
+  const [editingGroupMessage, setEditingGroupMessage] = useState<any>(null);
+  const [editingChannelPost, setEditingChannelPost] = useState<any>(null);
+  const [editingReplyRule, setEditingReplyRule] = useState<any>(null);
+  const [groupMessageUpdateOpen, setGroupMessageUpdateOpen] = useState<boolean>(false);
+  const [channelPostUpdateOpen, setChannelPostUpdateOpen] = useState<boolean>(false);
+  const [replyRuleUpdateOpen, setReplyRuleUpdateOpen] = useState<boolean>(false);
+
+  // 刷新 BotConfigManager 数据
+  const refreshConfigData = () => {
+    setConfigRefreshKey((prev) => prev + 1);
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -255,166 +266,6 @@ const TableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'canBidirectional', defaultMessage: '双向通信' }),
-      dataIndex: 'canBidirectional',
-      hideInTable: !currentUser?.bidirectional,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canBidirectional}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canBidirectional: !record.canBidirectional });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({
-        id: 'canReportMemberNameUpdated',
-        defaultMessage: '报道群成员名称变更',
-      }),
-      dataIndex: 'canReportMemberNameUpdated',
-      hideInTable: !currentUser?.reportGroupMemberNameUpdated,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canReportMemberNameUpdated}
-          onChange={async () => {
-            await handleUpdate({
-              _id: record._id,
-              canReportMemberNameUpdated: !record.canReportMemberNameUpdated,
-            });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    // 欢迎入群
-    {
-      title: intl.formatMessage({ id: 'welcomeGroup', defaultMessage: '欢迎入群' }),
-      dataIndex: 'canGroupWelcome',
-      hideInTable: !currentUser?.groupWelcome,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canGroupWelcome}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canGroupWelcome: !record.canGroupWelcome });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'speechStatic', defaultMessage: '发言统计' }),
-      dataIndex: 'canSpeechStatic',
-      hideInTable: !currentUser?.speech_static,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canSpeechStatic}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canSpeechStatic: !record.canSpeechStatic });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '键盘配置' }),
-      dataIndex: 'canFreeKeyboard',
-      hideInTable: !currentUser?.keyboardConfig,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canFreeKeyboard}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canFreeKeyboard: !record.canFreeKeyboard });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'groupMessage', defaultMessage: '群发消息' }),
-      dataIndex: 'canGroupMessaging',
-      hideInTable: !currentUser?.groupMessage,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canGroupMessaging}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canGroupMessaging: !record.canGroupMessaging });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' }),
-      dataIndex: 'canGroupVerify',
-      hideInTable: !currentUser?.groupVerify,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canGroupVerify}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canGroupVerify: !record.canGroupVerify });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'channelPost', defaultMessage: '频道推广' }),
-      dataIndex: 'canOpenChannelPost',
-      hideInTable: !currentUser?.channelPost,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canOpenChannelPost}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canOpenChannelPost: !record.canOpenChannelPost });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'replyRule', defaultMessage: '关键词回复' }),
-      dataIndex: 'canReplyRule',
-      hideInTable: !currentUser?.replyRule,
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checked={record.canReplyRule}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, canReplyRule: !record.canReplyRule });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
       title: intl.formatMessage({ id: 'remark', defaultMessage: 'Remark' }),
       dataIndex: 'remark',
       hideInSearch: true,
@@ -443,113 +294,30 @@ const TableList: React.FC = () => {
             }}
           >
             {intl.formatMessage({
-              id: 'configure',
-              defaultMessage: 'Configure',
+              id: 'base_configure',
+              defaultMessage: '基本配置',
             })}
           </ActionButton>
         ),
-        record.canGroupMessaging && currentUser?.groupMessage && (
+        // 功能配置 - 集中管理所有功能
+        (record.canGroupMessaging ||
+          record.canOpenChannelPost ||
+          record.canReplyRule ||
+          record.canFreeKeyboard ||
+          record.canSpeechStatic ||
+          record.canGroupWelcome ||
+          record.canGroupVerify) && (
           <ActionButton
-            key="sendGroupMessage"
-            type="sendGroupMessage"
+            key="botConfig"
+            type="configure"
             onClick={() => {
-              setGroupMessageModalOpen(true);
               setCurrentRow(record);
+              setBotConfigManagerOpen(true);
             }}
           >
             {intl.formatMessage({
-              id: 'sendGroupMessage',
-              defaultMessage: 'Send Message',
-            })}
-          </ActionButton>
-        ),
-        record.canFreeKeyboard && currentUser?.keyboardConfig && (
-          <ActionButton
-            key="keyboardConfig"
-            type="keyboard"
-            onClick={() => {
-              setCurrentRow(record);
-              setKeyboardModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'keyboard_config',
-              defaultMessage: '键盘配置',
-            })}
-          </ActionButton>
-        ),
-        record.canSpeechStatic && currentUser?.speech_static && (
-          <ActionButton
-            key="speechStatistics"
-            type="statistics"
-            onClick={() => {
-              setCurrentRow(record);
-              setSpeechStatisticsModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'speech_statistics',
-              defaultMessage: '发言统计',
-            })}
-          </ActionButton>
-        ),
-        record.canOpenChannelPost && currentUser?.channelPost && (
-          <ActionButton
-            key="channelPost"
-            type="channel"
-            onClick={() => {
-              setCurrentRow(record);
-              setChannelPostModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'channel_post',
-              defaultMessage: '频道推广',
-            })}
-          </ActionButton>
-        ),
-        record.canGroupWelcome && currentUser?.groupWelcome && (
-          <ActionButton
-            key="groupWelcome"
-            type="group_welcome"
-            onClick={() => {
-              setCurrentRow(record);
-              setGroupWelcomeModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'group_welcome',
-              defaultMessage: '欢迎入群',
-            })}
-          </ActionButton>
-        ),
-        record.canGroupVerify && currentUser?.groupVerify && (
-          <ActionButton
-            key="groupVerify"
-            type="group_verify"
-            onClick={() => {
-              setCurrentRow(record);
-              setGroupVerifyModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'group_verify',
-              defaultMessage: '群组验证',
-            })}
-          </ActionButton>
-        ),
-        record.canReplyRule && currentUser?.replyRule && (
-          <ActionButton
-            key="replyRule"
-            type="reply_rule"
-            onClick={() => {
-              setCurrentRow(record);
-              setReplyRuleModalOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'reply_rule',
-              defaultMessage: '关键词回复',
+              id: 'feature_config',
+              defaultMessage: '功能配置',
             })}
           </ActionButton>
         ),
@@ -793,34 +561,7 @@ const TableList: React.FC = () => {
         open={groupMessageModalOpen}
         onCancel={setGroupMessageModalOpen}
         currentRow={currentRow}
-      />
-
-      <FreeKeyboardForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            setKeyboardModalOpen(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={setKeyboardModalOpen}
-        updateModalOpen={keyboardModalOpen}
-        values={currentRow || {}}
-      />
-
-      <SpeechStatisticsModal
-        open={speechStatisticsModalOpen}
-        onOpenChange={setSpeechStatisticsModalOpen}
-        currentRow={currentRow}
-        onSave={async (values) => {
-          await handleUpdate(values);
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-        }}
+        onSuccess={refreshConfigData}
       />
 
       <ChannelPostCreateForm
@@ -830,28 +571,7 @@ const TableList: React.FC = () => {
         onSuccess={() => {
           setChannelPostModalOpen(false);
           message.success('频道推广添加成功');
-        }}
-      />
-
-      <GroupWelcomeForm
-        open={groupWelcomeModalOpen}
-        onCancel={setGroupWelcomeModalOpen}
-        currentRow={currentRow}
-        onSuccess={() => {
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-        }}
-      />
-
-      <GroupVerifyForm
-        open={groupVerifyModalOpen}
-        onCancel={setGroupVerifyModalOpen}
-        currentRow={currentRow}
-        onSuccess={() => {
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
+          refreshConfigData();
         }}
       />
 
@@ -862,6 +582,94 @@ const TableList: React.FC = () => {
         onSuccess={() => {
           setReplyRuleModalOpen(false);
           message.success('回复规则添加成功');
+          refreshConfigData();
+        }}
+      />
+
+      <BotConfigManager
+        open={botConfigManagerOpen}
+        onCancel={setBotConfigManagerOpen}
+        currentRow={currentRow}
+        currentUser={currentUser}
+        refreshKey={configRefreshKey}
+        onBotUpdate={async (values) => {
+          await handleUpdate(values);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+        onOpenGroupMessageForm={() => {
+          setGroupMessageModalOpen(true);
+        }}
+        onOpenChannelPostForm={() => {
+          setChannelPostModalOpen(true);
+        }}
+        onOpenReplyRuleForm={() => {
+          setReplyRuleModalOpen(true);
+        }}
+        onEditGroupMessage={(record) => {
+          setEditingGroupMessage(record);
+          setGroupMessageUpdateOpen(true);
+        }}
+        onEditChannelPost={(record) => {
+          setEditingChannelPost(record);
+          setChannelPostUpdateOpen(true);
+        }}
+        onEditReplyRule={(record) => {
+          setEditingReplyRule(record);
+          setReplyRuleUpdateOpen(true);
+        }}
+      />
+
+      {/* 编辑弹窗 */}
+      <GroupMessageUpdate
+        updateModalOpen={groupMessageUpdateOpen}
+        onCancel={setGroupMessageUpdateOpen}
+        values={editingGroupMessage || {}}
+        onSubmit={async (values) => {
+          try {
+            await updateItem(`/group-messages/${values._id}`, values);
+            message.success('更新成功');
+            setGroupMessageUpdateOpen(false);
+            setEditingGroupMessage(null);
+            refreshConfigData();
+          } catch (error: any) {
+            message.error(error?.response?.data?.message ?? '更新失败');
+          }
+        }}
+      />
+
+      <ChannelPostUpdate
+        updateModalOpen={channelPostUpdateOpen}
+        onCancel={setChannelPostUpdateOpen}
+        values={editingChannelPost || {}}
+        onSubmit={async (values) => {
+          try {
+            await updateItem(`/channel-posts/${values._id}`, values);
+            message.success('更新成功');
+            setChannelPostUpdateOpen(false);
+            setEditingChannelPost(null);
+            refreshConfigData();
+          } catch (error: any) {
+            message.error(error?.response?.data?.message ?? '更新失败');
+          }
+        }}
+      />
+
+      <ReplyRuleUpdate
+        updateModalOpen={replyRuleUpdateOpen}
+        onCancel={setReplyRuleUpdateOpen}
+        values={editingReplyRule || {}}
+        onSubmit={async (values) => {
+          try {
+            await updateItem(`/reply-rules/${values._id}`, values);
+            message.success('更新成功');
+            setReplyRuleUpdateOpen(false);
+            setEditingReplyRule(null);
+            refreshConfigData();
+          } catch (error: any) {
+            message.error(error?.response?.data?.message ?? '更新失败');
+          }
         }}
       />
     </PageContainer>

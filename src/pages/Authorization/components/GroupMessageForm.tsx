@@ -55,9 +55,15 @@ interface GroupMessageFormProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
   currentRow?: any;
+  onSuccess?: () => void;
 }
 
-const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, currentRow }) => {
+const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
+  open,
+  onCancel,
+  currentRow,
+  onSuccess,
+}) => {
   const intl = useIntl();
   const [content, setContent] = useState('');
   const [medias, setMedias] = useState<string[]>([]);
@@ -172,6 +178,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
           setMedias([]);
           setMenus([]);
           onCancel(false);
+          onSuccess?.();
         }
         return success;
       }}

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useImperativeHandle, forwardRef } from 'react';
+import React, { useRef, useMemo, useImperativeHandle, forwardRef, useId } from 'react';
 import { Space, Tag } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -133,6 +133,7 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
     ref,
   ) => {
     const quillRef = useRef<ReactQuill>(null);
+    const editorId = useId().replace(/:/g, '');
 
     // 解析要显示的变量
     const displayVariables = useMemo(() => {
@@ -183,7 +184,7 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
             </Space>
           </div>
         )}
-        <div style={{ background: '#fff', borderRadius: 4, marginBottom: 50 }}>
+        <div id={editorId} style={{ background: '#fff', borderRadius: 4, marginBottom: 16 }}>
           <ReactQuill
             ref={quillRef}
             theme="snow"
@@ -192,8 +193,15 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
             modules={quillModules}
             formats={quillFormats}
             placeholder={placeholder}
-            style={{ height }}
           />
+          <style>{`
+            #${editorId} .ql-container {
+              min-height: ${height}px;
+            }
+            #${editorId} .ql-editor {
+              min-height: ${height}px;
+            }
+          `}</style>
         </div>
       </div>
     );

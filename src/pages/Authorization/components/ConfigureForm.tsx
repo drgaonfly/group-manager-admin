@@ -10,7 +10,6 @@ import { Form, Input } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
-import PresetTableForm, { PresetItem } from './PresetTableForm';
 
 type menuItem = {
   _id: string;
@@ -37,7 +36,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const currentUser = initialState?.currentUser;
   const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
   const [multiImageUrl, setMultiImageUrl] = useState<string>(values?.multi_image || '');
-  const [presets, setPresets] = useState<PresetItem[]>(values?.presets || []);
 
   useEffect(() => {
     if (updateModalOpen) {
@@ -45,7 +43,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
         ...values,
       });
 
-      setPresets(values?.presets || []);
       setmenu(values?.menus || []);
       setMultiImageUrl(values?.multi_image || '');
     }
@@ -104,8 +101,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           multi_image: multiImageUrl,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           menus: menus.map(({ _id, ...rest }) => rest),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          presets: presets.map(({ _id, ...rest }) => rest),
         });
       }}
       initialValues={{
@@ -244,8 +239,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             />
           )}
         </ProFormGroup>
-
-        <PresetTableForm value={presets} onChange={setPresets} />
 
         {/* <EditableProTable<menuItem>
           rowKey="_id"
