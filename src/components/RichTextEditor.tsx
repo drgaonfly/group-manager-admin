@@ -105,6 +105,7 @@ export const convertToTelegramHtml = (html: string): string => {
     .replace(/<br\s*\/?>/g, '\n')
     .replace(/<p>/g, '')
     .replace(/<\/p>/g, '\n')
+    .replace(/&nbsp;/g, ' ') // 将 &nbsp; 转换为普通空格
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 };
