@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ModalForm,
   ProFormTextArea,
@@ -34,21 +34,28 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
-  const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
-  const [multiImageUrl, setMultiImageUrl] = useState<string>(values?.multi_image || '');
+  const [menus, setmenu] = useState<menuItem[]>([]);
+  const [multiImageUrl, setMultiImageUrl] = useState<string>('');
+
+  // 只提取需要的字段，避免渲染大数据导致卡顿
+  const safeValues = useMemo(() => {
+    if (!values) return {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { botUsers, botUserConfigs, groups, authorized_users, channel_posts, owners, ...rest } =
+      values;
+    return rest;
+  }, [values?._id]);
 
   useEffect(() => {
-    if (updateModalOpen) {
+    if (updateModalOpen && values) {
       form.setFieldsValue({
-        ...values,
+        ...safeValues,
       });
 
       setmenu(values?.menus || []);
       setMultiImageUrl(values?.multi_image || '');
     }
-  }, [updateModalOpen, values]);
-
-  console.log('values', values);
+  }, [updateModalOpen, values?._id]);
 
   // const columns = [
   //   {
@@ -104,18 +111,18 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
         });
       }}
       initialValues={{
-        ...values,
+        ...safeValues,
         presets: values?.presets?.map((item: any) => item._id),
         menus: values?.menus?.map((item: any) => item._id),
       }}
     >
-      {values && (
+      {safeValues && (
         <ProDescriptions<API.ItemData>
           column={2}
           title={intl.formatMessage({ id: 'userDetails', defaultMessage: '用户详情' })}
           request={async () => ({
             data: {
-              ...values,
+              ...safeValues,
               inviteCode: (currentUser as any)?.inviteCode || '',
             },
           })}
