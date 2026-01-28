@@ -5,6 +5,7 @@ import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-componen
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import useIsMobile from '@/hooks/useIsMobile';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
@@ -40,109 +41,114 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const access = useAccess();
 
-  const columns: ProColumns<API.ItemData>[] = [
-    {
-      title: intl.formatMessage({ id: 'orderNumber' }),
-      dataIndex: 'orderNumber',
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'amount' }),
-      dataIndex: 'amount',
-      hideInSearch: true,
-    },
-    // paymentAmount
-    {
-      title: intl.formatMessage({ id: 'paymentAmount' }),
-      dataIndex: 'paymentAmount',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'status' }),
-      dataIndex: 'status',
-      hideInSearch: true,
-      render: (_, record) => {
-        return <Tag color="blue">{intl.formatMessage({ id: record.status })}</Tag>;
+  const isMobile = useIsMobile(1440);
+
+  const columns: ProColumns<API.ItemData>[] = React.useMemo(
+    () => [
+      {
+        title: intl.formatMessage({ id: 'orderNumber' }),
+        dataIndex: 'orderNumber',
+        copyable: true,
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'txHash' }),
-      dataIndex: 'txHash',
-      hideInSearch: true,
-      ellipsis: true,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'sendAddress' }),
-      dataIndex: 'sendAddress',
-      ellipsis: true,
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'receiveAddress' }),
-      dataIndex: 'receiveAddress',
-      ellipsis: true,
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'user' }),
-      dataIndex: 'botUser',
-      hideInSearch: true,
-      renderText: (text, record) => {
-        return record.botUser?.displayName;
+      {
+        title: intl.formatMessage({ id: 'amount' }),
+        dataIndex: 'amount',
+        hideInSearch: true,
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'bot' }),
-      dataIndex: 'bot',
-      hideInSearch: true,
-      copyable: true,
-      renderText: (text, record) => {
-        return record.bot?.botName;
+      // paymentAmount
+      {
+        title: intl.formatMessage({ id: 'paymentAmount' }),
+        dataIndex: 'paymentAmount',
+        hideInSearch: true,
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt' }),
-      dataIndex: 'createdAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'expiredAt' }),
-      dataIndex: 'expiresAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" />,
-      dataIndex: 'option',
-      valueType: 'option',
-      fixed: 'right',
-      render: (_, record) => [
-        <ActionButton
-          key="detail"
-          type="detail"
-          onClick={() => {
-            setCurrentRow(record);
-            setShowDetail(true);
-          }}
-        >
-          <FormattedMessage id="detail" defaultMessage="详情" />
-        </ActionButton>,
-        access.canDeletePayment && (
-          <DeleteLink
-            key="delete"
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              actionRef.current?.reload();
+      {
+        title: intl.formatMessage({ id: 'status' }),
+        dataIndex: 'status',
+        hideInSearch: true,
+        render: (_, record) => {
+          return <Tag color="blue">{intl.formatMessage({ id: record.status })}</Tag>;
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'txHash' }),
+        dataIndex: 'txHash',
+        hideInSearch: true,
+        ellipsis: true,
+        copyable: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'sendAddress' }),
+        dataIndex: 'sendAddress',
+        ellipsis: true,
+        hideInSearch: true,
+        copyable: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'receiveAddress' }),
+        dataIndex: 'receiveAddress',
+        ellipsis: true,
+        hideInSearch: true,
+        copyable: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'user' }),
+        dataIndex: 'botUser',
+        hideInSearch: true,
+        renderText: (text, record) => {
+          return record.botUser?.displayName;
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'bot' }),
+        dataIndex: 'bot',
+        hideInSearch: true,
+        copyable: true,
+        renderText: (text, record) => {
+          return record.bot?.botName;
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'createdAt' }),
+        dataIndex: 'createdAt',
+        valueType: 'dateTime',
+        hideInSearch: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'expiredAt' }),
+        dataIndex: 'expiresAt',
+        valueType: 'dateTime',
+        hideInSearch: true,
+      },
+      {
+        title: <FormattedMessage id="pages.searchTable.titleOption" />,
+        dataIndex: 'option',
+        valueType: 'option',
+        fixed: isMobile ? false : 'right',
+        render: (_, record) => [
+          <ActionButton
+            key="detail"
+            type="detail"
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
             }}
-          />
-        ),
-      ],
-    },
-  ];
+          >
+            <FormattedMessage id="detail" defaultMessage="详情" />
+          </ActionButton>,
+          access.canDeletePayment && (
+            <DeleteLink
+              key="delete"
+              onOk={async () => {
+                await handleRemove([record._id!]);
+                actionRef.current?.reload();
+              }}
+            />
+          ),
+        ],
+      },
+    ],
+    [isMobile, intl, access],
+  );
 
   return (
     <PageContainer>

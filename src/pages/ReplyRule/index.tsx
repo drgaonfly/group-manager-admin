@@ -5,6 +5,7 @@ import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-componen
 import { Button, message, Switch, Tag, Space } from 'antd';
 import { PlusOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
+import useIsMobile from '@/hooks/useIsMobile';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
@@ -68,160 +69,166 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
-  const columns: ProColumns<any>[] = [
-    {
-      title: intl.formatMessage({ id: 'agent' }),
-      dataIndex: 'proxy',
-      hideInSearch: true,
-      hideInTable: !access.canSuperAdmin,
-      renderText: (_, record) => record?.proxy?.name,
-    },
-    {
-      title: '机器人',
-      dataIndex: 'bot',
-      hideInSearch: true,
-      render: (_, record) => record?.bot?.botName || '-',
-    },
-    {
-      title: '关键词',
-      dataIndex: 'keyword',
-      render: (_, record) => {
-        const keywords = Array.isArray(record.keyword) ? record.keyword : [record.keyword];
-        return (
-          <Space wrap size={[4, 4]}>
-            {keywords.map((k: string, idx: number) => (
-              <Tag key={idx} color="blue">
-                {k}
-              </Tag>
-            ))}
-          </Space>
-        );
+  const isMobile = useIsMobile(1440);
+
+  const columns: ProColumns<any>[] = React.useMemo(
+    () => [
+      {
+        title: intl.formatMessage({ id: 'agent' }),
+        dataIndex: 'proxy',
+        hideInSearch: true,
+        hideInTable: !access.canSuperAdmin,
+        renderText: (_, record) => record?.proxy?.name,
       },
-    },
-    {
-      title: '回复内容',
-      dataIndex: 'content',
-      width: 200,
-      hideInSearch: true,
-      render: (_, record) => (
-        <div
-          style={{
-            maxWidth: 200,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-          dangerouslySetInnerHTML={{ __html: record.content || '' }}
-          title={record.content?.replace(/<[^>]+>/g, '') || ''}
-        />
-      ),
-    },
-    {
-      title: '媒体数量',
-      dataIndex: 'medias',
-      hideInSearch: true,
-      render: (_, record) => record?.medias?.length || 0,
-    },
-    {
-      title: '菜单数量',
-      dataIndex: 'menus',
-      hideInSearch: true,
-      render: (_, record) => record?.menus?.length || 0,
-    },
-    {
-      title: '引用消息',
-      dataIndex: 'replyToMessage',
-      hideInSearch: true,
-      render: (_, record) => (record.replyToMessage ? <Tag color="green">是</Tag> : <Tag>否</Tag>),
-    },
-    {
-      title: '回复管理员',
-      dataIndex: 'replyToAdmin',
-      hideInSearch: true,
-      render: (_, record) =>
-        record.replyToAdmin !== false ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
-    },
-    {
-      title: '阅后即焚',
-      dataIndex: 'deleteAfterSeconds',
-      hideInSearch: true,
-      render: (_, record) =>
-        record.deleteAfterSeconds ? <Tag color="orange">{record.deleteAfterSeconds}秒</Tag> : '-',
-    },
-    {
-      title: '删除用户消息',
-      dataIndex: 'deleteUserMsgAfterSeconds',
-      hideInSearch: true,
-      render: (_, record) =>
-        record.deleteUserMsgAfterSeconds ? (
-          <Tag color="orange">{record.deleteUserMsgAfterSeconds}秒</Tag>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
-      dataIndex: 'isOnline',
-      hideInSearch: true,
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-          checked={record.isOnline}
-          onChange={async () => {
-            await handleUpdate({ _id: record?._id, isOnline: !record.isOnline });
-            actionRef.current?.reload();
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
-      hideInSearch: true,
-      valueType: 'dateTime',
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 200,
-      fixed: 'right',
-      render: (_, record) => [
-        <a
-          key="detail"
-          onClick={() => {
-            setCurrentRow(record);
-            setShowDetail(true);
-          }}
-        >
-          <EyeOutlined /> 详情
-        </a>,
-        access.canUpdateBot && (
-          <a
-            key="edit"
-            style={{ color: '#52c41a' }}
-            onClick={() => {
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
+      {
+        title: '机器人',
+        dataIndex: 'bot',
+        hideInSearch: true,
+        render: (_, record) => record?.bot?.botName || '-',
+      },
+      {
+        title: '关键词',
+        dataIndex: 'keyword',
+        render: (_, record) => {
+          const keywords = Array.isArray(record.keyword) ? record.keyword : [record.keyword];
+          return (
+            <Space wrap size={[4, 4]}>
+              {keywords.map((k: string, idx: number) => (
+                <Tag key={idx} color="blue">
+                  {k}
+                </Tag>
+              ))}
+            </Space>
+          );
+        },
+      },
+      {
+        title: '回复内容',
+        dataIndex: 'content',
+        width: 200,
+        hideInSearch: true,
+        render: (_, record) => (
+          <div
+            style={{
+              maxWidth: 200,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
-          >
-            <EditOutlined /> {intl.formatMessage({ id: 'edit' })}
-          </a>
+            dangerouslySetInnerHTML={{ __html: record.content || '' }}
+            title={record.content?.replace(/<[^>]+>/g, '') || ''}
+          />
         ),
-        access.canDeleteBot && (
-          <DeleteLink
-            key="delete"
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
+      },
+      {
+        title: '媒体数量',
+        dataIndex: 'medias',
+        hideInSearch: true,
+        render: (_, record) => record?.medias?.length || 0,
+      },
+      {
+        title: '菜单数量',
+        dataIndex: 'menus',
+        hideInSearch: true,
+        render: (_, record) => record?.menus?.length || 0,
+      },
+      {
+        title: '引用消息',
+        dataIndex: 'replyToMessage',
+        hideInSearch: true,
+        render: (_, record) =>
+          record.replyToMessage ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
+      },
+      {
+        title: '回复管理员',
+        dataIndex: 'replyToAdmin',
+        hideInSearch: true,
+        render: (_, record) =>
+          record.replyToAdmin !== false ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
+      },
+      {
+        title: '阅后即焚',
+        dataIndex: 'deleteAfterSeconds',
+        hideInSearch: true,
+        render: (_, record) =>
+          record.deleteAfterSeconds ? <Tag color="orange">{record.deleteAfterSeconds}秒</Tag> : '-',
+      },
+      {
+        title: '删除用户消息',
+        dataIndex: 'deleteUserMsgAfterSeconds',
+        hideInSearch: true,
+        render: (_, record) =>
+          record.deleteUserMsgAfterSeconds ? (
+            <Tag color="orange">{record.deleteUserMsgAfterSeconds}秒</Tag>
+          ) : (
+            '-'
+          ),
+      },
+      {
+        title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
+        dataIndex: 'isOnline',
+        hideInSearch: true,
+        render: (_, record: any) => (
+          <Switch
+            checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+            unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
+            checked={record.isOnline}
+            onChange={async () => {
+              await handleUpdate({ _id: record?._id, isOnline: !record.isOnline });
+              actionRef.current?.reload();
             }}
           />
         ),
-      ],
-    },
-  ];
+      },
+      {
+        title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
+        dataIndex: 'createdAt',
+        hideInSearch: true,
+        valueType: 'dateTime',
+      },
+      {
+        title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+        dataIndex: 'option',
+        valueType: 'option',
+        width: 200,
+        fixed: isMobile ? false : 'right',
+        render: (_, record) => [
+          <a
+            key="detail"
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            <EyeOutlined /> 详情
+          </a>,
+          access.canUpdateBot && (
+            <a
+              key="edit"
+              style={{ color: '#52c41a' }}
+              onClick={() => {
+                handleUpdateModalOpen(true);
+                setCurrentRow(record);
+              }}
+            >
+              <EditOutlined /> {intl.formatMessage({ id: 'edit' })}
+            </a>
+          ),
+          access.canDeleteBot && (
+            <DeleteLink
+              key="delete"
+              onOk={async () => {
+                await handleRemove([record._id!]);
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              }}
+            />
+          ),
+        ],
+      },
+    ],
+    [isMobile, intl, access],
+  );
 
   return (
     <PageContainer>

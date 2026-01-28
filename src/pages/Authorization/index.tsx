@@ -6,6 +6,7 @@ import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
+import useIsMobile from '@/hooks/useIsMobile';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
@@ -146,220 +147,225 @@ const TableList: React.FC = () => {
     setConfigRefreshKey((prev) => prev + 1);
   };
 
-  const columns: ProColumns<any>[] = [
-    {
-      title: intl.formatMessage({ id: 'agent' }),
-      dataIndex: 'agent',
-      copyable: true,
-      hideInTable: !currentUser?.isAdmin,
-      hideInSearch: true,
-      renderText: (_, record) => {
-        return record?.user?.name;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
-      dataIndex: 'id',
-      width: 120,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'owner_bot_display_name' }),
-      dataIndex: 'botName',
-      width: 150,
-      fixed: 'left',
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'owner_bot_identifier_name' }),
-      dataIndex: 'userName',
-      width: 150,
-      render: (_, record) => {
-        const link = `@${record.userName}`;
-        if (record.userName) {
-          return (
-            <span>
-              @{record.userName}
-              <CopyToClipboard text={link} />
-            </span>
-          );
-        }
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
-      dataIndex: 'botUserConfigs',
-      hideInSearch: true,
-      renderText: (botUserConfigs) => {
-        return botUserConfigs.length;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
-      dataIndex: 'groups',
-      hideInSearch: true,
-      renderText: (groups) => {
-        return groups.length;
-      },
-    },
-    // add owners
-    {
-      title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
-      dataIndex: 'owners',
-      hideInSearch: true,
-      hideInTable: false,
-      align: 'center',
-      width: 150,
-      render: (_, record) => (
-        <StringArrayWithActions
-          values={record.owners || []}
-          onAdd={() => {
-            setCurrentRow(record);
-            setAddOwnerModalVisible(true);
-          }}
-          onDelete={() => {
-            setCurrentRow(record);
-            setDeleteOwnerModalVisible(true);
-          }}
-          labelAdd={intl.formatMessage({ id: 'add_owner' })}
-          labelDelete={intl.formatMessage({ id: 'delete_owner' })}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
-      width: 120,
-      dataIndex: 'creator',
-      renderText: (text: any) => {
-        return text?.botName || text?.userName;
-      },
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
-      dataIndex: 'token',
-      valueType: 'password',
-      hideInSearch: true,
-      copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
-      dataIndex: 'isOnline',
-      width: 120,
-      hideInSearch: true,
-      valueEnum: {
-        true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
-        false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
-      },
-      render: (_, record: any) => (
-        <Switch
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
-          checked={record.isOnline}
-          onChange={async () => {
-            await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'remark', defaultMessage: 'Remark' }),
-      dataIndex: 'remark',
-      hideInSearch: true,
-      valueType: 'text',
-      ellipsis: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
-      hideInSearch: true,
-      valueType: 'dateTime',
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-      dataIndex: 'option',
-      valueType: 'option',
-      fixed: 'right',
-      render: (_, record) => [
-        access.canUpdateBot && (
-          <ActionButton
-            key="configure"
-            type="configure"
-            onClick={() => {
-              setConfigureModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'base_configure',
-              defaultMessage: '基本配置',
-            })}
-          </ActionButton>
-        ),
-        // 功能配置 - 集中管理所有功能
-        (record.canGroupMessaging ||
-          record.canOpenChannelPost ||
-          record.canReplyRule ||
-          record.canFreeKeyboard ||
-          record.canSpeechStatic ||
-          record.canGroupWelcome ||
-          record.canBidirectional ||
-          record.canGroupVerify) && (
-          <ActionButton
-            key="botConfig"
-            type="configure"
-            onClick={() => {
-              setCurrentRow(record);
-              setBotConfigManagerOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'feature_config',
-              defaultMessage: '功能配置',
-            })}
-          </ActionButton>
-        ),
-        <ActionButton
-          key="detail"
-          type="detail"
-          onClick={() => {
-            setCurrentRow(record);
-            setShowDetail(true);
-          }}
-        >
-          <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
-        </ActionButton>,
-        access.canUpdateBot && (
-          <ActionButton
-            key="edit"
-            type="edit"
-            onClick={() => {
-              console.log();
+  const isMobile = useIsMobile(1440);
 
-              handleUpdateModalOpen(true);
+  const columns: ProColumns<any>[] = React.useMemo(
+    () => [
+      {
+        title: intl.formatMessage({ id: 'agent' }),
+        dataIndex: 'agent',
+        copyable: true,
+        hideInTable: !currentUser?.isAdmin,
+        hideInSearch: true,
+        renderText: (_, record) => {
+          return record?.user?.name;
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'ID', defaultMessage: 'ID' }),
+        dataIndex: 'id',
+        width: 120,
+        copyable: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'owner_bot_display_name' }),
+        dataIndex: 'botName',
+        width: 150,
+        fixed: isMobile ? false : 'left',
+        copyable: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'owner_bot_identifier_name' }),
+        dataIndex: 'userName',
+        width: 150,
+        render: (_, record) => {
+          const link = `@${record.userName}`;
+          if (record.userName) {
+            return (
+              <span>
+                @{record.userName}
+                <CopyToClipboard text={link} />
+              </span>
+            );
+          }
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
+        dataIndex: 'botUserConfigs',
+        hideInSearch: true,
+        renderText: (botUserConfigs) => {
+          return botUserConfigs.length;
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
+        dataIndex: 'groups',
+        hideInSearch: true,
+        renderText: (groups) => {
+          return groups.length;
+        },
+      },
+      // add owners
+      {
+        title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
+        dataIndex: 'owners',
+        hideInSearch: true,
+        hideInTable: false,
+        align: 'center',
+        width: 150,
+        render: (_, record) => (
+          <StringArrayWithActions
+            values={record.owners || []}
+            onAdd={() => {
               setCurrentRow(record);
+              setAddOwnerModalVisible(true);
             }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </ActionButton>
+            onDelete={() => {
+              setCurrentRow(record);
+              setDeleteOwnerModalVisible(true);
+            }}
+            labelAdd={intl.formatMessage({ id: 'add_owner' })}
+            labelDelete={intl.formatMessage({ id: 'delete_owner' })}
+          />
         ),
-        access.canDeleteBot && (
-          <DeleteLink
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-              // 刷新用户信息（更新 botCount）
-              await refresh();
+      },
+      {
+        title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+        width: 120,
+        dataIndex: 'creator',
+        renderText: (text: any) => {
+          return text?.botName || text?.userName;
+        },
+        hideInSearch: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
+        dataIndex: 'token',
+        valueType: 'password',
+        hideInSearch: true,
+        copyable: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
+        dataIndex: 'isOnline',
+        width: 120,
+        hideInSearch: true,
+        valueEnum: {
+          true: { text: intl.formatMessage({ id: 'platform.online' }), status: 'Success' },
+          false: { text: intl.formatMessage({ id: 'platform.offline' }), status: 'Error' },
+        },
+        render: (_, record: any) => (
+          <Switch
+            checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+            unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
+            checked={record.isOnline}
+            onChange={async () => {
+              await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }}
           />
         ),
-      ],
-    },
-  ];
+      },
+      {
+        title: intl.formatMessage({ id: 'remark', defaultMessage: 'Remark' }),
+        dataIndex: 'remark',
+        hideInSearch: true,
+        valueType: 'text',
+        ellipsis: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
+        dataIndex: 'createdAt',
+        hideInSearch: true,
+        valueType: 'dateTime',
+      },
+      {
+        title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+        dataIndex: 'option',
+        valueType: 'option',
+        fixed: isMobile ? false : 'right',
+        render: (_, record) => [
+          access.canUpdateBot && (
+            <ActionButton
+              key="configure"
+              type="configure"
+              onClick={() => {
+                setConfigureModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              {intl.formatMessage({
+                id: 'base_configure',
+                defaultMessage: '基本配置',
+              })}
+            </ActionButton>
+          ),
+          // 功能配置 - 集中管理所有功能
+          (record.canGroupMessaging ||
+            record.canOpenChannelPost ||
+            record.canReplyRule ||
+            record.canFreeKeyboard ||
+            record.canSpeechStatic ||
+            record.canGroupWelcome ||
+            record.canBidirectional ||
+            record.canGroupVerify) && (
+            <ActionButton
+              key="botConfig"
+              type="configure"
+              onClick={() => {
+                setCurrentRow(record);
+                setBotConfigManagerOpen(true);
+              }}
+            >
+              {intl.formatMessage({
+                id: 'feature_config',
+                defaultMessage: '功能配置',
+              })}
+            </ActionButton>
+          ),
+          <ActionButton
+            key="detail"
+            type="detail"
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
+          </ActionButton>,
+          access.canUpdateBot && (
+            <ActionButton
+              key="edit"
+              type="edit"
+              onClick={() => {
+                console.log();
+
+                handleUpdateModalOpen(true);
+                setCurrentRow(record);
+              }}
+            >
+              {intl.formatMessage({ id: 'edit' })}
+            </ActionButton>
+          ),
+          access.canDeleteBot && (
+            <DeleteLink
+              onOk={async () => {
+                await handleRemove([record._id!]);
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+                // 刷新用户信息（更新 botCount）
+                await refresh();
+              }}
+            />
+          ),
+        ],
+      },
+    ],
+    [isMobile, intl, access, currentUser],
+  );
 
   return (
     <PageContainer>

@@ -5,6 +5,7 @@ import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-componen
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { message } from 'antd';
 import React, { useRef, useState } from 'react';
+import useIsMobile from '@/hooks/useIsMobile';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
@@ -40,92 +41,97 @@ const TableList: React.FC = () => {
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const access = useAccess();
 
-  const columns: ProColumns<API.ItemData>[] = [
-    {
-      title: intl.formatMessage({ id: 'id', defaultMessage: '交易ID' }),
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
-      dataIndex: 'bot',
-      copyable: true,
-      renderText: (bot) => bot?.botName,
-    },
-    // type
-    {
-      title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
-      dataIndex: 'type',
-      hideInSearch: true,
-      valueEnum: {
-        deposit: { text: intl.formatMessage({ id: 'deposit', defaultMessage: '入款' }) },
-        withdraw: { text: intl.formatMessage({ id: 'withdraw', defaultMessage: '下发' }) },
+  const isMobile = useIsMobile(1440);
+
+  const columns: ProColumns<API.ItemData>[] = React.useMemo(
+    () => [
+      {
+        title: intl.formatMessage({ id: 'id', defaultMessage: '交易ID' }),
+        dataIndex: 'id',
+        hideInSearch: true,
       },
-    },
-    {
-      title: intl.formatMessage({ id: 'botUser', defaultMessage: '机器人用户' }),
-      dataIndex: 'botUser',
-      copyable: true,
-      renderText: (record) => record.userName || record.firstName + ' ' + record.lastName,
-    },
-    {
-      title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
-      dataIndex: 'amount',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: '汇率' }),
-      dataIndex: 'exchange_rate',
-      valueType: 'digit',
-      hideInSearch: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'fee_rate', defaultMessage: '手续费率' }),
-      dataIndex: 'fee_rate',
-      valueType: 'percent',
-      hideInSearch: true,
-    },
-    // group
-    {
-      title: intl.formatMessage({ id: 'group', defaultMessage: '所属群组' }),
-      dataIndex: 'group',
-      copyable: true,
-      renderText: (group) => group?.title,
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" />,
-      dataIndex: 'option',
-      valueType: 'option',
-      fixed: 'right',
-      render: (_, record) => [
-        <ActionButton
-          key="detail"
-          type="detail"
-          onClick={() => {
-            setCurrentRow(record);
-            setShowDetail(true);
-          }}
-        >
-          <FormattedMessage id="detail" defaultMessage="详情" />
-        </ActionButton>,
-        access.canDeleteTransaction && (
-          <DeleteLink
-            key="delete"
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              actionRef.current?.reload();
+      {
+        title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
+        dataIndex: 'bot',
+        copyable: true,
+        renderText: (bot) => bot?.botName,
+      },
+      // type
+      {
+        title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
+        dataIndex: 'type',
+        hideInSearch: true,
+        valueEnum: {
+          deposit: { text: intl.formatMessage({ id: 'deposit', defaultMessage: '入款' }) },
+          withdraw: { text: intl.formatMessage({ id: 'withdraw', defaultMessage: '下发' }) },
+        },
+      },
+      {
+        title: intl.formatMessage({ id: 'botUser', defaultMessage: '机器人用户' }),
+        dataIndex: 'botUser',
+        copyable: true,
+        renderText: (record) => record.userName || record.firstName + ' ' + record.lastName,
+      },
+      {
+        title: intl.formatMessage({ id: 'amount', defaultMessage: '金额' }),
+        dataIndex: 'amount',
+        hideInSearch: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'exchange_rate', defaultMessage: '汇率' }),
+        dataIndex: 'exchange_rate',
+        valueType: 'digit',
+        hideInSearch: true,
+      },
+      {
+        title: intl.formatMessage({ id: 'fee_rate', defaultMessage: '手续费率' }),
+        dataIndex: 'fee_rate',
+        valueType: 'percent',
+        hideInSearch: true,
+      },
+      // group
+      {
+        title: intl.formatMessage({ id: 'group', defaultMessage: '所属群组' }),
+        dataIndex: 'group',
+        copyable: true,
+        renderText: (group) => group?.title,
+      },
+      {
+        title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
+        dataIndex: 'createdAt',
+        valueType: 'dateTime',
+        hideInSearch: true,
+      },
+      {
+        title: <FormattedMessage id="pages.searchTable.titleOption" />,
+        dataIndex: 'option',
+        valueType: 'option',
+        fixed: isMobile ? false : 'right',
+        render: (_, record) => [
+          <ActionButton
+            key="detail"
+            type="detail"
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
             }}
-          />
-        ),
-      ],
-    },
-  ];
+          >
+            <FormattedMessage id="detail" defaultMessage="详情" />
+          </ActionButton>,
+          access.canDeleteTransaction && (
+            <DeleteLink
+              key="delete"
+              onOk={async () => {
+                await handleRemove([record._id!]);
+                actionRef.current?.reload();
+              }}
+            />
+          ),
+        ],
+      },
+    ],
+    [isMobile, intl, access],
+  );
 
   return (
     <PageContainer>
