@@ -91,6 +91,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'promotion_link', defaultMessage: '推广链接' }),
       dataIndex: 'promotionLink',
       hideInSearch: true,
+      hideInTable: true,
       render: (_, record: any) => {
         const promotionLink = record.promotionLink;
         if (!promotionLink) {
@@ -145,12 +146,13 @@ const TableList: React.FC = () => {
       dataIndex: 'lastName',
       hideInSearch: true,
       copyable: true,
-      renderText: (lastName, record) => record.botUser?.lastName,
+      renderText: (_, record) => record.botUser?.lastName,
     },
     {
       title: intl.formatMessage({ id: 'balance' }),
       dataIndex: 'usdt_balance',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
