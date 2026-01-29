@@ -226,15 +226,15 @@ const TableList: React.FC = () => {
         />
       ),
     },
-    {
-      title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
-      width: 120,
-      dataIndex: 'creator',
-      renderText: (text: any) => {
-        return text?.botName || text?.userName;
-      },
-      hideInSearch: true,
-    },
+    // {
+    //   title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+    //   width: 120,
+    //   dataIndex: 'creator',
+    //   renderText: (text: any) => {
+    //     return text?.botName || text?.userName;
+    //   },
+    //   hideInSearch: true,
+    // },
     {
       title: intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' }),
       dataIndex: 'token',
