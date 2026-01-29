@@ -299,15 +299,16 @@ const TableList: React.FC = () => {
             })}
           </ActionButton>
         ),
-        // 功能配置 - 集中管理所有功能
-        (record.canGroupMessaging ||
-          record.canOpenChannelPost ||
-          record.canReplyRule ||
-          record.canFreeKeyboard ||
-          record.canSpeechStatic ||
-          record.canGroupWelcome ||
-          record.canBidirectional ||
-          record.canGroupVerify) && (
+        // 功能配置 - 只要用户有任何功能权限就显示
+        (currentUser?.groupMessage ||
+          currentUser?.channelPost ||
+          currentUser?.replyRule ||
+          currentUser?.keyboardConfig ||
+          currentUser?.speech_static ||
+          currentUser?.groupWelcome ||
+          currentUser?.bidirectional ||
+          currentUser?.groupVerify ||
+          currentUser?.reportGroupMemberNameUpdated) && (
           <ActionButton
             key="botConfig"
             type="configure"
