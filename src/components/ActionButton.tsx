@@ -18,6 +18,7 @@ import {
   BranchesOutlined,
   UserAddOutlined,
   SafetyCertificateOutlined,
+  CommentOutlined,
 } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import React from 'react';
@@ -41,6 +42,7 @@ export type ActionType =
   | 'channel'
   | 'group_welcome'
   | 'group_verify'
+  | 'reply_rule'
   | 'custom';
 
 interface ActionButtonProps {
@@ -86,6 +88,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     channel: <BranchesOutlined />,
     group_welcome: <UserAddOutlined />,
     group_verify: <SafetyCertificateOutlined />,
+    reply_rule: <CommentOutlined />,
     custom: icon || null,
   };
 
@@ -109,6 +112,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     channel: '#13c2c2', // 青色
     group_welcome: '#52c41a', // 绿色
     group_verify: '#fa541c', // 橙红色
+    reply_rule: '#722ed1', // 紫色
     custom: color || '#1890ff',
   };
 
@@ -132,6 +136,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     channel: intl.formatMessage({ id: 'channel_post_management', defaultMessage: '频道推广' }),
     group_welcome: intl.formatMessage({ id: 'group_welcome', defaultMessage: '欢迎入群' }),
     group_verify: intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' }),
+    reply_rule: intl.formatMessage({ id: 'reply_rule', defaultMessage: '关键词回复' }),
     custom: '',
   };
 

@@ -32,7 +32,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       footer={false}
       onCancel={() => onCancel(false)}
     >
-      <BasicForm values={values} onFinish={handleSubmit} />
+      <BasicForm values={values} onFinish={handleSubmit} hideScheduleOptions />
     </Modal>
   );
 };

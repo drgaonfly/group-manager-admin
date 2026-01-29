@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ModalForm,
   ProFormTextArea,
@@ -10,7 +10,6 @@ import { Form, Input } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
-import PresetTableForm, { PresetItem } from './PresetTableForm';
 
 type menuItem = {
   _id: string;
@@ -35,23 +34,28 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
-  const [menus, setmenu] = useState<menuItem[]>(values?.menus || []);
-  const [multiImageUrl, setMultiImageUrl] = useState<string>(values?.multi_image || '');
-  const [presets, setPresets] = useState<PresetItem[]>(values?.presets || []);
+  const [menus, setmenu] = useState<menuItem[]>([]);
+  const [multiImageUrl, setMultiImageUrl] = useState<string>('');
+
+  // 只提取需要的字段，避免渲染大数据导致卡顿
+  const safeValues = useMemo(() => {
+    if (!values) return {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { botUsers, botUserConfigs, groups, authorized_users, channel_posts, owners, ...rest } =
+      values;
+    return rest;
+  }, [values?._id]);
 
   useEffect(() => {
-    if (updateModalOpen) {
+    if (updateModalOpen && values) {
       form.setFieldsValue({
-        ...values,
+        ...safeValues,
       });
 
-      setPresets(values?.presets || []);
       setmenu(values?.menus || []);
       setMultiImageUrl(values?.multi_image || '');
     }
-  }, [updateModalOpen, values]);
-
-  console.log('values', values);
+  }, [updateModalOpen, values?._id]);
 
   // const columns = [
   //   {
@@ -104,23 +108,21 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           multi_image: multiImageUrl,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           menus: menus.map(({ _id, ...rest }) => rest),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          presets: presets.map(({ _id, ...rest }) => rest),
         });
       }}
       initialValues={{
-        ...values,
+        ...safeValues,
         presets: values?.presets?.map((item: any) => item._id),
         menus: values?.menus?.map((item: any) => item._id),
       }}
     >
-      {values && (
+      {safeValues && (
         <ProDescriptions<API.ItemData>
           column={2}
           title={intl.formatMessage({ id: 'userDetails', defaultMessage: '用户详情' })}
           request={async () => ({
             data: {
-              ...values,
+              ...safeValues,
               inviteCode: (currentUser as any)?.inviteCode || '',
             },
           })}
@@ -244,8 +246,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             />
           )}
         </ProFormGroup>
-
-        <PresetTableForm value={presets} onChange={setPresets} />
 
         {/* <EditableProTable<menuItem>
           rowKey="_id"

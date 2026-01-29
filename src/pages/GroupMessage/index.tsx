@@ -6,11 +6,10 @@ import { FormattedMessage, useAccess } from '@umijs/max';
 import { message, Image, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
+import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
-import ActionButton from '@/components/ActionButton';
 import Update from './components/Update';
-import moment from 'moment';
 
 const handleRemove = async (ids: string[]) => {
   const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
@@ -88,40 +87,110 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<API.ItemData>[] = [
+    // 代理
     {
       title: intl.formatMessage({ id: 'agent' }),
       dataIndex: 'agent',
-      copyable: true,
       hideInTable: !currentUser?.isAdmin,
-      hideInSearch: true,
-      renderText: (_, record) => {
-        return record?.proxy?.name;
-      },
+      hideInSearch: !currentUser?.isAdmin,
+      renderText: (_, record) => record?.proxy?.name,
     },
+    // 机器人
     {
       title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
       dataIndex: 'bot',
-      copyable: true,
       renderText: (bot) => bot?.botName,
     },
+    // 群组
     {
       title: intl.formatMessage({ id: 'groups', defaultMessage: '所属群组' }),
       dataIndex: 'groups',
-      copyable: true,
-      renderText: (groups) => groups?.map((group: any) => group?.title).join(','),
+      hideInSearch: true,
+      ellipsis: true,
+      width: 200,
+      renderText: (groups) => groups?.map((group: any) => group?.title).join(', '),
     },
-    // weight
-    // {
-    //   title: intl.formatMessage({ id: 'weight', defaultMessage: '权重' }),
-    //   dataIndex: 'weight',
-    //   hideInSearch: true,
-    // },
+    // 内容
+    {
+      title: intl.formatMessage({ id: 'content' }),
+      dataIndex: 'content',
+      hideInSearch: true,
+      ellipsis: true,
+      width: 200,
+      render: (_, record) => (
+        <div
+          style={{ maxWidth: 200 }}
+          dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+        />
+      ),
+    },
+    // 媒体
+    {
+      title: intl.formatMessage({ id: 'media', defaultMessage: '媒体' }),
+      dataIndex: 'medias',
+      hideInSearch: true,
+      width: 150,
+      render: (_, record) => {
+        if (!record.medias || !Array.isArray(record.medias) || record.medias.length === 0) {
+          return '-';
+        }
+
+        const getMediaType = (filename: string): 'photo' | 'video' => {
+          const ext = filename.toLowerCase().split('.').pop();
+          const videoExtensions = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv'];
+          return videoExtensions.includes(ext || '') ? 'video' : 'photo';
+        };
+
+        return (
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {record.medias.slice(0, 3).map((media: string, idx: number) => {
+              const mediaUrl = media.startsWith('http') ? media : `/api/static/${media}`;
+              const mediaType = getMediaType(media);
+
+              if (mediaType === 'video') {
+                return (
+                  <video
+                    key={media || idx}
+                    src={mediaUrl}
+                    style={{ maxWidth: '40px', maxHeight: '40px', objectFit: 'cover' }}
+                    muted
+                  />
+                );
+              }
+              return (
+                <Image
+                  key={media || idx}
+                  src={mediaUrl}
+                  alt={`media-${idx}`}
+                  style={{ maxWidth: '40px', maxHeight: '40px' }}
+                  preview
+                />
+              );
+            })}
+            {record.medias.length > 3 && (
+              <span style={{ fontSize: 12, color: '#999' }}>+{record.medias.length - 3}</span>
+            )}
+          </div>
+        );
+      },
+    },
+    // 间隔时间
+    {
+      title: intl.formatMessage({ id: 'interval_time_hour' }),
+      dataIndex: 'intervalTime',
+      hideInSearch: true,
+      width: 150,
+      renderText: (intervalTime) =>
+        intervalTime > 1 ? `${intervalTime} 小时` : `${intervalTime * 60} 分钟`,
+    },
+    // 状态
     {
       title: intl.formatMessage({ id: 'isOnline' }),
       dataIndex: 'isOnline',
-      hideInSearch: false,
+      hideInSearch: true,
       render: (_, record: any) => (
         <Switch
           checked={record.isOnline}
@@ -134,75 +203,50 @@ const TableList: React.FC = () => {
         />
       ),
     },
-    // 每行菜单数
-    {
-      title: intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' }),
-      dataIndex: 'menus_per_row',
-      hideInSearch: true,
-    },
-    // image
-    {
-      title: intl.formatMessage({ id: 'image', defaultMessage: '图片' }),
-      dataIndex: 'images',
-      hideInSearch: true,
-      render: (_, record) => {
-        if (!record.images || !Array.isArray(record.images) || record.images.length === 0) {
-          return null;
-        }
-        return (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {record.images.map((img: string, idx: number) => (
-              <Image
-                key={img || idx}
-                src={img}
-                alt={`message-${idx}`}
-                style={{ maxWidth: '100px', maxHeight: '100px' }}
-                preview
-              />
-            ))}
-          </div>
-        );
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'content' }),
-      dataIndex: 'content',
-      ellipsis: true,
-      width: 200,
-      hideInSearch: true,
-    },
-    // intervalTime
-    {
-      title: intl.formatMessage({ id: 'interval_time_hour' }),
-      dataIndex: 'intervalTime',
-      hideInSearch: true,
-      renderText: (intervalTime) => {
-        return intervalTime > 1 ? `${intervalTime} 小时` : `${intervalTime * 60} 分钟`;
-      },
-    },
+    // 创建时间
     {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
-      valueType: 'dateTime',
       hideInSearch: true,
-      render: (_, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      valueType: 'dateTime',
     },
+    // 操作
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
+      width: 250,
       fixed: 'right',
       render: (_, record) => [
-        <ActionButton
+        <a
           key="detail"
-          type="detail"
           onClick={() => {
             setCurrentRow(record);
             setShowDetail(true);
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
-        </ActionButton>,
+        </a>,
+        <a
+          key="history"
+          onClick={() => {
+            setCurrentRow(record);
+            setHistoryModalOpen(true);
+          }}
+        >
+          <FormattedMessage id="send_history" defaultMessage="发送历史" />
+        </a>,
+        access.canUpdateGroupMessage && (
+          <a
+            key="edit"
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              setCurrentRow(record);
+            }}
+          >
+            <FormattedMessage id="edit" defaultMessage="编辑" />
+          </a>
+        ),
         access.canDeleteGroupMessage && (
           <DeleteLink
             key="delete"
@@ -211,20 +255,6 @@ const TableList: React.FC = () => {
               actionRef.current?.reload();
             }}
           />
-        ),
-        access.canUpdateGroupMessage && (
-          <ActionButton
-            key="edit"
-            type="edit"
-            onClick={() => {
-              console.log();
-
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </ActionButton>
         ),
       ],
     },
@@ -333,6 +363,16 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+
+      <HistoryModal
+        open={historyModalOpen}
+        onClose={() => {
+          setHistoryModalOpen(false);
+          setCurrentRow(undefined);
+        }}
+        groupMessageId={currentRow?._id}
+        currentRow={currentRow}
       />
     </PageContainer>
   );

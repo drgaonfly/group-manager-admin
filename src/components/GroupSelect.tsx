@@ -15,10 +15,12 @@ const GroupSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
   return (
     <ProFormSelect
       rules={[{ required: true }]}
-      options={groups.map((group: any) => ({
-        label: group.title, //群组名称
-        value: group._id,
-      }))}
+      options={groups
+        .filter((g) => g.accessHash)
+        .map((group: any) => ({
+          label: group.title, //群组名称
+          value: group._id,
+        }))}
       width="md"
       name="group"
       label={intl.formatMessage({ id: 'group.title', defaultMessage: '群组' })}

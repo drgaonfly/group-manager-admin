@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { ModalForm, ProFormTextArea, ProFormSwitch } from '@ant-design/pro-components';
-import { Button, Popover, message } from 'antd';
+import { Button, Popover, message, Form } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
+import { UploadFile } from 'antd/es/upload/interface';
 import EmojiPicker from 'emoji-picker-react';
 import { addItem } from '@/services/ant-design-pro/api';
+import Upload from '@/components/Upload';
 
 interface SendMessageModalProps {
   open: boolean;
@@ -14,16 +16,23 @@ interface SendMessageModalProps {
 
 const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, currentRow }) => {
   const intl = useIntl();
+  const [form] = Form.useForm();
   const [emojiVisible, setEmojiVisible] = useState(false);
-  const [useHtml, setUseHtml] = useState(false);
-  const [messageText, setMessageText] = useState('');
+  const [text, setText] = useState('');
+  const [medias, setMedias] = useState<string[]>([]);
+  const [uploadKey, setUploadKey] = useState(0);
 
   const handleEmojiClick = (emojiData: any) => {
-    const currentValue = messageText || '';
-    const newText = currentValue + emojiData.emoji;
-    setMessageText(newText);
+    setText((prev) => prev + emojiData.emoji);
     setEmojiVisible(false);
   };
+
+  const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
+    uid: String(idx + 1),
+    name: `media${idx + 1}`,
+    status: 'done' as UploadFile['status'],
+    url: media.startsWith('http') ? media : `/api/static/${media}`,
+  }));
 
   const handleFinish = async (values: any) => {
     // 检查配置ID是否存在
@@ -50,8 +59,9 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
     try {
       // 后端会通过 BotUserConfig 的 id 自动获取绑定的机器人信息，不需要前端传递
       await addItem(`/bot-user-configs/${currentRow._id}/send-message`, {
-        message: values.message,
-        parseMode: useHtml ? 'HTML' : undefined,
+        message: text,
+        parseMode: values.useHtml ? 'HTML' : undefined,
+        medias: medias,
       });
 
       hide();
@@ -59,8 +69,10 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
         content: <FormattedMessage id="send_successful" />,
         key: 'sendMessage',
       });
-      setMessageText('');
-      setUseHtml(false);
+      form.resetFields();
+      setText('');
+      setMedias([]);
+      setUploadKey((prev) => prev + 1); // 强制 Upload 组件重新渲染
       return true;
     } catch (error: any) {
       hide();
@@ -72,29 +84,22 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
     }
   };
 
-  const emojiPicker = (
-    <div style={{ width: 350, height: 400 }}>
-      <EmojiPicker onEmojiClick={handleEmojiClick} />
-    </div>
-  );
-
   return (
     <ModalForm
+      form={form}
       title={<FormattedMessage id="send_message" />}
       open={open}
-      onOpenChange={(visible) => {
-        if (!visible) {
+      modalProps={{
+        destroyOnClose: true,
+        onCancel: () => {
           onClose();
           setEmojiVisible(false);
-          setUseHtml(false);
-          setMessageText('');
-        }
+          setText('');
+          setMedias([]);
+          setUploadKey((prev) => prev + 1);
+        },
       }}
       onFinish={handleFinish}
-      initialValues={{
-        message: messageText,
-        useHtml: false,
-      }}
     >
       <div style={{ marginBottom: 16 }}>
         <strong>
@@ -107,43 +112,30 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
       <ProFormSwitch
         name="useHtml"
         label={<FormattedMessage id="use_html" />}
-        fieldProps={{
-          checked: useHtml,
-          onChange: (checked) => setUseHtml(checked),
-        }}
         extra={<FormattedMessage id="use_html_description" />}
       />
 
       <ProFormTextArea
         name="message"
         label={
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>
-              <FormattedMessage id="message_content" />
-            </span>
+          <span>
+            <FormattedMessage id="message_content" />
             <Popover
-              content={emojiPicker}
+              content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
               title={<FormattedMessage id="select_emoji" />}
               trigger="click"
               open={emojiVisible}
               onOpenChange={setEmojiVisible}
               placement="top"
             >
-              <Button
-                type="text"
-                icon={<SmileOutlined />}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setEmojiVisible(!emojiVisible);
-                }}
-              />
+              <Button type="text" icon={<SmileOutlined />} style={{ marginLeft: 8 }} />
             </Popover>
-          </div>
+          </span>
         }
         fieldProps={{
           rows: 6,
-          onChange: (e) => setMessageText(e.target.value),
-          value: messageText,
+          value: text,
+          onChange: (e) => setText(e.target.value),
         }}
         placeholder={intl.formatMessage({ id: 'enter_message' })}
         rules={[
@@ -153,6 +145,32 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, onClose, curr
           },
         ]}
       />
+
+      <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
+        <Upload
+          key={uploadKey}
+          onFileUpload={(url: string) => {
+            setMedias((prev) => {
+              // 去重，避免重复添加
+              if (prev.includes(url)) {
+                return prev;
+              }
+              return [...prev, url];
+            });
+          }}
+          accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+          defaultFileList={defaultMediaFileList}
+          multiple
+          onRemove={(file: UploadFile) => {
+            const fileUrl = file.url || '';
+            const fileName = fileUrl.includes('/api/static/')
+              ? fileUrl.replace('/api/static/', '')
+              : fileUrl;
+            setMedias((prev) => prev.filter((media) => media !== fileName && media !== fileUrl));
+            return true;
+          }}
+        />
+      </Form.Item>
     </ModalForm>
   );
 };

@@ -1,0 +1,202 @@
+import { Modal, Table, Tag, Image, Space, message, Button } from 'antd';
+import { useIntl } from '@umijs/max';
+import React, { useEffect, useState } from 'react';
+import { queryList, addItem } from '@/services/ant-design-pro/api';
+import type { ColumnsType } from 'antd/es/table';
+import { CopyOutlined } from '@ant-design/icons';
+import BasicForm from './BasicForm';
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  groupMessageId?: string;
+  currentRow?: any; // 当前 GroupMessage 的完整数据，用于获取 bot.groups
+}
+
+const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId, currentRow }) => {
+  const intl = useIntl();
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<any[]>([]);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+
+  const fetchData = async (page = 1, pageSize = 10) => {
+    if (!groupMessageId) return;
+    setLoading(true);
+    try {
+      const res = await queryList('/group-message-records', {
+        groupMessage: groupMessageId,
+        current: page,
+        pageSize,
+      });
+      setData(res.data || []);
+      setPagination({ current: page, pageSize, total: res.total || 0 });
+    } catch (error) {
+      message.error('获取历史记录失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (open && groupMessageId) {
+      fetchData(1, 10);
+    }
+  }, [open, groupMessageId]);
+
+  const handleCopyCreate = (record: any) => {
+    // 确保 bot 对象包含 groups 数据
+    setSelectedRecord({
+      content: record.content,
+      medias: record.medias || [],
+      bot: currentRow?.bot, // 完整的 bot 对象，包含 groups
+      groups: currentRow?.groups?.map((g: any) => g._id || g) || [],
+      menus: currentRow?.menus || [],
+      menus_per_row: currentRow?.menus_per_row || 1,
+      intervalTime: currentRow?.intervalTime || 1,
+    });
+    setCreateModalOpen(true);
+  };
+
+  const handleCreateFinish = async (formData: any) => {
+    const hide = message.loading('创建中...');
+    try {
+      await addItem('/group-messages', {
+        ...formData,
+        bot: currentRow?.bot?._id || currentRow?.bot,
+      });
+      hide();
+      message.success('创建成功');
+      setCreateModalOpen(false);
+      setSelectedRecord(null);
+    } catch (error: any) {
+      hide();
+      message.error(error?.response?.data?.message || '创建失败');
+    }
+  };
+
+  const columns: ColumnsType<any> = [
+    {
+      title: '内容',
+      dataIndex: 'content',
+      width: 200,
+      ellipsis: true,
+      render: (_, record) => (
+        <div
+          style={{ maxWidth: 200 }}
+          dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+        />
+      ),
+    },
+    {
+      title: '媒体',
+      dataIndex: 'medias',
+      width: 100,
+      render: (_, record) =>
+        record?.medias?.length > 0 ? (
+          <Space>
+            {record.medias.slice(0, 1).map((url: string, idx: number) => {
+              const fullUrl = url.startsWith('http') ? url : `/api/static/${url}`;
+              return <Image key={idx} src={fullUrl} width={40} height={40} />;
+            })}
+            {record.medias.length > 1 && <span>+{record.medias.length - 1}</span>}
+          </Space>
+        ) : (
+          '-'
+        ),
+    },
+    {
+      title: '消息ID',
+      dataIndex: 'messageId',
+      width: 100,
+      render: (_, record) => record?.messageId || '-',
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      width: 80,
+      render: (_, record) =>
+        record.status === 'success' ? (
+          <Tag color="success">成功</Tag>
+        ) : (
+          <Tag color="error">失败</Tag>
+        ),
+    },
+    {
+      title: '错误信息',
+      dataIndex: 'errorMessage',
+      width: 150,
+      ellipsis: true,
+      render: (_, record) => record?.errorMessage || '-',
+    },
+    {
+      title: '发送时间',
+      dataIndex: 'sentAt',
+      width: 160,
+      render: (_, record) => (record?.sentAt ? new Date(record.sentAt).toLocaleString() : '-'),
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      width: 100,
+      fixed: 'right',
+      render: (_, record) => (
+        <Button
+          type="link"
+          size="small"
+          icon={<CopyOutlined />}
+          onClick={() => handleCopyCreate(record)}
+        >
+          复制创建
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Modal
+        title={intl.formatMessage({ id: 'send_history', defaultMessage: '发送历史' })}
+        open={open}
+        onCancel={onClose}
+        footer={null}
+        width={1100}
+        destroyOnClose
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="_id"
+          loading={loading}
+          pagination={{
+            ...pagination,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+            onChange: (page, pageSize) => fetchData(page, pageSize),
+          }}
+          scroll={{ x: 'max-content' }}
+          size="small"
+        />
+      </Modal>
+
+      <Modal
+        title="复制创建群发消息"
+        open={createModalOpen}
+        onCancel={() => {
+          setCreateModalOpen(false);
+          setSelectedRecord(null);
+        }}
+        footer={null}
+        width="50%"
+        destroyOnClose
+      >
+        {selectedRecord && (
+          <BasicForm values={selectedRecord} onFinish={handleCreateFinish} newRecord />
+        )}
+      </Modal>
+    </>
+  );
+};
+
+export default HistoryModal;

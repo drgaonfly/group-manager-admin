@@ -1,16 +1,26 @@
-import { useIntl } from '@umijs/max';
+import { useIntl, FormattedMessage } from '@umijs/max';
 import React, { useState, useEffect } from 'react';
 import {
   ProForm,
-  ProFormTextArea,
   ProFormDigit,
   ProFormCheckbox,
-  ProFormText,
-  ProFormList,
+  ProFormDateTimePicker,
+  ProFormSelect,
+  EditableProTable,
+  ProColumns,
 } from '@ant-design/pro-components';
-import { Alert, Form, Input } from 'antd';
+import { Form, Input, Space } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
+import { minutesToTimeUnit, timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { toDayjs, toISOString } from '@/utils/dateUtils';
+
+type menuItem = {
+  _id: string;
+  menuName: string;
+  url: string;
+};
 
 interface Props {
   newRecord?: boolean;
@@ -20,29 +30,95 @@ interface Props {
 
 const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const intl = useIntl();
+  const [content, setContent] = useState(toQuillHtml(values?.content || ''));
+  const [menus, setMenus] = useState<menuItem[]>(
+    (values?.menus || []).map((m: any, idx: number) => ({
+      _id: m._id || `menu-${idx}`,
+      menuName: m.menuName,
+      url: m.url,
+    })),
+  );
+  const [medias, setMedias] = useState<string[]>(
+    Array.isArray(values?.medias) ? values.medias : values?.image ? [values.image] : [],
+  );
 
-  // images: string[]
-  const [images, setImages] = useState<string[]>(
-    Array.isArray(values?.images) ? values.images : values?.image ? [values.image] : [],
+  const { timeUnit: initialTimeUnit, value: initialIntervalTime } = minutesToTimeUnit(
+    values?.intervalTime,
   );
 
   useEffect(() => {
-    if (Array.isArray(values?.images)) {
-      setImages(values.images);
-    } else if (values?.image) {
-      setImages([values.image]);
-    } else {
-      setImages([]);
+    if (values?.content !== undefined) {
+      setContent(toQuillHtml(values.content));
     }
-  }, [values?.images, values?.image]);
+    if (Array.isArray(values?.medias)) {
+      setMedias(values.medias);
+    } else if (values?.image) {
+      setMedias([values.image]);
+    } else {
+      setMedias([]);
+    }
+    if (values?.menus !== undefined) {
+      setMenus(
+        (values.menus || []).map((m: any, idx: number) => ({
+          _id: m._id || `menu-${idx}`,
+          menuName: m.menuName,
+          url: m.url,
+        })),
+      );
+    }
+  }, [values?.content, values?.medias, values?.image, values?.menus]);
 
-  // Default file list for showing existing images
-  const defaultImageFileList: UploadFile[] = images.map((img, idx) => ({
+  const defaultMediaFileList: UploadFile[] = medias.map((media, idx) => ({
     uid: String(idx + 1),
-    name: `image${idx + 1}`,
+    name: `media${idx + 1}`,
     status: 'done' as UploadFile['status'],
-    url: img,
+    url: media,
   }));
+
+  const menuColumns: ProColumns<menuItem>[] = [
+    {
+      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
+      dataIndex: 'menuName',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({
+              id: 'menu_name_required',
+              defaultMessage: '请输入按钮名称',
+            }),
+          },
+        ],
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'url', defaultMessage: '链接地址' }),
+      dataIndex: 'url',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入链接地址' }),
+          },
+        ],
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      valueType: 'option',
+      width: 200,
+      render: (_, record, __, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(`${record._id}`);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+      ],
+    },
+  ];
 
   return (
     <ProForm
@@ -53,18 +129,30 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           values?.groups && Array.isArray(values.groups)
             ? values.groups.map((g: any) => g?._id || g)
             : [],
-        menus: values?.menus || [],
-        images: images,
+        medias: medias,
+        startAt: toDayjs(values?.startAt),
+        endAt: toDayjs(values?.endAt),
+        timeUnit: initialTimeUnit,
+        intervalTime: initialIntervalTime,
       }}
       onFinish={async (formValues) => {
-        // 兼容后端 images 字段
+        const telegramContent = convertToTelegramHtml(content);
+        const intervalTime = timeUnitToMinutes(
+          formValues.intervalTime || 0,
+          formValues.timeUnit as TimeUnit,
+        );
         await onFinish({
           ...formValues,
-          images: images,
+          content: telegramContent,
+          medias: medias,
+          menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+          intervalTime,
+          startAt: toISOString(formValues.startAt),
+          endAt: toISOString(formValues.endAt),
         });
       }}
       submitter={{
-        render: (props, dom) => {
+        render: (_, dom) => {
           return (
             <div style={{ textAlign: 'right' }}>
               {dom.map((button, index) => (
@@ -77,43 +165,32 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         },
       }}
     >
+      {/* 富文本编辑器 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'content', defaultMessage: '消息内容' })}
+        required
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入消息内容..."
+          height={200}
+          variables="withUser"
+        />
+      </Form.Item>
+
       <ProForm.Group>
-        <Alert
-          message={
-            '支持的 Telegram 标签：' +
-            '<b>加粗</b>、' +
-            '<i>斜体</i>、' +
-            '<u>下划线</u>、' +
-            '<s>删除线</s>、' +
-            '<code>代码</code>、' +
-            '<pre>预格式化</pre>、' +
-            '<a>链接</a>'
-          }
-          type="warning"
-          showIcon
-        />
-
-        <ProFormTextArea
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'content', defaultMessage: '消息内容' })}
-          name="content"
-          fieldProps={{
-            autoSize: { minRows: 10 },
-          }}
-        />
-
-        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: '图片' })}>
+        <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
-              // 支持多图
-              setImages((prev) => [...prev, signedUrl || url]);
+              setMedias((prev) => [...prev, signedUrl || url]);
             }}
-            accept=".jpg,.jpeg,.png,.gif"
-            defaultFileList={defaultImageFileList}
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            defaultFileList={defaultMediaFileList}
             multiple
             onRemove={(file: UploadFile) => {
-              setImages((prev) => prev.filter((img) => img !== file.url));
+              setMedias((prev) => prev.filter((media) => media !== file.url));
               return true;
             }}
           />
@@ -121,12 +198,28 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProFormDigit
-          width="md"
-          label={intl.formatMessage({ id: 'interval_time_hour', defaultMessage: '间隔时间(小时)' })}
-          name="intervalTime"
-          min={0}
-        />
+        {values?.bot?.groups?.length > 0 ? (
+          <ProFormCheckbox.Group
+            name="groups"
+            width="md"
+            label={intl.formatMessage({ id: 'select_groups', defaultMessage: '选择群组' })}
+            options={values.bot.groups
+              .filter((group: any) => group.type !== 'channel')
+              .map((group: any) => ({
+                label: group.title,
+                value: group._id,
+              }))}
+          />
+        ) : (
+          <ProFormCheckbox
+            width="md"
+            label={intl.formatMessage({
+              id: 'no_groups_joined',
+              defaultMessage: '暂无群组',
+            })}
+            disabled
+          />
+        )}
 
         <ProFormDigit
           width="md"
@@ -134,71 +227,76 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="menus_per_row"
           min={1}
         />
-        {/* 
-        <ProFormDigit
-          name="weight"
-          width="sm"
-          label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
-          min={0}
-        /> */}
+      </ProForm.Group>
+
+      <ProForm.Group
+        label={intl.formatMessage({ id: 'interval_time', defaultMessage: '发送间隔' })}
+        style={{ marginBottom: 32 }}
+      >
+        <Space>
+          <ProFormSelect
+            name="timeUnit"
+            width="xs"
+            initialValue="hours"
+            options={[
+              {
+                label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                value: 'minutes',
+              },
+              {
+                label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                value: 'hours',
+              },
+              {
+                label: intl.formatMessage({ id: 'weeks', defaultMessage: 'Weeks' }),
+                value: 'weeks',
+              },
+            ]}
+            noStyle
+          />
+          <ProFormDigit name="intervalTime" width="xs" min={0} noStyle />
+        </Space>
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProFormCheckbox.Group
-          name="groups"
+        <ProFormDateTimePicker
           width="md"
-          label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
-          options={
-            values?.bot?.groups && Array.isArray(values.bot.groups)
-              ? values.bot.groups.map((group: any) => ({
-                  label: group.title,
-                  value: group._id,
-                }))
-              : []
-          }
+          name="startAt"
+          label="发送开始时间"
+          fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+          tooltip="允许发送消息的开始时间"
+        />
+        <ProFormDateTimePicker
+          width="md"
+          name="endAt"
+          label="发送结束时间"
+          fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+          tooltip="允许发送消息的结束时间"
         />
       </ProForm.Group>
 
-      <ProForm.Group>
-        <ProFormList
-          name="menus"
-          label={intl.formatMessage({ id: 'menu', defaultMessage: '内联菜单' })}
-          creatorButtonProps={{
-            position: 'bottom',
-            creatorButtonText: '添加菜单',
-          }}
-          itemRender={({ listDom, action }) => (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ flex: 1 }}>{listDom}</div>
-              {action}
-            </div>
-          )}
-        >
-          <ProForm.Group compact>
-            <ProFormText
-              name="menuName"
-              label="菜单名"
-              placeholder={intl.formatMessage({ id: 'menu_name', defaultMessage: '菜单名称' })}
-              rules={[{ required: true, message: '请输入菜单名称' }]}
-              width="md"
-            />
-            <ProFormText
-              name="url"
-              label={intl.formatMessage({ id: 'menu_url', defaultMessage: '菜单链接' })}
-              placeholder="请输入 URL，例如 https://example.com"
-              rules={[
-                { required: true, message: '请输入链接地址' },
-                {
-                  type: 'url',
-                  message: '请输入合法的 URL（必须以 http 或 https 开头）',
-                  validateTrigger: 'onBlur',
-                },
-              ]}
-              width="xl"
-            />
-          </ProForm.Group>
-        </ProFormList>
-      </ProForm.Group>
+      <EditableProTable<menuItem>
+        rowKey="_id"
+        headerTitle={intl.formatMessage({
+          id: 'inline_menu_config',
+          defaultMessage: '内联菜单配置',
+        })}
+        columns={menuColumns}
+        value={menus}
+        onChange={(value: readonly menuItem[]) => setMenus([...value])}
+        editable={{
+          type: 'multiple',
+        }}
+        recordCreatorProps={{
+          newRecordType: 'dataSource',
+          position: 'bottom',
+          record: () => ({
+            _id: Date.now().toString(),
+            menuName: '',
+            url: '',
+          }),
+        }}
+      />
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>

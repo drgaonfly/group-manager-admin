@@ -242,4 +242,11 @@ export default [
     icon: 'AppstoreOutlined',
     component: './ChannelPost',
   },
+  // reply rule (回复规则)
+  {
+    path: '/reply-rules',
+    name: 'list.reply-rules',
+    icon: 'KeyOutlined',
+    component: './ReplyRule',
+  },
 ];

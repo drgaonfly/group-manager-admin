@@ -46,6 +46,12 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
+      title: intl.formatMessage({ id: 'proxyUser', defaultMessage: '代理用户' }),
+      dataIndex: 'proxyUser',
+      hideInSearch: true,
+      renderText: (proxyUser) => proxyUser?.userName || proxyUser?.name || '-',
+    },
+    {
       title: intl.formatMessage({ id: 'messageType' }),
       dataIndex: 'messageType',
       hideInSearch: true,
@@ -98,12 +104,6 @@ const TableList: React.FC = () => {
       dataIndex: 'telegramMessageId',
       hideInSearch: true,
       copyable: true,
-    },
-    {
-      title: intl.formatMessage({ id: 'proxyUser', defaultMessage: '代理用户' }),
-      dataIndex: 'proxyUser',
-      hideInSearch: true,
-      renderText: (proxyUser) => proxyUser?.userName || proxyUser?.name || '-',
     },
     {
       title: intl.formatMessage({ id: 'isOwnerReply', defaultMessage: '是否拥有者回复' }),

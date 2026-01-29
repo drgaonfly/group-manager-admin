@@ -224,6 +224,8 @@ export default {
   invited_counts: 'Invited Counts',
   invited_group: 'Invited Group',
   botUsers: 'Bot Users',
+  minutes: 'Minutes',
+  weeks: 'Weeks',
 
   // Send message related
   'config.not.found': 'Configuration not found, cannot send message',

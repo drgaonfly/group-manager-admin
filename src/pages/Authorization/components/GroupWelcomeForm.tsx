@@ -4,15 +4,10 @@ import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
-import {
-  ModalForm,
-  ProFormTextArea,
-  ProFormGroup,
-  ProColumns,
-  EditableProTable,
-} from '@ant-design/pro-components';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
+import { ModalForm, ProFormGroup, ProColumns, EditableProTable } from '@ant-design/pro-components';
 
-type MenuItem = {
+type menuItem = {
   _id: string;
   name: string;
   url: string;
@@ -34,46 +29,46 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const intl = useIntl();
   const [form] = Form.useForm();
   const [medias, setMedias] = useState<string[]>([]);
-  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [menus, setMenus] = useState<menuItem[]>([]);
+  const [content, setContent] = useState('');
+  const [caption, setCaption] = useState('');
 
   useEffect(() => {
     if (open && currentRow?._id) {
       form.resetFields();
 
-      // 设置现有的群欢迎数据
       if (currentRow.groupWelcome) {
         const welcomeData = currentRow.groupWelcome;
-        form.setFieldsValue({
-          contents: welcomeData.contents?.join('\n') || '',
-          caption: welcomeData.caption || '',
-        });
+        const formattedMenus = (welcomeData.menus || []).map((item: any, index: number) => ({
+          _id: item._id || `${Date.now()}-${index}`,
+          name: item.name || '',
+          url: item.url || '',
+        }));
+
+        // 设置内容
+        setContent(toQuillHtml(welcomeData.contents?.join('\n') || ''));
+        setCaption(toQuillHtml(welcomeData.caption || ''));
         setMedias(welcomeData.medias || []);
-        setMenus(welcomeData.menus || []);
+        setMenus(formattedMenus);
       } else {
-        // 如果没有群欢迎数据，重置表单
-        form.setFieldsValue({
-          contents: '',
-          caption: '',
-        });
+        setContent('');
+        setCaption('');
         setMedias([]);
         setMenus([]);
       }
     }
   }, [open, currentRow, form]);
 
-  // Default file list for showing existing medias
-  const defaultMediaFileList: UploadFile[] = medias
-    ? medias.filter(Boolean).map((url, idx) => ({
-        uid: `${idx + 1}`,
-        name: `media${idx + 1}`,
-        status: 'done' as UploadFile['status'],
-        url,
-      }))
-    : [];
+  const defaultMediaFileList: UploadFile[] = medias.map((url, idx) => ({
+    uid: `${idx + 1}`,
+    name: `media${idx + 1}`,
+    status: 'done',
+    url,
+  }));
 
-  const menuColumns: ProColumns<MenuItem>[] = [
+  const menuColumns: ProColumns<menuItem>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
       dataIndex: 'name',
       formItemProps: {
         rules: [
@@ -88,20 +83,13 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       },
     },
     {
-      title: intl.formatMessage({ id: 'url', defaultMessage: '链接地址' }),
+      title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
       dataIndex: 'url',
       formItemProps: {
         rules: [
           {
             required: true,
-            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入链接地址' }),
-          },
-          {
-            type: 'url',
-            message: intl.formatMessage({
-              id: 'url_format_error',
-              defaultMessage: '请输入正确的URL格式',
-            }),
+            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }),
           },
         ],
       },
@@ -109,7 +97,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
-      width: 200,
+      width: 150,
       render: (_, record, __, action) => [
         <a
           key="editable"
@@ -117,27 +105,28 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             action?.startEditable?.(record._id);
           }}
         >
-          {intl.formatMessage({ id: 'edit' })}
+          {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
         </a>,
       ],
     },
   ];
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async () => {
     try {
       const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
 
-      // 构建群欢迎数据
+      const telegramContent = convertToTelegramHtml(content);
+      const telegramCaption = convertToTelegramHtml(caption);
+
       const groupWelcomeData = {
-        contents: values.contents
-          ? values.contents.split('\n').filter((line: string) => line.trim())
+        contents: telegramContent
+          ? telegramContent.split('\n').filter((v: string) => v.trim())
           : [],
-        caption: values.caption || '',
-        medias: medias,
+        caption: telegramCaption || '',
+        medias,
         menus: menus.map(({ name, url }) => ({ name, url })),
       };
 
-      // 更新机器人的群欢迎配置
       await updateItem(`/bots/${currentRow._id}`, {
         groupWelcome: groupWelcomeData,
       });
@@ -148,6 +137,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       );
 
       form.resetFields();
+      setContent('');
+      setCaption('');
       setMedias([]);
       setMenus([]);
       onCancel(false);
@@ -157,7 +148,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
     } catch (error: any) {
       message.error(
         error?.response?.data?.message ?? (
-          <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
+          <FormattedMessage id="update_failed" defaultMessage="Update failed" />
         ),
       );
       return false;
@@ -176,50 +167,35 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       }}
       onFinish={handleSubmit}
     >
+      {/* 富文本编辑器 - 单独占满一行 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入欢迎消息..."
+          height={150}
+          variables="withUser"
+        />
+      </Form.Item>
+
+      <Form.Item
+        label={intl.formatMessage({ id: 'media_caption', defaultMessage: '媒体说明' })}
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={caption}
+          onChange={setCaption}
+          placeholder="请输入媒体说明..."
+          height={100}
+          variables="withUser"
+        />
+      </Form.Item>
+
       <ProFormGroup>
-        <ProFormTextArea
-          name="contents"
-          label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
-          placeholder={intl.formatMessage({
-            id: 'welcome_message_placeholder',
-            defaultMessage: '请输入欢迎消息内容，每行一条消息\n可使用变量：{username} {memberName}',
-          })}
-          width="xl"
-          fieldProps={{
-            autoSize: { minRows: 6, maxRows: 10 },
-          }}
-          extra={intl.formatMessage({
-            id: 'welcome_message_tip',
-            defaultMessage:
-              '每行一条消息，支持多条消息。可使用变量：{username}（@用户名）、{memberName}（真实姓名）',
-          })}
-        />
-
-        <ProFormTextArea
-          name="caption"
-          label={intl.formatMessage({ id: 'media_caption', defaultMessage: '媒体说明' })}
-          placeholder={intl.formatMessage({
-            id: 'media_caption_placeholder',
-            defaultMessage: '请输入媒体文件的说明文字\n可使用变量：{username} {memberName}',
-          })}
-          width="xl"
-          fieldProps={{
-            autoSize: { minRows: 3, maxRows: 6 },
-          }}
-          extra={intl.formatMessage({
-            id: 'media_caption_tip',
-            defaultMessage:
-              '此文字将作为媒体文件的说明显示。可使用变量：{username}（@用户名）、{memberName}（真实姓名）',
-          })}
-        />
-
-        <Form.Item
-          label={intl.formatMessage({ id: 'welcome_medias', defaultMessage: '欢迎媒体' })}
-          extra={intl.formatMessage({
-            id: 'welcome_medias_tip',
-            defaultMessage: '支持多个图片、视频等媒体文件',
-          })}
-        >
+        <Form.Item label={intl.formatMessage({ id: 'welcome_medias', defaultMessage: '欢迎媒体' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
               setMedias((prev) => [...prev, signedUrl || url]);
@@ -228,14 +204,14 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             defaultFileList={defaultMediaFileList}
             multiple
             onRemove={(file: UploadFile) => {
-              setMedias((prev) => prev.filter((media) => media !== file.url));
+              setMedias((prev) => prev.filter((m) => m !== file.url));
               return true;
             }}
           />
         </Form.Item>
       </ProFormGroup>
 
-      <EditableProTable<MenuItem>
+      <EditableProTable<menuItem>
         rowKey="_id"
         headerTitle={intl.formatMessage({
           id: 'welcome_menu_config',
@@ -243,10 +219,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         })}
         columns={menuColumns}
         value={menus}
-        onChange={(value: readonly MenuItem[]) => setMenus([...value])}
-        editable={{
-          type: 'multiple',
-        }}
+        onChange={(value) => setMenus([...value])}
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
@@ -255,6 +228,9 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             name: '',
             url: '',
           }),
+        }}
+        editable={{
+          type: 'multiple',
         }}
       />
     </ModalForm>

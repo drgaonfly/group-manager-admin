@@ -1,13 +1,14 @@
-import { message, Form, Space, Popover, Button } from 'antd';
+import { message, Form, Space } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
-import EmojiPicker from 'emoji-picker-react';
 import Upload from '@/components/Upload';
+import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { toISOString } from '@/utils/dateUtils';
 import {
   ModalForm,
-  ProFormTextArea,
   ProFormGroup,
   ProFormDigit,
   ProFormCheckbox,
@@ -16,6 +17,7 @@ import {
   ProFormDependency,
   ProColumns,
   EditableProTable,
+  ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 
 type menuItem = {
@@ -53,45 +55,43 @@ interface GroupMessageFormProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
   currentRow?: any;
+  onSuccess?: () => void;
 }
 
-const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, currentRow }) => {
+const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
+  open,
+  onCancel,
+  currentRow,
+  onSuccess,
+}) => {
   const intl = useIntl();
-  const [text, setText] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [content, setContent] = useState('');
+  const [medias, setMedias] = useState<string[]>([]);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
-
-  const handleEmojiClick = (emojiData: any) => {
-    setText((prev) => prev + emojiData.emoji);
-  };
-
-  const handlePopoverVisibleChange = (visible: boolean) => {
-    setVisible(visible);
-  };
 
   useEffect(() => {
     if (open && currentRow?._id) {
       form.resetFields();
-      // 兼容旧数据，currentRow.image 可能为单图
-      if (Array.isArray(currentRow.images)) {
-        setImages(currentRow.images);
+      // 兼容旧数据
+      if (Array.isArray(currentRow.medias)) {
+        setMedias(currentRow.medias);
       } else if (currentRow.image) {
-        setImages([currentRow.image]);
+        setMedias([currentRow.image]);
       } else {
-        setImages([]);
+        setMedias([]);
       }
       setMenus(currentRow.menus || []);
+      setContent('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, currentRow]);
 
-  // Default file list for showing existing images
-  const defaultImageFileList: UploadFile[] = images
-    ? images.filter(Boolean).map((url, idx) => ({
+  // Default file list for showing existing medias
+  const defaultMediaFileList: UploadFile[] = medias
+    ? medias.filter(Boolean).map((url, idx) => ({
         uid: `${idx + 1}`,
-        name: `image${idx + 1}`,
+        name: `media${idx + 1}`,
         status: 'done' as UploadFile['status'],
         url,
       }))
@@ -152,82 +152,64 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
         onCancel: () => onCancel(false),
       }}
       onFinish={async (values: any) => {
+        const telegramContent = convertToTelegramHtml(content);
         const data = {
           ...values,
-          content: values.message,
+          content: telegramContent,
           bot: currentRow?._id,
           intervalTime:
             values.sendType === 'immediate'
               ? 0
-              : values.timeUnit === 'minutes'
-              ? Number((values.intervalTime / 60).toFixed(2))
-              : values.intervalTime,
+              : timeUnitToMinutes(values.intervalTime || 0, values.timeUnit as TimeUnit),
           groups: values.groups || [],
-          images: images, // 多图
+          medias: medias,
           isRealtime: values.isRealtime,
           sendType: values.sendType,
           menus: menus.map(({ menuName, url }) => ({ menuName, url })),
           menus_per_row: values.menus_per_row,
+          startAt: toISOString(values.startAt),
+          endAt: toISOString(values.endAt),
         };
 
         const success = await handleAdd(data);
         if (success) {
           form.resetFields();
-          setText('');
-          setImages([]);
+          setContent('');
+          setMedias([]);
           setMenus([]);
           onCancel(false);
+          onSuccess?.();
         }
         return success;
       }}
     >
-      <ProFormGroup>
-        <ProFormTextArea
-          name="message"
-          label={
-            <span>
-              {intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
-              <Popover
-                content={<EmojiPicker onEmojiClick={handleEmojiClick} />}
-                title="Pick an Emoji"
-                trigger="click"
-                visible={visible}
-                onVisibleChange={handlePopoverVisibleChange}
-              >
-                <Button size="small" style={{ marginLeft: 8 }}>
-                  😊
-                </Button>
-              </Popover>
-            </span>
-          }
-          rules={[
-            {
-              required: true,
-              message: intl.formatMessage({
-                id: 'please_input_message',
-                defaultMessage: 'Please input message content',
-              }),
-            },
-          ]}
-          width="md"
-          fieldProps={{
-            autoSize: { minRows: 8 },
-            value: text,
-            onChange: (e: any) => setText(e.target.value),
-          }}
+      {/* 富文本编辑器 - 单独占满一行 */}
+      <Form.Item
+        label={intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
+        required
+        style={{ marginBottom: 24 }}
+      >
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入消息内容..."
+          height={200}
+          variables="withUser"
         />
+      </Form.Item>
 
-        <Form.Item label={intl.formatMessage({ id: 'image', defaultMessage: 'Image' })}>
+      <ProFormGroup>
+        <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
             onFileUpload={(url: string, signedUrl?: string) => {
-              // 支持多图上传
-              setImages((prev) => [...prev, signedUrl || url]);
+              // 支持多媒体上传
+              setMedias((prev) => [...prev, signedUrl || url]);
             }}
-            accept=".jpg,.jpeg,.png,.gif"
-            defaultFileList={defaultImageFileList}
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            defaultFileList={defaultMediaFileList}
             multiple
             onRemove={(file: UploadFile) => {
-              setImages((prev) => prev.filter((img) => img !== file.url));
+              setMedias((prev) => prev.filter((media) => media !== file.url));
               return true;
             }}
           />
@@ -240,10 +222,12 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
             name="groups"
             width="md"
             label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
-            options={currentRow.groups.map((group: any) => ({
-              label: group.title,
-              value: group._id,
-            }))}
+            options={currentRow.groups
+              .filter((group: any) => group.type !== 'channel')
+              .map((group: any) => ({
+                label: group.title,
+                value: group._id,
+              }))}
           />
         ) : (
           <ProFormCheckbox
@@ -301,39 +285,62 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({ open, onCancel, cur
       <ProFormDependency name={['sendType']}>
         {({ sendType }) =>
           sendType === 'scheduled' && (
-            <ProFormGroup
-              label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
-              style={{
-                marginBottom: 32,
-              }}
-            >
-              <Space>
-                <ProFormSelect
-                  name="timeUnit"
-                  width="xs"
-                  initialValue="hours"
-                  options={[
-                    {
-                      label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
-                      value: 'minutes',
-                    },
-                    {
-                      label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
-                      value: 'hours',
-                    },
-                  ]}
-                  noStyle
-                />
+            <>
+              <ProFormGroup
+                label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
+                style={{
+                  marginBottom: 32,
+                }}
+              >
+                <Space>
+                  <ProFormSelect
+                    name="timeUnit"
+                    width="xs"
+                    initialValue="hours"
+                    options={[
+                      {
+                        label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                        value: 'minutes',
+                      },
+                      {
+                        label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                        value: 'hours',
+                      },
+                      {
+                        label: intl.formatMessage({ id: 'weeks', defaultMessage: 'Weeks' }),
+                        value: 'weeks',
+                      },
+                    ]}
+                    noStyle
+                  />
 
-                <ProFormDigit
-                  name="intervalTime"
-                  width="xs"
-                  min={0}
-                  fieldProps={{ style: { width: '100%' } }}
-                  noStyle
+                  <ProFormDigit
+                    name="intervalTime"
+                    width="xs"
+                    min={0}
+                    fieldProps={{ style: { width: '100%' } }}
+                    noStyle
+                  />
+                </Space>
+              </ProFormGroup>
+
+              <ProFormGroup>
+                <ProFormDateTimePicker
+                  width="md"
+                  name="startAt"
+                  label="发送开始时间"
+                  fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+                  tooltip="允许发送消息的开始时间"
                 />
-              </Space>
-            </ProFormGroup>
+                <ProFormDateTimePicker
+                  width="md"
+                  name="endAt"
+                  label="发送结束时间"
+                  fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+                  tooltip="允许发送消息的结束时间"
+                />
+              </ProFormGroup>
+            </>
           )
         }
       </ProFormDependency>

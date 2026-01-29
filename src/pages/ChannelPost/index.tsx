@@ -3,11 +3,12 @@ import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
-import { message, Switch } from 'antd';
+import { message, Switch, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Show from './components/Show';
+import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -54,6 +55,7 @@ const TableList: React.FC = () => {
   const intl = useIntl();
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -79,19 +81,24 @@ const TableList: React.FC = () => {
         return record?.bot?.botName;
       },
     },
+
     {
-      title: intl.formatMessage({ id: 'title' }),
-      dataIndex: 'title',
-      renderText: (_, record) => {
-        return `${record.title}`;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'url' }),
-      dataIndex: 'url',
+      title: intl.formatMessage({ id: 'channels', defaultMessage: '频道' }),
+      dataIndex: 'channels',
       hideInSearch: true,
       ellipsis: true,
-      copyable: true,
+      width: 200,
+      render: (_, record) => {
+        // 优先显示 channels 数组
+        if (record?.channels && record.channels.length > 0) {
+          return record.channels.map((c: any) => c.title || c).join(', ');
+        }
+        // 兼容旧数据：显示单个 channel
+        if (record?.channel?.title) {
+          return record.channel.title;
+        }
+        return record?.url || '-';
+      },
     },
     {
       title: intl.formatMessage({ id: 'content', defaultMessage: '推广内容' }),
@@ -99,8 +106,61 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       ellipsis: true,
       width: 200,
-      renderText: (_, record) => {
-        return record?.content || '-';
+      render: (_, record) => (
+        <div
+          style={{ maxWidth: 200 }}
+          dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+        />
+      ),
+    },
+    // medias
+    {
+      title: intl.formatMessage({ id: 'media', defaultMessage: '媒体' }),
+      dataIndex: 'medias',
+      hideInSearch: true,
+      width: 150,
+      render: (_, record) => {
+        if (!record.medias || !Array.isArray(record.medias) || record.medias.length === 0) {
+          return '-';
+        }
+
+        const getMediaType = (filename: string): 'photo' | 'video' => {
+          const ext = filename.toLowerCase().split('.').pop();
+          const videoExtensions = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv'];
+          return videoExtensions.includes(ext || '') ? 'video' : 'photo';
+        };
+
+        return (
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {record.medias.slice(0, 3).map((media: string, idx: number) => {
+              const mediaUrl = media.startsWith('http') ? media : `/api/static/${media}`;
+              const mediaType = getMediaType(media);
+
+              if (mediaType === 'video') {
+                return (
+                  <video
+                    key={media || idx}
+                    src={mediaUrl}
+                    style={{ maxWidth: '40px', maxHeight: '40px', objectFit: 'cover' }}
+                    muted
+                  />
+                );
+              }
+              return (
+                <Image
+                  key={media || idx}
+                  src={mediaUrl}
+                  alt={`media-${idx}`}
+                  style={{ maxWidth: '40px', maxHeight: '40px' }}
+                  preview
+                />
+              );
+            })}
+            {record.medias.length > 3 && (
+              <span style={{ fontSize: 12, color: '#999' }}>+{record.medias.length - 3}</span>
+            )}
+          </div>
+        );
       },
     },
     {
@@ -164,6 +224,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" />,
       dataIndex: 'option',
       valueType: 'option',
+      width: 300,
       fixed: 'right',
       render: (_, record) => [
         <a
@@ -174,6 +235,15 @@ const TableList: React.FC = () => {
           }}
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
+        </a>,
+        <a
+          key="history"
+          onClick={() => {
+            setCurrentRow(record);
+            setHistoryModalOpen(true);
+          }}
+        >
+          <FormattedMessage id="send_history" defaultMessage="发送历史" />
         </a>,
         access.canUpdateChannelPost && (
           <a
@@ -267,6 +337,16 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+
+      <HistoryModal
+        open={historyModalOpen}
+        onClose={() => {
+          setHistoryModalOpen(false);
+          setCurrentRow(undefined);
+        }}
+        channelPostId={currentRow?._id}
+        currentRow={currentRow}
       />
     </PageContainer>
   );
