@@ -127,6 +127,12 @@ const loopMenuItem = (menus: MenuDataItem[], currentUser?: API.CurrentUser): Men
       if (item.path === '/channel-posts') {
         return currentUser?.isAdmin || currentUser?.channelPost === true;
       }
+      if (item.path === '/reply-rules') {
+        return currentUser?.isAdmin || currentUser?.replyRule === true;
+      }
+      if (item.path === '/group-messages') {
+        return currentUser?.isAdmin || currentUser?.groupMessage === true;
+      }
       return true;
     })
     .map(({ icon, children, ...item }) => {
