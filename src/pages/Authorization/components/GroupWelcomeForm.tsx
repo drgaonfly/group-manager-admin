@@ -5,7 +5,13 @@ import { UploadFile } from 'antd/es/upload/interface';
 import { updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
-import { ModalForm, ProFormGroup, ProColumns, EditableProTable } from '@ant-design/pro-components';
+import {
+  ModalForm,
+  ProFormGroup,
+  ProColumns,
+  EditableProTable,
+  ProFormDigit,
+} from '@ant-design/pro-components';
 
 type menuItem = {
   _id: string;
@@ -50,11 +56,19 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         setCaption(toQuillHtml(welcomeData.caption || ''));
         setMedias(welcomeData.medias || []);
         setMenus(formattedMenus);
+
+        // 设置阅后即焚时间
+        form.setFieldsValue({
+          deleteAfterSeconds: welcomeData.deleteAfterSeconds || 0,
+        });
       } else {
         setContent('');
         setCaption('');
         setMedias([]);
         setMenus([]);
+        form.setFieldsValue({
+          deleteAfterSeconds: 0,
+        });
       }
     }
   }, [open, currentRow, form]);
@@ -117,6 +131,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
       const telegramContent = convertToTelegramHtml(content);
       const telegramCaption = convertToTelegramHtml(caption);
+      const formValues = form.getFieldsValue();
 
       const groupWelcomeData = {
         contents: telegramContent
@@ -125,7 +140,10 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         caption: telegramCaption || '',
         medias,
         menus: menus.map(({ name, url }) => ({ name, url })),
+        deleteAfterSeconds: formValues.deleteAfterSeconds || 0,
       };
+
+      console.log('提交的群欢迎数据:', groupWelcomeData);
 
       await updateItem(`/bots/${currentRow._id}`, {
         groupWelcome: groupWelcomeData,
@@ -146,6 +164,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
       return true;
     } catch (error: any) {
+      console.error('更新失败:', error);
       message.error(
         error?.response?.data?.message ?? (
           <FormattedMessage id="update_failed" defaultMessage="Update failed" />
@@ -209,6 +228,22 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             }}
           />
         </Form.Item>
+
+        <ProFormDigit
+          name="deleteAfterSeconds"
+          label={intl.formatMessage({
+            id: 'delete_after_seconds',
+            defaultMessage: '阅后即焚（秒）',
+          })}
+          tooltip="设置消息发送后多少秒自动删除，0表示不删除"
+          fieldProps={{
+            min: 0,
+            precision: 0,
+            addonAfter: '秒',
+          }}
+          placeholder="0"
+          width="md"
+        />
       </ProFormGroup>
 
       <EditableProTable<menuItem>

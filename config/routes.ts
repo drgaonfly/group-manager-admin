@@ -248,5 +248,6 @@ export default [
     name: 'list.reply-rules',
     icon: 'KeyOutlined',
     component: './ReplyRule',
+    access: 'canGetReplyRule',
   },
 ];

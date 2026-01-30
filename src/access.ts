@@ -309,5 +309,17 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts/:id', 'PUT')),
     canGetChannelPost:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/channel-posts', 'GET')),
+
+    // ReplyRule
+    canCreateReplyRule:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/reply-rules', 'POST')),
+    canDeleteReplyRule:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/reply-rules', 'DELETE')),
+    canUpdateReplyRule:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/reply-rules/:id', 'PUT')),
+    canGetReplyRule:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/reply-rules', 'GET')),
   };
 }
