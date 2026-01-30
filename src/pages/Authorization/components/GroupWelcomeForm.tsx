@@ -145,9 +145,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
       console.log('提交的群欢迎数据:', groupWelcomeData);
 
-      await updateItem(`/bots/${currentRow._id}`, {
-        groupWelcome: groupWelcomeData,
-      });
+      // 使用专门的群欢迎更新接口
+      await updateItem(`/bots/${currentRow._id}/group-welcome`, groupWelcomeData);
 
       hide();
       message.success(
