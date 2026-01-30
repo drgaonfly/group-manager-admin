@@ -2,7 +2,7 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'rea
 import { ProTable, ProColumns } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
-import KeyboardButtonsModal from './KeyboardButtonsModal';
+import KeyboardButtonsForm from './KeyboardButtonsForm';
 import { PlusOutlined, HolderOutlined } from '@ant-design/icons';
 import {
   DndContext,
@@ -253,6 +253,24 @@ const KeyboardEditor = forwardRef<KeyboardEditorRef, KeyboardEditorProps>(
 
     return (
       <div>
+        {/* 自定义工具栏 - 在表格上方左侧 */}
+        <div style={{ marginBottom: 16 }}>
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => {
+              const newRow: KeyboardRow = {
+                _id: `row_${Date.now()}`,
+                row: keyboardRows.length > 0 ? Math.max(...keyboardRows.map((r) => r.row)) + 1 : 1,
+                buttons: [],
+              };
+              notifyChange([...keyboardRows, newRow]);
+            }}
+            type="primary"
+          >
+            {intl.formatMessage({ id: 'add_keyboard_row', defaultMessage: '添加新行' })}
+          </Button>
+        </div>
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -270,31 +288,11 @@ const KeyboardEditor = forwardRef<KeyboardEditorRef, KeyboardEditorProps>(
               pagination={false}
               options={false}
               components={{ body: { row: SortableRow } }}
-              toolBarRender={() => [
-                <Button
-                  key="add"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    const newRow: KeyboardRow = {
-                      _id: `row_${Date.now()}`,
-                      row:
-                        keyboardRows.length > 0
-                          ? Math.max(...keyboardRows.map((r) => r.row)) + 1
-                          : 1,
-                      buttons: [],
-                    };
-                    notifyChange([...keyboardRows, newRow]);
-                  }}
-                  type="primary"
-                >
-                  {intl.formatMessage({ id: 'add_keyboard_row', defaultMessage: '添加新行' })}
-                </Button>,
-              ]}
             />
           </SortableContext>
         </DndContext>
 
-        <KeyboardButtonsModal
+        <KeyboardButtonsForm
           open={buttonModalOpen}
           onOpenChange={setButtonModalOpen}
           editingRow={editingRow}

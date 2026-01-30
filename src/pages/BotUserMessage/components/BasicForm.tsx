@@ -137,7 +137,7 @@ const BotUserMessageBasicForm: React.FC<Props> = ({ newRecord, onFinish, values 
         >
           <ProFormGroup compact>
             <ProFormText
-              name="menuName"
+              name="name"
               label="菜单名"
               placeholder={intl.formatMessage({ id: 'menu_name', defaultMessage: '菜单名称' })}
               rules={[{ required: true, message: '请输入菜单名称' }]}

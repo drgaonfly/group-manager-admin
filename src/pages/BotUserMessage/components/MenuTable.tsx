@@ -14,8 +14,8 @@ const MenuTable: React.FC<MenuTableProps> = ({ menus, pagination, setPagination 
   const intl = useIntl();
   const tableColumns: ProColumns<any>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-      dataIndex: 'menuName',
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
+      dataIndex: 'name',
       copyable: true,
     },
     {
@@ -27,7 +27,7 @@ const MenuTable: React.FC<MenuTableProps> = ({ menus, pagination, setPagination 
 
   return (
     <EditableProTable<any>
-      rowKey="menuName"
+      rowKey="name"
       headerTitle={<FormattedMessage id="show.menus" defaultMessage="菜单配置" />}
       columns={tableColumns}
       value={menus}

@@ -172,7 +172,7 @@ export default {
   ID: 'ID',
   BotStartMessage: '机器人启动消息',
   debug: '调试',
-  menuName: '菜单名称',
+  name: '名称',
   url: '链接',
   userDetails: '用户详情',
   botName: '机器人名称',
@@ -331,4 +331,33 @@ export default {
   speechStatic: '语音统计',
   canBidirectional: '支持双向',
   canReportMemberNameUpdated: '可报告成员名称更新',
+
+  // UI 组件相关
+  view: '查看',
+  no_data: '暂无数据',
+  base_configure: '基础配置',
+  feature_config: '功能配置',
+  row: '行号',
+  buttons: '按钮列表',
+  edit_buttons: '编辑按钮',
+  add_keyboard_row: '添加新行',
+  label: '按钮文本',
+
+  // ActionButton 相关
+  info: '信息',
+  copy: '复制',
+  reload: '刷新',
+  add: '添加',
+  keyboard_config: '键盘配置',
+  channel_post_management: '频道推广管理',
+
+  // Bot 配置相关
+  overview: '概览',
+  group_message: '群发消息',
+  channel_post: '频道推广',
+  reply_rule: '回复规则',
+  free_keyboard: '自由键盘',
+  speech_statistics: '发言统计',
+  function_config: '功能配置',
+  authorizer: '授权人',
 };

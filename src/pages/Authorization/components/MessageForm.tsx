@@ -25,7 +25,7 @@ interface MessageFormProps {
 
 type menuItem = {
   _id: string;
-  menuName: string;
+  name: string;
   url: string;
 };
 
@@ -71,7 +71,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
         data: {
           ...values,
           images: images, // 多图
-          menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+          menus: menus.map(({ name, url }) => ({ name, url })),
           menus_per_row: values.menus_per_row || 1,
           intervalTime:
             values.timeUnit === 'minutes'
@@ -102,8 +102,8 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
 
   const menuColumns: ProColumns<menuItem>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-      dataIndex: 'menuName',
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
+      dataIndex: 'name',
       formItemProps: {
         rules: [
           {
@@ -322,7 +322,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
           position: 'bottom',
           record: () => ({
             _id: Date.now().toString(),
-            menuName: '',
+            name: '',
             url: '',
           }),
         }}

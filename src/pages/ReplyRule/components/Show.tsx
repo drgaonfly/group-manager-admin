@@ -99,7 +99,7 @@ const Show: React.FC<Props> = ({ onClose, open, currentRow }) => {
                 <Space direction="vertical">
                   {record.menus.map((menu: any, idx: number) => (
                     <div key={idx}>
-                      <Tag>{menu.menuName}</Tag>
+                      <Tag>{menu.name}</Tag>
                       <a href={menu.url} target="_blank" rel="noreferrer">
                         {menu.url}
                       </a>

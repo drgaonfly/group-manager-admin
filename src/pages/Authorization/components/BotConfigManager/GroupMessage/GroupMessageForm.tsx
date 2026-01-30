@@ -22,7 +22,7 @@ import {
 
 type menuItem = {
   _id: string;
-  menuName: string;
+  name: string;
   url: string;
 };
 
@@ -99,8 +99,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
 
   const menuColumns: ProColumns<menuItem>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-      dataIndex: 'menuName',
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
+      dataIndex: 'name',
       formItemProps: {
         rules: [
           {
@@ -165,7 +165,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           medias: medias,
           isRealtime: values.isRealtime,
           sendType: values.sendType,
-          menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+          menus: menus.map(({ name, url }) => ({ name, url })),
           menus_per_row: values.menus_per_row,
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
@@ -363,7 +363,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           position: 'bottom',
           record: () => ({
             _id: Date.now().toString(),
-            menuName: '',
+            name: '',
             url: '',
           }),
         }}

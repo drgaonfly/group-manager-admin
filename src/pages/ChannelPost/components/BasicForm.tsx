@@ -249,7 +249,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         })}
         columns={[
           {
-            title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
+            title: intl.formatMessage({ id: 'name', defaultMessage: '按钮名称' }),
             dataIndex: 'name',
             formItemProps: {
               rules: [{ required: true, message: '请输入按钮名称' }],

@@ -20,13 +20,7 @@ import DeleteOwnerForm from './components/DeleteOwnerForm';
 import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
-import GroupMessageForm from './components/GroupMessageForm';
-import ChannelPostCreateForm from './components/ChannelPostCreateForm';
-import ReplyRuleCreateForm from './components/ReplyRuleForm';
 import BotConfigManager from './components/BotConfigManager';
-import GroupMessageUpdate from '@/pages/GroupMessage/components/Update';
-import ChannelPostUpdate from '@/pages/ChannelPost/components/Update';
-import ReplyRuleUpdate from '@/pages/ReplyRule/components/Update';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -112,12 +106,11 @@ const handleRemove = async (ids: string[]) => {
 const TableList: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
+  const actionRef = useRef<ActionType>();
   const { initialState, refresh } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
-  const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -127,23 +120,7 @@ const TableList: React.FC = () => {
   const [deleteOwnerModalVisible, setDeleteOwnerModalVisible] = useState<boolean>(false);
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
-  const [groupMessageModalOpen, setGroupMessageModalOpen] = useState<boolean>(false);
-  const [channelPostModalOpen, setChannelPostModalOpen] = useState<boolean>(false);
-  const [replyRuleModalOpen, setReplyRuleModalOpen] = useState<boolean>(false);
   const [botConfigManagerOpen, setBotConfigManagerOpen] = useState<boolean>(false);
-  const [configRefreshKey, setConfigRefreshKey] = useState<number>(0);
-  // 编辑相关 state
-  const [editingGroupMessage, setEditingGroupMessage] = useState<any>(null);
-  const [editingChannelPost, setEditingChannelPost] = useState<any>(null);
-  const [editingReplyRule, setEditingReplyRule] = useState<any>(null);
-  const [groupMessageUpdateOpen, setGroupMessageUpdateOpen] = useState<boolean>(false);
-  const [channelPostUpdateOpen, setChannelPostUpdateOpen] = useState<boolean>(false);
-  const [replyRuleUpdateOpen, setReplyRuleUpdateOpen] = useState<boolean>(false);
-
-  // 刷新 BotConfigManager 数据
-  const refreshConfigData = () => {
-    setConfigRefreshKey((prev) => prev + 1);
-  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -558,41 +535,11 @@ const TableList: React.FC = () => {
         }}
       />
 
-      <GroupMessageForm
-        open={groupMessageModalOpen}
-        onCancel={setGroupMessageModalOpen}
-        currentRow={currentRow}
-        onSuccess={refreshConfigData}
-      />
-
-      <ChannelPostCreateForm
-        open={channelPostModalOpen}
-        onOpenChange={setChannelPostModalOpen}
-        currentRow={currentRow}
-        onSuccess={() => {
-          setChannelPostModalOpen(false);
-          message.success('频道推广添加成功');
-          refreshConfigData();
-        }}
-      />
-
-      <ReplyRuleCreateForm
-        open={replyRuleModalOpen}
-        onOpenChange={setReplyRuleModalOpen}
-        currentRow={currentRow}
-        onSuccess={() => {
-          setReplyRuleModalOpen(false);
-          message.success('回复规则添加成功');
-          refreshConfigData();
-        }}
-      />
-
       <BotConfigManager
         open={botConfigManagerOpen}
         onCancel={setBotConfigManagerOpen}
         currentRow={currentRow}
         currentUser={currentUser}
-        refreshKey={configRefreshKey}
         onBotUpdate={async (values) => {
           const updatedBot = await handleUpdate(values);
           if (updatedBot && typeof updatedBot === 'object') {
@@ -600,79 +547,6 @@ const TableList: React.FC = () => {
           }
           if (actionRef.current) {
             actionRef.current.reload();
-          }
-        }}
-        onOpenGroupMessageForm={() => {
-          setGroupMessageModalOpen(true);
-        }}
-        onOpenChannelPostForm={() => {
-          setChannelPostModalOpen(true);
-        }}
-        onOpenReplyRuleForm={() => {
-          setReplyRuleModalOpen(true);
-        }}
-        onEditGroupMessage={(record) => {
-          setEditingGroupMessage(record);
-          setGroupMessageUpdateOpen(true);
-        }}
-        onEditChannelPost={(record) => {
-          setEditingChannelPost(record);
-          setChannelPostUpdateOpen(true);
-        }}
-        onEditReplyRule={(record) => {
-          setEditingReplyRule(record);
-          setReplyRuleUpdateOpen(true);
-        }}
-      />
-
-      {/* 编辑弹窗 */}
-      <GroupMessageUpdate
-        updateModalOpen={groupMessageUpdateOpen}
-        onCancel={setGroupMessageUpdateOpen}
-        values={editingGroupMessage || {}}
-        onSubmit={async (values) => {
-          try {
-            await updateItem(`/group-messages/${values._id}`, values);
-            message.success('更新成功');
-            setGroupMessageUpdateOpen(false);
-            setEditingGroupMessage(null);
-            refreshConfigData();
-          } catch (error: any) {
-            message.error(error?.response?.data?.message ?? '更新失败');
-          }
-        }}
-      />
-
-      <ChannelPostUpdate
-        updateModalOpen={channelPostUpdateOpen}
-        onCancel={setChannelPostUpdateOpen}
-        values={editingChannelPost || {}}
-        onSubmit={async (values) => {
-          try {
-            await updateItem(`/channel-posts/${values._id}`, values);
-            message.success('更新成功');
-            setChannelPostUpdateOpen(false);
-            setEditingChannelPost(null);
-            refreshConfigData();
-          } catch (error: any) {
-            message.error(error?.response?.data?.message ?? '更新失败');
-          }
-        }}
-      />
-
-      <ReplyRuleUpdate
-        updateModalOpen={replyRuleUpdateOpen}
-        onCancel={setReplyRuleUpdateOpen}
-        values={editingReplyRule || {}}
-        onSubmit={async (values) => {
-          try {
-            await updateItem(`/reply-rules/${values._id}`, values);
-            message.success('更新成功');
-            setReplyRuleUpdateOpen(false);
-            setEditingReplyRule(null);
-            refreshConfigData();
-          } catch (error: any) {
-            message.error(error?.response?.data?.message ?? '更新失败');
           }
         }}
       />

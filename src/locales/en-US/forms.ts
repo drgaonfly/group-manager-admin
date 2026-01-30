@@ -137,7 +137,6 @@ export default {
   ID: 'ID',
   BotStartMessage: 'Bot Start Message',
   debug: 'Debug',
-  menuName: 'Menu Name',
   url: 'URL',
   userDetails: 'User Details',
   botName: 'Bot Name',
@@ -253,4 +252,15 @@ export default {
   groupVerify: 'Group Verify',
   channelPost: 'Channel Post',
   reportGroupMemberNameUpdated: 'Report Group Member Name Updated',
+
+  // UI Components related
+  view: 'View',
+  no_data: 'No Data',
+  base_configure: 'Base Configure',
+  feature_config: 'Feature Config',
+  row: 'Row',
+  buttons: 'Buttons',
+  edit_buttons: 'Edit Buttons',
+  add_keyboard_row: 'Add New Row',
+  label: 'Button Text',
 };

@@ -34,7 +34,7 @@ type keyboardRow = {
   buttons: keyboardButton[];
 };
 
-interface KeyboardButtonsModalProps {
+interface KeyboardButtonsFormProps {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   editingRow: keyboardRow | null;
@@ -99,7 +99,7 @@ const DragHandle: React.FC = () => {
   );
 };
 
-const KeyboardButtonsModal: React.FC<KeyboardButtonsModalProps> = ({
+const KeyboardButtonsForm: React.FC<KeyboardButtonsFormProps> = ({
   open,
   onOpenChange,
   editingRow,
@@ -361,4 +361,4 @@ const KeyboardButtonsModal: React.FC<KeyboardButtonsModalProps> = ({
   );
 };
 
-export default KeyboardButtonsModal;
+export default KeyboardButtonsForm;
