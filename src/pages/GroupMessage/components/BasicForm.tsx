@@ -18,7 +18,7 @@ import { toDayjs, toISOString } from '@/utils/dateUtils';
 
 type menuItem = {
   _id: string;
-  menuName: string;
+  name: string;
   url: string;
 };
 
@@ -34,7 +34,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
   const [menus, setMenus] = useState<menuItem[]>(
     (values?.menus || []).map((m: any, idx: number) => ({
       _id: m._id || `menu-${idx}`,
-      menuName: m.menuName,
+      name: m.name,
       url: m.url,
     })),
   );
@@ -61,7 +61,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       setMenus(
         (values.menus || []).map((m: any, idx: number) => ({
           _id: m._id || `menu-${idx}`,
-          menuName: m.menuName,
+          name: m.name,
           url: m.url,
         })),
       );
@@ -77,8 +77,8 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
 
   const menuColumns: ProColumns<menuItem>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
-      dataIndex: 'menuName',
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮名称' }),
+      dataIndex: 'name',
       formItemProps: {
         rules: [
           {
@@ -145,7 +145,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           ...formValues,
           content: telegramContent,
           medias: medias,
-          menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+          menus: menus.map(({ name, url }) => ({ name, url })),
           intervalTime,
           startAt: toISOString(formValues.startAt),
           endAt: toISOString(formValues.endAt),
@@ -292,7 +292,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           position: 'bottom',
           record: () => ({
             _id: Date.now().toString(),
-            menuName: '',
+            name: '',
             url: '',
           }),
         }}

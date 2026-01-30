@@ -44,8 +44,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
 
   const menu_columns = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-      dataIndex: 'menuName',
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
+      dataIndex: 'name',
       hideInSearch: false,
       width: 200,
     },

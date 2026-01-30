@@ -18,7 +18,7 @@ import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEdit
 
 type menuItem = {
   _id: string;
-  menuName: string;
+  name: string;
   url: string;
 };
 
@@ -51,7 +51,7 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
         keyword: keywordArray,
         content: telegramContent,
         bot: currentRow?._id,
-        menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+        menus: menus.map(({ name, url }) => ({ name, url })),
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
         menus_per_row: values.menus_per_row || 1,
       };
@@ -81,7 +81,7 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
   const menuColumns: ProColumns<menuItem>[] = [
     {
       title: '按钮名称',
-      dataIndex: 'menuName',
+      dataIndex: 'name',
       formItemProps: { rules: [{ required: true, message: '请输入按钮名称' }] },
     },
     {
@@ -216,7 +216,7 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), menuName: '', url: '' }),
+          record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
         }}
       />
     </ModalForm>

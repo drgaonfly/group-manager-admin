@@ -137,7 +137,6 @@ export default {
   ID: 'ID',
   BotStartMessage: 'Bot Start Message',
   debug: 'Debug',
-  menuName: 'Menu Name',
   url: 'URL',
   userDetails: 'User Details',
   botName: 'Bot Name',

@@ -54,7 +54,7 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
 
   const menuColumns: ProColumns<menuItem>[] = [
     {
-      title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮名称' }),
+      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮名称' }),
       dataIndex: 'name',
       formItemProps: {
         rules: [

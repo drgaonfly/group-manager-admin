@@ -59,8 +59,8 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
 
   // const columns = [
   //   {
-  //     title: intl.formatMessage({ id: 'menuName', defaultMessage: '按钮' }),
-  //     dataIndex: 'menuName',
+  //     title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
+  //     dataIndex: 'name',
   //     hideInSearch: false,
   //     width: 200,
   //   },
@@ -265,7 +265,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             position: 'bottom',
             record: () => ({
               _id: Date.now().toString(),
-              menuName: ' ',
+              name: ' ',
               url: '',
             }),
           }}

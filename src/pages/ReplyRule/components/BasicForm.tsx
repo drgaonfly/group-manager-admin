@@ -17,7 +17,7 @@ import 'react-quill/dist/quill.snow.css';
 
 type menuItem = {
   _id: string;
-  menuName: string;
+  name: string;
   url: string;
 };
 
@@ -137,7 +137,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
       setMenus(
         (initialValues.menus || []).map((m: any, idx: number) => ({
           _id: m._id || `menu-${idx}`,
-          menuName: m.menuName,
+          name: m.name,
           url: m.url,
         })),
       );
@@ -174,7 +174,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         keyword: keywordArray,
         content: convertToTelegramHtml(content),
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
-        menus: menus.map(({ menuName, url }) => ({ menuName, url })),
+        menus: menus.map(({ name, url }) => ({ name, url })),
       };
     };
   }, [keywords, content, medias, menus, form]);
@@ -182,7 +182,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
   const menuColumns: ProColumns<menuItem>[] = [
     {
       title: '按钮名称',
-      dataIndex: 'menuName',
+      dataIndex: 'name',
       formItemProps: { rules: [{ required: true, message: '请输入按钮名称' }] },
     },
     {
@@ -324,7 +324,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), menuName: '', url: '' }),
+          record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
         }}
       />
     </>

@@ -172,7 +172,7 @@ export default {
   ID: 'ID',
   BotStartMessage: '机器人启动消息',
   debug: '调试',
-  menuName: '菜单名称',
+  name: '名称',
   url: '链接',
   userDetails: '用户详情',
   botName: '机器人名称',
