@@ -29,7 +29,7 @@ interface Props {
   onSuccess: () => void;
 }
 
-const ReplyRuleCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
+const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
   const intl = useIntl();
   const [content, setContent] = useState('');
   const [form] = Form.useForm();
@@ -223,4 +223,4 @@ const ReplyRuleCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow, 
   );
 };
 
-export default ReplyRuleCreateForm;
+export default ReplyRuleForm;

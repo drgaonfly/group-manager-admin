@@ -3,14 +3,14 @@ import { ModalForm, ProFormDigit, ProFormSwitch } from '@ant-design/pro-componen
 import { Form, message } from 'antd';
 import { useIntl } from '@umijs/max';
 
-interface SpeechStatisticsModalProps {
+interface SpeechStatisticsFormProps {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   currentRow: any;
   onSave: (values: any) => Promise<void>;
 }
 
-const SpeechStatisticsModal: React.FC<SpeechStatisticsModalProps> = ({
+const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
   open,
   onOpenChange,
   currentRow,
@@ -85,4 +85,4 @@ const SpeechStatisticsModal: React.FC<SpeechStatisticsModalProps> = ({
   );
 };
 
-export default SpeechStatisticsModal;
+export default SpeechStatisticsForm;
