@@ -284,7 +284,8 @@ const TableList: React.FC = () => {
           currentUser?.groupWelcome ||
           currentUser?.bidirectional ||
           currentUser?.groupVerify ||
-          currentUser?.reportGroupMemberNameUpdated) && (
+          currentUser?.reportGroupMemberNameUpdated ||
+          currentUser?.checkinRule) && (
           <ActionButton
             key="botConfig"
             type="configure"

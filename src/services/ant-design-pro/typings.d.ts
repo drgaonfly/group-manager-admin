@@ -42,6 +42,7 @@ declare namespace API {
     groupVerify?: boolean;
     reportGroupMemberNameUpdated?: boolean;
     replyRule?: boolean;
+    checkinRule?: boolean;
   };
 
   // Example type definition

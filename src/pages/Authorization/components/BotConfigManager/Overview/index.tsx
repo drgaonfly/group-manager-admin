@@ -69,6 +69,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       }),
       permission: currentUser?.reportGroupMemberNameUpdated,
     },
+    {
+      key: 'canCheckIn',
+      label: intl.formatMessage({ id: 'canCheckIn', defaultMessage: '群签到' }),
+      permission: currentUser?.checkinRule,
+    },
   ];
 
   return (

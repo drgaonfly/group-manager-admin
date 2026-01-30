@@ -146,22 +146,13 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
     },
     {
-      title: intl.formatMessage({ id: 'proxy.user' }),
-      dataIndex: ['proxy', 'name'],
+      title: intl.formatMessage({ id: 'agent' }),
+      dataIndex: 'proxy',
       hideInSearch: true,
       hideInForm: true,
-      // render: (dom, entity) => {
-      //   return (
-      //     <a
-      //       onClick={() => {
-      //         setCurrentRow(entity);
-      //         setShowDetail(true);
-      //       }}
-      //     >
-      //       {dom}
-      //     </a>
-      //   );
-      // },
+      renderText: (_, record) => {
+        return record.proxy.name;
+      },
     },
     {
       title: intl.formatMessage({ id: 'botFeatures' }),
@@ -201,6 +192,14 @@ const TableList: React.FC = () => {
           {
             name: intl.formatMessage({ id: 'reportGroupMemberNameUpdated' }),
             enabled: record.reportGroupMemberNameUpdated,
+          },
+          {
+            name: intl.formatMessage({ id: 'replyRule' }),
+            enabled: record.replyRule,
+          },
+          {
+            name: intl.formatMessage({ id: 'checkinRule' }),
+            enabled: record.checkinRule,
           },
         ];
 

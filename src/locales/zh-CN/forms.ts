@@ -360,4 +360,5 @@ export default {
   speech_statistics: '发言统计',
   function_config: '功能配置',
   authorizer: '授权人',
+  checkinRule: '签到规则',
 };

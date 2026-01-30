@@ -31,6 +31,7 @@ const ServiceLink: React.FC = () => {
     groupVerify: boolean;
     reportGroupMemberNameUpdated: boolean;
     replyRule: boolean;
+    checkinRule: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -96,6 +97,7 @@ const ServiceLink: React.FC = () => {
               groupVerify: currentUser?.groupVerify || false,
               reportGroupMemberNameUpdated: currentUser?.reportGroupMemberNameUpdated || false,
               replyRule: currentUser?.replyRule || false,
+              checkinRule: currentUser?.checkinRule || false,
               botCount: currentUser?.botCount || 0,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
@@ -198,6 +200,17 @@ const ServiceLink: React.FC = () => {
                 defaultMessage: '开启后，可以配置关键词自动回复规则',
               })}
             />
+            <ProFormSwitch
+              name="checkinRule"
+              label={intl.formatMessage({
+                id: 'checkinRule',
+                defaultMessage: '群签到',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'checkinRule.tooltip',
+                defaultMessage: '开启后，可以配置群签到规则，用户可通过关键词签到获得积分',
+              })}
+            />
           </ProForm>
         ) : (
           <Descriptions column={1} bordered>
@@ -209,11 +222,13 @@ const ServiceLink: React.FC = () => {
             >
               {currentUser?.availableBotCount || 0}
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'botCount', defaultMessage: '当前机器人数量' })}
             >
               {currentUser?.botCount || 0}
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
             >
@@ -225,6 +240,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'groupMessage', defaultMessage: '群发消息' })}
             >
@@ -236,6 +252,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '自定义键盘' })}
             >
@@ -247,6 +264,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'speech_static', defaultMessage: '群组内发言统计' })}
             >
@@ -258,6 +276,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'groupWelcome', defaultMessage: '欢迎入群' })}
             >
@@ -269,6 +288,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'channelPost', defaultMessage: '频道推广' })}
             >
@@ -280,6 +300,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' })}
             >
@@ -291,6 +312,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({
                 id: 'reportGroupMemberNameUpdated',
@@ -305,6 +327,7 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
             <Descriptions.Item
               label={intl.formatMessage({
                 id: 'replyRule',
@@ -316,6 +339,21 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'replyRule.tooltip',
                   defaultMessage: '开启后，可以配置关键词自动回复规则',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'checkinRule',
+                defaultMessage: '群签到',
+              })}
+            >
+              {renderStatusTag(currentUser?.checkinRule || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'checkinRule.tooltip',
+                  defaultMessage: '开启后，可以配置群签到规则，用户可通过关键词签到获得积分',
                 })}
               </Text>
             </Descriptions.Item>

@@ -9,6 +9,7 @@ import KeyboardTab from './Keyboard';
 import GroupWelcomeTab from './GroupWelcome';
 import GroupVerifyTab from './GroupVerify';
 import SpeechStatisticsTab from './SpeechStatistics';
+import CheckinRuleTab from './CheckinRule';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -42,6 +43,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canSpeechStatic: currentRow.canSpeechStatic,
         canBidirectional: currentRow.canBidirectional,
         canReportMemberNameUpdated: currentRow.canReportMemberNameUpdated,
+        canCheckIn: currentRow.canCheckIn,
       });
     }
   }, [open, currentRow]);
@@ -139,6 +141,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'speechStatistics',
         label: intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' }),
         children: <SpeechStatisticsTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
+      });
+    }
+
+    // 群签到 Tab
+    if (botConfig.canCheckIn && currentUser?.checkinRule) {
+      items.push({
+        key: 'checkinRule',
+        label: intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' }),
+        children: <CheckinRuleTab currentRow={currentRow} />,
       });
     }
 
