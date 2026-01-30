@@ -24,7 +24,6 @@ import GroupMessageForm from './components/GroupMessageForm';
 import ChannelPostCreateForm from './components/ChannelPostCreateForm';
 import ReplyRuleCreateForm from './components/ReplyRuleCreateForm';
 import BotConfigManager from './components/BotConfigManager';
-// Update 组件
 import GroupMessageUpdate from '@/pages/GroupMessage/components/Update';
 import ChannelPostUpdate from '@/pages/ChannelPost/components/Update';
 import ReplyRuleUpdate from '@/pages/ReplyRule/components/Update';
