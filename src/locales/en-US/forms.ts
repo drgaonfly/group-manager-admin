@@ -263,4 +263,5 @@ export default {
   edit_buttons: 'Edit Buttons',
   add_keyboard_row: 'Add New Row',
   label: 'Button Text',
+  checkinRule: 'CheckIn Rule',
 };
