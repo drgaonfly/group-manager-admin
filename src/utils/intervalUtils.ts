@@ -54,3 +54,51 @@ export function timeUnitToMinutes(value: number, timeUnit: TimeUnit): number {
       return value;
   }
 }
+
+/**
+ * 格式化时间间隔（用于表格显示）
+ * @param minutes 分钟数
+ * @returns 格式化后的字符串，如 "1周"、"2小时"、"30分钟"
+ */
+export function formatInterval(minutes: number | undefined | null): string {
+  if (!minutes && minutes !== 0) return '-';
+
+  if (minutes >= MINUTES_PER_WEEK && minutes % MINUTES_PER_WEEK === 0) {
+    return `${minutes / MINUTES_PER_WEEK}周`;
+  }
+
+  if (minutes >= MINUTES_PER_HOUR && minutes % MINUTES_PER_HOUR === 0) {
+    return `${minutes / MINUTES_PER_HOUR}小时`;
+  }
+
+  return `${minutes}分钟`;
+}
+
+/**
+ * 格式化时间窗口（用于表格显示）
+ * @param record 包含 startAt 和 endAt 的记录对象
+ * @returns 格式化后的时间窗口字符串，如 "01-30 10:00 ~ 01-31 18:00"
+ */
+export function formatTimeWindow(record: {
+  startAt?: string | Date;
+  endAt?: string | Date;
+}): string {
+  if (!record.startAt && !record.endAt) {
+    return '-';
+  }
+
+  const formatDate = (date: string | Date | undefined): string => {
+    if (!date) return '--';
+    return new Date(date).toLocaleString('zh-CN', {
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const start = formatDate(record.startAt);
+  const end = formatDate(record.endAt);
+
+  return `${start} ~ ${end}`;
+}
