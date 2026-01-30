@@ -20,10 +20,8 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import { useIntl } from '@umijs/max';
 import { EditableProTable, ProColumns } from '@ant-design/pro-components';
-import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
-import Upload from '@/components/Upload';
-import { UploadFile } from 'antd/es/upload/interface';
 import KeyboardEditor, { KeyboardEditorRef } from './KeyboardEditor';
+import GroupWelcomeForm from './GroupWelcomeForm';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -39,13 +37,6 @@ interface BotConfigManagerProps {
   refreshKey?: number;
   onBotUpdate?: (values: any) => Promise<void>;
 }
-
-// 菜单项类型
-type MenuItem = {
-  _id: string;
-  name: string;
-  url: string;
-};
 
 // 验证答案类型
 type VerifyAsk = {
@@ -76,12 +67,8 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   const [loading, setLoading] = useState(false);
   const [botConfig, setBotConfig] = useState<any>({});
 
-  // 群欢迎配置状态
-  const [welcomeContent, setWelcomeContent] = useState('');
-  const [welcomeCaption, setWelcomeCaption] = useState('');
-  const [welcomeMedias, setWelcomeMedias] = useState<string[]>([]);
-  const [welcomeMenus, setWelcomeMenus] = useState<MenuItem[]>([]);
-  const [welcomeSaving, setWelcomeSaving] = useState(false);
+  // 群欢迎表单状态
+  const [groupWelcomeFormOpen, setGroupWelcomeFormOpen] = useState(false);
 
   // 群验证配置状态
   const [verifyQuestion, setVerifyQuestion] = useState('');
@@ -173,26 +160,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canBidirectional: currentRow.canBidirectional,
         canReportMemberNameUpdated: currentRow.canReportMemberNameUpdated,
       });
-
-      // 初始化群欢迎配置
-      if (currentRow.groupWelcome) {
-        const welcomeData = currentRow.groupWelcome;
-        setWelcomeContent(toQuillHtml(welcomeData.contents?.join('\n') || ''));
-        setWelcomeCaption(toQuillHtml(welcomeData.caption || ''));
-        setWelcomeMedias(welcomeData.medias || []);
-        setWelcomeMenus(
-          (welcomeData.menus || []).map((item: any, index: number) => ({
-            _id: item._id || `${Date.now()}-${index}`,
-            name: item.name || '',
-            url: item.url || '',
-          })),
-        );
-      } else {
-        setWelcomeContent('');
-        setWelcomeCaption('');
-        setWelcomeMedias([]);
-        setWelcomeMenus([]);
-      }
 
       // 初始化群验证配置
       if (currentRow.groupVerify) {
@@ -614,31 +581,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     },
   ];
 
-  // 保存群欢迎配置
-  const handleSaveGroupWelcome = async () => {
-    if (!currentRow?._id || !onBotUpdate) return;
-    setWelcomeSaving(true);
-    try {
-      const telegramContent = convertToTelegramHtml(welcomeContent);
-      const telegramCaption = convertToTelegramHtml(welcomeCaption);
-      await onBotUpdate({
-        _id: currentRow._id,
-        groupWelcome: {
-          contents: telegramContent
-            ? telegramContent.split('\n').filter((v: string) => v.trim())
-            : [],
-          caption: telegramCaption || '',
-          medias: welcomeMedias,
-          menus: welcomeMenus.map(({ name, url }) => ({ name, url })),
-        },
-      });
-      message.success('群欢迎配置已保存');
-    } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '保存失败');
-    }
-    setWelcomeSaving(false);
-  };
-
   // 保存群验证配置
   const handleSaveGroupVerify = async () => {
     if (!currentRow?._id || !onBotUpdate) return;
@@ -697,30 +639,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     setKeyboardSaving(false);
   };
 
-  // 群欢迎菜单列
-  const welcomeMenuColumns: ProColumns<MenuItem>[] = [
-    {
-      title: '按钮名称',
-      dataIndex: 'name',
-      formItemProps: { rules: [{ required: true, message: '请输入按钮名称' }] },
-    },
-    {
-      title: '链接',
-      dataIndex: 'url',
-      formItemProps: { rules: [{ required: true, message: '请输入链接' }] },
-    },
-    {
-      title: '操作',
-      valueType: 'option',
-      width: 100,
-      render: (_, record, __, action) => [
-        <a key="edit" onClick={() => action?.startEditable?.(record._id)}>
-          编辑
-        </a>,
-      ],
-    },
-  ];
-
   // 群验证答案列
   const verifyAskColumns: ProColumns<VerifyAsk>[] = [
     {
@@ -749,14 +667,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       ],
     },
   ];
-
-  // 媒体文件列表
-  const welcomeMediaFileList: UploadFile[] = welcomeMedias.map((url, idx) => ({
-    uid: `${idx + 1}`,
-    name: `media${idx + 1}`,
-    status: 'done',
-    url,
-  }));
 
   // 动态生成 tab 列表
   const tabItems = useMemo(() => {
@@ -943,58 +853,22 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         label: '群欢迎',
         children: (
           <div>
-            <Form layout="vertical">
-              <Form.Item label="欢迎消息">
-                <RichTextEditor
-                  value={welcomeContent}
-                  onChange={setWelcomeContent}
-                  placeholder="请输入欢迎消息..."
-                  height={120}
-                  variables="withUser"
-                />
-              </Form.Item>
-              <Form.Item label="媒体说明">
-                <RichTextEditor
-                  value={welcomeCaption}
-                  onChange={setWelcomeCaption}
-                  placeholder="请输入媒体说明..."
-                  height={80}
-                  variables="withUser"
-                />
-              </Form.Item>
-              <Form.Item label="欢迎媒体">
-                <Upload
-                  onFileUpload={(url: string, signedUrl?: string) => {
-                    setWelcomeMedias((prev) => [...prev, signedUrl || url]);
-                  }}
-                  accept=".jpg,.jpeg,.png,.gif,.mp4,.mov"
-                  defaultFileList={welcomeMediaFileList}
-                  multiple
-                  onRemove={(file: UploadFile) => {
-                    setWelcomeMedias((prev) => prev.filter((m) => m !== file.url));
-                    return true;
-                  }}
-                />
-              </Form.Item>
-            </Form>
-            <EditableProTable<MenuItem>
-              rowKey="_id"
-              headerTitle="欢迎菜单"
-              columns={welcomeMenuColumns}
-              value={welcomeMenus}
-              onChange={(value) => setWelcomeMenus([...value])}
-              recordCreatorProps={{
-                newRecordType: 'dataSource',
-                position: 'bottom',
-                record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
-              }}
-              editable={{ type: 'multiple' }}
-            />
-            <div style={{ marginTop: 16, textAlign: 'right' }}>
-              <Button type="primary" loading={welcomeSaving} onClick={handleSaveGroupWelcome}>
-                保存
+            <div style={{ marginBottom: 16 }}>
+              <Button type="primary" onClick={() => setGroupWelcomeFormOpen(true)}>
+                配置群欢迎
               </Button>
             </div>
+            <Card size="small">
+              <div style={{ color: '#666' }}>
+                {currentRow?.groupWelcome ? (
+                  <div>
+                    <p>✅ 已配置群欢迎消息</p>
+                  </div>
+                ) : (
+                  <p>❌ 未配置群欢迎消息</p>
+                )}
+              </div>
+            </Card>
           </div>
         ),
       });
@@ -1114,6 +988,20 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         onChange={setActiveTab}
         items={tabItems}
         tabBarStyle={{ minWidth: 120 }}
+      />
+
+      {/* 群欢迎配置表单 */}
+      <GroupWelcomeForm
+        open={groupWelcomeFormOpen}
+        onCancel={setGroupWelcomeFormOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setGroupWelcomeFormOpen(false);
+          // 刷新当前行数据
+          if (onBotUpdate) {
+            onBotUpdate({ _id: currentRow._id });
+          }
+        }}
       />
     </Modal>
   );

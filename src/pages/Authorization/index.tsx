@@ -61,11 +61,11 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
-    await updateItem(`/bots/${fields._id}`, fields);
+    const response: any = await updateItem(`/bots/${fields._id}`, fields);
     hide();
 
     message.success(<FormattedMessage id="update_successful" defaultMessage="Update successful" />);
-    return true;
+    return response?.data || true;
   } catch (error: any) {
     hide();
     message.error(
@@ -594,7 +594,10 @@ const TableList: React.FC = () => {
         currentUser={currentUser}
         refreshKey={configRefreshKey}
         onBotUpdate={async (values) => {
-          await handleUpdate(values);
+          const updatedBot = await handleUpdate(values);
+          if (updatedBot && typeof updatedBot === 'object') {
+            setCurrentRow(updatedBot);
+          }
           if (actionRef.current) {
             actionRef.current.reload();
           }
