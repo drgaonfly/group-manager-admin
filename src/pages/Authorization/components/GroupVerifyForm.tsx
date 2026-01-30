@@ -135,10 +135,8 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
         asks: asks.map(({ name, isCorrect }) => ({ name, isCorrect })),
       };
 
-      // 更新机器人的群验证配置
-      await updateItem(`/bots/${currentRow._id}`, {
-        groupVerify: groupVerifyData,
-      });
+      // 使用专门的群验证更新接口
+      await updateItem(`/bots/${currentRow._id}/group-verify`, groupVerifyData);
 
       hide();
       message.success(

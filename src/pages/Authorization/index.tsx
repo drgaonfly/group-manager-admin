@@ -22,7 +22,7 @@ import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
 import GroupMessageForm from './components/GroupMessageForm';
 import ChannelPostCreateForm from './components/ChannelPostCreateForm';
-import ReplyRuleCreateForm from './components/ReplyRuleCreateForm';
+import ReplyRuleCreateForm from './components/ReplyRuleForm';
 import BotConfigManager from './components/BotConfigManager';
 import GroupMessageUpdate from '@/pages/GroupMessage/components/Update';
 import ChannelPostUpdate from '@/pages/ChannelPost/components/Update';

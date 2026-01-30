@@ -12,16 +12,15 @@ import {
   Row,
   Col,
   Divider,
-  Form,
-  InputNumber,
 } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import { useIntl } from '@umijs/max';
-import { EditableProTable, ProColumns } from '@ant-design/pro-components';
 import KeyboardEditor, { KeyboardEditorRef } from './KeyboardEditor';
 import GroupWelcomeForm from './GroupWelcomeForm';
+import GroupVerifyForm from './GroupVerifyForm';
+import SpeechStatisticsForm from './SpeechStatisticsForm';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -37,13 +36,6 @@ interface BotConfigManagerProps {
   refreshKey?: number;
   onBotUpdate?: (values: any) => Promise<void>;
 }
-
-// 验证答案类型
-type VerifyAsk = {
-  _id: string;
-  name: string;
-  isCorrect: boolean;
-};
 
 const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   open,
@@ -70,15 +62,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   // 群欢迎表单状态
   const [groupWelcomeFormOpen, setGroupWelcomeFormOpen] = useState(false);
 
-  // 群验证配置状态
-  const [verifyQuestion, setVerifyQuestion] = useState('');
-  const [verifyAsks, setVerifyAsks] = useState<VerifyAsk[]>([]);
-  const [verifySaving, setVerifySaving] = useState(false);
+  // 群验证表单状态
+  const [groupVerifyFormOpen, setGroupVerifyFormOpen] = useState(false);
 
-  // 发言统计配置状态
-  const [minSpeechLength, setMinSpeechLength] = useState(1);
-  const [allowPureNumberSpeech, setAllowPureNumberSpeech] = useState(true);
-  const [speechSaving, setSpeechSaving] = useState(false);
+  // 发言统计表单状态
+  const [speechStatisticsFormOpen, setSpeechStatisticsFormOpen] = useState(false);
 
   // 键盘配置状态
   const keyboardEditorRef = useRef<KeyboardEditorRef>(null);
@@ -160,25 +148,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canBidirectional: currentRow.canBidirectional,
         canReportMemberNameUpdated: currentRow.canReportMemberNameUpdated,
       });
-
-      // 初始化群验证配置
-      if (currentRow.groupVerify) {
-        setVerifyQuestion(currentRow.groupVerify.question || '');
-        setVerifyAsks(
-          (currentRow.groupVerify.asks || []).map((item: any, index: number) => ({
-            _id: item._id || `${Date.now()}-${index}`,
-            name: item.name || '',
-            isCorrect: item.isCorrect || false,
-          })),
-        );
-      } else {
-        setVerifyQuestion('');
-        setVerifyAsks([]);
-      }
-
-      // 初始化发言统计配置
-      setMinSpeechLength(currentRow.minSpeechLength || 1);
-      setAllowPureNumberSpeech(currentRow.allowPureNumberSpeech ?? true);
 
       loadAllData();
     }
@@ -581,47 +550,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     },
   ];
 
-  // 保存群验证配置
-  const handleSaveGroupVerify = async () => {
-    if (!currentRow?._id || !onBotUpdate) return;
-    const correctAnswers = verifyAsks.filter((ask) => ask.isCorrect);
-    if (verifyAsks.length > 0 && correctAnswers.length === 0) {
-      message.error('至少需要一个正确答案');
-      return;
-    }
-    setVerifySaving(true);
-    try {
-      await onBotUpdate({
-        _id: currentRow._id,
-        groupVerify: {
-          question: verifyQuestion,
-          asks: verifyAsks.map(({ name, isCorrect }) => ({ name, isCorrect })),
-        },
-      });
-      message.success('群验证配置已保存');
-    } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '保存失败');
-    }
-    setVerifySaving(false);
-  };
-
-  // 保存发言统计配置
-  const handleSaveSpeechStatistics = async () => {
-    if (!currentRow?._id || !onBotUpdate) return;
-    setSpeechSaving(true);
-    try {
-      await onBotUpdate({
-        _id: currentRow._id,
-        minSpeechLength,
-        allowPureNumberSpeech,
-      });
-      message.success('发言统计配置已保存');
-    } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '保存失败');
-    }
-    setSpeechSaving(false);
-  };
-
   // 保存键盘配置
   const handleSaveKeyboard = async () => {
     if (!currentRow?._id || !onBotUpdate) return;
@@ -638,35 +566,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     }
     setKeyboardSaving(false);
   };
-
-  // 群验证答案列
-  const verifyAskColumns: ProColumns<VerifyAsk>[] = [
-    {
-      title: '答案选项',
-      dataIndex: 'name',
-      formItemProps: { rules: [{ required: true, message: '请输入答案' }] },
-    },
-    {
-      title: '是否正确',
-      dataIndex: 'isCorrect',
-      valueType: 'select',
-      valueEnum: {
-        true: { text: '正确', status: 'Success' },
-        false: { text: '错误', status: 'Error' },
-      },
-      formItemProps: { rules: [{ required: true, message: '请选择' }] },
-    },
-    {
-      title: '操作',
-      valueType: 'option',
-      width: 100,
-      render: (_, record, __, action) => [
-        <a key="edit" onClick={() => action?.startEditable?.(record._id)}>
-          编辑
-        </a>,
-      ],
-    },
-  ];
 
   // 动态生成 tab 列表
   const tabItems = useMemo(() => {
@@ -881,40 +780,28 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         label: '群组验证',
         children: (
           <div>
-            <Form layout="vertical">
-              <Form.Item label="验证问题">
-                <textarea
-                  value={verifyQuestion}
-                  onChange={(e) => setVerifyQuestion(e.target.value)}
-                  placeholder="请输入验证问题"
-                  style={{
-                    width: '100%',
-                    minHeight: 100,
-                    padding: 8,
-                    border: '1px solid #d9d9d9',
-                    borderRadius: 6,
-                  }}
-                />
-              </Form.Item>
-            </Form>
-            <EditableProTable<VerifyAsk>
-              rowKey="_id"
-              headerTitle="答案选项"
-              columns={verifyAskColumns}
-              value={verifyAsks}
-              onChange={(value) => setVerifyAsks([...value])}
-              recordCreatorProps={{
-                newRecordType: 'dataSource',
-                position: 'bottom',
-                record: () => ({ _id: Date.now().toString(), name: '', isCorrect: false }),
-              }}
-              editable={{ type: 'multiple' }}
-            />
-            <div style={{ marginTop: 16, textAlign: 'right' }}>
-              <Button type="primary" loading={verifySaving} onClick={handleSaveGroupVerify}>
-                保存
+            <div style={{ marginBottom: 16 }}>
+              <Button type="primary" onClick={() => setGroupVerifyFormOpen(true)}>
+                配置群验证
               </Button>
             </div>
+            <Card size="small">
+              <div style={{ color: '#666' }}>
+                {currentRow?.groupVerify ? (
+                  <div>
+                    <p>✅ 已配置群验证</p>
+                    {currentRow.groupVerify.question && (
+                      <p style={{ marginTop: 8 }}>
+                        <strong>问题：</strong>
+                        {currentRow.groupVerify.question}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p>❌ 未配置群验证</p>
+                )}
+              </div>
+            </Card>
           </div>
         ),
       });
@@ -927,29 +814,23 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         label: '发言统计',
         children: (
           <div>
-            <Form layout="vertical" style={{ maxWidth: 400 }}>
-              <Form.Item label="发言超过多少字才纳入统计">
-                <InputNumber
-                  value={minSpeechLength}
-                  onChange={(val) => setMinSpeechLength(val || 1)}
-                  min={1}
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-              <Form.Item label="是否允许纯数字发言纳入统计">
-                <Switch
-                  checked={allowPureNumberSpeech}
-                  onChange={setAllowPureNumberSpeech}
-                  checkedChildren="是"
-                  unCheckedChildren="否"
-                />
-              </Form.Item>
-            </Form>
-            <div style={{ marginTop: 16, textAlign: 'right' }}>
-              <Button type="primary" loading={speechSaving} onClick={handleSaveSpeechStatistics}>
-                保存
+            <div style={{ marginBottom: 16 }}>
+              <Button type="primary" onClick={() => setSpeechStatisticsFormOpen(true)}>
+                配置发言统计
               </Button>
             </div>
+            <Card size="small">
+              <div style={{ color: '#666' }}>
+                <p>
+                  <strong>最小字数：</strong>
+                  {currentRow?.minSpeechLength || 1} 字
+                </p>
+                <p>
+                  <strong>允许纯数字：</strong>
+                  {currentRow?.allowPureNumberSpeech ? '是' : '否'}
+                </p>
+              </div>
+            </Card>
           </div>
         ),
       });
@@ -1000,6 +881,32 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
           // 刷新当前行数据
           if (onBotUpdate) {
             onBotUpdate({ _id: currentRow._id });
+          }
+        }}
+      />
+
+      {/* 群验证配置表单 */}
+      <GroupVerifyForm
+        open={groupVerifyFormOpen}
+        onCancel={setGroupVerifyFormOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setGroupVerifyFormOpen(false);
+          // 刷新当前行数据
+          if (onBotUpdate) {
+            onBotUpdate({ _id: currentRow._id });
+          }
+        }}
+      />
+
+      {/* 发言统计配置表单 */}
+      <SpeechStatisticsForm
+        open={speechStatisticsFormOpen}
+        onOpenChange={setSpeechStatisticsFormOpen}
+        currentRow={currentRow}
+        onSave={async (values) => {
+          if (onBotUpdate) {
+            await onBotUpdate(values);
           }
         }}
       />
