@@ -21,19 +21,18 @@ import KeyboardEditor, { KeyboardEditorRef } from './KeyboardEditor';
 import GroupWelcomeForm from './GroupWelcomeForm';
 import GroupVerifyForm from './GroupVerifyForm';
 import SpeechStatisticsForm from './SpeechStatisticsForm';
+import GroupMessageForm from './GroupMessageForm';
+import ChannelPostCreateForm from './ChannelPostCreateForm';
+import ReplyRuleForm from './ReplyRuleForm';
+import GroupMessageUpdate from '@/pages/GroupMessage/components/Update';
+import ChannelPostUpdate from '@/pages/ChannelPost/components/Update';
+import ReplyRuleUpdate from '@/pages/ReplyRule/components/Update';
 
 interface BotConfigManagerProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
   currentRow: any;
   currentUser: any;
-  onOpenGroupMessageForm?: () => void;
-  onOpenChannelPostForm?: () => void;
-  onOpenReplyRuleForm?: () => void;
-  onEditGroupMessage?: (record: any) => void;
-  onEditChannelPost?: (record: any) => void;
-  onEditReplyRule?: (record: any) => void;
-  refreshKey?: number;
   onBotUpdate?: (values: any) => Promise<void>;
 }
 
@@ -42,13 +41,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   onCancel,
   currentRow,
   currentUser,
-  onOpenGroupMessageForm,
-  onOpenChannelPostForm,
-  onOpenReplyRuleForm,
-  onEditGroupMessage,
-  onEditChannelPost,
-  onEditReplyRule,
-  refreshKey,
   onBotUpdate,
 }) => {
   const intl = useIntl();
@@ -67,6 +59,21 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
 
   // 发言统计表单状态
   const [speechStatisticsFormOpen, setSpeechStatisticsFormOpen] = useState(false);
+
+  // 群发消息表单状态
+  const [groupMessageFormOpen, setGroupMessageFormOpen] = useState(false);
+  const [groupMessageUpdateOpen, setGroupMessageUpdateOpen] = useState(false);
+  const [editingGroupMessage, setEditingGroupMessage] = useState<any>(null);
+
+  // 频道推广表单状态
+  const [channelPostFormOpen, setChannelPostFormOpen] = useState(false);
+  const [channelPostUpdateOpen, setChannelPostUpdateOpen] = useState(false);
+  const [editingChannelPost, setEditingChannelPost] = useState<any>(null);
+
+  // 回复规则表单状态
+  const [replyRuleFormOpen, setReplyRuleFormOpen] = useState(false);
+  const [replyRuleUpdateOpen, setReplyRuleUpdateOpen] = useState(false);
+  const [editingReplyRule, setEditingReplyRule] = useState<any>(null);
 
   // 键盘配置状态
   const keyboardEditorRef = useRef<KeyboardEditorRef>(null);
@@ -152,12 +159,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       loadAllData();
     }
   }, [open, currentRow]);
-
-  useEffect(() => {
-    if (open && refreshKey && currentRow?._id) {
-      loadAllData();
-    }
-  }, [refreshKey]);
 
   // 删除群发消息
   const handleDeleteGroupMessage = async (id: string) => {
@@ -307,14 +308,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       width: 100,
       render: (_: any, record: any) => (
         <Space size={0}>
-          {onEditGroupMessage && (
-            <Button
-              type="link"
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => onEditGroupMessage(record)}
-            />
-          )}
+          <Button
+            type="link"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditingGroupMessage(record);
+              setGroupMessageUpdateOpen(true);
+            }}
+          />
           <Popconfirm title="确定删除？" onConfirm={() => handleDeleteGroupMessage(record._id)}>
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -379,14 +381,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       width: 100,
       render: (_: any, record: any) => (
         <Space size={0}>
-          {onEditChannelPost && (
-            <Button
-              type="link"
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => onEditChannelPost(record)}
-            />
-          )}
+          <Button
+            type="link"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditingChannelPost(record);
+              setChannelPostUpdateOpen(true);
+            }}
+          />
           <Popconfirm title="确定删除？" onConfirm={() => handleDeleteChannelPost(record._id)}>
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -466,14 +469,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       width: 100,
       render: (_: any, record: any) => (
         <Space size={0}>
-          {onEditReplyRule && (
-            <Button
-              type="link"
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => onEditReplyRule(record)}
-            />
-          )}
+          <Button
+            type="link"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditingReplyRule(record);
+              setReplyRuleUpdateOpen(true);
+            }}
+          />
           <Popconfirm title="确定删除？" onConfirm={() => handleDeleteReplyRule(record._id)}>
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -657,7 +661,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         children: (
           <div>
             <div style={{ marginBottom: 16 }}>
-              <Button type="primary" icon={<PlusOutlined />} onClick={onOpenGroupMessageForm}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setGroupMessageFormOpen(true)}
+              >
                 新建
               </Button>
             </div>
@@ -683,7 +691,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         children: (
           <div style={{ height: '65vh', overflow: 'auto', paddingRight: 8 }}>
             <div style={{ marginBottom: 16 }}>
-              <Button type="primary" icon={<PlusOutlined />} onClick={onOpenChannelPostForm}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setChannelPostFormOpen(true)}
+              >
                 新建
               </Button>
             </div>
@@ -709,7 +721,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         children: (
           <div>
             <div style={{ marginBottom: 16 }}>
-              <Button type="primary" icon={<PlusOutlined />} onClick={onOpenReplyRuleForm}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setReplyRuleFormOpen(true)}
+              >
                 新建
               </Button>
             </div>
@@ -907,6 +923,93 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         onSave={async (values) => {
           if (onBotUpdate) {
             await onBotUpdate(values);
+          }
+        }}
+      />
+
+      {/* 群发消息表单 */}
+      <GroupMessageForm
+        open={groupMessageFormOpen}
+        onCancel={setGroupMessageFormOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setGroupMessageFormOpen(false);
+          message.success('群发消息添加成功');
+          loadAllData();
+        }}
+      />
+
+      <GroupMessageUpdate
+        updateModalOpen={groupMessageUpdateOpen}
+        onCancel={setGroupMessageUpdateOpen}
+        values={editingGroupMessage || {}}
+        onSubmit={async (values) => {
+          try {
+            await updateItem(`/group-messages/${values._id}`, values);
+            message.success('更新成功');
+            setGroupMessageUpdateOpen(false);
+            setEditingGroupMessage(null);
+            loadAllData();
+          } catch (error: any) {
+            message.error(error?.response?.data?.message ?? '更新失败');
+          }
+        }}
+      />
+
+      {/* 频道推广表单 */}
+      <ChannelPostCreateForm
+        open={channelPostFormOpen}
+        onOpenChange={setChannelPostFormOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setChannelPostFormOpen(false);
+          message.success('频道推广添加成功');
+          loadAllData();
+        }}
+      />
+
+      <ChannelPostUpdate
+        updateModalOpen={channelPostUpdateOpen}
+        onCancel={setChannelPostUpdateOpen}
+        values={editingChannelPost || {}}
+        onSubmit={async (values) => {
+          try {
+            await updateItem(`/channel-posts/${values._id}`, values);
+            message.success('更新成功');
+            setChannelPostUpdateOpen(false);
+            setEditingChannelPost(null);
+            loadAllData();
+          } catch (error: any) {
+            message.error(error?.response?.data?.message ?? '更新失败');
+          }
+        }}
+      />
+
+      {/* 回复规则表单 */}
+      <ReplyRuleForm
+        open={replyRuleFormOpen}
+        onOpenChange={setReplyRuleFormOpen}
+        currentRow={currentRow}
+        onSuccess={() => {
+          setReplyRuleFormOpen(false);
+          message.success('回复规则添加成功');
+          loadAllData();
+        }}
+      />
+
+      <ReplyRuleUpdate
+        updateModalOpen={replyRuleUpdateOpen}
+        onCancel={setReplyRuleUpdateOpen}
+        values={editingReplyRule || {}}
+        onSubmit={async (values) => {
+          try {
+            await updateItem(`/reply-rules/${values._id}`, values);
+            message.success('更新成功');
+            setReplyRuleUpdateOpen(false);
+            setEditingReplyRule(null);
+            loadAllData();
+          } catch (error: any) {
+            message.error(error?.response?.data?.message ?? '更新失败');
           }
         }}
       />
