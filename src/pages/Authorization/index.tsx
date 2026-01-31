@@ -542,9 +542,16 @@ const TableList: React.FC = () => {
         currentRow={currentRow}
         currentUser={currentUser}
         onBotUpdate={async (values) => {
-          const updatedBot = await handleUpdate(values);
-          if (updatedBot && typeof updatedBot === 'object') {
-            setCurrentRow(updatedBot);
+          if (values?.groupWelcome !== null && values?.groupWelcome !== undefined && values?._id) {
+            // 来自 group-welcome 等接口的完整 bot 数据，直接更新 currentRow
+            setCurrentRow((prev: any) =>
+              prev?._id === values._id ? { ...prev, ...values } : prev,
+            );
+          } else if (values?._id) {
+            const updatedBot = await handleUpdate(values);
+            if (updatedBot && typeof updatedBot === 'object') {
+              setCurrentRow(updatedBot);
+            }
           }
           if (actionRef.current) {
             actionRef.current.reload();

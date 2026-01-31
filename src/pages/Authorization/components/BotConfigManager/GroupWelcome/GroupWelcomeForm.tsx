@@ -23,7 +23,7 @@ interface GroupWelcomeFormProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
   currentRow?: any;
-  onSuccess?: () => void;
+  onSuccess?: (updatedBot?: any) => void;
 }
 
 const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
@@ -143,10 +143,11 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         deleteAfterSeconds: formValues.deleteAfterSeconds || 0,
       };
 
-      console.log('提交的群欢迎数据:', groupWelcomeData);
-
       // 使用专门的群欢迎更新接口
-      await updateItem(`/bots/${currentRow._id}/group-welcome`, groupWelcomeData);
+      const response: any = await updateItem(
+        `/bots/${currentRow._id}/group-welcome`,
+        groupWelcomeData,
+      );
 
       hide();
       message.success(
@@ -159,7 +160,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       setMedias([]);
       setMenus([]);
       onCancel(false);
-      onSuccess?.();
+      // 传递更新后的 bot 数据，便于刷新 currentRow 中的 groupWelcome
+      onSuccess?.(response?.data);
 
       return true;
     } catch (error: any) {
