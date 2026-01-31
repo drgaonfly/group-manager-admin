@@ -264,4 +264,6 @@ export default {
   add_keyboard_row: 'Add New Row',
   label: 'Button Text',
   checkinRule: 'CheckIn Rule',
+  add_checkin_rule: 'Add Check-in Rule',
+  edit_checkin_rule: 'Edit Check-in Rule',
 };

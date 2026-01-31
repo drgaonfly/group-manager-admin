@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Space, Switch, message, Popconfirm, Tag } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
+import { FormattedMessage, useIntl } from '@umijs/max';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import CheckinRuleForm from './CheckinRuleForm';
 
@@ -10,9 +11,11 @@ interface CheckinRuleTabProps {
 }
 
 const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChange }) => {
+  const intl = useIntl();
   const [checkinRules, setCheckinRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const fetchData = async () => {
     if (!currentRow?._id) return;
@@ -124,15 +127,29 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChang
       ),
     },
     {
-      title: '操作',
-      width: 80,
-      render: (_: any, record: any) => (
-        <Space size={0}>
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
-            <Button type="link" danger size="small" icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </Space>
-      ),
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      valueType: 'option',
+      width: 200,
+      render: (text: any, record: any) => [
+        <a
+          key="edit"
+          onClick={() => {
+            setEditingRecord(record);
+            setFormOpen(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'edit' })}
+        </a>,
+        <Popconfirm
+          key="delete"
+          title="确定要删除这条签到规则吗？"
+          onConfirm={() => handleDelete(record._id)}
+          okText="确定"
+          cancelText="取消"
+        >
+          <a style={{ color: 'red', marginLeft: 8 }}>{intl.formatMessage({ id: 'delete' })}</a>
+        </Popconfirm>,
+      ],
     },
   ];
 
@@ -140,7 +157,7 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChang
     <div>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setFormOpen(true)}>
-          新建
+          {intl.formatMessage({ id: 'add', defaultMessage: '添加' })}
         </Button>
       </div>
       <Table
@@ -155,11 +172,18 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChang
 
       <CheckinRuleForm
         open={formOpen}
-        onOpenChange={setFormOpen}
+        onOpenChange={(open) => {
+          setFormOpen(open);
+          if (!open) {
+            setEditingRecord(null);
+          }
+        }}
         currentRow={currentRow}
+        editingRecord={editingRecord}
         onSuccess={() => {
           setFormOpen(false);
-          message.success('签到规则添加成功');
+          setEditingRecord(null);
+          message.success(editingRecord ? '签到规则更新成功' : '签到规则添加成功');
           fetchData();
           onDataChange?.();
         }}
