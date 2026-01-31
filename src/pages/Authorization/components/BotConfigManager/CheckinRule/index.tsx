@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, Switch, message, Popconfirm, Tag } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
+import { Button, Card, message } from 'antd';
+import { queryList } from '@/services/ant-design-pro/api';
 import CheckinRuleForm from './CheckinRuleForm';
 
 interface CheckinRuleTabProps {
   currentRow: any;
-  onDataChange?: () => void;
+  onBotUpdate?: (values: any) => Promise<void>;
 }
 
-const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChange }) => {
-  const intl = useIntl();
-  const [checkinRules, setCheckinRules] = useState<any[]>([]);
+const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate }) => {
+  const [checkinRule, setCheckinRule] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const fetchData = async () => {
     if (!currentRow?._id) return;
@@ -23,12 +19,14 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChang
     try {
       const response = await queryList(
         '/checkin-rules',
-        { current: 1, pageSize: 100, botId: currentRow._id },
+        { current: 1, pageSize: 1, botId: currentRow._id },
         {},
         {},
       );
-      if (response?.data) {
-        setCheckinRules(response.data);
+      if (response?.data && response.data.length > 0) {
+        setCheckinRule(response.data[0]);
+      } else {
+        setCheckinRule(null);
       }
     } catch (error) {
       console.error('获取签到规则失败:', error);
@@ -40,152 +38,61 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onDataChang
     fetchData();
   }, [currentRow?._id]);
 
-  const handleDelete = async (id: string) => {
-    try {
-      await removeItem('/checkin-rules', { ids: [id] });
-      message.success('删除成功');
-      fetchData();
-      onDataChange?.();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '删除失败');
-    }
+  const getTypeText = (type: string) => {
+    const typeMap: Record<string, string> = {
+      daily: '每日签到',
+      first: '初次签到',
+    };
+    return typeMap[type] || type;
   };
-
-  const handleStatusChange = async (record: any, isOnline: boolean) => {
-    try {
-      await updateItem(`/checkin-rules/${record._id}`, { isOnline });
-      message.success('状态更新成功');
-      fetchData();
-      onDataChange?.();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '更新失败');
-    }
-  };
-
-  const columns = [
-    {
-      title: '签到类型',
-      dataIndex: 'type',
-      width: 100,
-      render: (type: string) => {
-        const typeMap: Record<string, { text: string; color: string }> = {
-          daily: { text: '每日签到', color: 'blue' },
-          first: { text: '初次签到', color: 'green' },
-        };
-        const config = typeMap[type] || { text: type, color: 'default' };
-        return <Tag color={config.color}>{config.text}</Tag>;
-      },
-    },
-    {
-      title: '奖励积分',
-      dataIndex: 'reward',
-      width: 100,
-      render: (reward: number) => <Tag color="orange">{reward} 积分</Tag>,
-    },
-    {
-      title: '触发关键词',
-      dataIndex: 'keywords',
-      width: 150,
-      render: (keywords: string[]) => {
-        const arr = Array.isArray(keywords) ? keywords : [keywords];
-        return (
-          <Space wrap size={[4, 4]}>
-            {arr.slice(0, 3).map((k, idx) => (
-              <Tag key={idx} color="blue">
-                {k}
-              </Tag>
-            ))}
-            {arr.length > 3 && <Tag>+{arr.length - 3}</Tag>}
-          </Space>
-        );
-      },
-    },
-    {
-      title: '成功提示',
-      dataIndex: 'success_content',
-      width: 200,
-      ellipsis: true,
-      render: (text: string) => (
-        <div
-          style={{ maxWidth: 200 }}
-          dangerouslySetInnerHTML={{ __html: text || '-' }}
-          title={text?.replace(/<[^>]+>/g, '') || ''}
-        />
-      ),
-    },
-    {
-      title: '状态',
-      dataIndex: 'isOnline',
-      width: 90,
-      render: (_: any, record: any) => (
-        <Switch
-          checkedChildren="启用"
-          unCheckedChildren="禁用"
-          checked={record.isOnline}
-          onChange={(checked) => handleStatusChange(record, checked)}
-        />
-      ),
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-      valueType: 'option',
-      width: 200,
-      render: (text: any, record: any) => [
-        <a
-          key="edit"
-          onClick={() => {
-            setEditingRecord(record);
-            setFormOpen(true);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
-        <Popconfirm
-          key="delete"
-          title="确定要删除这条签到规则吗？"
-          onConfirm={() => handleDelete(record._id)}
-          okText="确定"
-          cancelText="取消"
-        >
-          <a style={{ color: 'red', marginLeft: 8 }}>{intl.formatMessage({ id: 'delete' })}</a>
-        </Popconfirm>,
-      ],
-    },
-  ];
 
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setFormOpen(true)}>
-          {intl.formatMessage({ id: 'add', defaultMessage: '添加' })}
+        <Button type="primary" onClick={() => setFormOpen(true)}>
+          配置签到规则
         </Button>
       </div>
-      <Table
-        columns={columns}
-        dataSource={checkinRules}
-        rowKey="_id"
-        loading={loading}
-        size="small"
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 700 }}
-      />
+      <Card size="small" loading={loading}>
+        <div style={{ color: '#666' }}>
+          {checkinRule ? (
+            <div>
+              <p>✅ 已配置签到规则</p>
+              <p style={{ marginTop: 8 }}>
+                <strong>类型：</strong>
+                {getTypeText(checkinRule.type)}
+              </p>
+              <p style={{ marginTop: 8 }}>
+                <strong>奖励积分：</strong>
+                {checkinRule.reward} 积分
+              </p>
+              {checkinRule.keywords && checkinRule.keywords.length > 0 && (
+                <p style={{ marginTop: 8 }}>
+                  <strong>触发关键词：</strong>
+                  {Array.isArray(checkinRule.keywords)
+                    ? checkinRule.keywords.join('、')
+                    : checkinRule.keywords}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p>❌ 未配置签到规则</p>
+          )}
+        </div>
+      </Card>
 
       <CheckinRuleForm
         open={formOpen}
-        onOpenChange={(open) => {
-          setFormOpen(open);
-          if (!open) {
-            setEditingRecord(null);
-          }
-        }}
+        onCancel={setFormOpen}
         currentRow={currentRow}
-        editingRecord={editingRecord}
+        editingRecord={checkinRule}
         onSuccess={() => {
           setFormOpen(false);
-          setEditingRecord(null);
-          message.success(editingRecord ? '签到规则更新成功' : '签到规则添加成功');
+          message.success(checkinRule ? '签到规则更新成功' : '签到规则配置成功');
           fetchData();
-          onDataChange?.();
+          if (onBotUpdate) {
+            onBotUpdate({ _id: currentRow._id });
+          }
         }}
       />
     </div>
