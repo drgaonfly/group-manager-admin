@@ -35,11 +35,17 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       }}
     >
       <ProForm.Group>
-        <ProFormText
+        <ProFormTextArea
           rules={[{ required: true }]}
           width="md"
           label={intl.formatMessage({ id: 'title', defaultMessage: '标题' })}
           name="title"
+          fieldProps={{
+            autoSize: {
+              minRows: 2,
+              maxRows: 6,
+            },
+          }}
         />
 
         <BotSelect newRecord={newRecord} />
