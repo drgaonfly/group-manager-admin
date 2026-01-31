@@ -43,10 +43,11 @@ const GroupWelcomeTab: React.FC<GroupWelcomeTabProps> = ({ currentRow, onBotUpda
         open={formOpen}
         onCancel={setFormOpen}
         currentRow={currentRow}
-        onSuccess={() => {
+        onSuccess={(updatedBot) => {
           setFormOpen(false);
           if (onBotUpdate) {
-            onBotUpdate({ _id: currentRow._id });
+            // 传递更新后的完整 bot（含 groupWelcome），便于立即刷新 currentRow
+            onBotUpdate(updatedBot || { _id: currentRow._id });
           }
         }}
       />
