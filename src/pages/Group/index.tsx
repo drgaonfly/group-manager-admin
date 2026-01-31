@@ -75,6 +75,12 @@ const GroupTableList: React.FC = () => {
       dataIndex: 'title',
     },
     {
+      title: intl.formatMessage({ id: 'username', defaultMessage: '群组用户名' }),
+      dataIndex: 'username',
+      hideInSearch: true,
+      render: (_, record: any) => (record?.username ? `@${record.username}` : '-'),
+    },
+    {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
       hideInSearch: true,
