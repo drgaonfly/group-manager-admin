@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Card } from 'antd';
+import { FormattedMessage } from '@umijs/max';
 import GroupVerifyForm from './GroupVerifyForm';
 
 interface GroupVerifyTabProps {
@@ -14,23 +15,29 @@ const GroupVerifyTab: React.FC<GroupVerifyTabProps> = ({ currentRow, onBotUpdate
     <div>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={() => setFormOpen(true)}>
-          配置群验证
+          <FormattedMessage id="configure_group_verify" defaultMessage="配置群验证" />
         </Button>
       </div>
       <Card size="small">
         <div style={{ color: '#666' }}>
           {currentRow?.groupVerify ? (
             <div>
-              <p>✅ 已配置群验证</p>
+              <p>
+                ✅ <FormattedMessage id="group_verify_configured" defaultMessage="已配置群验证" />
+              </p>
               {currentRow.groupVerify.question && (
                 <p style={{ marginTop: 8 }}>
-                  <strong>问题：</strong>
+                  <strong>
+                    <FormattedMessage id="question" defaultMessage="问题" />：
+                  </strong>
                   {currentRow.groupVerify.question}
                 </p>
               )}
             </div>
           ) : (
-            <p>❌ 未配置群验证</p>
+            <p>
+              ❌ <FormattedMessage id="group_verify_not_configured" defaultMessage="未配置群验证" />
+            </p>
           )}
         </div>
       </Card>

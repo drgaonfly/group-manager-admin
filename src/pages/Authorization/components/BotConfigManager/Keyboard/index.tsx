@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, message } from 'antd';
+import { FormattedMessage } from '@umijs/max';
 import KeyboardEditor, { KeyboardEditorRef } from './KeyboardEditor';
 
 interface KeyboardTabProps {
@@ -20,9 +21,15 @@ const KeyboardTab: React.FC<KeyboardTabProps> = ({ currentRow, onBotUpdate }) =>
         _id: currentRow._id,
         keyboards,
       });
-      message.success('键盘配置已保存');
+      message.success(
+        <FormattedMessage id="keyboard_config_saved" defaultMessage="键盘配置已保存" />,
+      );
     } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '保存失败');
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="save_failed" defaultMessage="保存失败" />
+        ),
+      );
     }
     setSaving(false);
   };
@@ -32,7 +39,7 @@ const KeyboardTab: React.FC<KeyboardTabProps> = ({ currentRow, onBotUpdate }) =>
       <KeyboardEditor ref={keyboardEditorRef} value={currentRow?.keyboards || []} />
       <div style={{ marginTop: 16, textAlign: 'right' }}>
         <Button type="primary" loading={saving} onClick={handleSave}>
-          保存
+          <FormattedMessage id="save" defaultMessage="保存" />
         </Button>
       </div>
     </div>

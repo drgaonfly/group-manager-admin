@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Card } from 'antd';
+import { FormattedMessage } from '@umijs/max';
 import GroupWelcomeForm from './GroupWelcomeForm';
 
 interface GroupWelcomeTabProps {
@@ -14,17 +15,26 @@ const GroupWelcomeTab: React.FC<GroupWelcomeTabProps> = ({ currentRow, onBotUpda
     <div>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={() => setFormOpen(true)}>
-          配置群欢迎
+          <FormattedMessage id="configure_group_welcome" defaultMessage="配置群欢迎" />
         </Button>
       </div>
       <Card size="small">
         <div style={{ color: '#666' }}>
           {currentRow?.groupWelcome ? (
             <div>
-              <p>✅ 已配置群欢迎消息</p>
+              <p>
+                ✅{' '}
+                <FormattedMessage id="group_welcome_configured" defaultMessage="已配置群欢迎消息" />
+              </p>
             </div>
           ) : (
-            <p>❌ 未配置群欢迎消息</p>
+            <p>
+              ❌{' '}
+              <FormattedMessage
+                id="group_welcome_not_configured"
+                defaultMessage="未配置群欢迎消息"
+              />
+            </p>
           )}
         </div>
       </Card>
