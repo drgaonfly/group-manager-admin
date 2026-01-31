@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, message } from 'antd';
+import { FormattedMessage } from '@umijs/max';
 import { queryList } from '@/services/ant-design-pro/api';
 import CheckinRuleForm from './CheckinRuleForm';
 
@@ -50,25 +51,33 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
     <div>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={() => setFormOpen(true)}>
-          配置签到规则
+          <FormattedMessage id="configure_checkin_rule" defaultMessage="配置签到规则" />
         </Button>
       </div>
       <Card size="small" loading={loading}>
         <div style={{ color: '#666' }}>
           {checkinRule ? (
             <div>
-              <p>✅ 已配置签到规则</p>
+              <p>
+                ✅ <FormattedMessage id="checkin_rule_configured" defaultMessage="已配置签到规则" />
+              </p>
               <p style={{ marginTop: 8 }}>
-                <strong>类型：</strong>
+                <strong>
+                  <FormattedMessage id="type" defaultMessage="类型" />：
+                </strong>
                 {getTypeText(checkinRule.type)}
               </p>
               <p style={{ marginTop: 8 }}>
-                <strong>奖励积分：</strong>
-                {checkinRule.reward} 积分
+                <strong>
+                  <FormattedMessage id="reward_points" defaultMessage="奖励积分" />：
+                </strong>
+                {checkinRule.reward} <FormattedMessage id="points" defaultMessage="积分" />
               </p>
               {checkinRule.keywords && checkinRule.keywords.length > 0 && (
                 <p style={{ marginTop: 8 }}>
-                  <strong>触发关键词：</strong>
+                  <strong>
+                    <FormattedMessage id="trigger_keywords" defaultMessage="触发关键词" />：
+                  </strong>
                   {Array.isArray(checkinRule.keywords)
                     ? checkinRule.keywords.join('、')
                     : checkinRule.keywords}
@@ -76,7 +85,10 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
               )}
             </div>
           ) : (
-            <p>❌ 未配置签到规则</p>
+            <p>
+              ❌{' '}
+              <FormattedMessage id="checkin_rule_not_configured" defaultMessage="未配置签到规则" />
+            </p>
           )}
         </div>
       </Card>
@@ -88,7 +100,19 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
         editingRecord={checkinRule}
         onSuccess={() => {
           setFormOpen(false);
-          message.success(checkinRule ? '签到规则更新成功' : '签到规则配置成功');
+          message.success(
+            checkinRule ? (
+              <FormattedMessage
+                id="checkin_rule_update_success"
+                defaultMessage="签到规则更新成功"
+              />
+            ) : (
+              <FormattedMessage
+                id="checkin_rule_config_success"
+                defaultMessage="签到规则配置成功"
+              />
+            ),
+          );
           fetchData();
           if (onBotUpdate) {
             onBotUpdate({ _id: currentRow._id });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Space, Switch, message, Popconfirm, Tag } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { FormattedMessage } from '@umijs/max';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import ReplyRuleForm from './ReplyRuleForm';
 import ReplyRuleUpdate from '@/pages/ReplyRule/components/Update';
@@ -43,28 +44,38 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
   const handleDelete = async (id: string) => {
     try {
       await removeItem('/reply-rules', { ids: [id] });
-      message.success('删除成功');
+      message.success(<FormattedMessage id="delete_success" defaultMessage="删除成功" />);
       fetchData();
       onDataChange?.();
     } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '删除失败');
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="delete_failed" defaultMessage="删除失败" />
+        ),
+      );
     }
   };
 
   const handleStatusChange = async (record: any, isOnline: boolean) => {
     try {
       await updateItem(`/reply-rules/${record._id}`, { isOnline });
-      message.success('状态更新成功');
+      message.success(
+        <FormattedMessage id="status_update_success" defaultMessage="状态更新成功" />,
+      );
       fetchData();
       onDataChange?.();
     } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '更新失败');
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="update_failed" defaultMessage="更新失败" />
+        ),
+      );
     }
   };
 
   const columns = [
     {
-      title: '关键词',
+      title: <FormattedMessage id="keywords" defaultMessage="关键词" />,
       dataIndex: 'keyword',
       width: 140,
       render: (keywords: string[]) => {
@@ -82,7 +93,7 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
       },
     },
     {
-      title: '回复内容',
+      title: <FormattedMessage id="reply_content" defaultMessage="回复内容" />,
       dataIndex: 'content',
       width: 160,
       ellipsis: true,
@@ -95,27 +106,27 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
       ),
     },
     {
-      title: '媒体',
+      title: <FormattedMessage id="media" defaultMessage="媒体" />,
       dataIndex: 'medias',
       width: 50,
       render: (medias: string[]) => medias?.length || 0,
     },
     {
-      title: '引用',
+      title: <FormattedMessage id="quote" defaultMessage="引用" />,
       dataIndex: 'replyToMessage',
       width: 50,
       render: (_: any, record: any) =>
         record.replyToMessage ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
     },
     {
-      title: '阅后即焚',
+      title: <FormattedMessage id="burn_after_reading" defaultMessage="阅后即焚" />,
       dataIndex: 'deleteAfterSeconds',
       width: 80,
       render: (_: any, record: any) =>
         record.deleteAfterSeconds ? <Tag color="orange">{record.deleteAfterSeconds}秒</Tag> : '-',
     },
     {
-      title: '状态',
+      title: <FormattedMessage id="status" defaultMessage="状态" />,
       dataIndex: 'isOnline',
       width: 90,
       render: (_: any, record: any) => (
@@ -128,7 +139,7 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
       ),
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="operation" defaultMessage="操作" />,
       width: 100,
       render: (_: any, record: any) => (
         <Space size={0}>
@@ -141,7 +152,10 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
               setUpdateOpen(true);
             }}
           />
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+          <Popconfirm
+            title={<FormattedMessage id="confirm_delete" defaultMessage="确定删除？" />}
+            onConfirm={() => handleDelete(record._id)}
+          >
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
         </Space>
@@ -153,7 +167,7 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
     <div>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setFormOpen(true)}>
-          新建
+          <FormattedMessage id="add" defaultMessage="新建" />
         </Button>
       </div>
       <Table
@@ -172,7 +186,9 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
         currentRow={currentRow}
         onSuccess={() => {
           setFormOpen(false);
-          message.success('回复规则添加成功');
+          message.success(
+            <FormattedMessage id="reply_rule_add_success" defaultMessage="回复规则添加成功" />,
+          );
           fetchData();
           onDataChange?.();
         }}
@@ -185,13 +201,17 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
         onSubmit={async (values) => {
           try {
             await updateItem(`/reply-rules/${values._id}`, values);
-            message.success('更新成功');
+            message.success(<FormattedMessage id="update_success" defaultMessage="更新成功" />);
             setUpdateOpen(false);
             setEditingRecord(null);
             fetchData();
             onDataChange?.();
           } catch (error: any) {
-            message.error(error?.response?.data?.message ?? '更新失败');
+            message.error(
+              error?.response?.data?.message ?? (
+                <FormattedMessage id="update_failed" defaultMessage="更新失败" />
+              ),
+            );
           }
         }}
       />

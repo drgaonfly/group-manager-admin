@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Space, Switch, message, Popconfirm, Tag } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { FormattedMessage } from '@umijs/max';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
 import ChannelPostCreateForm from './ChannelPostForm';
@@ -44,34 +45,44 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
   const handleDelete = async (id: string) => {
     try {
       await removeItem('/channel-posts', { ids: [id] });
-      message.success('删除成功');
+      message.success(<FormattedMessage id="delete_success" defaultMessage="删除成功" />);
       fetchData();
       onDataChange?.();
     } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '删除失败');
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="delete_failed" defaultMessage="删除失败" />
+        ),
+      );
     }
   };
 
   const handleStatusChange = async (record: any, isOnline: boolean) => {
     try {
       await updateItem(`/channel-posts/${record._id}`, { isOnline });
-      message.success('状态更新成功');
+      message.success(
+        <FormattedMessage id="status_update_success" defaultMessage="状态更新成功" />,
+      );
       fetchData();
       onDataChange?.();
     } catch (error: any) {
-      message.error(error?.response?.data?.message ?? '更新失败');
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="update_failed" defaultMessage="更新失败" />
+        ),
+      );
     }
   };
 
   const columns = [
     {
-      title: '频道',
+      title: <FormattedMessage id="channel" defaultMessage="频道" />,
       dataIndex: 'channels',
       width: 120,
       render: (channels: any[]) => channels?.map((c) => c?.title).join(', ') || '-',
     },
     {
-      title: '内容',
+      title: <FormattedMessage id="content" defaultMessage="内容" />,
       dataIndex: 'content',
       width: 200,
       ellipsis: true,
@@ -84,24 +95,24 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
       ),
     },
     {
-      title: '间隔',
+      title: <FormattedMessage id="interval" defaultMessage="间隔" />,
       dataIndex: 'interval',
       width: 80,
       render: formatInterval,
     },
     {
-      title: '时间窗口',
+      title: <FormattedMessage id="time_window" defaultMessage="时间窗口" />,
       width: 150,
       render: (_: any, record: any) => formatTimeWindow(record),
     },
     {
-      title: '清除上条',
+      title: <FormattedMessage id="clear_last_post" defaultMessage="清除上条" />,
       dataIndex: 'isClearLastPost',
       width: 80,
       render: (val: boolean) => (val ? <Tag color="orange">是</Tag> : <Tag>否</Tag>),
     },
     {
-      title: '状态',
+      title: <FormattedMessage id="status" defaultMessage="状态" />,
       dataIndex: 'isOnline',
       width: 90,
       render: (_: any, record: any) => (
@@ -114,7 +125,7 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
       ),
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="operation" defaultMessage="操作" />,
       width: 100,
       render: (_: any, record: any) => (
         <Space size={0}>
@@ -127,7 +138,10 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
               setUpdateOpen(true);
             }}
           />
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+          <Popconfirm
+            title={<FormattedMessage id="confirm_delete" defaultMessage="确定删除？" />}
+            onConfirm={() => handleDelete(record._id)}
+          >
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
         </Space>
@@ -139,7 +153,7 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
     <div style={{ height: '65vh', overflow: 'auto', paddingRight: 8 }}>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setFormOpen(true)}>
-          新建
+          <FormattedMessage id="add" defaultMessage="新建" />
         </Button>
       </div>
       <Table
@@ -158,7 +172,9 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
         currentRow={currentRow}
         onSuccess={() => {
           setFormOpen(false);
-          message.success('频道推广添加成功');
+          message.success(
+            <FormattedMessage id="channel_post_add_success" defaultMessage="频道推广添加成功" />,
+          );
           fetchData();
           onDataChange?.();
         }}
@@ -171,13 +187,17 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
         onSubmit={async (values) => {
           try {
             await updateItem(`/channel-posts/${values._id}`, values);
-            message.success('更新成功');
+            message.success(<FormattedMessage id="update_success" defaultMessage="更新成功" />);
             setUpdateOpen(false);
             setEditingRecord(null);
             fetchData();
             onDataChange?.();
           } catch (error: any) {
-            message.error(error?.response?.data?.message ?? '更新失败');
+            message.error(
+              error?.response?.data?.message ?? (
+                <FormattedMessage id="update_failed" defaultMessage="更新失败" />
+              ),
+            );
           }
         }}
       />
