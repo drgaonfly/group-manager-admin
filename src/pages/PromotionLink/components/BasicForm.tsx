@@ -42,7 +42,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="title"
           fieldProps={{
             autoSize: {
-              minRows: 2,
+              minRows: 4,
               maxRows: 6,
             },
           }}
