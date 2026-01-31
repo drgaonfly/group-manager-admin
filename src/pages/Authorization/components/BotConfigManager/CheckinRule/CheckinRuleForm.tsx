@@ -1,8 +1,8 @@
 import { useIntl } from '@umijs/max';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ModalForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Form, message } from 'antd';
-import { addItem } from '@/services/ant-design-pro/api';
+import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
 
@@ -10,16 +10,49 @@ interface Props {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
   currentRow: any;
+  editingRecord?: any;
   onSuccess: () => void;
 }
 
-const CheckinRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
+const CheckinRuleForm: React.FC<Props> = ({
+  open,
+  onOpenChange,
+  currentRow,
+  editingRecord,
+  onSuccess,
+}) => {
   const intl = useIntl();
   const [successContent, setSuccessContent] = React.useState('');
   const [form] = Form.useForm();
 
+  // 处理编辑模式下的表单初始化
+  useEffect(() => {
+    if (open && editingRecord) {
+      // 编辑模式：设置表单值
+      form.setFieldsValue({
+        type: editingRecord.type,
+        reward: editingRecord.reward,
+        keywords: Array.isArray(editingRecord.keywords)
+          ? editingRecord.keywords.join('\n')
+          : editingRecord.keywords,
+      });
+      setSuccessContent(editingRecord.success_content || '');
+    } else if (open && !editingRecord) {
+      // 新建模式：重置表单
+      form.resetFields();
+      setSuccessContent('');
+    }
+  }, [open, editingRecord, form]);
+
   const handleSubmit = async (values: any) => {
-    const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
+    const isEditing = !!editingRecord;
+    const hide = message.loading(
+      isEditing ? (
+        <FormattedMessage id="updating" defaultMessage="更新中..." />
+      ) : (
+        <FormattedMessage id="adding" defaultMessage="添加中..." />
+      ),
+    );
     try {
       const telegramContent = convertToTelegramHtml(successContent);
       const keywordArray = (values.keywords || '')
@@ -34,10 +67,18 @@ const CheckinRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSu
         bot: currentRow?._id,
       };
 
-      await addItem('/checkin-rules', formData);
+      if (isEditing) {
+        // 更新操作
+        await updateItem(`/checkin-rules/${editingRecord._id}`, formData);
+        hide();
+        message.success(<FormattedMessage id="update_successful" defaultMessage="更新成功" />);
+      } else {
+        // 新建操作
+        await addItem('/checkin-rules', formData);
+        hide();
+        message.success(<FormattedMessage id="add_successful" defaultMessage="添加成功" />);
+      }
 
-      hide();
-      message.success(<FormattedMessage id="add_successful" defaultMessage="添加成功" />);
       onSuccess();
       form.resetFields();
       setSuccessContent('');
@@ -55,7 +96,10 @@ const CheckinRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSu
 
   return (
     <ModalForm
-      title={intl.formatMessage({ id: 'add_checkin_rule', defaultMessage: '添加签到规则' })}
+      title={intl.formatMessage({
+        id: editingRecord ? 'edit_checkin_rule' : 'add_checkin_rule',
+        defaultMessage: editingRecord ? '编辑签到规则' : '添加签到规则',
+      })}
       open={open}
       onOpenChange={(visible) => {
         if (!visible) {
