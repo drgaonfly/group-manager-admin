@@ -20,6 +20,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface Props {
@@ -51,9 +52,8 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
         keyword: keywordArray,
         content: telegramContent,
         bot: currentRow?._id,
-        menus: menus.map(({ name, url }) => ({ name, url })),
+        menus: menus.map(({ name, url, row }) => ({ name, url, row: row || 0 })),
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
-        menus_per_row: values.menus_per_row || 1,
       };
 
       await addItem('/reply-rules', formData);
@@ -95,6 +95,21 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
       },
     },
     {
+      title: '行号',
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入行号' }],
+      },
+      fieldProps: {
+        min: 0,
+        precision: 0,
+        placeholder: '0',
+      },
+      tooltip: '相同行号的按钮会显示在同一行',
+    },
+    {
       title: '操作',
       valueType: 'option',
       width: 100,
@@ -127,7 +142,6 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
       }}
       onFinish={handleSubmit}
       initialValues={{
-        menus_per_row: 1,
         replyToMessage: false,
         replyToAdmin: true,
         deleteAfterSeconds: 0,
@@ -155,7 +169,6 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
       </Form.Item>
 
       <ProFormGroup>
-        <ProFormDigit name="menus_per_row" label="每行菜单数" width="sm" min={1} />
         <ProFormDigit
           name="deleteAfterSeconds"
           label="阅后即焚(秒)"
@@ -216,7 +229,7 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
+          record: () => ({ _id: Date.now().toString(), name: '', url: '', row: 0 }),
         }}
       />
     </ModalForm>

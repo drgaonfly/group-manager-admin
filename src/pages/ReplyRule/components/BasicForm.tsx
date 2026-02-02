@@ -19,6 +19,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface BasicFormProps {
@@ -139,6 +140,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           _id: m._id || `menu-${idx}`,
           name: m.name,
           url: m.url,
+          row: m.row || 0,
         })),
       );
 
@@ -149,7 +151,6 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           ? initialValues.keyword.join(', ')
           : initialValues.keyword,
         bot: botId,
-        menus_per_row: initialValues.menus_per_row || 1,
         replyToMessage: initialValues.replyToMessage || false,
         replyToAdmin: initialValues.replyToAdmin !== false,
         deleteAfterSeconds: initialValues.deleteAfterSeconds || 0,
@@ -174,7 +175,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         keyword: keywordArray,
         content: convertToTelegramHtml(content),
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
-        menus: menus.map(({ name, url }) => ({ name, url })),
+        menus: menus.map(({ name, url, row }) => ({ name, url, row: row || 0 })),
       };
     };
   }, [keywords, content, medias, menus, form]);
@@ -194,6 +195,21 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           { pattern: /^https?:\/\/.+/, message: '请输入有效的链接' },
         ],
       },
+    },
+    {
+      title: '行号',
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入行号' }],
+      },
+      fieldProps: {
+        min: 0,
+        precision: 0,
+        placeholder: '0',
+      },
+      tooltip: '相同行号的按钮会显示在同一行',
     },
     {
       title: '操作',
@@ -227,8 +243,6 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
       </ProFormGroup>
 
       <ProFormGroup>
-        <ProFormDigit name="menus_per_row" label="每行菜单数" width="sm" min={1} initialValue={1} />
-
         <ProFormDigit
           name="deleteAfterSeconds"
           label="阅后即焚(秒)"
@@ -324,7 +338,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
+          record: () => ({ _id: Date.now().toString(), name: '', url: '', row: 0 }),
         }}
       />
     </>
