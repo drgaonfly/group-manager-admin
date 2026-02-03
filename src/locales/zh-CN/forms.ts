@@ -363,7 +363,7 @@ export default {
   checkinRule: '签到规则',
   add_checkin_rule: '添加签到规则',
   edit_checkin_rule: '编辑签到规则',
-  balance_cleared_at: '积分余额清零时间',
-  enter_balance_cleared_at: '请输入积分余额清零时间',
-  balance_cleared_at_error: '积分余额清零时间不能小于当前时间',
+  balance_cleared_at: '每月清零日期',
+  enter_balance_cleared_at: '请输入每月清零日期',
+  balance_cleared_at_error: '每月清零日期必须在1-31之间',
 };
