@@ -257,15 +257,13 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             })}
             name="balanceClearedAt"
             tooltip="积分余额清零时间"
-            placeholder="请输入积分余额清零时间"
             rules={[
               {
-                message: intl.formatMessage({ id: 'enter_balance_cleared_at' }),
-                validator: (rule: any, value: any, callback: any) => {
+                required: false,
+                validator: async (rule: any, value: any) => {
                   if (value && dayjs(value).isBefore(dayjs())) {
-                    callback(intl.formatMessage({ id: 'balance_cleared_at_error' }));
+                    throw new Error(intl.formatMessage({ id: 'balance_cleared_at_error' }));
                   }
-                  callback();
                 },
               },
             ]}
