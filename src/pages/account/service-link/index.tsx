@@ -357,6 +357,21 @@ const ServiceLink: React.FC = () => {
                 })}
               </Text>
             </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'lotteryRule',
+                defaultMessage: '群抽奖',
+              })}
+            >
+              {renderStatusTag(currentUser?.lotteryRule || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'lotteryRule.tooltip',
+                  defaultMessage: '开启后，可以配置群抽奖规则，用户可通过关键词抽奖获得奖励',
+                })}
+              </Text>
+            </Descriptions.Item>
           </Descriptions>
         )}
       </Card>

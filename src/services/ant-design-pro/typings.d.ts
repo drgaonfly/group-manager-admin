@@ -43,6 +43,7 @@ declare namespace API {
     reportGroupMemberNameUpdated?: boolean;
     replyRule?: boolean;
     checkinRule?: boolean;
+    lotteryRule?: boolean;
   };
 
   // Example type definition
