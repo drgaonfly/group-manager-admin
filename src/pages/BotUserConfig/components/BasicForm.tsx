@@ -31,7 +31,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       >
         <ProFormDigit
           width="md"
-          name="balance"
+          name="usdt_balance"
           label={intl.formatMessage({ id: 'balance' })}
           rules={[
             {

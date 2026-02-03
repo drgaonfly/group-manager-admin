@@ -9,6 +9,7 @@ const ALL_VARIABLES = [
   { key: '{userId}', label: '用户ID', desc: '用户的 Telegram ID' },
   { key: '{nickname}', label: '用户昵称', desc: '用户的昵称/名字' },
   { key: '{userName}', label: '用户名', desc: '用户的 @username' },
+  { key: '{userBalance}', label: '用户积分', desc: '用户的积分余额' },
   { key: '{groupTitle}', label: '群名称', desc: '当前群组的名称' },
   { key: '{currentTime}', label: '当前时间', desc: '消息发送时的时间' },
 ];
@@ -19,13 +20,22 @@ export type VariableType =
   | 'userId'
   | 'nickname'
   | 'userName'
+  | 'userBalance'
   | 'groupTitle'
   | 'currentTime';
 
 // 预设变量组合
 export const VARIABLE_PRESETS = {
   // 所有变量
-  all: ['member', 'userId', 'nickname', 'userName', 'groupTitle', 'currentTime'] as VariableType[],
+  all: [
+    'member',
+    'userId',
+    'nickname',
+    'userName',
+    'userBalance',
+    'groupTitle',
+    'currentTime',
+  ] as VariableType[],
   // 仅群组和时间（用于轮播广告等没有用户上下文的场景）
   groupOnly: ['groupTitle', 'currentTime'] as VariableType[],
   // 用户相关（用于关键词回复、群欢迎等有用户上下文的场景）
@@ -34,6 +44,7 @@ export const VARIABLE_PRESETS = {
     'userId',
     'nickname',
     'userName',
+    'userBalance',
     'groupTitle',
     'currentTime',
   ] as VariableType[],

@@ -152,7 +152,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'balance' }),
       dataIndex: 'usdt_balance',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: false,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
