@@ -266,4 +266,7 @@ export default {
   checkinRule: 'CheckIn Rule',
   add_checkin_rule: 'Add Check-in Rule',
   edit_checkin_rule: 'Edit Check-in Rule',
+  balance_cleared_at: 'Balance Cleared At',
+  enter_balance_cleared_at: 'Please enter balance cleared at',
+  balance_cleared_at_error: 'Balance cleared at cannot be less than the current time',
 };

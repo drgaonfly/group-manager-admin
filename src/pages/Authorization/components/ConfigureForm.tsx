@@ -5,11 +5,13 @@ import {
   ProDescriptions,
   ProFormGroup,
   ProFormText,
+  ProFormDatePicker,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
+import dayjs from 'dayjs';
 
 type menuItem = {
   _id: string;
@@ -245,6 +247,29 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               placeholder="https://t.me/"
             />
           )}
+
+          {/* 时间只能往后选 */}
+          <ProFormDatePicker
+            width="md"
+            label={intl.formatMessage({
+              id: 'balance_cleared_at',
+              defaultMessage: '积分余额清零时间',
+            })}
+            name="balanceClearedAt"
+            tooltip="积分余额清零时间"
+            placeholder="请输入积分余额清零时间"
+            rules={[
+              {
+                message: intl.formatMessage({ id: 'enter_balance_cleared_at' }),
+                validator: (rule: any, value: any, callback: any) => {
+                  if (value && dayjs(value).isBefore(dayjs())) {
+                    callback(intl.formatMessage({ id: 'balance_cleared_at_error' }));
+                  }
+                  callback();
+                },
+              },
+            ]}
+          />
         </ProFormGroup>
 
         {/* <EditableProTable<menuItem>
