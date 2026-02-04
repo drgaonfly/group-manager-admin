@@ -8,6 +8,8 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
+import { queryList } from '@/services/ant-design-pro/api';
+import { request } from '@umijs/max';
 import LotteryForm from './LotteryForm';
 
 interface LotteryRecord {
@@ -40,12 +42,16 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/lotteries?botId=${currentRow._id}`);
-      const result = await response.json();
-      if (result.success) {
-        setData(result.data);
+      const response = await queryList('/lotteries', {
+        current: 1,
+        pageSize: 100,
+        botId: currentRow._id,
+      });
+      if (response?.data) {
+        setData(response.data as any);
       }
     } catch (error) {
+      console.error('获取抽奖列表失败:', error);
       message.error('获取抽奖列表失败');
     } finally {
       setLoading(false);
@@ -70,7 +76,7 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
 
   const handleDelete = async (record: LotteryRecord) => {
     try {
-      await fetch(`/lotteries/${record._id}`, {
+      await request(`/lotteries/${record._id}`, {
         method: 'DELETE',
       });
       message.success('删除成功');
@@ -82,7 +88,7 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
 
   const handleDraw = async (record: LotteryRecord) => {
     try {
-      await fetch(`/api/lotteries/${record._id}/draw`, {
+      await request(`/lotteries/${record._id}/draw`, {
         method: 'POST',
       });
       message.success('开奖成功');
@@ -97,20 +103,13 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
       const url = editingRecord ? `/lotteries/${editingRecord._id}` : '/lotteries';
       const method = editingRecord ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      await request(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        data: {
           ...values,
           bot: currentRow._id,
-        }),
+        },
       });
-
-      if (!response.ok) {
-        throw new Error('提交失败');
-      }
 
       message.success(editingRecord ? '更新成功' : '创建成功');
       setModalVisible(false);
@@ -122,8 +121,7 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
 
   const showParticipants = async (record: LotteryRecord) => {
     try {
-      const response = await fetch(`/lotteries/${record._id}/participants`);
-      const result = await response.json();
+      const result = await request(`/lotteries/${record._id}/participants`);
       if (result.success) {
         setParticipantsData(result.data);
         setParticipantsModalVisible(true);
