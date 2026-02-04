@@ -48,6 +48,18 @@ export const VARIABLE_PRESETS = {
     'groupTitle',
     'currentTime',
   ] as VariableType[],
+  // 抽奖相关（用于抽奖通知内容编辑）
+  lottery: [
+    'lotteryTitle',
+    'goodsList',
+    'joinCondition',
+    'openCondition',
+    'joinNum',
+    'nickname',
+    'userId',
+    'userName',
+    'member',
+  ] as VariableType[],
 };
 
 export interface RichTextEditorProps {
@@ -55,8 +67,8 @@ export interface RichTextEditorProps {
   onChange?: (value: string) => void;
   placeholder?: string;
   height?: number;
-  /** 显示哪些变量，可以传入预设名称或自定义数组 */
-  variables?: VariableType[] | keyof typeof VARIABLE_PRESETS;
+  /** 显示哪些变量，可以传入预设名称、VariableType数组或自定义变量对象数组 */
+  variables?: VariableType[] | keyof typeof VARIABLE_PRESETS | { key: string; label: string }[];
   /** 是否显示变量插入区域 */
   showVariables?: boolean;
   /** 自定义标题 */
@@ -148,11 +160,38 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
 
     // 解析要显示的变量
     const displayVariables = useMemo(() => {
-      const varKeys = typeof variables === 'string' ? VARIABLE_PRESETS[variables] : variables;
-      return ALL_VARIABLES.filter((v) => {
-        const key = v.key.replace(/[{}]/g, '') as VariableType;
-        return varKeys.includes(key);
-      });
+      // 如果是字符串，使用预设
+      if (typeof variables === 'string') {
+        const varKeys = VARIABLE_PRESETS[variables];
+        return ALL_VARIABLES.filter((v) => {
+          const key = v.key.replace(/[{}]/g, '') as VariableType;
+          return varKeys.includes(key);
+        });
+      }
+      // 如果是数组，检查是否是自定义变量对象
+      else if (
+        Array.isArray(variables) &&
+        variables.length > 0 &&
+        typeof variables[0] === 'object' &&
+        'label' in variables[0]
+      ) {
+        // 自定义变量对象，直接返回
+        return (variables as { key: string; label: string }[]).map((v) => ({
+          key: v.key,
+          label: v.label,
+          desc: v.label, // 使用 label 作为 desc
+        }));
+      }
+      // 如果是 VariableType 数组，使用预设逻辑
+      else if (Array.isArray(variables)) {
+        const varKeys = variables as VariableType[];
+        return ALL_VARIABLES.filter((v) => {
+          const key = v.key.replace(/[{}]/g, '') as VariableType;
+          return varKeys.includes(key);
+        });
+      }
+      // 默认返回所有变量
+      return ALL_VARIABLES;
     }, [variables]);
 
     // 插入变量到编辑器

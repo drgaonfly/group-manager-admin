@@ -21,6 +21,23 @@ import MyUpload from '@/components/MyUpload';
 
 const { Option } = Select;
 
+// 抽奖通知变量
+const LOTTERY_VARIABLES: { key: string; label: string }[] = [
+  { key: '{lotteryTitle}', label: '抽奖标题' },
+  { key: '{goodsList}', label: '奖品内容' },
+  { key: '{joinCondition}', label: '参与条件' },
+  { key: '{openCondition}', label: '开奖条件' },
+  { key: '{joinNum}', label: '已参与人数' },
+];
+
+// 开奖通知变量
+const DRAW_RESULT_VARIABLES: { key: string; label: string }[] = [
+  { key: '{lotteryTitle}', label: '抽奖标题' },
+  { key: '{winnerList}', label: '中奖名单' },
+  { key: '{joinNum}', label: '参与人数' },
+  { key: '{openTime}', label: '开奖时间' },
+];
+
 // 默认通知内容常量 (使用HTML格式的换行)
 const DEFAULT_NOTIFY_CONTENT =
   '🎟️ {lotteryTitle}<br><br>🎫 参与条件:<br>{joinCondition}<br><br>🎁 奖品内容:<br>{goodsList}<br><br>⏰ 开奖方式:<br>{openCondition}';
@@ -317,8 +334,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           >
             <Form.Item name="notifyContent" noStyle>
               <RichTextEditor
-                placeholder="请输入活动通知内容，支持富文本格式。支持变量：{lotteryTitle}、{goodsList}、{joinCondition}、{openCondition}、{joinNum}"
+                placeholder="请输入活动通知内容，支持富文本格式和变量..."
                 height={200}
+                variables={LOTTERY_VARIABLES}
+                showVariables={true}
               />
             </Form.Item>
           </Form.Item>
@@ -335,8 +354,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           >
             <Form.Item name="joinSuccessContent" noStyle>
               <RichTextEditor
-                placeholder="请输入参与成功通知内容，支持富文本格式。支持变量：{lotteryTitle}、{goodsList}、{joinCondition}、{openCondition}、{joinNum}"
+                placeholder="请输入参与成功通知内容，支持富文本格式和变量..."
                 height={200}
+                variables={LOTTERY_VARIABLES}
+                showVariables={true}
               />
             </Form.Item>
           </Form.Item>
@@ -353,8 +374,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           >
             <Form.Item name="drawResultContent" noStyle>
               <RichTextEditor
-                placeholder="请输入开奖通知内容，支持富文本格式。支持变量：{lotteryTitle}、{winnerList}、{joinNum}、{openTime}"
+                placeholder="请输入开奖通知内容，支持富文本格式和变量..."
                 height={200}
+                variables={DRAW_RESULT_VARIABLES}
+                showVariables={true}
               />
             </Form.Item>
           </Form.Item>
