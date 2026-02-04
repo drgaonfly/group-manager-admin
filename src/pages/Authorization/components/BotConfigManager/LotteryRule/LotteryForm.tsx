@@ -5,7 +5,6 @@ import {
   Button,
   Select,
   DatePicker,
-  Upload,
   message,
   Card,
   List,
@@ -17,15 +16,14 @@ import {
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // import { useIntl } from '@umijs/max';
 import moment from 'moment';
-import type { UploadProps } from 'antd';
+import RichTextEditor from '@/components/RichTextEditor';
+import MyUpload from '@/components/MyUpload';
 
 const { Option } = Select;
-const { TextArea } = Input;
 
 interface LotteryPrize {
   name: string;
-  type: 'points' | 'custom';
-  value: number | string;
+  value: number;
   quantity: number;
 }
 
@@ -91,8 +89,14 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
         keywords: ['抽奖'],
         drawMethod: ['fullParticipants'],
         prizes: [],
+        notifyContent:
+          '🎟️ {lotteryTitle}\n\n🎫 参与条件:\n {joinCondition}\n\n🎁 奖品内容:\n{goodsList}\n\n⏰ 开奖方式:\n{openCondition}',
         notifyButtons: [],
+        joinSuccessContent:
+          '🎉 参与成功！\n\n🎟️ 活动：{lotteryTitle}\n\n🎁 奖品：\n{goodsList}\n\n祝您好运！',
         joinSuccessButtons: [],
+        drawResultContent:
+          '🎊 开奖结果公布\n\n🎟️ 活动：{lotteryTitle}\n当前参与人数: {joinNum}人\n\n🏆 中奖名单：\n{winnerList}\n\n⏰ 开奖时间：{openTime}',
         drawResultButtons: [],
         notifyPin: false,
         joinSuccessPin: false,
@@ -101,12 +105,42 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
     }
   }, [currentRow, form]);
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async () => {
     try {
+      // 验证所有必需字段
+      const requiredFields = [
+        'title',
+        'keywords',
+        'prizes',
+        'notifyContent',
+        'joinSuccessContent',
+        'drawResultContent',
+        'drawMethod',
+      ];
+
+      for (const field of requiredFields) {
+        const value = form.getFieldValue(field);
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          message.error(`请填写 ${field} 字段`);
+          // 切换到对应步骤
+          if (['title', 'keywords'].includes(field)) setCurrentStep(0);
+          else if (field === 'prizes') setCurrentStep(1);
+          else if (['notifyContent', 'joinSuccessContent', 'drawResultContent'].includes(field))
+            setCurrentStep(2);
+          else if (field === 'drawMethod') setCurrentStep(3);
+          return;
+        }
+      }
+
+      // 获取表单的所有值，包括所有步骤的字段
+      const allValues = form.getFieldsValue(true);
+      console.log('LotteryForm 提交的原始数据:', allValues);
+
       const submitData = {
-        ...values,
-        scheduledDrawTime: values.scheduledDrawTime?.toDate(),
+        ...allValues,
+        scheduledDrawTime: allValues.scheduledDrawTime?.toDate(),
       };
+      console.log('LotteryForm 提交的处理后数据:', submitData);
       await onSubmit(submitData);
       message.success('保存成功');
       onCancel();
@@ -148,20 +182,23 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
     });
   };
 
-  const uploadProps: UploadProps = {
-    beforeUpload: (file) => {
-      const isValidType = file.type?.startsWith('image/') || file.type?.startsWith('video/');
-      if (!isValidType) {
-        message.error('只能上传图片或视频文件');
-        return false;
-      }
-      const isLt10M = file.size / 1024 / 1024 < 10;
-      if (!isLt10M) {
-        message.error('文件大小不能超过10MB');
-        return false;
-      }
-      return false; // 阻止自动上传，由表单处理
-    },
+  const handleMediaUpload = (url: string) => {
+    // 简单判断媒体类型（可以根据URL或其他方式改进）
+    const mediaType =
+      url.includes('.mp4') || url.includes('.avi') || url.includes('.mov') ? 'video' : 'image';
+    form.setFieldsValue({
+      media: url,
+      mediaType,
+    });
+    message.success('上传成功');
+  };
+
+  const handleMediaRemove = () => {
+    form.setFieldsValue({
+      media: undefined,
+      mediaType: undefined,
+    });
+    return true; // 允许删除
   };
 
   const steps = [
@@ -220,9 +257,12 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item name="media" label="媒体文件">
-            <Upload {...uploadProps}>
-              <Button icon={<PlusOutlined />}>选择文件</Button>
-            </Upload>
+            <MyUpload
+              onFileUpload={handleMediaUpload}
+              accept="image/*,video/*"
+              url="/upload"
+              onRemove={handleMediaRemove}
+            />
           </Form.Item>
         </Card>
       )}
@@ -253,9 +293,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
                 >
                   <List.Item.Meta
                     title={prize.name}
-                    description={`${
-                      prize.type === 'points' ? `${prize.value}积分` : prize.value
-                    } x${prize.quantity}`}
+                    description={`${prize.value}积分 x${prize.quantity}`}
                   />
                 </List.Item>
               )}
@@ -267,14 +305,15 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
       {currentStep === 2 && (
         <Card title="通知设置">
           <Form.Item
-            name="notifyContent"
             label="活动通知内容"
             rules={[{ required: true, message: '请输入活动通知内容' }]}
           >
-            <TextArea
-              rows={4}
-              placeholder="支持变量：{lotteryTitle}、{goodsList}、{joinCondition}、{openCondition}、{joinNum}"
-            />
+            <Form.Item name="notifyContent" noStyle>
+              <RichTextEditor
+                placeholder="请输入活动通知内容，支持富文本格式。支持变量：{lotteryTitle}、{goodsList}、{joinCondition}、{openCondition}、{joinNum}"
+                height={200}
+              />
+            </Form.Item>
           </Form.Item>
 
           <Form.Item name="notifyPin" valuePropName="checked">
@@ -284,14 +323,15 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           <Divider />
 
           <Form.Item
-            name="joinSuccessContent"
             label="参与成功通知内容"
             rules={[{ required: true, message: '请输入参与成功通知内容' }]}
           >
-            <TextArea
-              rows={4}
-              placeholder="支持变量：{lotteryTitle}、{goodsList}、{joinCondition}、{openCondition}、{joinNum}"
-            />
+            <Form.Item name="joinSuccessContent" noStyle>
+              <RichTextEditor
+                placeholder="请输入参与成功通知内容，支持富文本格式。支持变量：{lotteryTitle}、{goodsList}、{joinCondition}、{openCondition}、{joinNum}"
+                height={200}
+              />
+            </Form.Item>
           </Form.Item>
 
           <Form.Item name="joinSuccessPin" valuePropName="checked">
@@ -301,14 +341,15 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           <Divider />
 
           <Form.Item
-            name="drawResultContent"
             label="开奖通知内容"
             rules={[{ required: true, message: '请输入开奖通知内容' }]}
           >
-            <TextArea
-              rows={4}
-              placeholder="支持变量：{lotteryTitle}、{winnerList}、{joinNum}、{openTime}"
-            />
+            <Form.Item name="drawResultContent" noStyle>
+              <RichTextEditor
+                placeholder="请输入开奖通知内容，支持富文本格式。支持变量：{lotteryTitle}、{winnerList}、{joinNum}、{openTime}"
+                height={200}
+              />
+            </Form.Item>
           </Form.Item>
 
           <Form.Item name="drawResultPin" valuePropName="checked">
@@ -393,32 +434,11 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item
-            name="type"
-            label="奖品类型"
-            rules={[{ required: true, message: '请选择奖品类型' }]}
+            name="value"
+            label="积分数量"
+            rules={[{ required: true, message: '请输入积分数量' }]}
           >
-            <Select>
-              <Option value="points">积分</Option>
-              <Option value="custom">自定义</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currentValues) => prevValues?.type !== currentValues?.type}
-          >
-            {({ getFieldValue }) => {
-              const type = getFieldValue('type');
-              return (
-                <Form.Item
-                  name="value"
-                  label={type === 'points' ? '积分数量' : '奖品描述'}
-                  rules={[{ required: true, message: '请输入奖品值' }]}
-                >
-                  {type === 'points' ? <InputNumber min={1} /> : <Input />}
-                </Form.Item>
-              );
-            }}
+            <InputNumber min={0} />
           </Form.Item>
 
           <Form.Item
