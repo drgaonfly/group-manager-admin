@@ -21,6 +21,16 @@ import MyUpload from '@/components/MyUpload';
 
 const { Option } = Select;
 
+// 默认通知内容常量
+const DEFAULT_NOTIFY_CONTENT =
+  '🎟️ {lotteryTitle}\n\n🎫 参与条件:\n {joinCondition}\n\n🎁 奖品内容:\n{goodsList}\n\n⏰ 开奖方式:\n{openCondition}';
+
+const DEFAULT_JOIN_SUCCESS_CONTENT =
+  '🎉 参与成功！\n\n🎟️ 活动：{lotteryTitle}\n\n🎁 奖品：\n{goodsList}\n\n祝您好运！';
+
+const DEFAULT_DRAW_RESULT_CONTENT =
+  '🎊 开奖结果公布\n\n🎟️ 活动：{lotteryTitle}\n当前参与人数: {joinNum}人\n\n🏆 中奖名单：\n{winnerList}\n\n⏰ 开奖时间：{openTime}';
+
 interface LotteryPrize {
   name: string;
   value: number;
@@ -89,14 +99,11 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
         keywords: ['抽奖'],
         drawMethod: ['fullParticipants'],
         prizes: [],
-        notifyContent:
-          '🎟️ {lotteryTitle}\n\n🎫 参与条件:\n {joinCondition}\n\n🎁 奖品内容:\n{goodsList}\n\n⏰ 开奖方式:\n{openCondition}',
+        notifyContent: DEFAULT_NOTIFY_CONTENT,
         notifyButtons: [],
-        joinSuccessContent:
-          '🎉 参与成功！\n\n🎟️ 活动：{lotteryTitle}\n\n🎁 奖品：\n{goodsList}\n\n祝您好运！',
+        joinSuccessContent: DEFAULT_JOIN_SUCCESS_CONTENT,
         joinSuccessButtons: [],
-        drawResultContent:
-          '🎊 开奖结果公布\n\n🎟️ 活动：{lotteryTitle}\n当前参与人数: {joinNum}人\n\n🏆 中奖名单：\n{winnerList}\n\n⏰ 开奖时间：{openTime}',
+        drawResultContent: DEFAULT_DRAW_RESULT_CONTENT,
         drawResultButtons: [],
         notifyPin: false,
         joinSuccessPin: false,
