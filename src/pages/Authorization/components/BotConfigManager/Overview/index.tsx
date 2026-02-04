@@ -74,6 +74,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canCheckIn', defaultMessage: '群签到' }),
       permission: currentUser?.checkinRule,
     },
+    {
+      key: 'canLotteryRule',
+      label: intl.formatMessage({ id: 'canLotteryRule', defaultMessage: '群抽奖' }),
+      permission: currentUser?.lotteryRule,
+    },
   ];
 
   return (

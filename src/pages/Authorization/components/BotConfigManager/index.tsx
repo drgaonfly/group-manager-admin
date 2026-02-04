@@ -10,6 +10,7 @@ import GroupWelcomeTab from './GroupWelcome';
 import GroupVerifyTab from './GroupVerify';
 import SpeechStatisticsTab from './SpeechStatistics';
 import CheckinRuleTab from './CheckinRule';
+import LotteryRuleTab from './LotteryRule';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -44,6 +45,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canBidirectional: currentRow.canBidirectional,
         canReportMemberNameUpdated: currentRow.canReportMemberNameUpdated,
         canCheckIn: currentRow.canCheckIn,
+        canLotteryRule: currentRow.canLotteryRule,
       });
     }
   }, [open, currentRow]);
@@ -150,6 +152,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'checkinRule',
         label: intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' }),
         children: <CheckinRuleTab currentRow={currentRow} />,
+      });
+    }
+
+    // 群抽奖 Tab
+    if (botConfig.canLotteryRule && currentUser?.lotteryRule) {
+      items.push({
+        key: 'lotteryRule',
+        label: intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' }),
+        children: <LotteryRuleTab currentRow={currentRow} />,
       });
     }
 

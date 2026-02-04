@@ -98,6 +98,7 @@ const ServiceLink: React.FC = () => {
               reportGroupMemberNameUpdated: currentUser?.reportGroupMemberNameUpdated || false,
               replyRule: currentUser?.replyRule || false,
               checkinRule: currentUser?.checkinRule || false,
+              lotteryRule: currentUser?.lotteryRule || false,
               botCount: currentUser?.botCount || 0,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
@@ -209,6 +210,17 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'checkinRule.tooltip',
                 defaultMessage: '开启后，可以配置群签到规则，用户可通过关键词签到获得积分',
+              })}
+            />
+            <ProFormSwitch
+              name="lotteryRule"
+              label={intl.formatMessage({
+                id: 'lotteryRule',
+                defaultMessage: '群抽奖',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'lotteryRule.tooltip',
+                defaultMessage: '开启后，可以配置群抽奖规则',
               })}
             />
           </ProForm>
