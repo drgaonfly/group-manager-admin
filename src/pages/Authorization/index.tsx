@@ -350,12 +350,14 @@ const TableList: React.FC = () => {
           collapsed: false,
         }}
         toolBarRender={() => [
-          (access.canSuperAdmin ||
-            (access.canCreateBot &&
-              (currentUser?.availableBotCount ?? 0) > (currentUser?.botCount ?? 0))) && (
+          (access.canSuperAdmin || access.canCreateBot) && (
             <Button
               type="primary"
               key="primary"
+              disabled={
+                !access.canSuperAdmin &&
+                (currentUser?.availableBotCount ?? 0) <= (currentUser?.botCount ?? 0)
+              }
               onClick={() => {
                 handleModalOpen(true);
               }}
