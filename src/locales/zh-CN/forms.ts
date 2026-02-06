@@ -361,6 +361,7 @@ export default {
   function_config: '功能配置',
   authorizer: '授权人',
   checkinRule: '签到规则',
+  lotteryRule: '群抽奖',
   add_checkin_rule: '添加签到规则',
   edit_checkin_rule: '编辑签到规则',
   balance_cleared_at: '每月清零日期',
