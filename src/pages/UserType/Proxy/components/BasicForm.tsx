@@ -48,7 +48,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
     <ProForm
       form={form}
       initialValues={{
-        botCount: 0,
         availableBotCount: 1,
         ...(values || {}),
       }}
@@ -151,15 +150,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       </div>
 
       <ProForm.Group>
-        <ProFormDigit
-          label={intl.formatMessage({ id: 'botCount' })}
-          name="botCount"
-          width="md"
-          min={0}
-          fieldProps={{
-            precision: 0,
-          }}
-        />
         <ProFormDigit
           label={intl.formatMessage({ id: 'availableBotCount' })}
           name="availableBotCount"
