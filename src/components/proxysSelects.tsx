@@ -21,7 +21,7 @@ const ProxysSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
       }))}
       width="md"
       name="proxy"
-      label={intl.formatMessage({ id: 'pages.comment.user' })}
+      label={intl.formatMessage({ id: 'agent' })}
       showSearch
       fieldProps={{
         loading,
