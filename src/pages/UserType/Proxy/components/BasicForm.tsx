@@ -6,6 +6,7 @@ import {
   ProFormCheckbox,
   ProFormSwitch,
   ProFormDigit,
+  ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 import { Form, Input, Spin, Typography } from 'antd';
 import useQueryList from '@/hooks/useQueryList';
@@ -73,55 +74,86 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       loading={loading}
     >
       <ProForm.Group>
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'name' })}
-          name="name"
-        />
-        <ProFormText
-          rules={[{ required: true }]}
-          width="md"
-          label={intl.formatMessage({ id: 'email' })}
-          name="email"
-        />
-        <ProFormText
-          rules={[{ required: newRecord }]}
-          width="md"
-          label={intl.formatMessage({ id: 'password' })}
-          name="password"
-        />
+        <ProForm.Group>
+          <ProFormText
+            rules={[{ required: true }]}
+            width="md"
+            label={intl.formatMessage({ id: 'name' })}
+            name="name"
+          />
+          <ProFormText
+            rules={[{ required: true }]}
+            width="md"
+            label={intl.formatMessage({ id: 'email' })}
+            name="email"
+          />
+        </ProForm.Group>
 
-        {newRecord &&
-          (loading ? (
-            <Spin spinning={loading} />
-          ) : (
-            <ProFormCheckbox.Group
-              name="roles"
-              layout="horizontal"
-              label={intl.formatMessage({ id: 'role_choose' })}
-              options={
-                roles && Array.isArray(roles)
-                  ? roles
-                      .filter(
-                        (role) =>
-                          role !== null &&
-                          typeof role === 'object' &&
-                          role._id !== null &&
-                          role.name !== null,
-                      )
-                      .map((role: { name: string; _id: string }) => ({
-                        label: role.name || '',
-                        value: role._id,
-                      }))
-                  : []
-              }
-              fieldProps={{
-                disabled: true, // 确保在 loading 时禁用复选框
-              }}
-              initialValue={filteredRolesIds}
-            />
-          ))}
+        <ProForm.Group>
+          <ProFormText
+            rules={[{ required: newRecord }]}
+            width="md"
+            label={intl.formatMessage({ id: 'password' })}
+            name="password"
+          />
+
+          {newRecord &&
+            (loading ? (
+              <Spin spinning={loading} />
+            ) : (
+              <ProFormCheckbox.Group
+                name="roles"
+                layout="horizontal"
+                label={intl.formatMessage({ id: 'role_choose' })}
+                options={
+                  roles && Array.isArray(roles)
+                    ? roles
+                        .filter(
+                          (role) =>
+                            role !== null &&
+                            typeof role === 'object' &&
+                            role._id !== null &&
+                            role.name !== null,
+                        )
+                        .map((role: { name: string; _id: string }) => ({
+                          label: role.name || '',
+                          value: role._id,
+                        }))
+                    : []
+                }
+                fieldProps={{
+                  disabled: true, // 确保在 loading 时禁用复选框
+                }}
+                initialValue={filteredRolesIds}
+              />
+            ))}
+        </ProForm.Group>
+
+        <ProForm.Group>
+          <ProFormDigit
+            label={intl.formatMessage({ id: 'availableBotCount' })}
+            name="availableBotCount"
+            width="md"
+            min={0}
+            fieldProps={{
+              precision: 0,
+            }}
+          />
+
+          <ProFormDateTimePicker
+            label={intl.formatMessage({
+              id: 'function_disabledAt',
+              defaultMessage: '功能禁用时间',
+            })}
+            name="function_disabledAt"
+            width="md"
+            tooltip="设置后该代理用户的所有功能将在此时间后被禁用"
+            fieldProps={{
+              format: 'YYYY-MM-DD HH:mm:ss',
+              showTime: true,
+            }}
+          />
+        </ProForm.Group>
       </ProForm.Group>
 
       <div style={{ marginTop: 16, marginBottom: 16 }}>
@@ -148,18 +180,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           <ProFormSwitch label={intl.formatMessage({ id: 'lotteryRule' })} name="lotteryRule" />
         </ProForm.Group>
       </div>
-
-      <ProForm.Group>
-        <ProFormDigit
-          label={intl.formatMessage({ id: 'availableBotCount' })}
-          name="availableBotCount"
-          width="md"
-          min={0}
-          fieldProps={{
-            precision: 0,
-          }}
-        />
-      </ProForm.Group>
 
       {!newRecord && (
         <Form.Item name="_id" label={false}>
