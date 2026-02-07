@@ -10,7 +10,6 @@ import {
   // ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import ProxySelect from '@/components/proxysSelects';
 
 interface Props {
   newRecord?: boolean;
@@ -55,10 +54,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           disabled={!newRecord}
         />
 
-        <ProxySelect />
-      </ProForm.Group>
-
-      <ProForm.Group>
         <ProFormTextArea
           width="md"
           label={intl.formatMessage({ id: 'remark', defaultMessage: '备注' })}
