@@ -99,7 +99,6 @@ const ServiceLink: React.FC = () => {
               replyRule: currentUser?.replyRule || false,
               checkinRule: currentUser?.checkinRule || false,
               lotteryRule: currentUser?.lotteryRule || false,
-              botCount: currentUser?.botCount || 0,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
@@ -114,12 +113,6 @@ const ServiceLink: React.FC = () => {
                 id: 'availableBotCount',
                 defaultMessage: '可用机器人数量',
               })}
-              min={0}
-              fieldProps={{ precision: 0 }}
-            />
-            <ProFormDigit
-              name="botCount"
-              label={intl.formatMessage({ id: 'botCount', defaultMessage: '当前机器人数量' })}
               min={0}
               fieldProps={{ precision: 0 }}
             />
