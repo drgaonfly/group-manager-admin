@@ -100,6 +100,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
       title: intl.formatMessage({ id: 'contact' }),
       dataIndex: 'contactLink',
       key: 'contactLink',
+      width: 150,
       render: (link: string) =>
         link ? (
           <a href={link} target="_blank" rel="noreferrer">
@@ -113,6 +114,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
       title: '简介',
       dataIndex: 'brief',
       key: 'brief',
+      width: 300,
       render: (brief: string) => (
         <div style={{ whiteSpace: 'pre-wrap', fontSize: '12px' }}>{brief || '-'}</div>
       ),
@@ -121,6 +123,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
       title: '图片展示',
       dataIndex: 'images',
       key: 'images',
+      width: 200,
       render: (images: string[]) =>
         images && images.length > 0 ? (
           <Image.PreviewGroup>
@@ -144,6 +147,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
       title: '视频展示',
       dataIndex: 'videos',
       key: 'videos',
+      width: 150,
       render: (videos: string[]) =>
         videos && videos.length > 0 ? (
           <Space wrap size={[4, 4]}>
@@ -263,6 +267,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
         rowKey="_id"
         size="small"
         loading={loading}
+        scroll={{ x: 'max-content' }}
         locale={{ emptyText: <Empty description="暂无老师数据" /> }}
       />
       <Modal
