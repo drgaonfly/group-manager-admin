@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Tag, Space, Empty, Button, message, Popconfirm } from 'antd';
+import { Card, Table, Tag, Space, Empty, Button, message, Popconfirm, Image } from 'antd';
+import { PlayCircleOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import dayjs from 'dayjs';
 import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
@@ -103,6 +104,60 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
           <a href={link} target="_blank" rel="noreferrer">
             {link}
           </a>
+        ) : (
+          '-'
+        ),
+    },
+    {
+      title: '简介',
+      dataIndex: 'brief',
+      key: 'brief',
+      render: (brief: string) => (
+        <div style={{ whiteSpace: 'pre-wrap', fontSize: '12px' }}>{brief || '-'}</div>
+      ),
+    },
+    {
+      title: '图片展示',
+      dataIndex: 'images',
+      key: 'images',
+      render: (images: string[]) =>
+        images && images.length > 0 ? (
+          <Image.PreviewGroup>
+            <Space wrap size={[4, 4]}>
+              {images.map((img: string, index: number) => (
+                <Image
+                  key={index}
+                  src={img}
+                  width={40}
+                  height={40}
+                  style={{ objectFit: 'cover', borderRadius: '4px' }}
+                />
+              ))}
+            </Space>
+          </Image.PreviewGroup>
+        ) : (
+          '-'
+        ),
+    },
+    {
+      title: '视频展示',
+      dataIndex: 'videos',
+      key: 'videos',
+      render: (videos: string[]) =>
+        videos && videos.length > 0 ? (
+          <Space wrap size={[4, 4]}>
+            {videos.map((video: string, index: number) => (
+              <Button
+                key={index}
+                type="primary"
+                size="small"
+                icon={<PlayCircleOutlined />}
+                onClick={() => window.open(video, '_blank')}
+              >
+                视频 {index + 1}
+              </Button>
+            ))}
+          </Space>
         ) : (
           '-'
         ),
