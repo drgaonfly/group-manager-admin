@@ -270,4 +270,9 @@ export default {
   balance_cleared_at: 'Monthly Clear Date',
   enter_balance_cleared_at: 'Please enter monthly clear date',
   balance_cleared_at_error: 'Monthly clear date must be between 1-31',
+  teacher: 'Teacher',
+  contact: 'Contact',
+  isAvailable: 'Is Available',
+  reviews: 'Reviews',
+  options: 'Options',
 };

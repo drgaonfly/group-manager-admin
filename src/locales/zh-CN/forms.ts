@@ -367,4 +367,9 @@ export default {
   balance_cleared_at: '每月清零日期',
   enter_balance_cleared_at: '请输入每月清零日期',
   balance_cleared_at_error: '每月清零日期必须在1-31之间',
+  teacher: '老师',
+  contact: '联系方式',
+  isAvailable: '是否上课',
+  reviews: '评论数',
+  options: '操作',
 };

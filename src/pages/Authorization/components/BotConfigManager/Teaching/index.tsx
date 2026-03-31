@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Tag, Space, Empty, Button, message, Popconfirm, Image } from 'antd';
-import { PlayCircleOutlined } from '@ant-design/icons';
+import { Card, Table, Tag, Space, Empty, Button, message, Popconfirm, Image, Modal } from 'antd';
+import { PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import dayjs from 'dayjs';
 import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
@@ -13,6 +13,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const intl = useIntl();
   const [teachers, setTeachers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [previewVideo, setPreviewVideo] = useState<string | null>(null);
 
   const fetchTeachers = async () => {
     if (!currentRow?._id) return;
@@ -152,7 +153,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
                 type="primary"
                 size="small"
                 icon={<PlayCircleOutlined />}
-                onClick={() => window.open(video, '_blank')}
+                onClick={() => setPreviewVideo(video)}
               >
                 视频 {index + 1}
               </Button>
@@ -247,7 +248,15 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   ];
 
   return (
-    <Card title="认证老师管理" size="small">
+    <Card
+      title="认证老师管理"
+      size="small"
+      extra={
+        <Button type="primary" icon={<ReloadOutlined />} onClick={fetchTeachers} loading={loading}>
+          刷新
+        </Button>
+      }
+    >
       <Table
         dataSource={teachers}
         columns={columns}
@@ -256,6 +265,21 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
         loading={loading}
         locale={{ emptyText: <Empty description="暂无老师数据" /> }}
       />
+      <Modal
+        title="视频预览"
+        open={!!previewVideo}
+        onCancel={() => setPreviewVideo(null)}
+        footer={null}
+        destroyOnClose
+        width={800}
+        centered
+      >
+        {previewVideo && (
+          <video src={previewVideo} controls autoPlay style={{ width: '100%', maxHeight: '70vh' }}>
+            您的浏览器不支持 video 标签。
+          </video>
+        )}
+      </Modal>
     </Card>
   );
 };
