@@ -194,6 +194,14 @@ const TableList: React.FC = () => {
             enabled: record.reportGroupMemberNameUpdated,
           },
           {
+            name: intl.formatMessage({ id: 'lotteryRule' }),
+            enabled: record.lotteryRule,
+          },
+          {
+            name: intl.formatMessage({ id: 'teaching' }),
+            enabled: record.teaching,
+          },
+          {
             name: intl.formatMessage({ id: 'replyRule' }),
             enabled: record.replyRule,
           },

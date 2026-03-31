@@ -44,6 +44,7 @@ declare namespace API {
     replyRule?: boolean;
     checkinRule?: boolean;
     lotteryRule?: boolean;
+    teaching?: boolean;
   };
 
   // Example type definition

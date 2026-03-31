@@ -79,6 +79,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canLotteryRule', defaultMessage: '群抽奖' }),
       permission: currentUser?.lotteryRule,
     },
+    {
+      key: 'canTeaching',
+      label: intl.formatMessage({ id: 'canTeaching', defaultMessage: '教学模块' }),
+      permission: currentUser?.teaching,
+    },
   ];
 
   return (

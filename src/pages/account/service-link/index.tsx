@@ -32,6 +32,8 @@ const ServiceLink: React.FC = () => {
     reportGroupMemberNameUpdated: boolean;
     replyRule: boolean;
     checkinRule: boolean;
+    lotteryRule: boolean;
+    teaching: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -99,6 +101,7 @@ const ServiceLink: React.FC = () => {
               replyRule: currentUser?.replyRule || false,
               checkinRule: currentUser?.checkinRule || false,
               lotteryRule: currentUser?.lotteryRule || false,
+              teaching: currentUser?.teaching || false,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
@@ -213,12 +216,29 @@ const ServiceLink: React.FC = () => {
               })}
               tooltip={intl.formatMessage({
                 id: 'lotteryRule.tooltip',
-                defaultMessage: '开启后，可以配置群抽奖规则',
+                defaultMessage: '开启后，可以创建和管理群组抽奖活动',
+              })}
+            />
+            <ProFormSwitch
+              name="teaching"
+              label={intl.formatMessage({
+                id: 'teaching',
+                defaultMessage: '教学模块',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'teaching.tooltip',
+                defaultMessage:
+                  '开启后，代理可以为其下的机器人开启教学模块功能（注册老师、写车评等）',
               })}
             />
           </ProForm>
         ) : (
-          <Descriptions column={1} bordered>
+          <Descriptions
+            bordered
+            column={1}
+            labelStyle={{ width: '200px' }}
+            contentStyle={{ background: '#fff' }}
+          >
             <Descriptions.Item
               label={intl.formatMessage({
                 id: 'availableBotCount',
@@ -373,7 +393,23 @@ const ServiceLink: React.FC = () => {
               <Text type="secondary" style={{ marginLeft: 16 }}>
                 {intl.formatMessage({
                   id: 'lotteryRule.tooltip',
-                  defaultMessage: '开启后，可以配置群抽奖规则，用户可通过关键词抽奖获得奖励',
+                  defaultMessage: '开启后，可以创建和管理群组抽奖活动',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'teaching',
+                defaultMessage: '教学模块',
+              })}
+            >
+              {renderStatusTag(currentUser?.teaching || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'teaching.tooltip',
+                  defaultMessage:
+                    '开启后，代理可以为其下的机器人开启教学模块功能（注册老师、写车评等）',
                 })}
               </Text>
             </Descriptions.Item>
