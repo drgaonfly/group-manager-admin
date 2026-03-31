@@ -244,8 +244,13 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
         notifyButtons: [],
         joinSuccessButtons: [],
         drawResultButtons: [],
+        bot: currentRow?._id,
       }}
     >
+      {/* 隐藏的 bot 字段 */}
+      <Form.Item name="bot" hidden>
+        <Input type="hidden" />
+      </Form.Item>
       {/* 步骤导航 */}
       <div style={{ marginBottom: 24 }}>
         <Space>

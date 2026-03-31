@@ -14,7 +14,7 @@ const ProxysSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
 
   return (
     <ProFormSelect
-      rules={[{ required: true }]}
+      rules={[{ required: false }]}
       options={proxys.map((proxy: any) => ({
         label: proxy.name,
         value: proxy._id,
