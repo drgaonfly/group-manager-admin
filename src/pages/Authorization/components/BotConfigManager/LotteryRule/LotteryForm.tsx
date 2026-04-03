@@ -22,20 +22,22 @@ import MyUpload from '@/components/MyUpload';
 const { Option } = Select;
 
 // 抽奖通知变量
-const LOTTERY_VARIABLES: { key: string; label: string }[] = [
+const LOTTERY_VARIABLES: { key: string; label: string; desc?: string }[] = [
   { key: '{lotteryTitle}', label: '抽奖标题' },
   { key: '{goodsList}', label: '奖品内容' },
   { key: '{joinCondition}', label: '参与条件' },
   { key: '{openCondition}', label: '开奖条件' },
   { key: '{joinNum}', label: '已参与人数' },
+  { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
 ];
 
 // 开奖通知变量
-const DRAW_RESULT_VARIABLES: { key: string; label: string }[] = [
+const DRAW_RESULT_VARIABLES: { key: string; label: string; desc?: string }[] = [
   { key: '{lotteryTitle}', label: '抽奖标题' },
   { key: '{winnerList}', label: '中奖名单' },
   { key: '{joinNum}', label: '参与人数' },
   { key: '{openTime}', label: '开奖时间' },
+  { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
 ];
 
 // 默认通知内容常量 (使用HTML格式的换行)

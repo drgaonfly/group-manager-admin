@@ -197,7 +197,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           onChange={setContent}
           placeholder="请输入欢迎消息..."
           height={150}
-          variables="withUser"
+          variables="all"
         />
       </Form.Item>
 
@@ -210,7 +210,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           onChange={setCaption}
           placeholder="请输入媒体说明..."
           height={100}
-          variables="withUser"
+          variables="all"
         />
       </Form.Item>
 

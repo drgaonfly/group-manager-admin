@@ -204,12 +204,9 @@ const CheckinRuleForm: React.FC<Props> = ({
         <RichTextEditor
           value={successContent}
           onChange={setSuccessContent}
-          placeholder={intl.formatMessage({
-            id: 'success_message_placeholder',
-            defaultMessage: '请输入签到成功后的提示内容，支持富文本格式和变量...',
-          })}
+          placeholder="请输入签到成功后的提示内容，支持富文本格式和变量..."
           height={150}
-          variables="withUser"
+          variables="all"
         />
       </Form.Item>
     </ModalForm>

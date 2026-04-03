@@ -194,7 +194,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           onChange={setContent}
           placeholder="请输入消息内容..."
           height={200}
-          variables="withUser"
+          variables="all"
         />
       </Form.Item>
 
