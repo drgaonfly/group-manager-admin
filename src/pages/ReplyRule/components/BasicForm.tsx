@@ -42,6 +42,11 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
     { key: '{nickname}', label: '用户昵称', desc: '用户的昵称/名字' },
     { key: '{userName}', label: '用户名', desc: '用户的 @username' },
     { key: '{userBalance}', label: '用户积分', desc: '用户的积分余额' },
+    {
+      key: '{userBalanceRanking}',
+      label: '用户积分排名',
+      desc: '显示当前用户在本群的积分排名数字',
+    },
     { key: '{groupTitle}', label: '群名称', desc: '当前群组的名称' },
     { key: '{currentTime}', label: '当前时间', desc: '消息发送时的时间' },
     { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
