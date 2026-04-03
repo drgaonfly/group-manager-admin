@@ -151,3 +151,11 @@ export async function removeItem(url: string, options?: { [key: string]: any }) 
     },
   });
 }
+
+/** 超级管理员：将源机器人功能配置复制到目标机器人 POST /bots/copy-feature-config */
+export async function copyBotFeatureConfig(body: { sourceBotId: string; targetBotId: string }) {
+  return request<{ success: boolean; data?: any; message?: string }>('/bots/copy-feature-config', {
+    method: 'POST',
+    data: body,
+  });
+}
