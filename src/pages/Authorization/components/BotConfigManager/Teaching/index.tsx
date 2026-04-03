@@ -1,9 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Tag, Space, Empty, Button, message, Popconfirm, Image, Modal } from 'antd';
+import {
+  Card,
+  Table,
+  Tag,
+  Space,
+  Empty,
+  Button,
+  message,
+  Popconfirm,
+  Image,
+  Modal,
+  Tabs,
+} from 'antd';
 import { PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import dayjs from 'dayjs';
 import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import EvaluationForm from './evaluationForm';
 
 interface TeachingTabProps {
   currentRow: any;
@@ -12,8 +25,13 @@ interface TeachingTabProps {
 const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const intl = useIntl();
   const [teachers, setTeachers] = useState<any[]>([]);
+  const [evaluations, setEvaluations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [previewVideo, setPreviewVideo] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('teachers');
+
+  const [auditModalVisible, setAuditModalVisible] = useState(false);
+  const [currentEval, setCurrentEval] = useState<any>(null);
 
   const fetchTeachers = async () => {
     if (!currentRow?._id) return;
@@ -30,6 +48,30 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
       setLoading(false);
     }
   };
+
+  const fetchEvaluations = async () => {
+    if (!currentRow?._id) return;
+    try {
+      setLoading(true);
+      const res = await queryList('/evaluations', { botId: currentRow._id });
+      if (res?.success) {
+        setEvaluations(res.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch evaluations:', error);
+      message.error('获取评价列表失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'teachers') {
+      fetchTeachers();
+    } else {
+      fetchEvaluations();
+    }
+  }, [currentRow?._id, activeTab]);
 
   const handleApprove = async (id: string) => {
     try {
@@ -63,6 +105,38 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     }
   };
 
+  const handleEvalApprove = async (id: string, remark: string) => {
+    try {
+      setLoading(true);
+      const res = await updateItem(`/evaluations/${id}/approve`, { remark });
+      if ((res as any)?.success || (res as any)?.data) {
+        message.success('评价已通过审核');
+        setAuditModalVisible(false);
+        fetchEvaluations();
+      }
+    } catch (error) {
+      message.error('操作失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEvalReject = async (id: string, remark: string) => {
+    try {
+      setLoading(true);
+      const res = await updateItem(`/evaluations/${id}/reject`, { remark });
+      if ((res as any)?.success || (res as any)?.data) {
+        message.success('评价已拒绝');
+        setAuditModalVisible(false);
+        fetchEvaluations();
+      }
+    } catch (error) {
+      message.error('操作失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     try {
       setLoading(true);
@@ -78,10 +152,6 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchTeachers();
-  }, [currentRow?._id]);
 
   const columns = [
     {
@@ -251,25 +321,124 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     },
   ];
 
+  const evalColumns = [
+    {
+      title: '评价人',
+      dataIndex: 'reviewer',
+      key: 'reviewer',
+      render: (u: any) =>
+        u?.userName
+          ? `@${u.userName}`
+          : u
+          ? `${u.firstName || ''} ${u.lastName || ''}`.trim()
+          : '未知',
+    },
+    {
+      title: '被评老师',
+      dataIndex: 'teacher',
+      key: 'teacher',
+      render: (t: any) => t?.display_name,
+    },
+    {
+      title: '评分 (人/颜/身/服/态/环)',
+      key: 'ratings',
+      render: (_: any, record: any) => (
+        <span style={{ fontSize: '12px' }}>
+          {record.avatar_rating * 2}/{record.appearance_rating * 2}/{record.body_rating * 2}/
+          {record.service_rating * 2}/{record.attitude_rating * 2}/{record.circumstance_rating * 2}
+        </span>
+      ),
+    },
+    {
+      title: '过程描述',
+      dataIndex: 'process_desc',
+      key: 'process_desc',
+      ellipsis: true,
+      width: 200,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string) => {
+        let color = 'default';
+        let text = status;
+        if (status === 'approved') {
+          color = 'success';
+          text = '已通过';
+        } else if (status === 'rejected') {
+          color = 'error';
+          text = '已拒绝';
+        } else if (status === 'pending') {
+          color = 'processing';
+          text = '待审核';
+        }
+        return <Tag color={color}>{text}</Tag>;
+      },
+    },
+    {
+      title: '提交时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_: any, record: any) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => {
+            setCurrentEval(record);
+            setAuditModalVisible(true);
+          }}
+        >
+          {record.status === 'pending' ? '审核' : '详情'}
+        </Button>
+      ),
+    },
+  ];
+
   return (
     <Card
-      title="认证老师管理"
       size="small"
       extra={
-        <Button type="primary" icon={<ReloadOutlined />} onClick={fetchTeachers} loading={loading}>
+        <Button
+          type="primary"
+          icon={<ReloadOutlined />}
+          onClick={activeTab === 'teachers' ? fetchTeachers : fetchEvaluations}
+          loading={loading}
+        >
           刷新
         </Button>
       }
     >
-      <Table
-        dataSource={teachers}
-        columns={columns}
-        rowKey="_id"
-        size="small"
-        loading={loading}
-        scroll={{ x: 'max-content' }}
-        locale={{ emptyText: <Empty description="暂无老师数据" /> }}
-      />
+      <Tabs activeKey={activeTab} onChange={setActiveTab}>
+        <Tabs.TabPane tab="认证老师" key="teachers">
+          <Table
+            dataSource={teachers}
+            columns={columns}
+            rowKey="_id"
+            size="small"
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            locale={{ emptyText: <Empty description="暂无老师数据" /> }}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="评价管理" key="evaluations">
+          <Table
+            dataSource={evaluations}
+            columns={evalColumns}
+            rowKey="_id"
+            size="small"
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            locale={{ emptyText: <Empty description="暂无评价数据" /> }}
+          />
+        </Tabs.TabPane>
+      </Tabs>
+
       <Modal
         title="视频预览"
         open={!!previewVideo}
@@ -285,6 +454,15 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
           </video>
         )}
       </Modal>
+
+      <EvaluationForm
+        open={auditModalVisible}
+        onCancel={() => setAuditModalVisible(false)}
+        evaluation={currentEval}
+        onApprove={handleEvalApprove}
+        onReject={handleEvalReject}
+        loading={loading}
+      />
     </Card>
   );
 };
