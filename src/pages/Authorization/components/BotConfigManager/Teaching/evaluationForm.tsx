@@ -1,5 +1,88 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Rate, Descriptions, Image, Space, Tag, Button } from 'antd';
+import dayjs from 'dayjs';
+
+export const getEvaluationColumns = (
+  setCurrentEval: (record: any) => void,
+  setAuditModalVisible: (visible: boolean) => void,
+) => [
+  {
+    title: '评价人',
+    dataIndex: 'reviewer',
+    key: 'reviewer',
+    render: (u: any) =>
+      u?.userName
+        ? `@${u.userName}`
+        : u
+        ? `${u.firstName || ''} ${u.lastName || ''}`.trim()
+        : '未知',
+  },
+  {
+    title: '被评老师',
+    dataIndex: 'teacher',
+    key: 'teacher',
+    render: (t: any) => t?.display_name,
+  },
+  {
+    title: '评分 (人/颜/身/服/态/环)',
+    key: 'ratings',
+    render: (_: any, record: any) => (
+      <span style={{ fontSize: '12px' }}>
+        {record.avatar_rating * 2}/{record.appearance_rating * 2}/{record.body_rating * 2}/
+        {record.service_rating * 2}/{record.attitude_rating * 2}/{record.circumstance_rating * 2}
+      </span>
+    ),
+  },
+  {
+    title: '过程描述',
+    dataIndex: 'process_desc',
+    key: 'process_desc',
+    ellipsis: true,
+    width: 200,
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    key: 'status',
+    render: (status: string) => {
+      let color = 'default';
+      let text = status;
+      if (status === 'approved') {
+        color = 'success';
+        text = '已通过';
+      } else if (status === 'rejected') {
+        color = 'error';
+        text = '已拒绝';
+      } else if (status === 'pending') {
+        color = 'processing';
+        text = '待审核';
+      }
+      return <Tag color={color}>{text}</Tag>;
+    },
+  },
+  {
+    title: '提交时间',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+    render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (_: any, record: any) => (
+      <Button
+        type="link"
+        size="small"
+        onClick={() => {
+          setCurrentEval(record);
+          setAuditModalVisible(true);
+        }}
+      >
+        {record.status === 'pending' ? '审核' : '详情'}
+      </Button>
+    ),
+  },
+];
 
 interface EvaluationFormProps {
   open: boolean;

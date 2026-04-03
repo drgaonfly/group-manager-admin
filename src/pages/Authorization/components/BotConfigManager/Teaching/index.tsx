@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  Table,
-  Tag,
-  Space,
-  Empty,
-  Button,
-  message,
-  Popconfirm,
-  Image,
-  Modal,
-  Tabs,
-} from 'antd';
-import { PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Card, Table, Empty, Button, message, Modal, Tabs } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import dayjs from 'dayjs';
 import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
-import EvaluationForm from './evaluationForm';
+import EvaluationForm, { getEvaluationColumns } from './evaluationForm';
+import TeacherForm, { getTeacherColumns } from './teacherForm';
 
 interface TeachingTabProps {
   currentRow: any;
@@ -31,7 +19,9 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const [activeTab, setActiveTab] = useState('teachers');
 
   const [auditModalVisible, setAuditModalVisible] = useState(false);
+  const [teacherModalVisible, setTeacherModalVisible] = useState(false);
   const [currentEval, setCurrentEval] = useState<any>(null);
+  const [currentTeacher, setCurrentTeacher] = useState<any>(null);
 
   const fetchTeachers = async () => {
     if (!currentRow?._id) return;
@@ -137,6 +127,23 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     }
   };
 
+  const handleTeacherSubmit = async (values: any) => {
+    try {
+      setLoading(true);
+      const res = await updateItem(`/teachers/${currentTeacher._id}`, values);
+      if ((res as any)?.success || (res as any)?.data) {
+        message.success('已更新老师信息');
+        setTeacherModalVisible(false);
+        fetchTeachers();
+      }
+    } catch (error) {
+      console.error('Failed to update teacher:', error);
+      message.error('操作失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     try {
       setLoading(true);
@@ -153,252 +160,17 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     }
   };
 
-  const columns = [
-    {
-      title: intl.formatMessage({ id: 'teacher' }),
-      dataIndex: 'botUser',
-      key: 'botUser',
-      render: (botUser: any) => {
-        if (!botUser) return '未知';
-        const name = botUser.userName
-          ? `@${botUser.userName}`
-          : `${botUser.firstName || ''} ${botUser.lastName || ''}`.trim();
-        return name || '未知用户';
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'contact' }),
-      dataIndex: 'contactLink',
-      key: 'contactLink',
-      width: 150,
-      render: (link: string) =>
-        link ? (
-          <a href={link} target="_blank" rel="noreferrer">
-            {link}
-          </a>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: '简介',
-      dataIndex: 'brief',
-      key: 'brief',
-      width: 300,
-      render: (brief: string) => (
-        <div style={{ whiteSpace: 'pre-wrap', fontSize: '12px' }}>{brief || '-'}</div>
-      ),
-    },
-    {
-      title: '图片展示',
-      dataIndex: 'images',
-      key: 'images',
-      width: 200,
-      render: (images: string[]) =>
-        images && images.length > 0 ? (
-          <Image.PreviewGroup>
-            <Space wrap size={[4, 4]}>
-              {images.map((img: string, index: number) => (
-                <Image
-                  key={index}
-                  src={img}
-                  width={40}
-                  height={40}
-                  style={{ objectFit: 'cover', borderRadius: '4px' }}
-                />
-              ))}
-            </Space>
-          </Image.PreviewGroup>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: '视频展示',
-      dataIndex: 'videos',
-      key: 'videos',
-      width: 150,
-      render: (videos: string[]) =>
-        videos && videos.length > 0 ? (
-          <Space wrap size={[4, 4]}>
-            {videos.map((video: string, index: number) => (
-              <Button
-                key={index}
-                type="primary"
-                size="small"
-                icon={<PlayCircleOutlined />}
-                onClick={() => setPreviewVideo(video)}
-              >
-                视频 {index + 1}
-              </Button>
-            ))}
-          </Space>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: intl.formatMessage({ id: 'isAvailable' }),
-      dataIndex: 'isAvailable',
-      key: 'isAvailable',
-      render: (available: boolean) => (
-        <Tag color={available ? 'green' : 'red'}>{available ? '可预约' : '忙碌'}</Tag>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'reviews' }),
-      dataIndex: 'reviews',
-      key: 'reviewsCount',
-      render: (reviews: any[]) => reviews?.length || 0,
-    },
-    {
-      title: intl.formatMessage({ id: 'createdAt' }),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date: string) => (date ? dayjs(date).format('YYYY-MM-DD HH:mm') : '-'),
-    },
-    {
-      title: intl.formatMessage({ id: 'status' }),
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => {
-        let color = 'default';
-        let text = status;
-        if (status === 'approved') {
-          color = 'success';
-          text = '已通过';
-        } else if (status === 'rejected') {
-          color = 'error';
-          text = '已拒绝';
-        } else if (status === 'pending') {
-          color = 'processing';
-          text = '待审核';
-        }
-        return <Tag color={color}>{text}</Tag>;
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'options' }),
-      key: 'action',
-      render: (_: any, record: any) => (
-        <Space size="middle">
-          {record.status === 'pending' && (
-            <>
-              <Button type="link" size="small" onClick={() => handleApprove(record._id)}>
-                通过
-              </Button>
-              <Button type="link" danger size="small" onClick={() => handleReject(record._id)}>
-                拒绝
-              </Button>
-            </>
-          )}
-          {record.status === 'approved' && (
-            <Popconfirm
-              title="确定要取消该老师的认证吗？"
-              onConfirm={() => handleDelete(record._id)}
-              okText="确定"
-              cancelText="取消"
-            >
-              <Button type="link" danger size="small">
-                取消认证
-              </Button>
-            </Popconfirm>
-          )}
-          {record.status === 'rejected' && (
-            <Popconfirm
-              title="确定要删除此条拒绝记录吗？"
-              onConfirm={() => handleDelete(record._id)}
-              okText="确定"
-              cancelText="取消"
-            >
-              <Button type="link" danger size="small">
-                删除记录
-              </Button>
-            </Popconfirm>
-          )}
-        </Space>
-      ),
-    },
-  ];
+  const columns = getTeacherColumns(
+    intl,
+    setPreviewVideo,
+    handleApprove,
+    handleReject,
+    handleDelete,
+    setCurrentTeacher,
+    setTeacherModalVisible,
+  );
 
-  const evalColumns = [
-    {
-      title: '评价人',
-      dataIndex: 'reviewer',
-      key: 'reviewer',
-      render: (u: any) =>
-        u?.userName
-          ? `@${u.userName}`
-          : u
-          ? `${u.firstName || ''} ${u.lastName || ''}`.trim()
-          : '未知',
-    },
-    {
-      title: '被评老师',
-      dataIndex: 'teacher',
-      key: 'teacher',
-      render: (t: any) => t?.display_name,
-    },
-    {
-      title: '评分 (人/颜/身/服/态/环)',
-      key: 'ratings',
-      render: (_: any, record: any) => (
-        <span style={{ fontSize: '12px' }}>
-          {record.avatar_rating * 2}/{record.appearance_rating * 2}/{record.body_rating * 2}/
-          {record.service_rating * 2}/{record.attitude_rating * 2}/{record.circumstance_rating * 2}
-        </span>
-      ),
-    },
-    {
-      title: '过程描述',
-      dataIndex: 'process_desc',
-      key: 'process_desc',
-      ellipsis: true,
-      width: 200,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => {
-        let color = 'default';
-        let text = status;
-        if (status === 'approved') {
-          color = 'success';
-          text = '已通过';
-        } else if (status === 'rejected') {
-          color = 'error';
-          text = '已拒绝';
-        } else if (status === 'pending') {
-          color = 'processing';
-          text = '待审核';
-        }
-        return <Tag color={color}>{text}</Tag>;
-      },
-    },
-    {
-      title: '提交时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render: (_: any, record: any) => (
-        <Button
-          type="link"
-          size="small"
-          onClick={() => {
-            setCurrentEval(record);
-            setAuditModalVisible(true);
-          }}
-        >
-          {record.status === 'pending' ? '审核' : '详情'}
-        </Button>
-      ),
-    },
-  ];
+  const evalColumns = getEvaluationColumns(setCurrentEval, setAuditModalVisible);
 
   return (
     <Card
@@ -461,6 +233,14 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
         evaluation={currentEval}
         onApprove={handleEvalApprove}
         onReject={handleEvalReject}
+        loading={loading}
+      />
+
+      <TeacherForm
+        open={teacherModalVisible}
+        onCancel={() => setTeacherModalVisible(false)}
+        onSubmit={handleTeacherSubmit}
+        initialValues={currentTeacher}
         loading={loading}
       />
     </Card>
