@@ -12,6 +12,7 @@ const ALL_VARIABLES = [
   { key: '{userBalance}', label: '用户积分', desc: '用户的积分余额' },
   { key: '{groupTitle}', label: '群名称', desc: '当前群组的名称' },
   { key: '{currentTime}', label: '当前时间', desc: '消息发送时的时间' },
+  { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
 ];
 
 // 变量类型
@@ -22,7 +23,8 @@ export type VariableType =
   | 'userName'
   | 'userBalance'
   | 'groupTitle'
-  | 'currentTime';
+  | 'currentTime'
+  | 'currentBot';
 
 // 预设变量组合
 export const VARIABLE_PRESETS = {
@@ -35,9 +37,10 @@ export const VARIABLE_PRESETS = {
     'userBalance',
     'groupTitle',
     'currentTime',
+    'currentBot',
   ] as VariableType[],
   // 仅群组和时间（用于轮播广告等没有用户上下文的场景）
-  groupOnly: ['groupTitle', 'currentTime'] as VariableType[],
+  groupOnly: ['groupTitle', 'currentTime', 'currentBot'] as VariableType[],
   // 用户相关（用于关键词回复、群欢迎等有用户上下文的场景）
   withUser: [
     'member',
@@ -47,6 +50,7 @@ export const VARIABLE_PRESETS = {
     'userBalance',
     'groupTitle',
     'currentTime',
+    'currentBot',
   ] as VariableType[],
   // 抽奖相关（用于抽奖通知内容编辑）
   lottery: [
