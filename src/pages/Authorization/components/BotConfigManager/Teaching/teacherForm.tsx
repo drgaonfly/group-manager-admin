@@ -253,6 +253,9 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
         >
           <Input placeholder="例如 https://t.me/xxx" />
         </Form.Item>
+        <Form.Item name="address" label="地址" rules={[{ required: true, message: '请输入地址' }]}>
+          <Input placeholder="请输入补习地点" />
+        </Form.Item>
         <Form.Item name="brief" label="简介">
           <Input.TextArea rows={4} placeholder="请输入老师简介" />
         </Form.Item>
