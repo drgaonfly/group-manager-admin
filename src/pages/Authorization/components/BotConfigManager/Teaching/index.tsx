@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Empty, Button, message, Modal, Tabs } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Card, Table, Empty, Button, message, Modal, Tabs, Space } from 'antd';
+import { ReloadOutlined, PlusOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import { queryList, removeItem, updateItem, addItem } from '@/services/ant-design-pro/api';
 import EvaluationForm, { getEvaluationColumns } from './evaluationForm';
 import TeacherForm, { getTeacherColumns } from './teacherForm';
 
@@ -130,14 +130,20 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const handleTeacherSubmit = async (values: any) => {
     try {
       setLoading(true);
-      const res = await updateItem(`/teachers/${currentTeacher._id}`, values);
+      let res;
+      if (currentTeacher?._id) {
+        res = await updateItem(`/teachers/${currentTeacher._id}`, values);
+      } else {
+        res = await addItem('/teachers', { ...values, bot: currentRow._id });
+      }
+
       if ((res as any)?.success || (res as any)?.data) {
-        message.success('已更新老师信息');
+        message.success(currentTeacher?._id ? '已更新老师信息' : '已添加老师');
         setTeacherModalVisible(false);
         fetchTeachers();
       }
     } catch (error) {
-      console.error('Failed to update teacher:', error);
+      console.error('Failed to submit teacher:', error);
       message.error('操作失败');
     } finally {
       setLoading(false);
@@ -176,14 +182,27 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     <Card
       size="small"
       extra={
-        <Button
-          type="primary"
-          icon={<ReloadOutlined />}
-          onClick={activeTab === 'teachers' ? fetchTeachers : fetchEvaluations}
-          loading={loading}
-        >
-          刷新
-        </Button>
+        <Space>
+          {activeTab === 'teachers' && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setCurrentTeacher(null);
+                setTeacherModalVisible(true);
+              }}
+            >
+              添加老师
+            </Button>
+          )}
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={activeTab === 'teachers' ? fetchTeachers : fetchEvaluations}
+            loading={loading}
+          >
+            刷新
+          </Button>
+        </Space>
       }
     >
       <Tabs activeKey={activeTab} onChange={setActiveTab}>

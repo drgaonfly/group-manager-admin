@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Switch, Button, Tag, Space, Image, Popconfirm } from 'antd';
 import { PlayCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import MyUpload from '@/components/Upload';
 
 export const getTeacherColumns = (
   intl: any,
@@ -240,6 +241,14 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
     >
       <Form form={form} layout="vertical" initialValues={{ isAvailable: true }}>
         <Form.Item
+          name="username"
+          label="用户名"
+          rules={[{ required: true, message: '请输入用户用户名' }]}
+          tooltip="直接输入 @username，系统会自动关联或创建 BotUser"
+        >
+          <Input placeholder="例如 @username" />
+        </Form.Item>
+        <Form.Item
           name="display_name"
           label="花名"
           rules={[{ required: true, message: '请输入花名' }]}
@@ -261,6 +270,38 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
         </Form.Item>
         <Form.Item name="isAvailable" label="是否可用" valuePropName="checked">
           <Switch />
+        </Form.Item>
+        <Form.Item label="个人照片" name="images">
+          <MyUpload
+            multiple
+            accept="image/*"
+            onFileUpload={(url) => {
+              const currentImages = form.getFieldValue('images') || [];
+              form.setFieldsValue({ images: [...currentImages, url] });
+            }}
+            onRemove={(file: any) => {
+              const url = file.url || file.response?.data?.file;
+              const currentImages = form.getFieldValue('images') || [];
+              form.setFieldsValue({ images: currentImages.filter((i: string) => i !== url) });
+              return true;
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="展示视频" name="videos">
+          <MyUpload
+            multiple
+            accept="video/*"
+            onFileUpload={(url) => {
+              const currentVideos = form.getFieldValue('videos') || [];
+              form.setFieldsValue({ videos: [...currentVideos, url] });
+            }}
+            onRemove={(file: any) => {
+              const url = file.url || file.response?.data?.file;
+              const currentVideos = form.getFieldValue('videos') || [];
+              form.setFieldsValue({ videos: currentVideos.filter((i: string) => i !== url) });
+              return true;
+            }}
+          />
         </Form.Item>
       </Form>
     </Modal>
