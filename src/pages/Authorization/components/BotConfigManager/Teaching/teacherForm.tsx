@@ -19,6 +19,12 @@ export const getTeacherColumns = (
     render: (display_name: string) => display_name || '-',
   },
   {
+    title: intl.formatMessage({ id: 'address' }),
+    dataIndex: 'address',
+    key: 'address',
+    render: (address: string) => address || '-',
+  },
+  {
     title: intl.formatMessage({ id: 'contact' }),
     dataIndex: 'contactLink',
     key: 'contactLink',
