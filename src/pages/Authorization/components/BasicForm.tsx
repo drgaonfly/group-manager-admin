@@ -53,7 +53,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'token', defaultMessage: 'Bot Token' })}
           name="token"
-          disabled={!newRecord}
+          disabled={!newRecord && !access.canSuperAdmin}
         />
 
         {access.canSuperAdmin && <ProxySelect />}
