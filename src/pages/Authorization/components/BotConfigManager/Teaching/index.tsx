@@ -19,6 +19,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const [activeTab, setActiveTab] = useState('teachers');
 
   const [auditModalVisible, setAuditModalVisible] = useState(false);
+  const [addEvalModalVisible, setAddEvalModalVisible] = useState(false);
   const [teacherModalVisible, setTeacherModalVisible] = useState(false);
   const [currentEval, setCurrentEval] = useState<any>(null);
   const [currentTeacher, setCurrentTeacher] = useState<any>(null);
@@ -127,6 +128,38 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     }
   };
 
+  const handleEvalDelete = async (id: string) => {
+    try {
+      setLoading(true);
+      const res = await removeItem(`/evaluations/${id}`);
+      if ((res as any)?.success || (res as any)?.data) {
+        message.success('评价已删除');
+        fetchEvaluations();
+      }
+    } catch (error) {
+      message.error('操作失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEvalSubmit = async (values: any) => {
+    try {
+      setLoading(true);
+      const res = await addItem('/evaluations', { ...values, botId: currentRow._id });
+      if ((res as any)?.success || (res as any)?.data) {
+        message.success('已添加评价');
+        setAddEvalModalVisible(false);
+        fetchEvaluations();
+      }
+    } catch (error) {
+      console.error('Failed to submit evaluation:', error);
+      message.error('操作失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleTeacherSubmit = async (values: any) => {
     try {
       setLoading(true);
@@ -176,7 +209,7 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     setTeacherModalVisible,
   );
 
-  const evalColumns = getEvaluationColumns(setCurrentEval, setAuditModalVisible);
+  const evalColumns = getEvaluationColumns(setCurrentEval, setAuditModalVisible, handleEvalDelete);
 
   return (
     <Card
@@ -193,6 +226,17 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
               }}
             >
               添加老师
+            </Button>
+          )}
+          {activeTab === 'evaluations' && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setAddEvalModalVisible(true);
+              }}
+            >
+              添加评价
             </Button>
           )}
           <Button
@@ -253,6 +297,16 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
         onApprove={handleEvalApprove}
         onReject={handleEvalReject}
         loading={loading}
+        mode="audit"
+      />
+
+      <EvaluationForm
+        open={addEvalModalVisible}
+        onCancel={() => setAddEvalModalVisible(false)}
+        evaluation={{ bot: currentRow._id }}
+        onSubmit={handleEvalSubmit}
+        loading={loading}
+        mode="add"
       />
 
       <TeacherForm
