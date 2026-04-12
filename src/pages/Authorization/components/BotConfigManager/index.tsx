@@ -171,7 +171,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       items.push({
         key: 'teaching',
         label: intl.formatMessage({ id: 'teaching', defaultMessage: '教学模块' }),
-        children: <TeachingTab currentRow={currentRow} />,
+        children: <TeachingTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
 
