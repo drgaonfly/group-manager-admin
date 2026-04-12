@@ -27,7 +27,13 @@ const ProxyTable: React.FC<ProxyTableProps> = ({ proxies, loading, pagination, s
       title: intl.formatMessage({ id: 'role' }),
       dataIndex: 'roles',
       hideInSearch: true,
-      render: (roles: any) => roles.map((role: any) => role.name).join(', '), // 新增：显示角色名称
+      render: (roles: any) =>
+        Array.isArray(roles)
+          ? roles
+              .map((role: any) => role?.name)
+              .filter(Boolean)
+              .join(', ') || '—'
+          : '—',
     },
   ];
 
