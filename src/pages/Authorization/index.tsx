@@ -277,8 +277,9 @@ const TableList: React.FC = () => {
             })}
           </ActionButton>
         ),
-        // 功能配置 - 只要用户有任何功能权限就显示
-        (currentUser?.groupMessage ||
+        // 功能配置 - 超级管理员或具备任一项功能代理权限时显示
+        (access.canSuperAdmin ||
+          currentUser?.groupMessage ||
           currentUser?.channelPost ||
           currentUser?.replyRule ||
           currentUser?.keyboardConfig ||
@@ -287,7 +288,9 @@ const TableList: React.FC = () => {
           currentUser?.bidirectional ||
           currentUser?.groupVerify ||
           currentUser?.reportGroupMemberNameUpdated ||
-          currentUser?.checkinRule) && (
+          currentUser?.checkinRule ||
+          currentUser?.lotteryRule ||
+          currentUser?.teaching) && (
           <ActionButton
             key="botConfig"
             type="configure"

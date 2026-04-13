@@ -151,7 +151,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       hideInForm: true,
       renderText: (_, record) => {
-        return record.proxy.name;
+        return record.proxy?.name ?? '—';
       },
     },
     {

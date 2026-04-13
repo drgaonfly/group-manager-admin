@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Empty, Button, message, Modal, Tabs, Space } from 'antd';
+import { Card, Table, Empty, Button, message, Modal, Tabs, Space, InputNumber } from 'antd';
 import { ReloadOutlined, PlusOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import { queryList, removeItem, updateItem, addItem } from '@/services/ant-design-pro/api';
@@ -8,9 +8,10 @@ import TeacherForm, { getTeacherColumns } from './teacherForm';
 
 interface TeachingTabProps {
   currentRow: any;
+  onBotUpdate?: (values: any) => Promise<void>;
 }
 
-const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
+const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow, onBotUpdate }) => {
   const intl = useIntl();
   const [teachers, setTeachers] = useState<any[]>([]);
   const [evaluations, setEvaluations] = useState<any[]>([]);
@@ -23,6 +24,16 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const [teacherModalVisible, setTeacherModalVisible] = useState(false);
   const [currentEval, setCurrentEval] = useState<any>(null);
   const [currentTeacher, setCurrentTeacher] = useState<any>(null);
+  const [teacherMenuBurnSeconds, setTeacherMenuBurnSeconds] = useState<number>(30);
+  const [savingBurnSeconds, setSavingBurnSeconds] = useState(false);
+
+  useEffect(() => {
+    setTeacherMenuBurnSeconds(
+      typeof currentRow?.teacherMenuDeleteAfterSeconds === 'number'
+        ? currentRow.teacherMenuDeleteAfterSeconds
+        : 30,
+    );
+  }, [currentRow?._id, currentRow?.teacherMenuDeleteAfterSeconds]);
 
   const fetchTeachers = async () => {
     if (!currentRow?._id) return;
@@ -183,6 +194,23 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
     }
   };
 
+  const handleSaveTeacherMenuBurn = async () => {
+    if (!currentRow?._id || !onBotUpdate) return;
+    try {
+      setSavingBurnSeconds(true);
+      await onBotUpdate({
+        _id: currentRow._id,
+        teacherMenuDeleteAfterSeconds: teacherMenuBurnSeconds ?? 0,
+      });
+      message.success('已保存老师列表阅后即焚设置');
+    } catch (e) {
+      console.error(e);
+      message.error('保存失败');
+    } finally {
+      setSavingBurnSeconds(false);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     try {
       setLoading(true);
@@ -212,111 +240,144 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow }) => {
   const evalColumns = getEvaluationColumns(setCurrentEval, setAuditModalVisible, handleEvalDelete);
 
   return (
-    <Card
-      size="small"
-      extra={
-        <Space>
-          {activeTab === 'teachers' && (
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                setCurrentTeacher(null);
-                setTeacherModalVisible(true);
-              }}
-            >
-              添加老师
-            </Button>
-          )}
-          {activeTab === 'evaluations' && (
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                setAddEvalModalVisible(true);
-              }}
-            >
-              添加评价
-            </Button>
-          )}
+    <>
+      <Card size="small" style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 8, fontWeight: 500 }}>老师列表消息（阅后即焚）</div>
+        <div style={{ color: '#666', fontSize: 13, marginBottom: 12 }}>
+          群内成员发送「老师」后弹出的列表消息，可在下方设置若干秒后自动删除；默认 30 秒，填 0
+          表示不自动删除。机器人需有删消息权限。
+        </div>
+        <Space wrap>
+          <span>删除延迟（秒）</span>
+          <InputNumber
+            min={0}
+            max={604800}
+            step={10}
+            value={teacherMenuBurnSeconds}
+            onChange={(v) => setTeacherMenuBurnSeconds(typeof v === 'number' ? v : 0)}
+            disabled={!onBotUpdate}
+          />
           <Button
-            icon={<ReloadOutlined />}
-            onClick={activeTab === 'teachers' ? fetchTeachers : fetchEvaluations}
-            loading={loading}
+            type="primary"
+            onClick={handleSaveTeacherMenuBurn}
+            loading={savingBurnSeconds}
+            disabled={!onBotUpdate}
           >
-            刷新
+            保存
           </Button>
         </Space>
-      }
-    >
-      <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <Tabs.TabPane tab="认证老师" key="teachers">
-          <Table
-            dataSource={teachers}
-            columns={columns}
-            rowKey="_id"
-            size="small"
-            loading={loading}
-            scroll={{ x: 'max-content' }}
-            locale={{ emptyText: <Empty description="暂无老师数据" /> }}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="评价管理" key="evaluations">
-          <Table
-            dataSource={evaluations}
-            columns={evalColumns}
-            rowKey="_id"
-            size="small"
-            loading={loading}
-            scroll={{ x: 'max-content' }}
-            locale={{ emptyText: <Empty description="暂无评价数据" /> }}
-          />
-        </Tabs.TabPane>
-      </Tabs>
-
-      <Modal
-        title="视频预览"
-        open={!!previewVideo}
-        onCancel={() => setPreviewVideo(null)}
-        footer={null}
-        destroyOnClose
-        width={800}
-        centered
+      </Card>
+      <Card
+        size="small"
+        extra={
+          <Space>
+            {activeTab === 'teachers' && (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  setCurrentTeacher(null);
+                  setTeacherModalVisible(true);
+                }}
+              >
+                添加老师
+              </Button>
+            )}
+            {activeTab === 'evaluations' && (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  setAddEvalModalVisible(true);
+                }}
+              >
+                添加评价
+              </Button>
+            )}
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={activeTab === 'teachers' ? fetchTeachers : fetchEvaluations}
+              loading={loading}
+            >
+              刷新
+            </Button>
+          </Space>
+        }
       >
-        {previewVideo && (
-          <video src={previewVideo} controls autoPlay style={{ width: '100%', maxHeight: '70vh' }}>
-            您的浏览器不支持 video 标签。
-          </video>
-        )}
-      </Modal>
+        <Tabs activeKey={activeTab} onChange={setActiveTab}>
+          <Tabs.TabPane tab="认证老师" key="teachers">
+            <Table
+              dataSource={teachers}
+              columns={columns}
+              rowKey="_id"
+              size="small"
+              loading={loading}
+              scroll={{ x: 'max-content' }}
+              locale={{ emptyText: <Empty description="暂无老师数据" /> }}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="评价管理" key="evaluations">
+            <Table
+              dataSource={evaluations}
+              columns={evalColumns}
+              rowKey="_id"
+              size="small"
+              loading={loading}
+              scroll={{ x: 'max-content' }}
+              locale={{ emptyText: <Empty description="暂无评价数据" /> }}
+            />
+          </Tabs.TabPane>
+        </Tabs>
 
-      <EvaluationForm
-        open={auditModalVisible}
-        onCancel={() => setAuditModalVisible(false)}
-        evaluation={currentEval}
-        onApprove={handleEvalApprove}
-        onReject={handleEvalReject}
-        loading={loading}
-        mode="audit"
-      />
+        <Modal
+          title="视频预览"
+          open={!!previewVideo}
+          onCancel={() => setPreviewVideo(null)}
+          footer={null}
+          destroyOnClose
+          width={800}
+          centered
+        >
+          {previewVideo && (
+            <video
+              src={previewVideo}
+              controls
+              autoPlay
+              style={{ width: '100%', maxHeight: '70vh' }}
+            >
+              您的浏览器不支持 video 标签。
+            </video>
+          )}
+        </Modal>
 
-      <EvaluationForm
-        open={addEvalModalVisible}
-        onCancel={() => setAddEvalModalVisible(false)}
-        evaluation={{ bot: currentRow._id }}
-        onSubmit={handleEvalSubmit}
-        loading={loading}
-        mode="add"
-      />
+        <EvaluationForm
+          open={auditModalVisible}
+          onCancel={() => setAuditModalVisible(false)}
+          evaluation={currentEval}
+          onApprove={handleEvalApprove}
+          onReject={handleEvalReject}
+          loading={loading}
+          mode="audit"
+        />
 
-      <TeacherForm
-        open={teacherModalVisible}
-        onCancel={() => setTeacherModalVisible(false)}
-        onSubmit={handleTeacherSubmit}
-        initialValues={currentTeacher}
-        loading={loading}
-      />
-    </Card>
+        <EvaluationForm
+          open={addEvalModalVisible}
+          onCancel={() => setAddEvalModalVisible(false)}
+          evaluation={{ bot: currentRow._id }}
+          onSubmit={handleEvalSubmit}
+          loading={loading}
+          mode="add"
+        />
+
+        <TeacherForm
+          open={teacherModalVisible}
+          onCancel={() => setTeacherModalVisible(false)}
+          onSubmit={handleTeacherSubmit}
+          initialValues={currentTeacher}
+          loading={loading}
+        />
+      </Card>
+    </>
   );
 };
 
