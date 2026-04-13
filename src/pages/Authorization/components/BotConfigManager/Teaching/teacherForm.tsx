@@ -1,5 +1,12 @@
-import React, { useEffect } from 'react';
-import { Modal, Form, Input, Switch, Button, Tag, Space, Image, Popconfirm } from 'antd';
+import React from 'react';
+import { Button, Tag, Space, Image, Popconfirm, Form } from 'antd';
+import {
+  ModalForm,
+  ProFormText,
+  ProFormTextArea,
+  ProFormSwitch,
+  ProFormGroup,
+} from '@ant-design/pro-components';
 import { PlayCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import MyUpload from '@/components/Upload';
@@ -209,68 +216,69 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    if (open) {
-      if (initialValues) {
-        form.setFieldsValue({
-          ...initialValues,
-        });
-      } else {
-        form.resetFields();
-      }
-    }
-  }, [open, initialValues, form]);
-
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      await onSubmit(values);
-    } catch (error) {
-      console.error('Validate failed:', error);
-    }
-  };
-
   return (
-    <Modal
+    <ModalForm
       title={initialValues ? '编辑老师信息' : '添加老师'}
       open={open}
-      onCancel={onCancel}
-      onOk={handleOk}
-      confirmLoading={loading}
-      destroyOnClose
+      form={form}
+      modalProps={{
+        onCancel,
+        destroyOnClose: true,
+        confirmLoading: loading,
+      }}
+      initialValues={initialValues || { isAvailable: true }}
+      onFinish={async (values) => {
+        await onSubmit(values);
+        return true;
+      }}
+      layout="vertical"
     >
-      <Form form={form} layout="vertical" initialValues={{ isAvailable: true }}>
-        <Form.Item
+      <ProFormGroup>
+        <ProFormText
           name="username"
           label="用户名"
           rules={[{ required: true, message: '请输入用户用户名' }]}
           tooltip="直接输入 @username，系统会自动关联教师"
-        >
-          <Input placeholder="例如 @username" />
-        </Form.Item>
-        <Form.Item
+          placeholder="例如 @username"
+          width="md"
+        />
+        <ProFormText
           name="display_name"
           label="花名"
           rules={[{ required: true, message: '请输入花名' }]}
-        >
-          <Input placeholder="请输入花名" />
-        </Form.Item>
-        <Form.Item
+          placeholder="请输入花名"
+          width="md"
+        />
+      </ProFormGroup>
+
+      <ProFormGroup>
+        <ProFormText
           name="contactLink"
           label="联系方式"
           rules={[{ required: true, message: '请输入联系方式' }]}
-        >
-          <Input placeholder="例如 https://t.me/xxx" />
-        </Form.Item>
-        <Form.Item name="address" label="地址" rules={[{ required: true, message: '请输入地址' }]}>
-          <Input placeholder="请输入补习地点" />
-        </Form.Item>
-        <Form.Item name="brief" label="简介">
-          <Input.TextArea rows={4} placeholder="请输入老师简介" />
-        </Form.Item>
-        <Form.Item name="isAvailable" label="是否可用" valuePropName="checked">
-          <Switch />
-        </Form.Item>
+          placeholder="例如 https://t.me/xxx"
+          width="md"
+        />
+        <ProFormText
+          name="address"
+          label="地址"
+          rules={[{ required: true, message: '请输入地址' }]}
+          placeholder="请输入补习地点"
+          width="md"
+        />
+      </ProFormGroup>
+
+      <ProFormTextArea
+        name="brief"
+        label="简介"
+        fieldProps={{ rows: 4 }}
+        placeholder="请输入老师简介"
+        width="xl"
+      />
+
+      <ProFormSwitch name="isAvailable" label="是否可用" />
+
+      <ProFormGroup>
         <Form.Item label="个人照片" name="images">
           <MyUpload
             multiple
@@ -282,11 +290,14 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
             onRemove={(file: any) => {
               const url = file.url || file.response?.data?.file;
               const currentImages = form.getFieldValue('images') || [];
-              form.setFieldsValue({ images: currentImages.filter((i: string) => i !== url) });
+              form.setFieldsValue({
+                images: currentImages.filter((i: string) => i !== url),
+              });
               return true;
             }}
           />
         </Form.Item>
+
         <Form.Item label="展示视频" name="videos">
           <MyUpload
             multiple
@@ -298,13 +309,15 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
             onRemove={(file: any) => {
               const url = file.url || file.response?.data?.file;
               const currentVideos = form.getFieldValue('videos') || [];
-              form.setFieldsValue({ videos: currentVideos.filter((i: string) => i !== url) });
+              form.setFieldsValue({
+                videos: currentVideos.filter((i: string) => i !== url),
+              });
               return true;
             }}
           />
         </Form.Item>
-      </Form>
-    </Modal>
+      </ProFormGroup>
+    </ModalForm>
   );
 };
 
