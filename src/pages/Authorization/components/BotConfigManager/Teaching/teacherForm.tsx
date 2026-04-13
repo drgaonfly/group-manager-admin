@@ -242,9 +242,9 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
       <Form form={form} layout="vertical" initialValues={{ isAvailable: true }}>
         <Form.Item
           name="username"
-          label="用户名"
+          label="@username"
           rules={[{ required: true, message: '请输入用户用户名' }]}
-          tooltip="直接输入 @username，系统会自动关联或创建 BotUser"
+          tooltip="直接输入 @username，系统会自动关联教师"
         >
           <Input placeholder="例如 @username" />
         </Form.Item>
