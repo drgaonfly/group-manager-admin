@@ -271,9 +271,13 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
       <ProFormTextArea
         name="brief"
         label="简介"
-        fieldProps={{ rows: 4 }}
         placeholder="请输入老师简介"
-        width="xl"
+        width="md"
+        fieldProps={{
+          autoSize: {
+            minRows: 8,
+          },
+        }}
       />
 
       <ProFormSwitch name="isAvailable" label="是否可用" />
