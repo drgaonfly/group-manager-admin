@@ -236,7 +236,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
       <ProFormGroup>
         <ProFormText
           name="username"
-          label="用户名"
+          label="用户电报名"
           rules={[{ required: true, message: '请输入用户用户名' }]}
           tooltip="直接输入 @username，系统会自动关联教师"
           placeholder="例如 @username"
