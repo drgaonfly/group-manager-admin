@@ -235,6 +235,21 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow, onBotUpdate }) =>
     handleDelete,
     setCurrentTeacher,
     setTeacherModalVisible,
+    async (id, isAvailable) => {
+      try {
+        setLoading(true);
+        const res = await updateItem(`/teachers/${id}`, { isAvailable });
+        if ((res as any)?.success || (res as any)?.data) {
+          message.success('更新成功');
+          fetchTeachers();
+        }
+      } catch (error) {
+        console.error('Failed to update teacher availability:', error);
+        message.error('操作失败');
+      } finally {
+        setLoading(false);
+      }
+    },
   );
 
   const evalColumns = getEvaluationColumns(setCurrentEval, setAuditModalVisible, handleEvalDelete);

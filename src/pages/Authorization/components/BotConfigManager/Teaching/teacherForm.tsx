@@ -11,6 +11,14 @@ import { PlayCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import MyUpload from '@/components/Upload';
 
+interface TeacherFormProps {
+  open: boolean;
+  onCancel: () => void;
+  onSubmit: (values: any) => Promise<void>;
+  initialValues?: any;
+  loading?: boolean;
+}
+
 export const getTeacherColumns = (
   intl: any,
   setPreviewVideo: (url: string) => void,
@@ -19,6 +27,7 @@ export const getTeacherColumns = (
   handleDelete: (id: string) => void,
   setCurrentTeacher: (record: any) => void,
   setTeacherModalVisible: (visible: boolean) => void,
+  handleUpdateStatus: (id: string, isAvailable: boolean) => Promise<void>,
 ) => [
   {
     title: intl.formatMessage({ id: 'teacher' }),
@@ -30,7 +39,27 @@ export const getTeacherColumns = (
     title: intl.formatMessage({ id: 'address' }),
     dataIndex: 'address',
     key: 'address',
+    width: 100,
+    ellipsis: true,
     render: (address: string) => address || '-',
+  },
+  {
+    title: '上下课',
+    dataIndex: 'isAvailable',
+    key: 'isAvailableToggle',
+    width: 100,
+    render: (available: boolean, record: any) => (
+      <ProFormSwitch
+        noStyle
+        fieldProps={{
+          size: 'small',
+          checked: available,
+          onChange: async (checked) => {
+            await handleUpdateStatus(record._id, checked);
+          },
+        }}
+      />
+    ),
   },
   {
     title: intl.formatMessage({ id: 'contact' }),
@@ -50,7 +79,8 @@ export const getTeacherColumns = (
     title: '简介',
     dataIndex: 'brief',
     key: 'brief',
-    width: 300,
+    width: 150,
+    elipsis: true,
     render: (brief: string) => (
       <div style={{ whiteSpace: 'pre-wrap', fontSize: '12px' }}>{brief || '-'}</div>
     ),
@@ -198,14 +228,6 @@ export const getTeacherColumns = (
     ),
   },
 ];
-
-interface TeacherFormProps {
-  open: boolean;
-  onCancel: () => void;
-  onSubmit: (values: any) => Promise<void>;
-  initialValues?: any;
-  loading?: boolean;
-}
 
 const TeacherForm: React.FC<TeacherFormProps> = ({
   open,

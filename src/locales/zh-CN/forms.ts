@@ -372,4 +372,6 @@ export default {
   isAvailable: '是否上课',
   reviews: '评论数',
   options: '操作',
+  approved: '已通过',
+  rejected: '已拒绝',
 };
