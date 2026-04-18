@@ -277,10 +277,14 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
         <ProFormText
           name="contactLink"
           label="联系方式"
-          rules={[{ required: true, message: '请输入联系方式' }]}
+          rules={[
+            { required: true, message: '请输入联系方式' },
+            { type: 'url', message: '请输入有效的URL' },
+          ]}
           placeholder="例如 https://t.me/xxx"
           width="md"
         />
+
         <ProFormText
           name="address"
           label="地址"
