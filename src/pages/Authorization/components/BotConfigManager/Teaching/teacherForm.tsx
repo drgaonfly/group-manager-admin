@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Tag, Space, Image, Popconfirm, Form, UploadFile } from 'antd';
+import { Button, Tag, Space, Image, Popconfirm, Form } from 'antd';
 import {
   ModalForm,
   ProFormText,
@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import { PlayCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import MyUpload from '@/components/MyUpload';
+import MyUpload from '@/components/Upload';
 
 interface TeacherFormProps {
   open: boolean;
@@ -241,12 +241,13 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
   useEffect(() => {
     if (open) {
       if (initialValues) {
-        console.log('initialValues received:', initialValues);
         const values = {
           ...initialValues,
-          username: `@${initialValues.botUser?.userName}`,
+          username:
+            initialValues.botUser?.userName ||
+            initialValues.botUser?.username ||
+            initialValues.username,
         };
-        console.log('Setting form values:', values);
         form.setFieldsValue(values);
       } else {
         form.resetFields();
@@ -254,32 +255,28 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
     }
   }, [open, initialValues, form]);
 
-  const currentUsername = Form.useWatch('username', form);
-  const images = Form.useWatch('images', form) || [];
-  const videos = Form.useWatch('videos', form) || [];
+  // const images = Form.useWatch('images', form) || [];
+  // const videos = Form.useWatch('videos', form) || [];
 
-  console.log('Current images from watch:', images);
-  console.log('Current username from watch:', currentUsername);
-
-  const imageFileList: UploadFile[] = React.useMemo(() => {
-    if (!images || !Array.isArray(images)) return [];
-    return images.map((url: string, index: number) => ({
-      uid: `image-${index}-${url}`,
+  const defaultImageFileList = React.useMemo(() => {
+    const imgs = initialValues?.images || [];
+    return imgs.map((url: string, index: number) => ({
+      uid: `image-${index}`,
       name: `image-${index}`,
       status: 'done',
       url,
     }));
-  }, [images]);
+  }, [open, initialValues]);
 
-  const videoFileList: UploadFile[] = React.useMemo(() => {
-    if (!videos || !Array.isArray(videos)) return [];
-    return videos.map((url: string, index: number) => ({
-      uid: `video-${index}-${url}`,
+  const defaultVideoFileList = React.useMemo(() => {
+    const vids = initialValues?.videos || [];
+    return vids.map((url: string, index: number) => ({
+      uid: `video-${index}`,
       name: `video-${index}`,
       status: 'done',
       url,
     }));
-  }, [videos]);
+  }, [open, initialValues]);
 
   return (
     <ModalForm
@@ -358,7 +355,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
           <MyUpload
             multiple
             accept="image/*"
-            fileList={imageFileList}
+            defaultFileList={defaultImageFileList}
             onFileUpload={(url) => {
               const currentImages = form.getFieldValue('images') || [];
               form.setFieldsValue({ images: [...currentImages, url] });
@@ -378,7 +375,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
           <MyUpload
             multiple
             accept="video/*"
-            fileList={videoFileList}
+            defaultFileList={defaultVideoFileList}
             onFileUpload={(url) => {
               const currentVideos = form.getFieldValue('videos') || [];
               form.setFieldsValue({ videos: [...currentVideos, url] });
