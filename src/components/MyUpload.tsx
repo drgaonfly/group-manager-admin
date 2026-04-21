@@ -11,9 +11,20 @@ interface MyUploadProps {
   accept?: string; // 使accept属性可选
   url?: string;
   onRemove?: (file: UploadFile) => boolean; // Add onRemove to props
+  multiple?: boolean;
+  maxCount?: number;
+  fileList?: UploadFile[];
 }
 
-const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/upload', onRemove }) => {
+const MyUpload: React.FC<MyUploadProps> = ({
+  onFileUpload,
+  accept,
+  url = '/upload',
+  onRemove,
+  multiple,
+  maxCount,
+  fileList,
+}) => {
   const intl = useIntl();
   // 定义默认的accept值
   const defaultAccept = '*';
@@ -99,11 +110,35 @@ const MyUpload: React.FC<MyUploadProps> = ({ onFileUpload, accept, url = '/uploa
       {...props}
       listType="picture"
       showUploadList={{ showRemoveIcon: true }}
-      multiple={false}
+      multiple={multiple ?? false}
       accept={accept || defaultAccept}
-      maxCount={1}
+      maxCount={maxCount}
+      fileList={fileList}
       style={{ width: 328 }}
       onRemove={onRemove}
+      onChange={(info) => {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(
+            intl.formatMessage(
+              { id: 'file_upload_success', defaultMessage: '{name} file uploaded successfully' },
+              { name: info.file.name },
+            ),
+          );
+        } else if (info.file.status === 'error') {
+          message.error(
+            intl.formatMessage(
+              { id: 'file_upload_failure', defaultMessage: '{name} file upload failed' },
+              { name: info.file.name },
+            ),
+          );
+        }
+        if (props.onChange) {
+          props.onChange(info);
+        }
+      }}
     >
       <p className="ant-upload-drag-icon">
         <InboxOutlined />

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Tag, Space, Image, Popconfirm, Form } from 'antd';
+import React, { useEffect } from 'react';
+import { Button, Tag, Space, Image, Popconfirm, Form, UploadFile } from 'antd';
 import {
   ModalForm,
   ProFormText,
@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import { PlayCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import MyUpload from '@/components/Upload';
+import MyUpload from '@/components/MyUpload';
 
 interface TeacherFormProps {
   open: boolean;
@@ -238,6 +238,49 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
 }) => {
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    if (open) {
+      if (initialValues) {
+        console.log('initialValues received:', initialValues);
+        const values = {
+          ...initialValues,
+          username: `@${initialValues.botUser?.userName}`,
+        };
+        console.log('Setting form values:', values);
+        form.setFieldsValue(values);
+      } else {
+        form.resetFields();
+      }
+    }
+  }, [open, initialValues, form]);
+
+  const currentUsername = Form.useWatch('username', form);
+  const images = Form.useWatch('images', form) || [];
+  const videos = Form.useWatch('videos', form) || [];
+
+  console.log('Current images from watch:', images);
+  console.log('Current username from watch:', currentUsername);
+
+  const imageFileList: UploadFile[] = React.useMemo(() => {
+    if (!images || !Array.isArray(images)) return [];
+    return images.map((url: string, index: number) => ({
+      uid: `image-${index}-${url}`,
+      name: `image-${index}`,
+      status: 'done',
+      url,
+    }));
+  }, [images]);
+
+  const videoFileList: UploadFile[] = React.useMemo(() => {
+    if (!videos || !Array.isArray(videos)) return [];
+    return videos.map((url: string, index: number) => ({
+      uid: `video-${index}-${url}`,
+      name: `video-${index}`,
+      status: 'done',
+      url,
+    }));
+  }, [videos]);
+
   return (
     <ModalForm
       title={initialValues ? '编辑老师信息' : '添加老师'}
@@ -249,6 +292,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
         confirmLoading: loading,
       }}
       initialValues={initialValues || { isAvailable: true }}
+      preserve={false}
       onFinish={async (values) => {
         await onSubmit(values);
         return true;
@@ -259,10 +303,11 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
         <ProFormText
           name="username"
           label="用户电报名"
-          rules={[{ required: true, message: '请输入用户用户名' }]}
+          rules={[{ required: !initialValues, message: '请输入用户用户名' }]}
           tooltip="直接输入 @username，系统会自动关联教师"
           placeholder="例如 @username"
           width="md"
+          disabled={!!initialValues}
         />
         <ProFormText
           name="display_name"
@@ -313,6 +358,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
           <MyUpload
             multiple
             accept="image/*"
+            fileList={imageFileList}
             onFileUpload={(url) => {
               const currentImages = form.getFieldValue('images') || [];
               form.setFieldsValue({ images: [...currentImages, url] });
@@ -332,6 +378,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
           <MyUpload
             multiple
             accept="video/*"
+            fileList={videoFileList}
             onFileUpload={(url) => {
               const currentVideos = form.getFieldValue('videos') || [];
               form.setFieldsValue({ videos: [...currentVideos, url] });
