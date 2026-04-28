@@ -28,12 +28,8 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow, onBotUpdate }) =>
   const [savingBurnSeconds, setSavingBurnSeconds] = useState(false);
 
   useEffect(() => {
-    setTeacherMenuBurnSeconds(
-      typeof currentRow?.teacherMenuDeleteAfterSeconds === 'number'
-        ? currentRow.teacherMenuDeleteAfterSeconds
-        : 30,
-    );
-  }, [currentRow?._id, currentRow?.teacherMenuDeleteAfterSeconds]);
+    // 逻辑移动到 fetchTeachers 中或单独获取
+  }, [currentRow?._id]);
 
   const fetchTeachers = async () => {
     if (!currentRow?._id) return;
@@ -41,7 +37,12 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow, onBotUpdate }) =>
       setLoading(true);
       const res = await queryList('/teachers', { botId: currentRow._id });
       if (res?.success) {
-        setTeachers(res.data || []);
+        const teacherList = (res.data || []) as any[];
+        setTeachers(teacherList);
+        // 从第一个老师数据中同步阅后即焚时间（如果有的话）
+        if (teacherList.length > 0 && typeof teacherList[0].menuDeleteAfterSeconds === 'number') {
+          setTeacherMenuBurnSeconds(teacherList[0].menuDeleteAfterSeconds);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch teachers:', error);
@@ -195,14 +196,16 @@ const TeachingTab: React.FC<TeachingTabProps> = ({ currentRow, onBotUpdate }) =>
   };
 
   const handleSaveTeacherMenuBurn = async () => {
-    if (!currentRow?._id || !onBotUpdate) return;
+    if (!currentRow?._id) return;
     try {
       setSavingBurnSeconds(true);
-      await onBotUpdate({
-        _id: currentRow._id,
-        teacherMenuDeleteAfterSeconds: teacherMenuBurnSeconds ?? 0,
+      // 批量更新该机器人下所有老师的阅后即焚时间
+      await updateItem(`/teachers/batch-update-burn-seconds`, {
+        botId: currentRow._id,
+        menuDeleteAfterSeconds: teacherMenuBurnSeconds ?? 30,
       });
       message.success('已保存老师列表阅后即焚设置');
+      fetchTeachers();
     } catch (e) {
       console.error(e);
       message.error('保存失败');
