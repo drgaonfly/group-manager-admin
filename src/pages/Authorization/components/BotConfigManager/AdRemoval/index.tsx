@@ -73,11 +73,11 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
     }
   };
 
-  const handleStatusChange = async (record: any, checked: boolean) => {
+  const handleStatusChange = async (record: any, data: any) => {
     try {
-      const res = await updateItem(`/ad-removals/${record._id}`, { isOnline: checked });
+      const res = await updateItem(`/ad-removals/${record._id}`, data);
       if ((res as any)?.success) {
-        message.success('状态更新成功');
+        message.success('更新成功');
         fetchList();
       }
     } catch (error) {
@@ -112,7 +112,19 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
         <Switch
           checked={checked}
           size="small"
-          onChange={(val) => handleStatusChange(record, val)}
+          onChange={(val) => handleStatusChange(record, { isOnline: val })}
+        />
+      ),
+    },
+    {
+      title: '豁免管理员',
+      dataIndex: 'ignoreAdmin',
+      key: 'ignoreAdmin',
+      render: (checked: boolean, record: any) => (
+        <Switch
+          checked={checked}
+          size="small"
+          onChange={(val) => handleStatusChange(record, { ignoreAdmin: val })}
         />
       ),
     },

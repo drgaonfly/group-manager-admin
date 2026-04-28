@@ -78,6 +78,11 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
           }}
           width="lg"
         />
+        <ProFormSwitch
+          name="ignoreAdmin"
+          label="豁免管理员"
+          tooltip="开启后，群主和管理员发送的内容将不会被拦截"
+        />
       </ProFormGroup>
 
       <Card title="关键词管理" size="small" style={{ marginTop: 16 }}>
