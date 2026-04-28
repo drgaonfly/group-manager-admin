@@ -34,6 +34,7 @@ const ServiceLink: React.FC = () => {
     checkinRule: boolean;
     lotteryRule: boolean;
     teaching: boolean;
+    adRemoval: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -102,6 +103,7 @@ const ServiceLink: React.FC = () => {
               checkinRule: currentUser?.checkinRule || false,
               lotteryRule: currentUser?.lotteryRule || false,
               teaching: currentUser?.teaching || false,
+              adRemoval: currentUser?.adRemoval || false,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
@@ -229,6 +231,18 @@ const ServiceLink: React.FC = () => {
                 id: 'teaching.tooltip',
                 defaultMessage:
                   '开启后，代理可以为其下的机器人开启教学模块功能（注册老师、写车评等）',
+              })}
+            />
+            <ProFormSwitch
+              name="adRemoval"
+              label={intl.formatMessage({
+                id: 'adRemoval',
+                defaultMessage: '广告拦截',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'adRemoval.tooltip',
+                defaultMessage:
+                  '开启后，代理可以为其下的机器人开启广告拦截功能（自动删除广告消息等）',
               })}
             />
           </ProForm>
@@ -410,6 +424,22 @@ const ServiceLink: React.FC = () => {
                   id: 'teaching.tooltip',
                   defaultMessage:
                     '开启后，代理可以为其下的机器人开启教学模块功能（注册老师、写车评等）',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'adRemoval',
+                defaultMessage: '广告拦截',
+              })}
+            >
+              {renderStatusTag(currentUser?.adRemoval || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'adRemoval.tooltip',
+                  defaultMessage:
+                    '开启后，代理可以为其下的机器人开启广告拦截功能（自动删除广告消息等）',
                 })}
               </Text>
             </Descriptions.Item>

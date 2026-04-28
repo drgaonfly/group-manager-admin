@@ -84,6 +84,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canTeaching', defaultMessage: '教学模块' }),
       permission: currentUser?.teaching,
     },
+    {
+      key: 'canRemoveAd',
+      label: intl.formatMessage({ id: 'canRemoveAd', defaultMessage: '广告拦截' }),
+      permission: currentUser?.adRemoval,
+    },
   ];
 
   return (

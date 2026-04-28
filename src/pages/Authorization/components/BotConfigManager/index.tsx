@@ -12,6 +12,7 @@ import SpeechStatisticsTab from './SpeechStatistics';
 import CheckinRuleTab from './CheckinRule';
 import LotteryRuleTab from './LotteryRule';
 import TeachingTab from './Teaching';
+import AdRemovalTab from './AdRemoval';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -48,6 +49,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canCheckIn: currentRow.canCheckIn,
         canLotteryRule: currentRow.canLotteryRule,
         canTeaching: currentRow.canTeaching,
+        canRemoveAd: currentRow.canRemoveAd,
       });
     }
   }, [open, currentRow]);
@@ -172,6 +174,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'teaching',
         label: intl.formatMessage({ id: 'teaching', defaultMessage: '教学模块' }),
         children: <TeachingTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
+      });
+    }
+
+    // 广告拦截 Tab
+    if (botConfig.canRemoveAd) {
+      items.push({
+        key: 'adRemoval',
+        label: intl.formatMessage({ id: 'ad_removal', defaultMessage: '广告拦截' }),
+        children: <AdRemovalTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
 

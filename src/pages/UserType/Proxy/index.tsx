@@ -209,6 +209,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'checkinRule' }),
             enabled: record.checkinRule,
           },
+          {
+            name: intl.formatMessage({ id: 'adRemoval' }),
+            enabled: record.adRemoval,
+          },
         ];
 
         return (
