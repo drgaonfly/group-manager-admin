@@ -145,7 +145,7 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
   return (
     <Card
       size="small"
-      title="广告拦截规则"
+      title="去除广告规则"
       extra={
         <Space>
           <Button

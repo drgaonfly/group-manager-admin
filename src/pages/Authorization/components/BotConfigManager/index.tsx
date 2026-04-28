@@ -177,11 +177,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       });
     }
 
-    // 广告拦截 Tab
+    // 去除广告 Tab
     if (botConfig.canRemoveAd) {
       items.push({
         key: 'adRemoval',
-        label: intl.formatMessage({ id: 'ad_removal', defaultMessage: '广告拦截' }),
+        label: intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' }),
         children: <AdRemovalTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }

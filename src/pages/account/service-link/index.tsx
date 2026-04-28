@@ -237,12 +237,12 @@ const ServiceLink: React.FC = () => {
               name="adRemoval"
               label={intl.formatMessage({
                 id: 'adRemoval',
-                defaultMessage: '广告拦截',
+                defaultMessage: '去除广告',
               })}
               tooltip={intl.formatMessage({
                 id: 'adRemoval.tooltip',
                 defaultMessage:
-                  '开启后，代理可以为其下的机器人开启广告拦截功能（自动删除广告消息等）',
+                  '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
               })}
             />
           </ProForm>
@@ -431,7 +431,7 @@ const ServiceLink: React.FC = () => {
             <Descriptions.Item
               label={intl.formatMessage({
                 id: 'adRemoval',
-                defaultMessage: '广告拦截',
+                defaultMessage: '去除广告',
               })}
             >
               {renderStatusTag(currentUser?.adRemoval || false)}
@@ -439,7 +439,7 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'adRemoval.tooltip',
                   defaultMessage:
-                    '开启后，代理可以为其下的机器人开启广告拦截功能（自动删除广告消息等）',
+                    '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
                 })}
               </Text>
             </Descriptions.Item>
