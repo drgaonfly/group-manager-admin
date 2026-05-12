@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, Tabs, message, Button, Popover } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
+import { Modal, Tabs, message } from 'antd';
 import { useIntl } from '@umijs/max';
-import TabColorChanger from '../TabColorChangeer';
 import OverviewTab from './Overview';
 import GroupMessageTab from './GroupMessage';
 import ChannelPostTab from './ChannelPost';
@@ -34,8 +32,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   const intl = useIntl();
   const [activeTab, setActiveTab] = useState('overview');
   const [botConfig, setBotConfig] = useState<any>({});
-  const [colorSettingVisible, setColorSettingVisible] = useState(false);
-  const [tabColors, setTabColors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -55,14 +51,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canTeaching: currentRow.canTeaching,
         canRemoveAd: currentRow.canRemoveAd,
       });
-
-      // 从 localStorage 加载颜色配置
-      const savedColors = localStorage.getItem(`tabColors_${currentRow._id}`);
-      if (savedColors) {
-        setTabColors(JSON.parse(savedColors));
-      } else {
-        setTabColors({});
-      }
     }
   }, [open, currentRow]);
 
@@ -81,84 +69,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     }
   };
 
-  // 处理颜色变化的回调
-  const handleTabColorsChange = (newColors: Record<string, string>) => {
-    setTabColors(newColors);
-  };
-
-  // 动态生成 tab 样式
-  const generateTabStyles = () => {
-    if (Object.keys(tabColors).length === 0) return null;
-
-    const styles = Object.entries(tabColors)
-      .map(([tabKey, color]) => {
-        if (!color) return '';
-
-        return `
-        .colored-tabs .ant-tabs-tab[data-node-key="${tabKey}"] {
-          background: linear-gradient(135deg, ${color}15, ${color}25) !important;
-          border: 1px solid ${color}40 !important;
-          border-radius: 6px !important;
-          margin: 2px 0 !important;
-        }
-        
-        .colored-tabs .ant-tabs-tab[data-node-key="${tabKey}"]:hover {
-          background: linear-gradient(135deg, ${color}25, ${color}35) !important;
-          border-color: ${color}60 !important;
-        }
-        
-        .colored-tabs .ant-tabs-tab[data-node-key="${tabKey}"].ant-tabs-tab-active {
-          background: linear-gradient(135deg, ${color}30, ${color}40) !important;
-          border-color: ${color}80 !important;
-          box-shadow: 0 2px 8px ${color}30 !important;
-        }
-        
-        .colored-tabs .ant-tabs-tab[data-node-key="${tabKey}"] .ant-tabs-tab-btn {
-          color: ${color} !important;
-          font-weight: 500 !important;
-        }
-      `;
-      })
-      .join('\n');
-
-    return (
-      <style>
-        {`
-          .colored-tabs {
-            padding: 0 8px;
-          }
-          .colored-tabs .ant-tabs-tab {
-            transition: all 0.3s ease !important;
-            margin: 2px 8px 2px 0 !important;
-          }
-          .colored-tabs .ant-tabs-content-holder {
-            padding-left: 20px !important;
-            border-left: 1px solid #f0f0f0;
-            margin-left: 8px;
-          }
-          .colored-tabs .ant-tabs-nav {
-            margin-right: 0 !important;
-          }
-          .colored-tabs .ant-tabs-tab-btn {
-            padding: 10px 16px !important;
-            width: 100%;
-            text-align: left;
-          }
-          .colored-tabs .ant-tabs-nav-list {
-            padding: 8px 0;
-          }
-          ${styles}
-        `}
-      </style>
-    );
-  };
-
-  // 生成带颜色的标签
-  const getColoredLabel = (text: string) => {
-    // 现在主要通过 CSS 来实现颜色效果，这里只返回文本
-    return text;
-  };
-
   // 动态生成 tab 列表
   const tabItems = useMemo(() => {
     const items = [];
@@ -166,7 +76,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     // 概览 Tab - 始终显示
     items.push({
       key: 'overview',
-      label: getColoredLabel(intl.formatMessage({ id: 'overview', defaultMessage: '概览' })),
+      label: intl.formatMessage({ id: 'overview', defaultMessage: '概览' }),
       children: (
         <OverviewTab
           currentRow={currentRow}
@@ -181,9 +91,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canGroupMessaging && currentUser?.groupMessage) {
       items.push({
         key: 'groupMessage',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'group_message', defaultMessage: '群发消息' }),
-        ),
+        label: intl.formatMessage({ id: 'group_message', defaultMessage: '群发消息' }),
         children: <GroupMessageTab currentRow={currentRow} />,
       });
     }
@@ -192,9 +100,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canOpenChannelPost && currentUser?.channelPost) {
       items.push({
         key: 'channelPost',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'channel_post', defaultMessage: '频道推广' }),
-        ),
+        label: intl.formatMessage({ id: 'channel_post', defaultMessage: '频道推广' }),
         children: <ChannelPostTab currentRow={currentRow} />,
       });
     }
@@ -203,9 +109,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canReplyRule && currentUser?.replyRule) {
       items.push({
         key: 'replyRule',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'reply_rule', defaultMessage: '回复规则' }),
-        ),
+        label: intl.formatMessage({ id: 'reply_rule', defaultMessage: '回复规则' }),
         children: <ReplyRuleTab currentRow={currentRow} />,
       });
     }
@@ -214,9 +118,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canFreeKeyboard && currentUser?.keyboardConfig) {
       items.push({
         key: 'keyboard',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'free_keyboard', defaultMessage: '自由键盘' }),
-        ),
+        label: intl.formatMessage({ id: 'free_keyboard', defaultMessage: '自由键盘' }),
         children: <KeyboardTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -225,9 +127,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canGroupWelcome && currentUser?.groupWelcome) {
       items.push({
         key: 'groupWelcome',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'group_welcome', defaultMessage: '群欢迎' }),
-        ),
+        label: intl.formatMessage({ id: 'group_welcome', defaultMessage: '群欢迎' }),
         children: <GroupWelcomeTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -236,9 +136,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canGroupVerify && currentUser?.groupVerify) {
       items.push({
         key: 'groupVerify',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' }),
-        ),
+        label: intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' }),
         children: <GroupVerifyTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -247,9 +145,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canSpeechStatic && currentUser?.speech_static) {
       items.push({
         key: 'speechStatistics',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' }),
-        ),
+        label: intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' }),
         children: <SpeechStatisticsTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -258,9 +154,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canCheckIn && currentUser?.checkinRule) {
       items.push({
         key: 'checkinRule',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' }),
-        ),
+        label: intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' }),
         children: <CheckinRuleTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -269,9 +163,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canLotteryRule && currentUser?.lotteryRule) {
       items.push({
         key: 'lotteryRule',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' }),
-        ),
+        label: intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' }),
         children: <LotteryRuleTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -280,7 +172,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canTeaching && currentUser?.teaching) {
       items.push({
         key: 'teaching',
-        label: getColoredLabel(intl.formatMessage({ id: 'teaching', defaultMessage: '教学模块' })),
+        label: intl.formatMessage({ id: 'teaching', defaultMessage: '教学模块' }),
         children: <TeachingTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -289,9 +181,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canRemoveAd) {
       items.push({
         key: 'adRemoval',
-        label: getColoredLabel(
-          intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' }),
-        ),
+        label: intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' }),
         children: <AdRemovalTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -299,42 +189,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     return items;
   }, [currentRow, currentUser, botConfig, onBotUpdate]);
 
-  // 颜色设置面板内容
-  const colorSettingContent = (
-    <TabColorChanger
-      tabItems={tabItems}
-      activeTab={activeTab}
-      onActiveTabChange={setActiveTab}
-      botId={currentRow?._id}
-      tabColors={tabColors}
-      onTabColorsChange={handleTabColorsChange}
-    />
-  );
-
   return (
     <Modal
-      title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span>
-            {`${currentRow?.botName || currentRow?.userName} - ${intl.formatMessage({
-              id: 'function_config',
-              defaultMessage: '功能配置',
-            })}`}
-          </span>
-          <Popover
-            content={colorSettingContent}
-            title={null}
-            trigger="click"
-            open={colorSettingVisible}
-            onOpenChange={setColorSettingVisible}
-            placement="bottomRight"
-          >
-            <Button type="text" icon={<SettingOutlined />} size="small" title="设置标签颜色">
-              颜色设置
-            </Button>
-          </Popover>
-        </div>
-      }
+      title={`${currentRow?.botName || currentRow?.userName} - ${intl.formatMessage({
+        id: 'function_config',
+        defaultMessage: '功能配置',
+      })}`}
       open={open}
       onCancel={() => onCancel(false)}
       footer={null}
@@ -345,18 +205,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       }}
       destroyOnClose
     >
-      {generateTabStyles()}
       <Tabs
         tabPosition="left"
         activeKey={activeTab}
         onChange={setActiveTab}
         items={tabItems}
-        tabBarStyle={{
-          minWidth: 150,
-          paddingLeft: 8,
-          paddingRight: 12,
-        }}
-        className="colored-tabs"
+        tabBarStyle={{ minWidth: 120 }}
       />
     </Modal>
   );
