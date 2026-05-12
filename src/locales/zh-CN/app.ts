@@ -406,4 +406,5 @@ export default {
   incorrect: '错误',
   at_least_one_correct_answer: '至少需要一个正确答案',
   'groupVerify.tooltip': '开启后，新成员加入群组时需要通过验证问题才能加入',
+  pin_new_member: '置顶新成员',
 };

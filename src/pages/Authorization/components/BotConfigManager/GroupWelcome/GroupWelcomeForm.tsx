@@ -11,6 +11,7 @@ import {
   ProColumns,
   EditableProTable,
   ProFormDigit,
+  ProFormSwitch,
 } from '@ant-design/pro-components';
 
 type menuItem = {
@@ -57,9 +58,10 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         setMedias(welcomeData.medias || []);
         setMenus(formattedMenus);
 
-        // 设置阅后即焚时间
+        // 设置阅后即焚时间和置顶选项
         form.setFieldsValue({
           deleteAfterSeconds: welcomeData.deleteAfterSeconds || 0,
+          pinNewMember: welcomeData.pinNewMember || false,
         });
       } else {
         setContent('');
@@ -68,6 +70,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         setMenus([]);
         form.setFieldsValue({
           deleteAfterSeconds: 0,
+          pinNewMember: false,
         });
       }
     }
@@ -141,6 +144,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         medias,
         menus: menus.map(({ name, url }) => ({ name, url })),
         deleteAfterSeconds: formValues.deleteAfterSeconds || 0,
+        pinNewMember: formValues.pinNewMember || false,
       };
 
       // 使用专门的群欢迎更新接口
@@ -244,6 +248,19 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           }}
           placeholder="0"
           width="md"
+        />
+
+        <ProFormSwitch
+          name="pinNewMember"
+          label={intl.formatMessage({
+            id: 'pin_new_member',
+            defaultMessage: '置顶新成员',
+          })}
+          tooltip="开启后，新成员加入时会置顶欢迎消息（需要机器人有管理员权限）"
+          fieldProps={{
+            checkedChildren: '开启',
+            unCheckedChildren: '关闭',
+          }}
         />
       </ProFormGroup>
 

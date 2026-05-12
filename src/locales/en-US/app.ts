@@ -351,4 +351,5 @@ export default {
   '2fa.disabled': '2FA Disabled',
   'disable.2fa': 'Disable 2FA',
   'qr.code': 'QR Code',
+  pin_new_member: 'Pin New Member',
 };
