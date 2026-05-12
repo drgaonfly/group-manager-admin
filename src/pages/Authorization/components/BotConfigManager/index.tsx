@@ -164,7 +164,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       items.push({
         key: 'lotteryRule',
         label: intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' }),
-        children: <LotteryRuleTab currentRow={currentRow} />,
+        children: <LotteryRuleTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
 

@@ -6,9 +6,11 @@ import AdRemovalForm from './AdRemovalForm';
 
 interface AdRemovalTabProps {
   currentRow: any;
+  onBotUpdate?: (values: any) => Promise<void>;
 }
 
-const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
+const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) => {
+  console.log('AdRemovalTab - onBotUpdate:', onBotUpdate);
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,6 +50,11 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
         message.success(currentRecord?._id ? '更新成功' : '添加成功');
         setModalVisible(false);
         fetchList();
+        // 通知父组件更新
+        if (onBotUpdate) {
+          console.log('AdRemovalTab - calling onBotUpdate after submit');
+          await onBotUpdate({ _id: currentRow._id });
+        }
       }
     } catch (error) {
       console.error('Failed to submit ad removal:', error);
@@ -64,6 +71,11 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
       if ((res as any)?.success) {
         message.success('删除成功');
         fetchList();
+        // 通知父组件更新
+        if (onBotUpdate) {
+          console.log('AdRemovalTab - calling onBotUpdate after delete');
+          await onBotUpdate({ _id: currentRow._id });
+        }
       }
     } catch (error) {
       console.error('Failed to delete ad removal:', error);
@@ -79,6 +91,11 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow }) => {
       if ((res as any)?.success) {
         message.success('更新成功');
         fetchList();
+        // 通知父组件更新
+        if (onBotUpdate) {
+          console.log('AdRemovalTab - calling onBotUpdate after status change');
+          await onBotUpdate({ _id: currentRow._id });
+        }
       }
     } catch (error) {
       message.error('操作失败');

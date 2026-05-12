@@ -27,9 +27,11 @@ interface LotteryRecord {
 
 interface LotteryRuleProps {
   currentRow: any;
+  onBotUpdate?: (values: any) => Promise<void>;
 }
 
-const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
+const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow, onBotUpdate }) => {
+  console.log('LotteryRule - onBotUpdate:', onBotUpdate);
   const [data, setData] = useState<LotteryRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -81,6 +83,11 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
       });
       message.success('删除成功');
       fetchLotteries();
+      // 通知父组件更新
+      if (onBotUpdate) {
+        console.log('LotteryRule - calling onBotUpdate after delete');
+        await onBotUpdate({ _id: currentRow._id });
+      }
     } catch (error) {
       message.error('删除失败');
     }
@@ -93,6 +100,11 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
       });
       message.success('开奖成功');
       fetchLotteries();
+      // 通知父组件更新
+      if (onBotUpdate) {
+        console.log('LotteryRule - calling onBotUpdate after draw');
+        await onBotUpdate({ _id: currentRow._id });
+      }
     } catch (error) {
       message.error('开奖失败');
     }
@@ -114,6 +126,11 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow }) => {
       message.success(editingRecord ? '更新成功' : '创建成功');
       setModalVisible(false);
       fetchLotteries();
+      // 通知父组件更新
+      if (onBotUpdate) {
+        console.log('LotteryRule - calling onBotUpdate after submit');
+        await onBotUpdate({ _id: currentRow._id });
+      }
     } catch (error: any) {
       throw new Error(error.message || '操作失败');
     }
