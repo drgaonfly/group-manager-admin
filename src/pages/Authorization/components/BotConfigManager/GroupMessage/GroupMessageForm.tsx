@@ -35,7 +35,7 @@ const handleAdd = async (data: any) => {
     if (data.sendType === 'scheduled') {
       await addItem('/group-messages', data);
     } else {
-      await updateItem(`/bots/${data.bot.toString()}/send-group-message`, data);
+      await updateItem(`/bots/${data.bot?.toString()}/send-group-message`, data);
     }
     hide();
     message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
