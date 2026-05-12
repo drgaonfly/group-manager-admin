@@ -112,6 +112,41 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
       render: (medias: string[]) => medias?.length || 0,
     },
     {
+      title: <FormattedMessage id="menus" defaultMessage="菜单" />,
+      dataIndex: 'menus',
+      width: 80,
+      render: (menus: any[]) => {
+        if (!menus || menus.length === 0) return 0;
+
+        const styleCount = menus.reduce((acc: any, menu: any) => {
+          const style = menu.style || 'primary';
+          acc[style] = (acc[style] || 0) + 1;
+          return acc;
+        }, {});
+
+        const styleMap = {
+          primary: { color: '#1890ff', emoji: '🔵' },
+          success: { color: '#52c41a', emoji: '🟢' },
+          danger: { color: '#ff4d4f', emoji: '🔴' },
+        };
+
+        return (
+          <Space size={2}>
+            <span>{menus.length}</span>
+            {Object.entries(styleCount).map(([style, count]: [string, any]) => (
+              <span
+                key={style}
+                style={{ color: styleMap[style as keyof typeof styleMap]?.color, fontSize: '12px' }}
+              >
+                {styleMap[style as keyof typeof styleMap]?.emoji}
+                {count}
+              </span>
+            ))}
+          </Space>
+        );
+      },
+    },
+    {
       title: <FormattedMessage id="quote" defaultMessage="引用" />,
       dataIndex: 'replyToMessage',
       width: 50,

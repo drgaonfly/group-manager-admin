@@ -126,7 +126,34 @@ const TableList: React.FC = () => {
       title: '菜单数量',
       dataIndex: 'menus',
       hideInSearch: true,
-      render: (_, record) => record?.menus?.length || 0,
+      render: (_, record) => {
+        const menus = record?.menus || [];
+        if (menus.length === 0) return 0;
+
+        const styleCount = menus.reduce((acc: any, menu: any) => {
+          const style = menu.style || 'primary';
+          acc[style] = (acc[style] || 0) + 1;
+          return acc;
+        }, {});
+
+        const styleMap = {
+          primary: { color: '#1890ff', emoji: '🔵' },
+          success: { color: '#52c41a', emoji: '🟢' },
+          danger: { color: '#ff4d4f', emoji: '🔴' },
+        };
+
+        return (
+          <Space size={4}>
+            <span>{menus.length}</span>
+            {Object.entries(styleCount).map(([style, count]: [string, any]) => (
+              <span key={style} style={{ color: styleMap[style as keyof typeof styleMap]?.color }}>
+                {styleMap[style as keyof typeof styleMap]?.emoji}
+                {count}
+              </span>
+            ))}
+          </Space>
+        );
+      },
     },
     {
       title: '引用消息',

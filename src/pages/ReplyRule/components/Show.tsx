@@ -97,14 +97,27 @@ const Show: React.FC<Props> = ({ onClose, open, currentRow }) => {
             render: (_, record) =>
               record.menus && record.menus.length > 0 ? (
                 <Space direction="vertical">
-                  {record.menus.map((menu: any, idx: number) => (
-                    <div key={idx}>
-                      <Tag>{menu.name}</Tag>
-                      <a href={menu.url} target="_blank" rel="noreferrer">
-                        {menu.url}
-                      </a>
-                    </div>
-                  ))}
+                  {record.menus.map((menu: any, idx: number) => {
+                    const styleMap = {
+                      primary: { color: '#1890ff', text: '蓝色', emoji: '🔵' },
+                      success: { color: '#52c41a', text: '绿色', emoji: '🟢' },
+                      danger: { color: '#ff4d4f', text: '红色', emoji: '🔴' },
+                    };
+                    const style = styleMap[menu.style as keyof typeof styleMap] || styleMap.primary;
+
+                    return (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Tag color="blue">{menu.name}</Tag>
+                        <span style={{ color: style.color, fontWeight: 'bold' }}>
+                          {style.emoji} {style.text}
+                        </span>
+                        <span>行号: {menu.row || 0}</span>
+                        <a href={menu.url} target="_blank" rel="noreferrer">
+                          {menu.url}
+                        </a>
+                      </div>
+                    );
+                  })}
                 </Space>
               ) : (
                 '-'

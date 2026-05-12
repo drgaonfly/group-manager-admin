@@ -20,6 +20,7 @@ type menuItem = {
   name: string;
   url: string;
   row: number;
+  style: 'primary' | 'success' | 'danger';
 };
 
 interface BasicFormProps {
@@ -153,6 +154,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           name: m.name,
           url: m.url,
           row: m.row || 0,
+          style: m.style || 'primary',
         })),
       );
 
@@ -187,7 +189,12 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         keyword: keywordArray,
         content: convertToTelegramHtml(content),
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
-        menus: menus.map(({ name, url, row }) => ({ name, url, row: row || 0 })),
+        menus: menus.map(({ name, url, row, style }) => ({
+          name,
+          url,
+          row: row || 0,
+          style: style || 'primary',
+        })),
       };
     };
   }, [keywords, content, medias, menus, form]);
@@ -206,6 +213,31 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           { required: true, message: '请输入链接' },
           { pattern: /^https?:\/\/.+/, message: '请输入有效的链接' },
         ],
+      },
+    },
+    {
+      title: '样式',
+      dataIndex: 'style',
+      valueType: 'select',
+      width: 100,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择样式' }],
+      },
+      fieldProps: {
+        options: [
+          { label: '蓝色', value: 'primary' },
+          { label: '绿色', value: 'success' },
+          { label: '红色', value: 'danger' },
+        ],
+      },
+      render: (_, record) => {
+        const styleMap = {
+          primary: { color: '#1890ff', text: '蓝色' },
+          success: { color: '#52c41a', text: '绿色' },
+          danger: { color: '#ff4d4f', text: '红色' },
+        };
+        const style = styleMap[record.style] || styleMap.primary;
+        return <span style={{ color: style.color, fontWeight: 'bold' }}>{style.text}</span>;
       },
     },
     {
@@ -350,7 +382,13 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), name: '', url: '', row: 0 }),
+          record: () => ({
+            _id: Date.now().toString(),
+            name: '',
+            url: '',
+            row: 0,
+            style: 'primary',
+          }),
         }}
       />
     </>
