@@ -33,6 +33,7 @@ const ServiceLink: React.FC = () => {
     replyRule: boolean;
     checkinRule: boolean;
     lotteryRule: boolean;
+    auctionRule: boolean;
     teaching: boolean;
     adRemoval: boolean;
     botCount: number;
@@ -102,6 +103,7 @@ const ServiceLink: React.FC = () => {
               replyRule: currentUser?.replyRule || false,
               checkinRule: currentUser?.checkinRule || false,
               lotteryRule: currentUser?.lotteryRule || false,
+              auctionRule: currentUser?.auctionRule || false,
               teaching: currentUser?.teaching || false,
               adRemoval: currentUser?.adRemoval || false,
               availableBotCount: currentUser?.availableBotCount || 0,
@@ -219,6 +221,17 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'lotteryRule.tooltip',
                 defaultMessage: '开启后，可以创建和管理群组抽奖活动',
+              })}
+            />
+            <ProFormSwitch
+              name="auctionRule"
+              label={intl.formatMessage({
+                id: 'auctionRule',
+                defaultMessage: '群竞拍',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'auctionRule.tooltip',
+                defaultMessage: '开启后，可以创建和管理群组竞拍活动',
               })}
             />
             <ProFormSwitch
@@ -408,6 +421,21 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'lotteryRule.tooltip',
                   defaultMessage: '开启后，可以创建和管理群组抽奖活动',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'auctionRule',
+                defaultMessage: '群竞拍',
+              })}
+            >
+              {renderStatusTag(currentUser?.auctionRule || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'auctionRule.tooltip',
+                  defaultMessage: '开启后，可以创建和管理群组竞拍活动',
                 })}
               </Text>
             </Descriptions.Item>

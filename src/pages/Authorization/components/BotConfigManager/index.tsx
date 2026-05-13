@@ -11,6 +11,7 @@ import GroupVerifyTab from './GroupVerify';
 import SpeechStatisticsTab from './SpeechStatistics';
 import CheckinRuleTab from './CheckinRule';
 import LotteryRuleTab from './LotteryRule';
+import AuctionRuleTab from './AuctionRule';
 import TeachingTab from './Teaching';
 import AdRemovalTab from './AdRemoval';
 
@@ -48,6 +49,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canReportMemberNameUpdated: currentRow.canReportMemberNameUpdated,
         canCheckIn: currentRow.canCheckIn,
         canLotteryRule: currentRow.canLotteryRule,
+        canAuctionRule: currentRow.canAuctionRule,
         canTeaching: currentRow.canTeaching,
         canRemoveAd: currentRow.canRemoveAd,
       });
@@ -165,6 +167,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'lotteryRule',
         label: intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' }),
         children: <LotteryRuleTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
+      });
+    }
+
+    // 群竞拍 Tab
+    if (botConfig.canAuctionRule && currentUser?.auctionRule) {
+      items.push({
+        key: 'auctionRule',
+        label: intl.formatMessage({ id: 'auction_rule', defaultMessage: '群竞拍' }),
+        children: <AuctionRuleTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
 

@@ -198,6 +198,10 @@ const TableList: React.FC = () => {
             enabled: record.lotteryRule,
           },
           {
+            name: intl.formatMessage({ id: 'auctionRule' }),
+            enabled: record.auctionRule,
+          },
+          {
             name: intl.formatMessage({ id: 'teaching' }),
             enabled: record.teaching,
           },

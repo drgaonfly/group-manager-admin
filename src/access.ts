@@ -331,5 +331,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/recharges/:id', 'PUT')),
     canGetRecharge:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/recharges', 'GET')),
+
+    // auction 权限
+    canCreateAuction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/auctions', 'POST')),
+    canDeleteAuction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/auctions', 'DELETE')),
+    canUpdateAuction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/auctions/:id', 'PUT')),
+    canGetAuction:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/auctions', 'GET')),
   };
 }
