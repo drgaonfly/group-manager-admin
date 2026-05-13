@@ -12,8 +12,9 @@ import {
   InputNumber,
   Space,
   Divider,
+  Checkbox,
 } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, PushpinOutlined } from '@ant-design/icons';
 // import { useIntl } from '@umijs/max';
 import moment from 'moment';
 import RichTextEditor from '@/components/RichTextEditor';
@@ -350,7 +351,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item name="notifyPin" valuePropName="checked">
-            <span>置顶活动通知</span>
+            <Checkbox>
+              <PushpinOutlined className="mr-1" />
+              置顶活动通知
+            </Checkbox>
           </Form.Item>
 
           <Divider />
@@ -370,7 +374,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item name="joinSuccessPin" valuePropName="checked">
-            <span>置顶参与成功通知</span>
+            <Checkbox>
+              <PushpinOutlined className="mr-1" />
+              置顶参与成功通知
+            </Checkbox>
           </Form.Item>
 
           <Divider />
@@ -390,7 +397,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item name="drawResultPin" valuePropName="checked">
-            <span>置顶开奖通知</span>
+            <Checkbox>
+              <PushpinOutlined className="mr-1" />
+              置顶开奖通知
+            </Checkbox>
           </Form.Item>
         </Card>
       )}

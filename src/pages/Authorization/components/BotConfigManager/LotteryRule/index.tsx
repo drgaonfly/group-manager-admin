@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Table, Modal, message, Space, Tag, Popconfirm } from 'antd';
+import { Card, Button, Table, Modal, message, Space, Tag, Popconfirm, Tooltip } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   PlayCircleOutlined,
   UserOutlined,
+  PushpinOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 import { queryList } from '@/services/ant-design-pro/api';
@@ -21,6 +22,9 @@ interface LotteryRecord {
   drawMethod: string[];
   fullParticipantsCount?: number;
   scheduledDrawTime?: string;
+  notifyPin?: boolean;
+  joinSuccessPin?: boolean;
+  drawResultPin?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -192,6 +196,28 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow, onBotUpdate }) =>
           methods.push('定时开奖');
         }
         return methods.join(', ');
+      },
+    },
+    {
+      title: '置顶设置',
+      key: 'pinSettings',
+      render: (_: any, record: LotteryRecord) => {
+        const pins = [];
+        if (record.notifyPin) pins.push('活动通知');
+        if (record.joinSuccessPin) pins.push('参与成功');
+        if (record.drawResultPin) pins.push('开奖结果');
+
+        if (pins.length === 0) {
+          return <Tag>无置顶</Tag>;
+        }
+
+        return (
+          <Tooltip title={`置顶: ${pins.join(', ')}`}>
+            <Tag color="blue" icon={<PushpinOutlined />}>
+              {pins.length}项置顶
+            </Tag>
+          </Tooltip>
+        );
       },
     },
     {
