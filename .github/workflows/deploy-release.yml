@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /www/wwwroot/manager-admin.2040fc.xyz/manager-admin &&
+            cd /www/wwwroot/group-manager-admin.2040fc.xyz/manager-admin &&
             git pull --rebase origin main &&
             /www/server/nodejs/v20.16.0/bin/pnpm install &&
             git checkout -f . &&
