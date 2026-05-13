@@ -113,4 +113,5 @@ export default {
   'menu.卡密管理': '卡密管理',
   'menu.充值记录': '充值记录',
   'menu.支付订单管理': '支付订单管理',
+  'menu.recharges': '充值管理',
 };

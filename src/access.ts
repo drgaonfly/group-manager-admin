@@ -321,5 +321,15 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       (currentUser.isAdmin || checkPermission(currentUser, '/reply-rules/:id', 'PUT')),
     canGetReplyRule:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/reply-rules', 'GET')),
+
+    // recharge 权限
+    canCreateRecharge:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/recharges', 'POST')),
+    canDeleteRecharge:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/recharges', 'DELETE')),
+    canUpdateRecharge:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/recharges/:id', 'PUT')),
+    canGetRecharge:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/recharges', 'GET')),
   };
 }

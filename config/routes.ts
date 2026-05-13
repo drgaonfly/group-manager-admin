@@ -250,4 +250,10 @@ export default [
     component: './ReplyRule',
     access: 'canGetReplyRule',
   },
+  {
+    path: '/recharges',
+    name: 'list.recharges',
+    icon: 'MoneyCollectOutlined',
+    component: './Recharge',
+  },
 ];

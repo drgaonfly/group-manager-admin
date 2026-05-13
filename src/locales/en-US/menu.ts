@@ -69,4 +69,5 @@ export default {
   'menu.用户消息': 'User Messages',
 
   'menu.reply-rules': 'Reply Rules',
+  'menu.recharges': 'Recharges',
 };
