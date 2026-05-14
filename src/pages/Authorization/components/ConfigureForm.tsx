@@ -176,6 +176,16 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             }}
           />
 
+          <ProFormTextArea
+            rules={[{ message: intl.formatMessage({ id: 'enter_help' }) }]}
+            width="md"
+            label={intl.formatMessage({ id: 'help_message', defaultMessage: '帮助信息' })}
+            name="help"
+            fieldProps={{
+              autoSize: { minRows: 8 },
+            }}
+          />
+
           <ProFormText
             rules={[{ required: false, message: intl.formatMessage({ id: 'enter_trx_address' }) }]}
             width="md"
