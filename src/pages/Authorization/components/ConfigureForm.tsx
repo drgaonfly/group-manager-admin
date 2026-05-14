@@ -176,7 +176,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             }}
           />
 
-          {/* <ProFormText
+          <ProFormText
             rules={[{ required: false, message: intl.formatMessage({ id: 'enter_trx_address' }) }]}
             width="md"
             label={intl.formatMessage({
@@ -187,7 +187,7 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             tooltip="格式示例: T..."
             placeholder="请输入trx地址"
           />
-          <ProFormDigit
+          {/* <ProFormDigit
             width="md"
             label={intl.formatMessage({ id: 'fee', defaultMessage: '闪兑费用' })}
             name="fee"
