@@ -275,4 +275,7 @@ export default {
   isAvailable: 'Is Available',
   reviews: 'Reviews',
   options: 'Options',
+
+  usdt_balance_before: 'before charge',
+  usdt_balance_after: 'after charge',
 };

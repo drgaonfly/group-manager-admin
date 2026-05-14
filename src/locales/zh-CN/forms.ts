@@ -374,4 +374,7 @@ export default {
   options: '操作',
   approved: '已通过',
   rejected: '已拒绝',
+
+  usdt_balance_before: '充值前余额',
+  usdt_balance_after: '充值后余额',
 };
