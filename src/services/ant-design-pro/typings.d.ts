@@ -47,6 +47,7 @@ declare namespace API {
     auctionRule?: boolean;
     teaching?: boolean;
     adRemoval?: boolean;
+    rankConferral?: boolean;
   };
 
   // Example type definition

@@ -36,6 +36,7 @@ const ServiceLink: React.FC = () => {
     auctionRule: boolean;
     teaching: boolean;
     adRemoval: boolean;
+    rankConferral: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -106,6 +107,7 @@ const ServiceLink: React.FC = () => {
               auctionRule: currentUser?.auctionRule || false,
               teaching: currentUser?.teaching || false,
               adRemoval: currentUser?.adRemoval || false,
+              rankConferral: currentUser?.rankConferral || false,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
@@ -256,6 +258,18 @@ const ServiceLink: React.FC = () => {
                 id: 'adRemoval.tooltip',
                 defaultMessage:
                   '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
+              })}
+            />
+            <ProFormSwitch
+              name="rankConferral"
+              label={intl.formatMessage({
+                id: 'rankConferral',
+                defaultMessage: '授衔',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'rankConferral.tooltip',
+                defaultMessage:
+                  '开启后，代理可以为其下的机器人配置积分称号等级，用户达到积分门槛后自动获得对应称号',
               })}
             />
           </ProForm>
@@ -468,6 +482,22 @@ const ServiceLink: React.FC = () => {
                   id: 'adRemoval.tooltip',
                   defaultMessage:
                     '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'rankConferral',
+                defaultMessage: '授衔',
+              })}
+            >
+              {renderStatusTag(currentUser?.rankConferral || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'rankConferral.tooltip',
+                  defaultMessage:
+                    '开启后，代理可以为其下的机器人配置积分称号等级，用户达到积分门槛后自动获得对应称号',
                 })}
               </Text>
             </Descriptions.Item>

@@ -275,6 +275,9 @@ export default {
   isAvailable: 'Is Available',
   reviews: 'Reviews',
   options: 'Options',
+  adRemoval: 'Ad Rmoval',
+  rankConferral: 'Rank Conferral',
+  auctionRule: 'Auction Rule',
 
   usdt_balance_before: 'before charge',
   usdt_balance_after: 'after charge',

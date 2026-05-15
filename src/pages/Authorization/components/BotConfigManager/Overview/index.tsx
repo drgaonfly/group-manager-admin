@@ -94,6 +94,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canRemoveAd', defaultMessage: '去除广告' }),
       permission: currentUser?.adRemoval,
     },
+    {
+      key: 'canRankConferral',
+      label: intl.formatMessage({ id: 'canRankConferral', defaultMessage: '授衔' }),
+      permission: currentUser?.rankConferral,
+    },
   ];
 
   return (

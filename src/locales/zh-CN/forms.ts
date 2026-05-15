@@ -374,6 +374,9 @@ export default {
   options: '操作',
   approved: '已通过',
   rejected: '已拒绝',
+  adRemoval: '清除广告',
+  rankConferral: '授衔',
+  auctionRule: '竞拍规则',
 
   usdt_balance_before: '充值前余额',
   usdt_balance_after: '充值后余额',

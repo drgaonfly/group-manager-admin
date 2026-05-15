@@ -14,6 +14,7 @@ import LotteryRuleTab from './LotteryRule';
 import AuctionRuleTab from './AuctionRule';
 import TeachingTab from './Teaching';
 import AdRemovalTab from './AdRemoval';
+import RankConferralTab from './RankConferral';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -52,6 +53,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canAuctionRule: currentRow.canAuctionRule,
         canTeaching: currentRow.canTeaching,
         canRemoveAd: currentRow.canRemoveAd,
+        canRankConferral: currentRow.canRankConferral,
       });
     }
   }, [open, currentRow]);
@@ -194,6 +196,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'adRemoval',
         label: intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' }),
         children: <AdRemovalTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
+      });
+    }
+
+    // 授衔 Tab
+    if (botConfig.canRankConferral && currentUser?.rankConferral) {
+      items.push({
+        key: 'rankConferral',
+        label: intl.formatMessage({ id: 'rank_conferral', defaultMessage: '授衔' }),
+        children: <RankConferralTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
 

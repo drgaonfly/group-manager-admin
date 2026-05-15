@@ -217,6 +217,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'adRemoval' }),
             enabled: record.adRemoval,
           },
+          {
+            name: intl.formatMessage({ id: 'rankConferral' }),
+            enabled: record.rankConferral,
+          },
         ];
 
         return (

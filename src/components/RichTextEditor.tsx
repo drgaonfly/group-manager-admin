@@ -16,6 +16,7 @@ const ALL_VARIABLES = [
     label: '用户积分榜单',
     desc: '显示本群积分排名前10的用户列表',
   },
+  { key: '{currentRank}', label: '当前称号', desc: '用户当前积分对应的称号' },
   { key: '{groupTitle}', label: '群名称', desc: '当前群组的名称' },
   { key: '{currentTime}', label: '当前时间', desc: '消息发送时的时间' },
   { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
@@ -30,6 +31,7 @@ export type VariableType =
   | 'userBalance'
   | 'userBalanceRanking'
   | 'userBalanceRankingList'
+  | 'currentRank'
   | 'groupTitle'
   | 'currentTime'
   | 'currentBot';
@@ -45,6 +47,7 @@ export const VARIABLE_PRESETS = {
     'userBalance',
     'userBalanceRanking',
     'userBalanceRankingList',
+    'currentRank',
     'groupTitle',
     'currentTime',
     'currentBot',
@@ -60,6 +63,7 @@ export const VARIABLE_PRESETS = {
     'userBalance',
     'userBalanceRanking',
     'userBalanceRankingList',
+    'currentRank',
     'groupTitle',
     'currentTime',
     'currentBot',
