@@ -19,6 +19,7 @@ import { PlusOutlined, DeleteOutlined, EditOutlined, PushpinOutlined } from '@an
 import moment from 'moment';
 import RichTextEditor from '@/components/RichTextEditor';
 import MyUpload from '@/components/MyUpload';
+import LotteryGroupSelect from './LotteryGroupSelect';
 
 const { Option } = Select;
 
@@ -65,6 +66,7 @@ interface NotifyButton {
 
 interface LotteryFormData {
   title: string;
+  group: string;
   keywords: string[];
   notifyContent: string;
   notifyButtons: NotifyButton[];
@@ -85,6 +87,7 @@ interface LotteryFormData {
 
 interface LotteryFormProps {
   currentRow: any;
+  botId: string;
   onSubmit: (values: LotteryFormData) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
@@ -92,6 +95,7 @@ interface LotteryFormProps {
 
 const LotteryForm: React.FC<LotteryFormProps> = ({
   currentRow,
+  botId,
   onSubmit,
   onCancel,
   loading = false,
@@ -137,6 +141,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
       // 验证所有必需字段
       const requiredFields = [
         'title',
+        'group',
         'keywords',
         'prizes',
         'notifyContent',
@@ -150,7 +155,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
         if (!value || (Array.isArray(value) && value.length === 0)) {
           message.error(`请填写 ${field} 字段`);
           // 切换到对应步骤
-          if (['title', 'keywords'].includes(field)) setCurrentStep(0);
+          if (['title', 'group', 'keywords'].includes(field)) setCurrentStep(0);
           else if (field === 'prizes') setCurrentStep(1);
           else if (['notifyContent', 'joinSuccessContent', 'drawResultContent'].includes(field))
             setCurrentStep(2);
@@ -279,6 +284,8 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           >
             <Input placeholder="请输入抽奖活动标题" />
           </Form.Item>
+
+          <LotteryGroupSelect botId={botId} />
 
           <Form.Item
             name="keywords"

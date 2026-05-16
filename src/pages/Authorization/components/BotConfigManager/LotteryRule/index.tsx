@@ -25,6 +25,11 @@ interface LotteryRecord {
   notifyPin?: boolean;
   joinSuccessPin?: boolean;
   drawResultPin?: boolean;
+  group?: {
+    _id: string;
+    title: string;
+    username?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -170,6 +175,12 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow, onBotUpdate }) =>
       title: '活动标题',
       dataIndex: 'title',
       key: 'title',
+    },
+    {
+      title: '群组',
+      dataIndex: 'group',
+      key: 'group',
+      render: (group: any) => group?.title || '-',
     },
     {
       title: '关键词',
@@ -341,6 +352,7 @@ const LotteryRule: React.FC<LotteryRuleProps> = ({ currentRow, onBotUpdate }) =>
       >
         <LotteryForm
           currentRow={editingRecord}
+          botId={currentRow?._id}
           onSubmit={handleSubmit}
           onCancel={() => setModalVisible(false)}
         />
