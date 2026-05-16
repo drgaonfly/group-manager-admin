@@ -7,11 +7,18 @@ const { Option } = Select;
 
 interface BotGroupSelectProps {
   botId: string;
+  /** 编辑模式下传入当前竞拍 ID，避免把自己的群组也禁用 */
+  currentAuctionId?: string;
   value?: string;
   onChange?: (value: string) => void;
 }
 
-const BotGroupSelect: React.FC<BotGroupSelectProps> = ({ botId, value, onChange }) => {
+const BotGroupSelect: React.FC<BotGroupSelectProps> = ({
+  botId,
+  currentAuctionId,
+  value,
+  onChange,
+}) => {
   const intl = useIntl();
   const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -21,7 +28,6 @@ const BotGroupSelect: React.FC<BotGroupSelectProps> = ({ botId, value, onChange 
     if (botId) {
       setLoading(true);
 
-      // 同时获取群组列表和进行中的竞拍
       Promise.all([
         request('/groups/getByBotId', {
           method: 'GET',
@@ -42,7 +48,11 @@ const BotGroupSelect: React.FC<BotGroupSelectProps> = ({ botId, value, onChange 
             setGroups(groupsRes.data || []);
           }
           if (auctionsRes.success) {
-            setOngoingAuctions(auctionsRes.data || []);
+            // 编辑模式下排除自身，避免自己的群组被禁用
+            const all: any[] = auctionsRes.data || [];
+            setOngoingAuctions(
+              currentAuctionId ? all.filter((a) => a._id !== currentAuctionId) : all,
+            );
           }
         })
         .catch((err) => {
@@ -52,7 +62,7 @@ const BotGroupSelect: React.FC<BotGroupSelectProps> = ({ botId, value, onChange 
           setLoading(false);
         });
     }
-  }, [botId]);
+  }, [botId, currentAuctionId]);
 
   return (
     <Form.Item
@@ -69,12 +79,12 @@ const BotGroupSelect: React.FC<BotGroupSelectProps> = ({ botId, value, onChange 
         onChange={onChange}
       >
         {groups.map((group) => {
-          const hasOngoingAuction = ongoingAuctions.some(
-            (auction) => auction.group?._id === group._id,
-          );
+          // 统一转为字符串比较，避免 ObjectId vs string 类型不一致
+          const groupId = String(group._id);
           const ongoingAuction = ongoingAuctions.find(
-            (auction) => auction.group?._id === group._id,
+            (auction) => String(auction.group?._id) === groupId,
           );
+          const hasOngoingAuction = !!ongoingAuction;
 
           return (
             <Option key={group._id} value={group._id} disabled={hasOngoingAuction}>

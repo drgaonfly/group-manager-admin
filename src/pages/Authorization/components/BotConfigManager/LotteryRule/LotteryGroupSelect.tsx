@@ -6,11 +6,18 @@ const { Option } = Select;
 
 interface LotteryGroupSelectProps {
   botId: string;
+  /** 编辑模式下传入当前抽奖 ID，避免把自己的群组也禁用 */
+  currentLotteryId?: string;
   value?: string;
   onChange?: (value: string) => void;
 }
 
-const LotteryGroupSelect: React.FC<LotteryGroupSelectProps> = ({ botId, value, onChange }) => {
+const LotteryGroupSelect: React.FC<LotteryGroupSelectProps> = ({
+  botId,
+  currentLotteryId,
+  value,
+  onChange,
+}) => {
   const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [ongoingLotteries, setOngoingLotteries] = useState<any[]>([]);
@@ -39,7 +46,11 @@ const LotteryGroupSelect: React.FC<LotteryGroupSelectProps> = ({ botId, value, o
             setGroups(groupsRes.data || []);
           }
           if (lotteriesRes.success) {
-            setOngoingLotteries(lotteriesRes.data || []);
+            // 编辑模式下排除自身，避免自己的群组被禁用
+            const all: any[] = lotteriesRes.data || [];
+            setOngoingLotteries(
+              currentLotteryId ? all.filter((l) => l._id !== currentLotteryId) : all,
+            );
           }
         })
         .catch((err) => {
@@ -49,7 +60,7 @@ const LotteryGroupSelect: React.FC<LotteryGroupSelectProps> = ({ botId, value, o
           setLoading(false);
         });
     }
-  }, [botId]);
+  }, [botId, currentLotteryId]);
 
   return (
     <Form.Item
@@ -66,12 +77,12 @@ const LotteryGroupSelect: React.FC<LotteryGroupSelectProps> = ({ botId, value, o
         onChange={onChange}
       >
         {groups.map((group) => {
-          const hasOngoingLottery = ongoingLotteries.some(
-            (lottery) => lottery.group?._id === group._id,
-          );
+          // 统一转为字符串比较，避免 ObjectId vs string 类型不一致
+          const groupId = String(group._id);
           const ongoingLottery = ongoingLotteries.find(
-            (lottery) => lottery.group?._id === group._id,
+            (lottery) => String(lottery.group?._id) === groupId,
           );
+          const hasOngoingLottery = !!ongoingLottery;
 
           return (
             <Option key={group._id} value={group._id} disabled={hasOngoingLottery}>

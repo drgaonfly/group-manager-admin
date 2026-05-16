@@ -285,7 +285,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
             <Input placeholder="请输入抽奖活动标题" />
           </Form.Item>
 
-          <LotteryGroupSelect botId={botId} />
+          <LotteryGroupSelect botId={botId} currentLotteryId={currentRow?._id} />
 
           <Form.Item
             name="keywords"

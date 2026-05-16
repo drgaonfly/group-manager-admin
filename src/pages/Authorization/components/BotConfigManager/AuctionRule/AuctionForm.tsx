@@ -150,7 +150,7 @@ const AuctionForm: React.FC<AuctionFormProps> = ({
           <Input placeholder="请输入竞拍活动标题" />
         </Form.Item>
 
-        <BotGroupSelect botId={botId} />
+        <BotGroupSelect botId={botId} currentAuctionId={currentRow?._id} />
 
         <Form.Item
           name="keywords"
