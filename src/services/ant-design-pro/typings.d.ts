@@ -48,6 +48,7 @@ declare namespace API {
     teaching?: boolean;
     adRemoval?: boolean;
     rankConferral?: boolean;
+    recharge?: boolean;
   };
 
   // Example type definition

@@ -37,6 +37,7 @@ const ServiceLink: React.FC = () => {
     teaching: boolean;
     adRemoval: boolean;
     rankConferral: boolean;
+    recharge: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -108,6 +109,7 @@ const ServiceLink: React.FC = () => {
               teaching: currentUser?.teaching || false,
               adRemoval: currentUser?.adRemoval || false,
               rankConferral: currentUser?.rankConferral || false,
+              recharge: currentUser?.recharge || false,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
@@ -270,6 +272,17 @@ const ServiceLink: React.FC = () => {
                 id: 'rankConferral.tooltip',
                 defaultMessage:
                   '开启后，代理可以为其下的机器人配置积分称号等级，用户达到积分门槛后自动获得对应称号',
+              })}
+            />
+            <ProFormSwitch
+              name="recharge"
+              label={intl.formatMessage({
+                id: 'recharge',
+                defaultMessage: '充值',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'recharge.tooltip',
+                defaultMessage: '开启后，代理可以为其下的机器人开启充值功能',
               })}
             />
           </ProForm>
@@ -498,6 +511,21 @@ const ServiceLink: React.FC = () => {
                   id: 'rankConferral.tooltip',
                   defaultMessage:
                     '开启后，代理可以为其下的机器人配置积分称号等级，用户达到积分门槛后自动获得对应称号',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'recharge',
+                defaultMessage: '充值',
+              })}
+            >
+              {renderStatusTag(currentUser?.recharge || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'recharge.tooltip',
+                  defaultMessage: '开启后，代理可以为其下的机器人开启充值功能',
                 })}
               </Text>
             </Descriptions.Item>

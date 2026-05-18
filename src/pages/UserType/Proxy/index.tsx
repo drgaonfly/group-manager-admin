@@ -221,6 +221,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'rankConferral' }),
             enabled: record.rankConferral,
           },
+          {
+            name: intl.formatMessage({ id: 'recharge' }),
+            enabled: record.recharge,
+          },
         ];
 
         return (
