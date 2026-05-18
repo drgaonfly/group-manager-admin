@@ -99,6 +99,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canRankConferral', defaultMessage: '授衔' }),
       permission: currentUser?.rankConferral,
     },
+    {
+      key: 'canRecharge',
+      label: intl.formatMessage({ id: 'canRecharge', defaultMessage: '充值' }),
+      permission: currentUser?.recharge,
+    },
   ];
 
   return (

@@ -54,6 +54,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canTeaching: currentRow.canTeaching,
         canRemoveAd: currentRow.canRemoveAd,
         canRankConferral: currentRow.canRankConferral,
+        canRecharge: currentRow.canRecharge,
       });
     }
   }, [open, currentRow]);
