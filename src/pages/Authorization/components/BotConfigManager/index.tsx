@@ -15,6 +15,7 @@ import AuctionRuleTab from './AuctionRule';
 import TeachingTab from './Teaching';
 import AdRemovalTab from './AdRemoval';
 import RankConferralTab from './RankConferral';
+import SuccessTab from './Success';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -207,6 +208,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'rankConferral',
         label: intl.formatMessage({ id: 'rank_conferral', defaultMessage: '授衔' }),
         children: <RankConferralTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
+      });
+    }
+
+    // 积分继承 Tab
+    if (botConfig.canSuccess && currentUser?.success) {
+      items.push({
+        key: 'success',
+        label: intl.formatMessage({ id: 'success', defaultMessage: '积分继承' }),
+        children: <SuccessTab currentRow={currentRow} />,
       });
     }
 
