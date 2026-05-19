@@ -49,6 +49,7 @@ declare namespace API {
     adRemoval?: boolean;
     rankConferral?: boolean;
     recharge?: boolean;
+    success?: boolean;
   };
 
   // Example type definition
