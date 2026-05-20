@@ -70,4 +70,5 @@ export default {
 
   'menu.reply-rules': 'Reply Rules',
   'menu.recharges': 'Recharges',
+  'menu.posts': 'Posts',
 };

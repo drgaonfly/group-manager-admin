@@ -256,4 +256,10 @@ export default [
     icon: 'MoneyCollectOutlined',
     component: './Recharge',
   },
+  {
+    path: '/posts',
+    name: 'list.posts',
+    icon: 'FileTextOutlined',
+    component: './Post',
+  },
 ];

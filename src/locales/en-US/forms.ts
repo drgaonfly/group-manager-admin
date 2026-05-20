@@ -281,4 +281,7 @@ export default {
 
   usdt_balance_before: 'before charge',
   usdt_balance_after: 'after charge',
+
+  teaching: 'Teaching',
+  success: 'Success',
 };

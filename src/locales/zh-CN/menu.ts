@@ -114,4 +114,5 @@ export default {
   'menu.充值记录': '充值记录',
   'menu.支付订单管理': '支付订单管理',
   'menu.recharges': '充值管理',
+  'menu.posts': '帖子管理',
 };

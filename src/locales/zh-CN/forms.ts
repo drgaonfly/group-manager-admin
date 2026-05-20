@@ -380,4 +380,7 @@ export default {
 
   usdt_balance_before: '充值前余额',
   usdt_balance_after: '充值后余额',
+
+  teaching: '教学',
+  success: '积分继承',
 };
