@@ -13,6 +13,7 @@ import {
   Space,
   Divider,
   Checkbox,
+  Alert,
 } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined, PushpinOutlined } from '@ant-design/icons';
 // import { useIntl } from '@umijs/max';
@@ -414,6 +415,25 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
 
       {currentStep === 3 && (
         <Card title="开奖设置">
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, currentValues) =>
+              prevValues?.drawMethod !== currentValues?.drawMethod
+            }
+          >
+            {({ getFieldValue }) => {
+              const drawMethod = getFieldValue('drawMethod') || [];
+              return drawMethod.length >= 2 ? (
+                <Alert
+                  type="info"
+                  showIcon
+                  message="满足任意一个开奖条件即会触发开奖"
+                  style={{ marginBottom: 16 }}
+                />
+              ) : null;
+            }}
+          </Form.Item>
+
           <Form.Item
             name="drawMethod"
             label="开奖方式"
