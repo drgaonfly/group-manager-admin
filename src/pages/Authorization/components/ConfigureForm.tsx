@@ -6,11 +6,13 @@ import {
   ProFormGroup,
   ProFormText,
   ProFormDigit,
+  ProFormSelect,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
+import useQueryList from '@/hooks/useQueryList';
 
 type menuItem = {
   _id: string;
@@ -37,6 +39,9 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const currentUser = initialState?.currentUser;
   const [menus, setmenu] = useState<menuItem[]>([]);
   const [multiImageUrl, setMultiImageUrl] = useState<string>('');
+  const { items: groups, loading: groupsLoading } = useQueryList('/groups');
+
+  console.log('groups', groups);
 
   // 只提取需要的字段，避免渲染大数据导致卡顿
   const safeValues = useMemo(() => {
@@ -216,33 +221,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             label={intl.formatMessage({ id: 'can_be_cloned', defaultMessage: '是否可克隆' })}
           /> */}
 
-          <Form.Item
-            label={intl.formatMessage({ id: 'multi_image', defaultMessage: 'Multi Image' })}
-          >
-            <Upload
-              onFileUpload={(url: string) => {
-                setMultiImageUrl(url);
-              }}
-              accept=".jpg,.jpeg,.png,.gif"
-              defaultFileList={
-                multiImageUrl
-                  ? [
-                      {
-                        uid: '1',
-                        name: 'multi_image',
-                        status: 'done' as UploadFile['status'],
-                        url: multiImageUrl,
-                      },
-                    ]
-                  : []
-              }
-              onRemove={() => {
-                setMultiImageUrl('');
-                return true;
-              }}
-            />
-          </Form.Item>
-
           {access.canSuperAdmin && (
             <ProFormText
               rules={[{ message: intl.formatMessage({ id: 'enter_customer_service_link' }) }]}
@@ -256,6 +234,26 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               placeholder="https://t.me/"
             />
           )}
+
+          <ProFormSelect
+            width="md"
+            label={intl.formatMessage({
+              id: 'post_source',
+              defaultMessage: '新闻源频道',
+            })}
+            name="post_source"
+            tooltip="选择作为新闻源的频道群组"
+            showSearch
+            options={groups
+              .filter((g: any) => g.type === 'channel')
+              .map((g: any) => ({
+                label: g.title,
+                value: g._id,
+              }))}
+            fieldProps={{
+              loading: groupsLoading,
+            }}
+          />
 
           {/* 每月清零日期 */}
           <ProFormDigit
@@ -285,6 +283,31 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
             ]}
           />
         </ProFormGroup>
+
+        <Form.Item label={intl.formatMessage({ id: 'multi_image', defaultMessage: 'Multi Image' })}>
+          <Upload
+            onFileUpload={(url: string) => {
+              setMultiImageUrl(url);
+            }}
+            accept=".jpg,.jpeg,.png,.gif"
+            defaultFileList={
+              multiImageUrl
+                ? [
+                    {
+                      uid: '1',
+                      name: 'multi_image',
+                      status: 'done' as UploadFile['status'],
+                      url: multiImageUrl,
+                    },
+                  ]
+                : []
+            }
+            onRemove={() => {
+              setMultiImageUrl('');
+              return true;
+            }}
+          />
+        </Form.Item>
 
         {/* <EditableProTable<menuItem>
           rowKey="_id"
