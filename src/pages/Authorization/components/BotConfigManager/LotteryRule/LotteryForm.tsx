@@ -437,6 +437,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           <Form.Item
             name="drawMethod"
             label="开奖方式"
+            extra="同时选择多种方式时，满足任一条件即可开奖"
             rules={[{ required: true, message: '请选择开奖方式' }]}
           >
             <Select mode="multiple">
