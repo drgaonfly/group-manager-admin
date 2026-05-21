@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { message, Form } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { message, Form, Button, InputNumber, Row, Col } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import {
@@ -8,8 +8,10 @@ import {
   ProFormSelect,
   ProFormText,
   ProFormGroup,
+  ProFormSwitch,
 } from '@ant-design/pro-components';
 import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
 interface Props {
   open: boolean;
@@ -17,6 +19,11 @@ interface Props {
   currentRow: any;
   editingRecord?: any;
   onSuccess: () => void;
+}
+
+interface StreakCycle {
+  days: number;
+  multiplier: number;
 }
 
 const CheckinRuleForm: React.FC<Props> = ({
@@ -29,6 +36,13 @@ const CheckinRuleForm: React.FC<Props> = ({
   const intl = useIntl();
   const [successContent, setSuccessContent] = React.useState('');
   const [form] = Form.useForm();
+  const [enableStreakBonus, setEnableStreakBonus] = useState(false);
+  const [streakCycles, setStreakCycles] = useState<StreakCycle[]>([
+    { days: 3, multiplier: 2 },
+    { days: 5, multiplier: 3 },
+    { days: 10, multiplier: 4 },
+  ]);
+  const [maxMultiplier, setMaxMultiplier] = useState(4);
 
   // 处理编辑模式下的表单初始化
   useEffect(() => {
@@ -40,12 +54,30 @@ const CheckinRuleForm: React.FC<Props> = ({
         keywords: Array.isArray(editingRecord.keywords)
           ? editingRecord.keywords.join('\n')
           : editingRecord.keywords,
+        enableStreakBonus: editingRecord.enableStreakBonus || false,
+        maxMultiplier: editingRecord.maxMultiplier || 4,
       });
       setSuccessContent(editingRecord.success_content || '');
+      setEnableStreakBonus(editingRecord.enableStreakBonus || false);
+      setStreakCycles(
+        editingRecord.streakCycles || [
+          { days: 3, multiplier: 2 },
+          { days: 5, multiplier: 3 },
+          { days: 10, multiplier: 4 },
+        ],
+      );
+      setMaxMultiplier(editingRecord.maxMultiplier || 4);
     } else if (open && !editingRecord) {
       // 新建模式：重置表单
       form.resetFields();
       setSuccessContent('');
+      setEnableStreakBonus(false);
+      setStreakCycles([
+        { days: 3, multiplier: 2 },
+        { days: 5, multiplier: 3 },
+        { days: 10, multiplier: 4 },
+      ]);
+      setMaxMultiplier(4);
     }
   }, [open, editingRecord, form]);
 
@@ -70,6 +102,9 @@ const CheckinRuleForm: React.FC<Props> = ({
         keywords: keywordArray,
         success_content: telegramContent,
         bot: currentRow?._id,
+        enableStreakBonus,
+        streakCycles,
+        maxMultiplier,
       };
 
       if (isEditing) {
@@ -99,6 +134,22 @@ const CheckinRuleForm: React.FC<Props> = ({
     }
   };
 
+  const addStreakCycle = () => {
+    setStreakCycles([...streakCycles, { days: 1, multiplier: 1 }]);
+  };
+
+  const removeStreakCycle = (index: number) => {
+    const newCycles = [...streakCycles];
+    newCycles.splice(index, 1);
+    setStreakCycles(newCycles);
+  };
+
+  const updateStreakCycle = (index: number, field: keyof StreakCycle, value: number) => {
+    const newCycles = [...streakCycles];
+    newCycles[index] = { ...newCycles[index], [field]: value };
+    setStreakCycles(newCycles);
+  };
+
   return (
     <ModalForm
       title={intl.formatMessage({
@@ -107,7 +158,7 @@ const CheckinRuleForm: React.FC<Props> = ({
       })}
       open={open}
       form={form}
-      width={800}
+      width={900}
       modalProps={{
         destroyOnClose: true,
         onCancel: () => onCancel(false),
@@ -117,6 +168,8 @@ const CheckinRuleForm: React.FC<Props> = ({
         type: 'daily',
         reward: 10,
         keywords: '签到',
+        enableStreakBonus: false,
+        maxMultiplier: 4,
       }}
     >
       <ProFormGroup>
@@ -195,6 +248,102 @@ const CheckinRuleForm: React.FC<Props> = ({
           })}
         />
       </ProFormGroup>
+
+      {/* 连续签到配置 */}
+      <ProFormGroup>
+        <ProFormSwitch
+          name="enableStreakBonus"
+          label={intl.formatMessage({
+            id: 'enable_streak_bonus',
+            defaultMessage: '启用连续签到奖励',
+          })}
+          fieldProps={{
+            checked: enableStreakBonus,
+            onChange: (checked) => setEnableStreakBonus(checked),
+          }}
+          tooltip={intl.formatMessage({
+            id: 'streak_bonus_tooltip',
+            defaultMessage: '开启后，连续签到天数越多，获得的积分倍率越高',
+          })}
+        />
+      </ProFormGroup>
+
+      {enableStreakBonus && (
+        <>
+          <Form.Item
+            label={intl.formatMessage({ id: 'streak_cycles', defaultMessage: '连续签到周期配置' })}
+            style={{ marginBottom: 16 }}
+          >
+            <div style={{ marginBottom: 8, color: '#666' }}>
+              {intl.formatMessage({
+                id: 'streak_cycles_desc',
+                defaultMessage: '配置连续签到天数对应的倍率（按天数降序匹配）',
+              })}
+            </div>
+            {streakCycles.map((cycle, index) => (
+              <Row key={index} gutter={8} style={{ marginBottom: 8 }}>
+                <Col span={10}>
+                  <InputNumber
+                    placeholder={intl.formatMessage({ id: 'days', defaultMessage: '天数' })}
+                    value={cycle.days}
+                    onChange={(value) => updateStreakCycle(index, 'days', value || 1)}
+                    min={1}
+                    style={{ width: '100%' }}
+                    addonAfter={intl.formatMessage({ id: 'days', defaultMessage: '天' })}
+                  />
+                </Col>
+                <Col span={10}>
+                  <InputNumber
+                    placeholder={intl.formatMessage({ id: 'multiplier', defaultMessage: '倍率' })}
+                    value={cycle.multiplier}
+                    onChange={(value) => updateStreakCycle(index, 'multiplier', value || 1)}
+                    min={1}
+                    step={0.1}
+                    style={{ width: '100%' }}
+                    addonAfter={intl.formatMessage({ id: 'times', defaultMessage: '倍' })}
+                  />
+                </Col>
+                <Col span={4}>
+                  {streakCycles.length > 1 && (
+                    <Button
+                      type="text"
+                      danger
+                      icon={<MinusCircleOutlined />}
+                      onClick={() => removeStreakCycle(index)}
+                    />
+                  )}
+                </Col>
+              </Row>
+            ))}
+            <Button
+              type="dashed"
+              onClick={addStreakCycle}
+              icon={<PlusOutlined />}
+              style={{ width: '100%' }}
+            >
+              {intl.formatMessage({ id: 'add_cycle', defaultMessage: '添加周期' })}
+            </Button>
+          </Form.Item>
+
+          <ProFormGroup>
+            <ProFormDigit
+              name="maxMultiplier"
+              label={intl.formatMessage({ id: 'max_multiplier', defaultMessage: '最高倍率限制' })}
+              width="md"
+              min={1}
+              fieldProps={{
+                value: maxMultiplier,
+                onChange: (value) => setMaxMultiplier(value || 1),
+                precision: 1,
+              }}
+              tooltip={intl.formatMessage({
+                id: 'max_multiplier_tooltip',
+                defaultMessage: '连续签到倍率最高不超过此值',
+              })}
+            />
+          </ProFormGroup>
+        </>
+      )}
 
       <Form.Item
         label={intl.formatMessage({ id: 'success_message', defaultMessage: '签到成功提示' })}

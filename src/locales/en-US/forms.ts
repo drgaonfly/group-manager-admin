@@ -284,4 +284,44 @@ export default {
 
   teaching: 'Teaching',
   success: 'Success',
+
+  // Check-in rule related
+  checkin_type: 'Check-in Type',
+  daily_checkin: 'Daily Check-in',
+  first_checkin: 'First Check-in',
+  checkin_type_tooltip: 'Daily check-in: once per day; First check-in: user first check-in',
+  checkin_type_required: 'Please select check-in type',
+  reward_points: 'Reward Points',
+  reward_points_tooltip: 'Points users receive after successful check-in',
+  reward_points_required: 'Please enter reward points',
+  points: 'points',
+  trigger_keywords: 'Trigger Keywords',
+  trigger_keywords_required: 'Please enter trigger keywords',
+  keywords_placeholder: 'Multiple keywords separated by commas',
+  keywords_tooltip: 'Check-in triggered when users send these keywords',
+  success_message: 'Success Message',
+  configure_checkin_rule: 'Configure Check-in Rule',
+  checkin_rule_configured: 'Check-in rule configured',
+  checkin_rule_not_configured: 'No check-in rule configured',
+  checkin_rule_update_success: 'Check-in rule updated successfully',
+  checkin_rule_config_success: 'Check-in rule configured successfully',
+  checkin_rule_config: 'Check-in Rule Configuration',
+  checkin_rule_edit: 'Edit Check-in Rule',
+
+  // Streak check-in related
+  enable_streak_bonus: 'Enable Streak Bonus',
+  streak_bonus_tooltip:
+    'When enabled, longer consecutive check-in days result in higher point multipliers',
+  streak_cycles: 'Streak Cycle Configuration',
+  streak_cycles_desc:
+    'Configure multipliers for consecutive check-in days (matched in descending order)',
+  days: 'days',
+  multiplier: 'Multiplier',
+  times: 'times',
+  add_cycle: 'Add Cycle',
+  max_multiplier: 'Maximum Multiplier Limit',
+  max_multiplier_tooltip: 'Consecutive check-in multiplier cannot exceed this value',
+  streak_bonus: 'Streak Bonus',
+  enabled: 'Enabled',
+  period_config: 'Period Configuration',
 };

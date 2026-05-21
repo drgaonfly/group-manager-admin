@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, message } from 'antd';
+import { Button, Card, message, Tag } from 'antd';
 import { FormattedMessage } from '@umijs/max';
 import { queryList } from '@/services/ant-design-pro/api';
 import CheckinRuleForm from './CheckinRuleForm';
@@ -47,6 +47,14 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
     return typeMap[type] || type;
   };
 
+  const formatStreakCycles = (cycles: any[]) => {
+    if (!cycles || cycles.length === 0) return '';
+    return cycles
+      .sort((a, b) => a.days - b.days)
+      .map((cycle) => `${cycle.days}天→${cycle.multiplier}倍`)
+      .join('，');
+  };
+
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
@@ -82,6 +90,32 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
                     ? checkinRule.keywords.join('、')
                     : checkinRule.keywords}
                 </p>
+              )}
+              {checkinRule.enableStreakBonus && (
+                <>
+                  <p style={{ marginTop: 8 }}>
+                    <strong>
+                      <FormattedMessage id="streak_bonus" defaultMessage="连续签到奖励" />：
+                    </strong>
+                    <Tag color="green" style={{ marginLeft: 8 }}>
+                      <FormattedMessage id="enabled" defaultMessage="已启用" />
+                    </Tag>
+                  </p>
+                  {checkinRule.streakCycles && checkinRule.streakCycles.length > 0 && (
+                    <p style={{ marginTop: 8 }}>
+                      <strong>
+                        <FormattedMessage id="streak_cycles" defaultMessage="周期配置" />：
+                      </strong>
+                      {formatStreakCycles(checkinRule.streakCycles)}
+                    </p>
+                  )}
+                  <p style={{ marginTop: 8 }}>
+                    <strong>
+                      <FormattedMessage id="max_multiplier" defaultMessage="最高倍率" />：
+                    </strong>
+                    {checkinRule.maxMultiplier || 4} 倍
+                  </p>
+                </>
               )}
             </div>
           ) : (
