@@ -284,6 +284,25 @@ export default {
 
   teaching: 'Teaching',
   success: 'Success',
+  redPacket: 'Red Packet',
+
+  // Red Packet related
+  redPacket_list: 'Red Packet List',
+  totalPoints: 'Total Points',
+  totalSlots: 'Total Slots',
+  pointsPerSlot: 'Points / Slot',
+  bombNumbers: 'Bomb Numbers',
+  bombMultiplier: 'Bomb Multiplier',
+  claimed: 'Claimed',
+  allBombed: 'All Bombed',
+  isBomb: 'Is Bomb',
+  bomb: 'Bomb',
+  safe: 'Safe',
+  pointsDelta: 'Points Delta',
+  pointsBefore: 'Points Before',
+  pointsAfter: 'Points After',
+  redPacket_claims: 'Claim Records',
+  claims: 'Claims',
 
   // Check-in rule related
   checkin_type: 'Check-in Type',

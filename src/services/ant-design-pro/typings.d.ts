@@ -50,6 +50,7 @@ declare namespace API {
     rankConferral?: boolean;
     recharge?: boolean;
     success?: boolean;
+    redPacket?: boolean;
   };
 
   // Example type definition

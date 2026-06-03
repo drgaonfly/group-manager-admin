@@ -262,4 +262,10 @@ export default [
     icon: 'FileTextOutlined',
     component: './Post',
   },
+  {
+    path: '/red-packets',
+    name: 'list.red-packets',
+    icon: 'RedEnvelopeOutlined',
+    component: './RedPacket',
+  },
 ];

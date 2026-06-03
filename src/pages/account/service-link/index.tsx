@@ -39,6 +39,7 @@ const ServiceLink: React.FC = () => {
     rankConferral: boolean;
     recharge: boolean;
     success: boolean;
+    redPacket: boolean;
     botCount: number;
     availableBotCount: number;
   }) => {
@@ -112,6 +113,7 @@ const ServiceLink: React.FC = () => {
               rankConferral: currentUser?.rankConferral || false,
               recharge: currentUser?.recharge || false,
               success: currentUser?.success || false,
+              redPacket: currentUser?.redPacket || false,
               availableBotCount: currentUser?.availableBotCount || 0,
             }}
             submitter={{
@@ -296,6 +298,17 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'success.tooltip',
                 defaultMessage: '开启后，代理可以为其下的机器人开启成功功能',
+              })}
+            />
+            <ProFormSwitch
+              name="redPacket"
+              label={intl.formatMessage({
+                id: 'redPacket',
+                defaultMessage: '红包',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'redPacket.tooltip',
+                defaultMessage: '开启后，群内用户可使用 /redpacket 命令发送积分红包',
               })}
             />
           </ProForm>
@@ -554,6 +567,21 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'success.tooltip',
                   defaultMessage: '开启后，代理可以为其下的机器人开启成功功能',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'redPacket',
+                defaultMessage: '红包',
+              })}
+            >
+              {renderStatusTag(currentUser?.redPacket || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'redPacket.tooltip',
+                  defaultMessage: '开启后，群内用户可使用 /redpacket 命令发送积分红包',
                 })}
               </Text>
             </Descriptions.Item>

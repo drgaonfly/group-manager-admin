@@ -16,6 +16,7 @@ import TeachingTab from './Teaching';
 import AdRemovalTab from './AdRemoval';
 import RankConferralTab from './RankConferral';
 import SuccessTab from './Success';
+import RedPacketTab from './RedPacket';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -57,6 +58,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canRankConferral: currentRow.canRankConferral,
         canRecharge: currentRow.canRecharge,
         canSuccess: currentRow.canSuccess,
+        canRedPacket: currentRow.canRedPacket,
       });
     }
   }, [open, currentRow]);
@@ -217,6 +219,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         key: 'success',
         label: intl.formatMessage({ id: 'success', defaultMessage: '积分继承' }),
         children: <SuccessTab currentRow={currentRow} />,
+      });
+    }
+
+    // 红包 Tab
+    if (botConfig.canRedPacket && currentUser?.redPacket) {
+      items.push({
+        key: 'redPacket',
+        label: intl.formatMessage({ id: 'redPacket', defaultMessage: '红包' }),
+        children: <RedPacketTab currentRow={currentRow} />,
       });
     }
 

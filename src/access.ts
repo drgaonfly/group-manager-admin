@@ -341,5 +341,17 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/auctions/:id', 'PUT')),
     canGetAuction:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/auctions', 'GET')),
+
+    // red-packet 权限
+    canCreateRedPacket:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/red-packets', 'POST')),
+    canDeleteRedPacket:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/red-packets', 'DELETE')),
+    canUpdateRedPacket:
+      currentUser &&
+      (currentUser.isAdmin || checkPermission(currentUser, '/red-packets/:id', 'PUT')),
+    canGetRedPacket:
+      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/red-packets', 'GET')),
   };
 }

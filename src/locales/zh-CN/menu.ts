@@ -115,4 +115,6 @@ export default {
   'menu.支付订单管理': '支付订单管理',
   'menu.recharges': '充值管理',
   'menu.posts': '帖子管理',
+  'menu.list.red-packets': '红包记录',
+  'menu.red-packets': '红包记录',
 };

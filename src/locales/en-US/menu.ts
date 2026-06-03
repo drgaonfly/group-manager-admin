@@ -71,4 +71,6 @@ export default {
   'menu.reply-rules': 'Reply Rules',
   'menu.recharges': 'Recharges',
   'menu.posts': 'Posts',
+  'menu.list.red-packets': 'Red Packets',
+  'menu.red-packets': 'Red Packets',
 };

@@ -383,6 +383,25 @@ export default {
 
   teaching: '教学',
   success: '积分继承',
+  redPacket: '红包',
+
+  // 红包相关
+  redPacket_list: '红包列表',
+  totalPoints: '总积分',
+  totalSlots: '总份数',
+  pointsPerSlot: '每份积分',
+  bombNumbers: '炸弹数字',
+  bombMultiplier: '惩罚倍率',
+  claimed: '已领取',
+  allBombed: '全炸',
+  isBomb: '是否炸弹',
+  bomb: '炸弹',
+  safe: '安全',
+  pointsDelta: '积分变动',
+  pointsBefore: '领取前',
+  pointsAfter: '领取后',
+  redPacket_claims: '领取记录',
+  claims: '领取记录',
 
   // 签到规则相关
   checkin_type: '签到类型',

@@ -109,6 +109,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canSuccess', defaultMessage: '积分继承' }),
       permission: currentUser?.success,
     },
+    {
+      key: 'canRedPacket',
+      label: intl.formatMessage({ id: 'canRedPacket', defaultMessage: '红包功能' }),
+      permission: currentUser?.redPacket,
+    },
   ];
 
   return (
