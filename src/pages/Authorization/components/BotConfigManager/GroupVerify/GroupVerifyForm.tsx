@@ -1,14 +1,9 @@
-import { message, Form } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { message, Form, Modal, Button, Space, Switch } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { useState, useEffect } from 'react';
-import { updateItem } from '@/services/ant-design-pro/api';
-import {
-  ModalForm,
-  ProFormTextArea,
-  ProFormGroup,
-  ProColumns,
-  EditableProTable,
-} from '@ant-design/pro-components';
+import { request } from '@umijs/max';
+import { ProFormTextArea, ProColumns, EditableProTable } from '@ant-design/pro-components';
+import GroupVerifyGroupSelect from './GroupVerifyGroupSelect';
 
 type VerifyAsk = {
   _id: string;
@@ -18,41 +13,49 @@ type VerifyAsk = {
 
 interface GroupVerifyFormProps {
   open: boolean;
-  onCancel: (visible: boolean) => void;
-  currentRow?: any;
+  onCancel: () => void;
+  botId: string;
+  /** 编辑时传入现有记录 */
+  currentRecord?: any;
   onSuccess?: () => void;
 }
 
 const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
   open,
   onCancel,
-  currentRow,
+  botId,
+  currentRecord,
   onSuccess,
 }) => {
   const intl = useIntl();
   const [form] = Form.useForm();
   const [asks, setAsks] = useState<VerifyAsk[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const isEdit = !!currentRecord;
 
   useEffect(() => {
-    if (open && currentRow?._id) {
+    if (open) {
       form.resetFields();
-
-      // 设置现有的群验证数据
-      if (currentRow.groupVerify) {
-        const verifyData = currentRow.groupVerify;
+      if (currentRecord) {
         form.setFieldsValue({
-          question: verifyData.question || '',
+          group: currentRecord.group?._id,
+          question: currentRecord.question || '',
+          isActive: currentRecord.isActive !== false,
         });
-        setAsks(verifyData.asks || []);
+        setAsks(
+          (currentRecord.asks || []).map((a: any, i: number) => ({
+            _id: String(i),
+            name: a.name,
+            isCorrect: a.isCorrect,
+          })),
+        );
       } else {
-        // 如果没有群验证数据，重置表单
-        form.setFieldsValue({
-          question: '',
-        });
+        form.setFieldsValue({ isActive: true });
         setAsks([]);
       }
     }
-  }, [open, currentRow, form]);
+  }, [open, currentRecord]);
 
   const askColumns: ProColumns<VerifyAsk>[] = [
     {
@@ -99,24 +102,22 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
-      width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record._id);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
+      width: 120,
+      render: (_, record, __, action) => [
+        <a key="editable" onClick={() => action?.startEditable?.(record._id)}>
+          {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
         </a>,
       ],
     },
   ];
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async () => {
     try {
-      // 验证至少有一个正确答案
-      const correctAnswers = asks.filter((ask) => ask.isCorrect);
+      const values = await form.validateFields();
+
+      const correctAnswers = asks.filter(
+        (ask) => ask.isCorrect === true || (ask.isCorrect as any) === 'true',
+      );
       if (correctAnswers.length === 0) {
         message.error(
           intl.formatMessage({
@@ -124,54 +125,83 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
             defaultMessage: '至少需要一个正确答案',
           }),
         );
-        return false;
+        return;
       }
 
-      const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
+      if (asks.length === 0) {
+        message.error('请至少添加一个答案选项');
+        return;
+      }
 
-      // 构建群验证数据
-      const groupVerifyData = {
-        question: values.question || '',
-        asks: asks.map(({ name, isCorrect }) => ({ name, isCorrect })),
+      setSubmitting(true);
+
+      const payload = {
+        bot: botId,
+        group: values.group,
+        question: values.question,
+        asks: asks.map(({ name, isCorrect }) => ({
+          name,
+          isCorrect: isCorrect === true || (isCorrect as any) === 'true',
+        })),
+        isActive: values.isActive,
       };
 
-      // 使用专门的群验证更新接口
-      await updateItem(`/bots/${currentRow._id}/group-verify`, groupVerifyData);
+      if (isEdit) {
+        await request(`/group-verifies/${currentRecord._id}`, {
+          method: 'PUT',
+          data: payload,
+        });
+      } else {
+        await request('/group-verifies', {
+          method: 'POST',
+          data: payload,
+        });
+      }
 
-      hide();
-      message.success(
-        <FormattedMessage id="update_successful" defaultMessage="Update successful" />,
-      );
-
-      form.resetFields();
-      setAsks([]);
-      onCancel(false);
+      message.success(isEdit ? '更新成功' : '创建成功');
       onSuccess?.();
-
-      return true;
+      onCancel();
     } catch (error: any) {
-      message.error(
-        error?.response?.data?.message ?? (
-          <FormattedMessage id="update_failed" defaultMessage="Update failed, please try again!" />
-        ),
-      );
-      return false;
+      if (error?.errorFields) return; // 表单校验错误，不提示
+      message.error(error?.response?.data?.message ?? (isEdit ? '更新失败' : '创建失败'));
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <ModalForm
-      title={intl.formatMessage({ id: 'group_verify_config', defaultMessage: '群验证配置' })}
+    <Modal
+      title={isEdit ? '编辑群验证配置' : '创建群验证配置'}
       open={open}
-      form={form}
+      onCancel={onCancel}
       width={800}
-      modalProps={{
-        destroyOnClose: true,
-        onCancel: () => onCancel(false),
-      }}
-      onFinish={handleSubmit}
+      destroyOnClose
+      footer={
+        <Space>
+          <Button onClick={onCancel}>取消</Button>
+          <Button type="primary" loading={submitting} onClick={handleSubmit}>
+            {isEdit ? '保存' : '创建'}
+          </Button>
+        </Space>
+      }
     >
-      <ProFormGroup>
+      <Form form={form} layout="vertical">
+        {/* 群组选择，编辑时禁用（不允许换群） */}
+        {isEdit ? (
+          <Form.Item label="验证群组">
+            <span>
+              {currentRecord?.group?.title}
+              {currentRecord?.group?.username && ` (@${currentRecord.group.username})`}
+            </span>
+          </Form.Item>
+        ) : (
+          <GroupVerifyGroupSelect botId={botId} />
+        )}
+
+        <Form.Item name="isActive" label="是否启用" valuePropName="checked">
+          <Switch checkedChildren="启用" unCheckedChildren="停用" />
+        </Form.Item>
+
         <ProFormTextArea
           name="question"
           label={intl.formatMessage({ id: 'verify_question', defaultMessage: '验证问题' })}
@@ -179,7 +209,6 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
             id: 'verify_question_placeholder',
             defaultMessage: '请输入验证问题',
           })}
-          width="xl"
           rules={[
             {
               required: true,
@@ -193,36 +222,29 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
             id: 'verify_question_tip',
             defaultMessage: '新用户加入群组时需要回答的验证问题',
           })}
-          fieldProps={{
-            autoSize: { minRows: 8 },
-          }}
+          fieldProps={{ autoSize: { minRows: 4 } }}
         />
-      </ProFormGroup>
 
-      <EditableProTable<VerifyAsk>
-        rowKey="_id"
-        headerTitle={intl.formatMessage({
-          id: 'verify_answers_config',
-          defaultMessage: '答案选项配置',
-        })}
-        columns={askColumns}
-        value={asks}
-        onChange={(value: readonly VerifyAsk[]) => setAsks([...value])}
-        editable={{
-          type: 'multiple',
-        }}
-        recordCreatorProps={{
-          newRecordType: 'dataSource',
-          position: 'bottom',
-          record: () => ({
-            _id: Date.now().toString(),
-            name: '',
-            isCorrect: false,
-          }),
-        }}
-        toolBarRender={false}
-      />
-    </ModalForm>
+        <EditableProTable<VerifyAsk>
+          rowKey="_id"
+          headerTitle="答案选项配置"
+          columns={askColumns}
+          value={asks}
+          onChange={(value: readonly VerifyAsk[]) => setAsks([...value])}
+          editable={{ type: 'multiple' }}
+          recordCreatorProps={{
+            newRecordType: 'dataSource',
+            position: 'bottom',
+            record: () => ({
+              _id: Date.now().toString(),
+              name: '',
+              isCorrect: false,
+            }),
+          }}
+          toolBarRender={false}
+        />
+      </Form>
+    </Modal>
   );
 };
 
