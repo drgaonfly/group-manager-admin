@@ -19,7 +19,7 @@ const ClaimsDrawer: React.FC<Props> = ({ open, redPacket, onClose }) => {
   useEffect(() => {
     if (!open || !redPacket?._id) return;
     setLoading(true);
-    request(`/api/red-packets/${redPacket._id}/claims`, {
+    request(`/red-packets/${redPacket._id}/claims`, {
       method: 'GET',
       params: { pageSize: 100 },
     })

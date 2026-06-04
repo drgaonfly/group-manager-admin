@@ -90,7 +90,7 @@ const RedPacketTab: React.FC<RedPacketTabProps> = ({ currentRow }) => {
     setClaimsOpen(true);
     setClaimsLoading(true);
     try {
-      const res = await request(`/api/red-packets/${record._id}/claims`, {
+      const res = await request(`/red-packets/${record._id}/claims`, {
         method: 'GET',
         params: { pageSize: 100 },
       });
