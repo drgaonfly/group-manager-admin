@@ -141,6 +141,21 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
     fetchHistories(record.group._id, 1);
   };
 
+  const handleDeleteHistory = async (id: string) => {
+    try {
+      await request(`/checkin-rules/histories/${id}`, { method: 'DELETE' });
+      message.success('删除成功');
+      // 刷新当前页，若当页删空则回到上一页
+      const newTotal = historyTotal - 1;
+      const maxPage = Math.max(1, Math.ceil(newTotal / historyPageSize));
+      const targetPage = historyCurrent > maxPage ? maxPage : historyCurrent;
+      setHistoryCurrent(targetPage);
+      fetchHistories(historyGroupId!, targetPage);
+    } catch {
+      message.error('删除失败');
+    }
+  };
+
   const getTypeText = (type: string) => ({ daily: '每日签到', first: '初次签到' }[type] || type);
 
   const columns = [
@@ -258,6 +273,23 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (v: string) => new Date(v).toLocaleString('zh-CN'),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 80,
+      render: (_: any, record: CheckinHistoryRecord) => (
+        <Popconfirm
+          title="确定删除该签到记录吗？"
+          onConfirm={() => handleDeleteHistory(record._id)}
+          okText="确定"
+          cancelText="取消"
+        >
+          <Button icon={<DeleteOutlined />} size="small" danger>
+            删除
+          </Button>
+        </Popconfirm>
+      ),
     },
   ];
 
