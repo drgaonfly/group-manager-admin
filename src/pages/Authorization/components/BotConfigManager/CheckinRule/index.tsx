@@ -15,6 +15,8 @@ interface CheckinRuleRecord {
   enableStreakBonus: boolean;
   streakCycles?: { days: number; multiplier: number }[];
   maxMultiplier?: number;
+  deleteAfterSeconds?: number;
+  deleteUserMsgAfterSeconds?: number;
 }
 
 interface CheckinHistoryRecord {
@@ -198,6 +200,22 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
       key: 'enableStreakBonus',
       render: (v: boolean) =>
         v ? <Tag color="green">已启用</Tag> : <Tag color="default">未启用</Tag>,
+    },
+    {
+      title: '消息删除',
+      key: 'burn',
+      render: (_: any, record: CheckinRuleRecord) => {
+        const bot = record.deleteAfterSeconds ?? 0;
+        const user = record.deleteUserMsgAfterSeconds ?? 0;
+        if (bot === 0 && user === 0) return <span style={{ color: '#999' }}>不删除</span>;
+        return (
+          <span>
+            {bot > 0 && <span>回复 {bot}s</span>}
+            {bot > 0 && user > 0 && <span style={{ margin: '0 4px' }}>/</span>}
+            {user > 0 && <span>用户 {user}s</span>}
+          </span>
+        );
+      },
     },
     {
       title: '状态',

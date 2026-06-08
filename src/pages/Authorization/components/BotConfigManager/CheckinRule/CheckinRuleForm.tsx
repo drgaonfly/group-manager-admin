@@ -46,6 +46,8 @@ const CheckinRuleForm: React.FC<Props> = ({
           ? editingRecord.keywords.join(', ')
           : editingRecord.keywords,
         isOnline: editingRecord.isOnline !== false,
+        deleteAfterSeconds: editingRecord.deleteAfterSeconds ?? 0,
+        deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds ?? 0,
       });
       setSuccessContent(editingRecord.success_content || '');
       setEnableStreakBonus(editingRecord.enableStreakBonus || false);
@@ -61,7 +63,14 @@ const CheckinRuleForm: React.FC<Props> = ({
       setMaxMultiplier(editingRecord.maxMultiplier || 4);
     } else {
       form.resetFields();
-      form.setFieldsValue({ type: 'daily', reward: 10, keywords: '签到', isOnline: true });
+      form.setFieldsValue({
+        type: 'daily',
+        reward: 10,
+        keywords: '签到',
+        isOnline: true,
+        deleteAfterSeconds: 0,
+        deleteUserMsgAfterSeconds: 0,
+      });
       setSuccessContent('');
       setEnableStreakBonus(false);
       setStreakCycles([
@@ -110,7 +119,14 @@ const CheckinRuleForm: React.FC<Props> = ({
       form={form}
       layout="vertical"
       onFinish={handleFinish}
-      initialValues={{ type: 'daily', reward: 10, keywords: '签到', isOnline: true }}
+      initialValues={{
+        type: 'daily',
+        reward: 10,
+        keywords: '签到',
+        isOnline: true,
+        deleteAfterSeconds: 0,
+        deleteUserMsgAfterSeconds: 0,
+      }}
     >
       {/* 群组：编辑时只读，新建时下拉选择 */}
       {editingRecord ? (
@@ -254,6 +270,40 @@ const CheckinRuleForm: React.FC<Props> = ({
           variables="all"
         />
       </Form.Item>
+
+      {/* 阅后即焚 */}
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="deleteAfterSeconds"
+            label={
+              <span>
+                签到消息自动删除（秒）&nbsp;
+                <Tooltip title="签到成功消息发送后，经过此秒数自动删除。填 0 表示不删除">
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </span>
+            }
+          >
+            <InputNumber min={0} precision={0} style={{ width: '100%' }} placeholder="0 = 不删除" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="deleteUserMsgAfterSeconds"
+            label={
+              <span>
+                用户消息自动删除（秒）&nbsp;
+                <Tooltip title="用户发送签到关键词后，经过此秒数自动删除其消息。填 0 表示不删除">
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </span>
+            }
+          >
+            <InputNumber min={0} precision={0} style={{ width: '100%' }} placeholder="0 = 不删除" />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <div style={{ textAlign: 'right' }}>
         <Space>
