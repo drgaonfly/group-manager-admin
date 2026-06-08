@@ -69,6 +69,7 @@ interface LotteryFormData {
   title: string;
   group: string;
   keywords: string[];
+  joinCostPoints: number;
   notifyContent: string;
   notifyButtons: NotifyButton[];
   notifyPin: boolean;
@@ -124,6 +125,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
         keywords: ['抽奖'],
         drawMethod: ['fullParticipants'],
         prizes: [],
+        joinCostPoints: 0,
         notifyContent: DEFAULT_NOTIFY_CONTENT,
         notifyButtons: [],
         joinSuccessContent: DEFAULT_JOIN_SUCCESS_CONTENT,
@@ -294,6 +296,14 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
             rules={[{ required: true, message: '请设置触发关键词' }]}
           >
             <Select mode="tags" placeholder="输入关键词，按回车添加" />
+          </Form.Item>
+
+          <Form.Item
+            name="joinCostPoints"
+            label="参与积分门槛"
+            extra="参与抽奖需消耗的积分，0 表示免费参与"
+          >
+            <InputNumber min={0} placeholder="0" style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item name="media" label="媒体文件">
