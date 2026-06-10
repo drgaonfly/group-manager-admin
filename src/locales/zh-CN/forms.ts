@@ -440,4 +440,26 @@ export default {
   streak_bonus: '连续签到奖励',
   enabled: '已启用',
   period_config: '周期配置',
+
+  // 发言统计相关
+  configure_speech_statistics: '配置发言统计',
+  speech_statistics_basic: '基础统计配置',
+  speech_statistics_config_for_bot: '发言统计配置 - {botName}',
+  speech_statistics_config_saved: '发言统计配置已保存',
+  speech_statistics_config_save_failed: '发言统计配置保存失败',
+  minSpeechLength: '最小统计字数',
+  allowPureNumberSpeech: '允许纯数字发言',
+
+  // 活跃奖励相关
+  activity_reward_config: '活跃奖励配置',
+  enableActivityReward: '启用活跃奖励',
+  activityRewardCycle: '统计周期',
+  activityRewardTopN: '奖励名额（前 N 名）',
+  activityRewardPoints: '每人奖励积分',
+  reward_cycle_daily: '每日',
+  reward_cycle_weekly: '每周',
+  reward_cycle_monthly: '每月',
+  reward_cycle_required: '请选择统计周期',
+  reward_top_n_required: '请输入奖励名额',
+  reward_points_required_msg: '请输入奖励积分',
 };

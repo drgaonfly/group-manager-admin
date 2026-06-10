@@ -343,4 +343,26 @@ export default {
   streak_bonus: 'Streak Bonus',
   enabled: 'Enabled',
   period_config: 'Period Configuration',
+
+  // Speech statistics related
+  configure_speech_statistics: 'Configure Speech Statistics',
+  speech_statistics_basic: 'Basic Statistics Config',
+  speech_statistics_config_for_bot: 'Speech Statistics Config - {botName}',
+  speech_statistics_config_saved: 'Speech statistics config saved',
+  speech_statistics_config_save_failed: 'Failed to save speech statistics config',
+  minSpeechLength: 'Min Speech Length',
+  allowPureNumberSpeech: 'Allow Pure Number Speech',
+
+  // Activity reward related
+  activity_reward_config: 'Activity Reward Config',
+  enableActivityReward: 'Enable Activity Reward',
+  activityRewardCycle: 'Statistics Cycle',
+  activityRewardTopN: 'Top N Winners',
+  activityRewardPoints: 'Points Per Winner',
+  reward_cycle_daily: 'Daily',
+  reward_cycle_weekly: 'Weekly',
+  reward_cycle_monthly: 'Monthly',
+  reward_cycle_required: 'Please select a statistics cycle',
+  reward_top_n_required: 'Please enter the number of winners',
+  reward_points_required_msg: 'Please enter reward points',
 };
