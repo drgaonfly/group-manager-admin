@@ -350,12 +350,13 @@ export default {
   speech_statistics_config_for_bot: 'Speech Statistics Config - {botName}',
   speech_statistics_config_saved: 'Speech statistics config saved',
   speech_statistics_config_save_failed: 'Failed to save speech statistics config',
+  speech_statistics_load_failed: 'Failed to load speech statistics config',
   minSpeechLength: 'Min Speech Length',
   allowPureNumberSpeech: 'Allow Pure Number Speech',
 
-  // Activity reward related
-  activity_reward_config: 'Activity Reward Config',
-  enableActivityReward: 'Enable Activity Reward',
+  // Activity leaderboard reward related
+  activity_reward_config: 'Leaderboard Reward',
+  enableActivityReward: 'Enable Leaderboard Reward',
   activityRewardCycle: 'Statistics Cycle',
   activityRewardTopN: 'Top N Winners',
   activityRewardPoints: 'Points Per Winner',
@@ -365,4 +366,12 @@ export default {
   reward_cycle_required: 'Please select a statistics cycle',
   reward_top_n_required: 'Please enter the number of winners',
   reward_points_required_msg: 'Please enter reward points',
+
+  // Instant speech reward related
+  speech_reward_config: 'Instant Speech Reward',
+  enableSpeechReward: 'Enable Instant Speech Reward',
+  speechRewardCycle: 'Reward Cycle',
+  speechRewardPoints: 'Points Per Message',
+  speechRewardMaxTimes: 'Max Reward Times Per Cycle',
+  speech_reward_max_times_required: 'Please enter max reward times',
 };
