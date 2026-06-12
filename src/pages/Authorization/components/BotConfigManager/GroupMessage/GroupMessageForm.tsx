@@ -14,6 +14,7 @@ import {
   ProFormCheckbox,
   ProFormSelect,
   ProFormRadio,
+  ProFormSwitch,
   ProFormDependency,
   ProColumns,
   EditableProTable,
@@ -73,14 +74,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
   useEffect(() => {
     if (open && currentRow?._id) {
       form.resetFields();
-      // 兼容旧数据
-      if (Array.isArray(currentRow.medias)) {
-        setMedias(currentRow.medias);
-      } else if (currentRow.image) {
-        setMedias([currentRow.image]);
-      } else {
-        setMedias([]);
-      }
+      setMedias(Array.isArray(currentRow.medias) ? currentRow.medias : []);
       setMenus(currentRow.menus || []);
       setContent('');
     }
@@ -223,7 +217,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             width="md"
             label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
             options={currentRow.groups
-              .filter((group: any) => group.type !== 'channel')
+              .filter((group: any) => group?.type !== 'channel' && group?._id)
               .map((group: any) => ({
                 label: group.title,
                 value: group._id,
@@ -338,6 +332,18 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
                   label="发送结束时间"
                   fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
                   tooltip="允许发送消息的结束时间"
+                />
+              </ProFormGroup>
+
+              <ProFormGroup>
+                <ProFormSwitch
+                  name="autoDeletePrevious"
+                  label={intl.formatMessage({
+                    id: 'auto_delete_previous',
+                    defaultMessage: '自动删除上一条',
+                  })}
+                  initialValue={false}
+                  tooltip="发送新消息前，自动删除该群组上一条已发送的消息"
                 />
               </ProFormGroup>
             </>

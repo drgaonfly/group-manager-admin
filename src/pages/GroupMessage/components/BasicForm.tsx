@@ -6,6 +6,7 @@ import {
   ProFormCheckbox,
   ProFormDateTimePicker,
   ProFormSelect,
+  ProFormSwitch,
   EditableProTable,
   ProColumns,
 } from '@ant-design/pro-components';
@@ -272,6 +273,17 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           label="发送结束时间"
           fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
           tooltip="允许发送消息的结束时间"
+        />
+      </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormSwitch
+          name="autoDeletePrevious"
+          label={intl.formatMessage({
+            id: 'auto_delete_previous',
+            defaultMessage: '自动删除上一条',
+          })}
+          tooltip="发送新消息前，自动删除该群组上一条已发送的消息"
         />
       </ProForm.Group>
 
