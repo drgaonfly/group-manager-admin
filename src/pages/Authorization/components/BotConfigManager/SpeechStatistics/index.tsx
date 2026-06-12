@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Card, Descriptions, Tag, Spin } from 'antd';
+import { Button, Card, Table, Tag, Space, Popconfirm, message } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useIntl, request } from '@umijs/max';
 import SpeechStatisticsForm from './SpeechStatisticsForm';
 
@@ -16,180 +17,168 @@ const CYCLE_LABEL: Record<string, string> = {
 
 const SpeechStatisticsTab: React.FC<SpeechStatisticsTabProps> = ({ currentRow }) => {
   const intl = useIntl();
-  const [formOpen, setFormOpen] = useState(false);
-  const [config, setConfig] = useState<any>(null);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingConfig, setEditingConfig] = useState<any>(undefined);
 
-  const fetchConfig = useCallback(async () => {
+  const fetchConfigs = useCallback(async () => {
     if (!currentRow?._id) return;
     setLoading(true);
     try {
       const res = await request('/speech-configs', {
         method: 'GET',
-        params: { botId: currentRow._id },
+        params: { botId: currentRow._id, current: 1, pageSize: 200 },
       });
-      setConfig(res?.data ?? null);
+      setData(res?.data ?? []);
     } catch {
-      // 拉取失败静默处理，config 为 null 时展示默认值
+      message.error('获取发言统计配置失败');
     } finally {
       setLoading(false);
     }
   }, [currentRow?._id]);
 
   useEffect(() => {
-    fetchConfig();
-  }, [fetchConfig]);
+    fetchConfigs();
+  }, [fetchConfigs]);
+
+  const handleCreate = () => {
+    setEditingConfig(undefined);
+    setFormOpen(true);
+  };
+
+  const handleEdit = (record: any) => {
+    setEditingConfig(record);
+    setFormOpen(true);
+  };
+
+  const handleDelete = async (record: any) => {
+    try {
+      await request(`/speech-configs/${record._id}`, { method: 'DELETE' });
+      message.success('删除成功');
+      fetchConfigs();
+    } catch {
+      message.error('删除失败');
+    }
+  };
+
+  const columns = [
+    {
+      title: '群组',
+      dataIndex: 'group',
+      key: 'group',
+      render: (group: any) =>
+        group ? (
+          <span>
+            {group.title}
+            {group.username && (
+              <span style={{ color: '#999', fontSize: 12, marginLeft: 4 }}>@{group.username}</span>
+            )}
+          </span>
+        ) : (
+          '-'
+        ),
+    },
+    {
+      title: '最小统计字数',
+      dataIndex: 'minSpeechLength',
+      key: 'minSpeechLength',
+      render: (v: number) => `${v} 字`,
+    },
+    {
+      title: '允许纯数字',
+      dataIndex: 'allowPureNumberSpeech',
+      key: 'allowPureNumberSpeech',
+      render: (v: boolean) => (v ? <Tag color="green">是</Tag> : <Tag color="default">否</Tag>),
+    },
+    {
+      title: '排行榜奖励',
+      dataIndex: 'enableActivityReward',
+      key: 'enableActivityReward',
+      render: (v: boolean, record: any) =>
+        v ? (
+          <Tag color="blue">
+            {CYCLE_LABEL[record.activityRewardCycle] || '每日'} 前{record.activityRewardTopN}名 +
+            {record.activityRewardPoints}积分
+          </Tag>
+        ) : (
+          <Tag color="default">未启用</Tag>
+        ),
+    },
+    {
+      title: '即时发言奖励',
+      dataIndex: 'enableSpeechReward',
+      key: 'enableSpeechReward',
+      render: (v: boolean, record: any) =>
+        v ? (
+          <Tag color="purple">
+            {CYCLE_LABEL[record.speechRewardCycle] || '每日'} 每次+{record.speechRewardPoints}积分
+            (上限{record.speechRewardMaxTimes}次)
+          </Tag>
+        ) : (
+          <Tag color="default">未启用</Tag>
+        ),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_: any, record: any) => (
+        <Space size="small">
+          <Button icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)}>
+            编辑
+          </Button>
+          <Popconfirm
+            title="确定删除该群组的发言统计配置吗？"
+            onConfirm={() => handleDelete(record)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button icon={<DeleteOutlined />} size="small" danger>
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   return (
-    <Spin spinning={loading}>
-      <div>
-        <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={() => setFormOpen(true)}>
+    <div>
+      <Card
+        title={intl.formatMessage({
+          id: 'speech_statistics',
+          defaultMessage: '发言统计',
+        })}
+        extra={
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
             {intl.formatMessage({
               id: 'configure_speech_statistics',
-              defaultMessage: '配置发言统计',
+              defaultMessage: '添加群组配置',
             })}
           </Button>
-        </div>
-
-        {/* 基础统计 */}
-        <Card
-          size="small"
-          title={intl.formatMessage({
-            id: 'speech_statistics_basic',
-            defaultMessage: '基础统计配置',
-          })}
-          style={{ marginBottom: 12 }}
-        >
-          <Descriptions column={1} size="small">
-            <Descriptions.Item
-              label={intl.formatMessage({ id: 'minSpeechLength', defaultMessage: '最小统计字数' })}
-            >
-              {config?.minSpeechLength ?? 1} 字
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={intl.formatMessage({
-                id: 'allowPureNumberSpeech',
-                defaultMessage: '允许纯数字',
-              })}
-            >
-              {config?.allowPureNumberSpeech ? (
-                <Tag color="green">是</Tag>
-              ) : (
-                <Tag color="default">否</Tag>
-              )}
-            </Descriptions.Item>
-          </Descriptions>
-        </Card>
-
-        {/* 排行榜奖励 */}
-        <Card
-          size="small"
-          title={intl.formatMessage({ id: 'activity_reward_config', defaultMessage: '排行榜奖励' })}
-          style={{ marginBottom: 12 }}
-        >
-          <Descriptions column={1} size="small">
-            <Descriptions.Item
-              label={intl.formatMessage({
-                id: 'enableActivityReward',
-                defaultMessage: '启用排行榜奖励',
-              })}
-            >
-              {config?.enableActivityReward ? (
-                <Tag color="green">已启用</Tag>
-              ) : (
-                <Tag color="default">未启用</Tag>
-              )}
-            </Descriptions.Item>
-            {config?.enableActivityReward && (
-              <>
-                <Descriptions.Item
-                  label={intl.formatMessage({
-                    id: 'activityRewardCycle',
-                    defaultMessage: '统计周期',
-                  })}
-                >
-                  {CYCLE_LABEL[config?.activityRewardCycle] || '每日'}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  label={intl.formatMessage({
-                    id: 'activityRewardTopN',
-                    defaultMessage: '奖励名额',
-                  })}
-                >
-                  前 {config?.activityRewardTopN ?? 3} 名
-                </Descriptions.Item>
-                <Descriptions.Item
-                  label={intl.formatMessage({
-                    id: 'activityRewardPoints',
-                    defaultMessage: '每人奖励积分',
-                  })}
-                >
-                  {config?.activityRewardPoints ?? 10} 积分
-                </Descriptions.Item>
-              </>
-            )}
-          </Descriptions>
-        </Card>
-
-        {/* 即时发言奖励 */}
-        <Card
-          size="small"
-          title={intl.formatMessage({ id: 'speech_reward_config', defaultMessage: '即时发言奖励' })}
-        >
-          <Descriptions column={1} size="small">
-            <Descriptions.Item
-              label={intl.formatMessage({
-                id: 'enableSpeechReward',
-                defaultMessage: '启用即时发言奖励',
-              })}
-            >
-              {config?.enableSpeechReward ? (
-                <Tag color="green">已启用</Tag>
-              ) : (
-                <Tag color="default">未启用</Tag>
-              )}
-            </Descriptions.Item>
-            {config?.enableSpeechReward && (
-              <>
-                <Descriptions.Item
-                  label={intl.formatMessage({
-                    id: 'speechRewardCycle',
-                    defaultMessage: '奖励周期',
-                  })}
-                >
-                  {CYCLE_LABEL[config?.speechRewardCycle] || '每日'}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  label={intl.formatMessage({
-                    id: 'speechRewardPoints',
-                    defaultMessage: '每次发言奖励积分',
-                  })}
-                >
-                  {config?.speechRewardPoints ?? 1} 积分 / 次
-                </Descriptions.Item>
-                <Descriptions.Item
-                  label={intl.formatMessage({
-                    id: 'speechRewardMaxTimes',
-                    defaultMessage: '周期内最多奖励次数',
-                  })}
-                >
-                  {config?.speechRewardMaxTimes ?? 5} 次（上限{' '}
-                  {(config?.speechRewardPoints ?? 1) * (config?.speechRewardMaxTimes ?? 5)} 积分）
-                </Descriptions.Item>
-              </>
-            )}
-          </Descriptions>
-        </Card>
-
-        <SpeechStatisticsForm
-          open={formOpen}
-          onOpenChange={setFormOpen}
-          currentRow={currentRow}
-          onSaved={fetchConfig}
+        }
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={loading}
+          rowKey="_id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+          }}
         />
-      </div>
-    </Spin>
+      </Card>
+
+      <SpeechStatisticsForm
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        currentRow={currentRow}
+        editingConfig={editingConfig}
+        onSaved={fetchConfigs}
+      />
+    </div>
   );
 };
 

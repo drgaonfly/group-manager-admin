@@ -1,295 +1,201 @@
 import React, { useEffect } from 'react';
-import { ModalForm, ProFormDigit, ProFormSwitch, ProFormSelect } from '@ant-design/pro-components';
-import { Divider, Form, message, Spin } from 'antd';
-import { useIntl, request } from '@umijs/max';
+import {
+  ModalForm,
+  ProFormDigit,
+  ProFormSwitch,
+  ProFormSelect,
+  ProFormGroup,
+} from '@ant-design/pro-components';
+import { Form } from 'antd';
+import { request } from '@umijs/max';
+import SpeechGroupSelect from './SpeechGroupSelect';
 
 interface SpeechStatisticsFormProps {
   open: boolean;
   onOpenChange: (visible: boolean) => void;
-  currentRow: any; // bot record
+  currentRow: any;
+  editingConfig?: any;
   onSaved?: () => void;
 }
 
-const CYCLE_OPTIONS = (intl: any) => [
-  {
-    label: intl.formatMessage({ id: 'reward_cycle_daily', defaultMessage: '每日' }),
-    value: 'daily',
-  },
-  {
-    label: intl.formatMessage({ id: 'reward_cycle_weekly', defaultMessage: '每周' }),
-    value: 'weekly',
-  },
-  {
-    label: intl.formatMessage({ id: 'reward_cycle_monthly', defaultMessage: '每月' }),
-    value: 'monthly',
-  },
+const CYCLE_OPTIONS = [
+  { label: '每日', value: 'daily' },
+  { label: '每周', value: 'weekly' },
+  { label: '每月', value: 'monthly' },
 ];
 
 const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
   open,
   onOpenChange,
   currentRow,
+  editingConfig,
   onSaved,
 }) => {
-  const intl = useIntl();
+  // const intl = useIntl();
   const [form] = Form.useForm();
-  const [loading, setLoading] = React.useState(false);
+  const isEdit = !!editingConfig;
 
-  // 打开时拉取最新配置
   useEffect(() => {
-    if (!open || !currentRow?._id) return;
-    setLoading(true);
-    request(`/speech-configs`, { method: 'GET', params: { botId: currentRow._id } })
-      .then((res: any) => {
-        const d = res?.data;
-        form.setFieldsValue({
-          minSpeechLength: d?.minSpeechLength ?? 1,
-          allowPureNumberSpeech: d?.allowPureNumberSpeech ?? false,
-          // 排行榜奖励
-          enableActivityReward: d?.enableActivityReward ?? false,
-          activityRewardCycle: d?.activityRewardCycle ?? 'daily',
-          activityRewardTopN: d?.activityRewardTopN ?? 3,
-          activityRewardPoints: d?.activityRewardPoints ?? 10,
-          // 即时发言奖励
-          enableSpeechReward: d?.enableSpeechReward ?? false,
-          speechRewardCycle: d?.speechRewardCycle ?? 'daily',
-          speechRewardPoints: d?.speechRewardPoints ?? 1,
-          speechRewardMaxTimes: d?.speechRewardMaxTimes ?? 5,
-        });
-      })
-      .catch(() => {
-        message.error(
-          intl.formatMessage({
-            id: 'speech_statistics_load_failed',
-            defaultMessage: '加载配置失败',
-          }),
-        );
-      })
-      .finally(() => setLoading(false));
-  }, [open, currentRow?._id]);
+    if (!open) return;
+    form.resetFields();
+    if (isEdit && editingConfig) {
+      form.setFieldsValue({
+        ...editingConfig,
+        groupId: editingConfig.group?._id || editingConfig.group,
+      });
+      // 新建时 initialValues 自动生效，无需额外 setFieldsValue
+    }
+  }, [open, editingConfig]);
+
+  const botName = currentRow?.botName || currentRow?.userName || '';
+  const groupName = editingConfig?.group?.title ? ` · ${editingConfig.group.title}` : '';
 
   return (
     <ModalForm
       form={form}
-      title={intl.formatMessage(
-        { id: 'speech_statistics_config_for_bot', defaultMessage: '发言统计配置 - {botName}' },
-        { botName: currentRow?.botName || currentRow?.userName || '' },
-      )}
+      title={`发言统计配置 - ${botName}${groupName}`}
       open={open}
       onOpenChange={onOpenChange}
-      width={640}
+      width={680}
       modalProps={{ destroyOnClose: true }}
       submitter={{ render: (_, dom) => dom.reverse() }}
+      initialValues={{
+        minSpeechLength: 1,
+        allowPureNumberSpeech: false,
+        enableActivityReward: false,
+        activityRewardCycle: 'daily',
+        activityRewardTopN: 3,
+        activityRewardPoints: 10,
+        enableSpeechReward: false,
+        speechRewardCycle: 'daily',
+        speechRewardPoints: 1,
+        speechRewardMaxTimes: 5,
+      }}
       onFinish={async (values) => {
         try {
-          await request(`/speech-configs/${currentRow._id}`, {
-            method: 'PUT',
-            data: values,
-          });
-          message.success(
-            intl.formatMessage({
-              id: 'speech_statistics_config_saved',
-              defaultMessage: '发言统计配置已保存',
-            }),
-          );
+          if (isEdit) {
+            await request(`/speech-configs/${editingConfig._id}`, {
+              method: 'PUT',
+              data: values,
+            });
+          } else {
+            await request('/speech-configs', {
+              method: 'POST',
+              data: { ...values, botId: currentRow._id },
+            });
+          }
           onOpenChange(false);
           onSaved?.();
           return true;
-        } catch (error) {
-          message.error(
-            intl.formatMessage({
-              id: 'speech_statistics_config_save_failed',
-              defaultMessage: '发言统计配置保存失败',
-            }),
-          );
+        } catch {
           return false;
         }
       }}
     >
-      <Spin spinning={loading}>
-        {/* ── 基础统计 ─────────────────────────────────── */}
-        <Divider orientation="left" style={{ fontSize: 13, color: '#666' }}>
-          {intl.formatMessage({ id: 'speech_statistics_basic', defaultMessage: '基础统计配置' })}
-        </Divider>
+      {/* 基础统计 */}
 
+      <SpeechGroupSelect botId={currentRow?._id} />
+
+      <ProFormGroup>
         <ProFormDigit
-          width="md"
-          label={intl.formatMessage({ id: 'minSpeechLength', defaultMessage: '最小统计字数' })}
           name="minSpeechLength"
+          label="最小统计字数"
+          width="sm"
           min={1}
-          tooltip="发言达到此字数才纳入统计，低于此值的发言不计入"
+          tooltip="发言字数低于此值不计入统计"
+          fieldProps={{ addonAfter: '字' }}
         />
+
         <ProFormSwitch
-          label={intl.formatMessage({
-            id: 'allowPureNumberSpeech',
-            defaultMessage: '允许纯数字发言纳入统计',
-          })}
           name="allowPureNumberSpeech"
-          tooltip="开启后，纯数字的发言也会被纳入统计范围"
+          label="允许纯数字"
+          tooltip="开启后纯数字发言也纳入统计"
         />
+      </ProFormGroup>
 
-        {/* ── 排行榜奖励 ───────────────────────────────── */}
-        <Divider orientation="left" style={{ fontSize: 13, color: '#666' }}>
-          {intl.formatMessage({ id: 'activity_reward_config', defaultMessage: '排行榜奖励' })}
-        </Divider>
-
+      {/* 排行榜奖励 */}
+      <ProFormGroup title="排行榜奖励">
         <ProFormSwitch
-          label={intl.formatMessage({
-            id: 'enableActivityReward',
-            defaultMessage: '启用排行榜奖励',
-          })}
           name="enableActivityReward"
-          tooltip="周期结束时，自动为发言最活跃的前 N 名用户发放积分"
+          label="启用"
+          tooltip="周期结束时自动为发言前 N 名用户发放积分"
         />
-
         <Form.Item
           noStyle
           shouldUpdate={(p, c) => p.enableActivityReward !== c.enableActivityReward}
         >
           {({ getFieldValue }) =>
-            getFieldValue('enableActivityReward') ? (
+            getFieldValue('enableActivityReward') && (
               <>
                 <ProFormSelect
-                  width="md"
-                  label={intl.formatMessage({
-                    id: 'activityRewardCycle',
-                    defaultMessage: '统计周期',
-                  })}
                   name="activityRewardCycle"
-                  options={CYCLE_OPTIONS(intl)}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'reward_cycle_required',
-                        defaultMessage: '请选择统计周期',
-                      }),
-                    },
-                  ]}
+                  label="统计周期"
+                  width="sm"
+                  options={CYCLE_OPTIONS}
+                  rules={[{ required: true }]}
                 />
                 <ProFormDigit
-                  width="md"
-                  label={intl.formatMessage({
-                    id: 'activityRewardTopN',
-                    defaultMessage: '奖励名额（前 N 名）',
-                  })}
                   name="activityRewardTopN"
+                  label="奖励前 N 名"
+                  width="xs"
                   min={1}
                   max={100}
-                  tooltip="排名前 N 的用户获得奖励"
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'reward_top_n_required',
-                        defaultMessage: '请输入奖励名额',
-                      }),
-                    },
-                  ]}
+                  rules={[{ required: true }]}
                 />
                 <ProFormDigit
-                  width="md"
-                  label={intl.formatMessage({
-                    id: 'activityRewardPoints',
-                    defaultMessage: '每人奖励积分',
-                  })}
                   name="activityRewardPoints"
+                  label="每人积分"
+                  width="xs"
                   min={1}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'reward_points_required_msg',
-                        defaultMessage: '请输入奖励积分',
-                      }),
-                    },
-                  ]}
+                  rules={[{ required: true }]}
+                  fieldProps={{ addonAfter: '分' }}
                 />
               </>
-            ) : null
+            )
           }
         </Form.Item>
+      </ProFormGroup>
 
-        {/* ── 即时发言奖励 ─────────────────────────────── */}
-        <Divider orientation="left" style={{ fontSize: 13, color: '#666' }}>
-          {intl.formatMessage({ id: 'speech_reward_config', defaultMessage: '即时发言奖励' })}
-        </Divider>
-
+      {/* 即时发言奖励 */}
+      <ProFormGroup title="即时发言奖励">
         <ProFormSwitch
-          label={intl.formatMessage({
-            id: 'enableSpeechReward',
-            defaultMessage: '启用即时发言奖励',
-          })}
           name="enableSpeechReward"
-          tooltip="每次发言立即获得积分，周期内达到上限次数后不再奖励"
+          label="启用"
+          tooltip="每条发言立即获得积分，周期内达到上限后不再发放"
         />
-
         <Form.Item noStyle shouldUpdate={(p, c) => p.enableSpeechReward !== c.enableSpeechReward}>
           {({ getFieldValue }) =>
-            getFieldValue('enableSpeechReward') ? (
+            getFieldValue('enableSpeechReward') && (
               <>
                 <ProFormSelect
-                  width="md"
-                  label={intl.formatMessage({
-                    id: 'speechRewardCycle',
-                    defaultMessage: '奖励周期',
-                  })}
                   name="speechRewardCycle"
-                  options={CYCLE_OPTIONS(intl)}
-                  tooltip="周期重置后，次数上限重新计算"
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'reward_cycle_required',
-                        defaultMessage: '请选择统计周期',
-                      }),
-                    },
-                  ]}
+                  label="奖励周期"
+                  width="sm"
+                  options={CYCLE_OPTIONS}
+                  rules={[{ required: true }]}
                 />
                 <ProFormDigit
-                  width="md"
-                  label={intl.formatMessage({
-                    id: 'speechRewardPoints',
-                    defaultMessage: '每次发言奖励积分',
-                  })}
                   name="speechRewardPoints"
+                  label="每次积分"
+                  width="xs"
                   min={1}
-                  tooltip="每条符合条件的发言获得的积分数"
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'reward_points_required_msg',
-                        defaultMessage: '请输入奖励积分',
-                      }),
-                    },
-                  ]}
+                  rules={[{ required: true }]}
+                  fieldProps={{ addonAfter: '分' }}
                 />
                 <ProFormDigit
-                  width="md"
-                  label={intl.formatMessage({
-                    id: 'speechRewardMaxTimes',
-                    defaultMessage: '周期内最多奖励次数',
-                  })}
                   name="speechRewardMaxTimes"
+                  label="周期上限"
+                  width="xs"
                   min={1}
-                  tooltip="周期内超过此次数后不再发放奖励，直到周期重置"
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'speech_reward_max_times_required',
-                        defaultMessage: '请输入最多奖励次数',
-                      }),
-                    },
-                  ]}
+                  rules={[{ required: true }]}
+                  tooltip="周期内超过此次数后不再发放"
+                  fieldProps={{ addonAfter: '次' }}
                 />
               </>
-            ) : null
+            )
           }
         </Form.Item>
-      </Spin>
+      </ProFormGroup>
     </ModalForm>
   );
 };
