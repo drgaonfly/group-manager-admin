@@ -87,7 +87,7 @@ const BotGroupSelect: React.FC<BotGroupSelectProps> = ({
           const hasOngoingAuction = !!ongoingAuction;
 
           return (
-            <Option key={group._id} value={group._id} disabled={hasOngoingAuction}>
+            <Option key={String(group._id)} value={String(group._id)} disabled={hasOngoingAuction}>
               <div
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >

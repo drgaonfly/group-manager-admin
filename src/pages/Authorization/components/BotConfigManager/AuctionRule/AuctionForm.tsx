@@ -93,7 +93,9 @@ const AuctionForm: React.FC<AuctionFormProps> = ({
       // 编辑模式，加载现有数据
       const formData = {
         ...currentRow,
-        group: currentRow.group?._id,
+        group: currentRow.group?._id
+          ? currentRow.group._id.toString()
+          : currentRow.group ?? undefined,
         endTime: currentRow.endTime ? moment(currentRow.endTime) : undefined,
       };
       form.setFieldsValue(formData);

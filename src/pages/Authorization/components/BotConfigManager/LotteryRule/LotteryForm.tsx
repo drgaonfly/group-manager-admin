@@ -114,6 +114,10 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
       // 编辑模式，加载现有数据
       const formData = {
         ...currentRow,
+        // group 经过 populate 后是对象 { _id, title }，Select 的 Option value 是字符串，需统一
+        group: currentRow.group?._id
+          ? currentRow.group._id.toString()
+          : currentRow.group ?? undefined,
         scheduledDrawTime: currentRow.scheduledDrawTime
           ? moment(currentRow.scheduledDrawTime)
           : undefined,

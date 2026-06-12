@@ -85,7 +85,7 @@ const LotteryGroupSelect: React.FC<LotteryGroupSelectProps> = ({
           const hasOngoingLottery = !!ongoingLottery;
 
           return (
-            <Option key={group._id} value={group._id} disabled={hasOngoingLottery}>
+            <Option key={String(group._id)} value={String(group._id)} disabled={hasOngoingLottery}>
               <div
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
