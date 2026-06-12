@@ -66,9 +66,9 @@ const GroupMessageTab: React.FC<GroupMessageTabProps> = ({ currentRow, onDataCha
   const columns = [
     {
       title: '群组',
-      dataIndex: 'groups',
+      dataIndex: 'group',
       width: 120,
-      render: (groups: any[]) => groups?.map((g) => g?.title).join(', ') || '-',
+      render: (group: any) => group?.title || '-',
     },
     {
       title: '内容',

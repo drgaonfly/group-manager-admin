@@ -11,7 +11,6 @@ import {
   ModalForm,
   ProFormGroup,
   ProFormDigit,
-  ProFormCheckbox,
   ProFormSelect,
   ProFormRadio,
   ProFormSwitch,
@@ -20,6 +19,7 @@ import {
   EditableProTable,
   ProFormDateTimePicker,
 } from '@ant-design/pro-components';
+import GroupMessageGroupSelect from './GroupMessageGroupSelect';
 
 type menuItem = {
   _id: string;
@@ -155,7 +155,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             values.sendType === 'immediate'
               ? 0
               : timeUnitToMinutes(values.intervalTime || 0, values.timeUnit as TimeUnit),
-          groups: values.groups || [],
+          groups: values.group ? [values.group] : [],
+          group: values.group,
           medias: medias,
           isRealtime: values.isRealtime,
           sendType: values.sendType,
@@ -210,37 +211,9 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         </Form.Item>
       </ProFormGroup>
 
-      <ProFormGroup>
-        {currentRow?.groups?.length > 0 ? (
-          <ProFormCheckbox.Group
-            name="groups"
-            width="md"
-            label={intl.formatMessage({ id: 'select_groups', defaultMessage: 'Select Groups' })}
-            options={currentRow.groups
-              .filter((group: any) => group?.type !== 'channel' && group?._id)
-              .map((group: any) => ({
-                label: group.title,
-                value: group._id,
-              }))}
-          />
-        ) : (
-          <ProFormCheckbox
-            width="md"
-            label={intl.formatMessage({
-              id: 'no_groups_joined',
-              defaultMessage: 'No groups joined',
-            })}
-            disabled
-          />
-        )}
-        {/* 
-        <ProFormCheckbox
-          name="isRealtime"
-          label={intl.formatMessage({ id: 'is_realtime', defaultMessage: 'Is Realtime' })}
-          initialValue={false}
-          hidden
-        /> */}
+      <GroupMessageGroupSelect botId={currentRow?._id} />
 
+      <ProFormGroup>
         <ProFormDigit
           label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: 'Menus Per Row' })}
           name="menus_per_row"
