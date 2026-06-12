@@ -1,8 +1,9 @@
-import { Form, Space, Tag } from 'antd';
+import { Form, Space, Tag, Select } from 'antd';
 import { useState, useEffect, useMemo } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 import BotSelect from '@/components/BotSelect';
+import { request } from '@umijs/max';
 import {
   ProFormText,
   ProFormGroup,
@@ -14,6 +15,8 @@ import {
 import React from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+
+const { Option } = Select;
 
 type menuItem = {
   _id: string;
@@ -35,10 +38,30 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const [botGroups, setBotGroups] = useState<any[]>([]);
+  const [groupsLoading, setGroupsLoading] = useState(false);
   const quillRef = React.useRef<ReactQuill>(null);
 
+  const loadBotGroups = async (botId: string) => {
+    if (!botId) {
+      setBotGroups([]);
+      return;
+    }
+    setGroupsLoading(true);
+    try {
+      const res = await request('/groups/getByBotId', {
+        method: 'GET',
+        params: { botId },
+      });
+      if (res.success) setBotGroups(res.data || []);
+    } catch (e) {
+      console.error('加载群组失败:', e);
+    } finally {
+      setGroupsLoading(false);
+    }
+  };
+
   const variables = [
-    { key: '{member}', label: '带链接成员名', desc: '带链接的群成员名字' },
     { key: '{userId}', label: '用户ID', desc: '用户的 Telegram ID' },
     { key: '{nickname}', label: '用户昵称', desc: '用户的昵称/名字' },
     { key: '{userName}', label: '用户名', desc: '用户的 @username' },
@@ -160,11 +183,17 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
 
       const botId = initialValues.bot?._id || initialValues.bot;
 
+      // 加载该 bot 的群组列表
+      if (botId) loadBotGroups(botId);
+
+      const groupId = initialValues.group?._id || initialValues.group;
+
       form.setFieldsValue({
         keyword: Array.isArray(initialValues.keyword)
           ? initialValues.keyword.join(', ')
           : initialValues.keyword,
         bot: botId,
+        group: groupId ? String(groupId) : undefined,
         replyToMessage: initialValues.replyToMessage || false,
         replyToAdmin: initialValues.replyToAdmin !== false,
         deleteAfterSeconds: initialValues.deleteAfterSeconds || 0,
@@ -270,7 +299,12 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
   return (
     <>
       <ProFormGroup>
-        <BotSelect />
+        <BotSelect
+          onChange={(botId) => {
+            loadBotGroups(botId);
+            form.setFieldValue('group', undefined);
+          }}
+        />
 
         <ProFormText
           name="keyword"
@@ -285,6 +319,26 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           tooltip="多个关键词用逗号分隔，任意一个匹配即触发回复。特殊关键词：<tron_address> 匹配所有波场地址"
         />
       </ProFormGroup>
+
+      <Form.Item
+        name="group"
+        label="适用群组"
+        rules={[{ required: true, message: '请选择适用群组' }]}
+      >
+        <Select
+          placeholder="请选择群组"
+          loading={groupsLoading}
+          showSearch
+          optionFilterProp="children"
+        >
+          {botGroups.map((group) => (
+            <Option key={String(group._id)} value={String(group._id)}>
+              {group.title}
+              {group.username ? ` (@${group.username})` : ''}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
 
       <ProFormGroup>
         <ProFormDigit

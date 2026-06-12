@@ -15,6 +15,7 @@ import { addItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import ReplyRuleGroupSelect from './ReplyRuleGroupSelect';
 
 type menuItem = {
   _id: string;
@@ -189,6 +190,8 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
           tooltip="多个关键词用逗号分隔，任意一个匹配即触发回复。特殊关键词：<tron_address> 匹配所有波场地址"
         />
       </ProFormGroup>
+
+      <ReplyRuleGroupSelect botId={currentRow?._id} />
 
       <Form.Item label="回复内容" required style={{ marginBottom: 24 }}>
         <RichTextEditor

@@ -83,6 +83,13 @@ const TableList: React.FC = () => {
       render: (_, record) => record?.bot?.botName || '-',
     },
     {
+      title: '适用群组',
+      dataIndex: 'group',
+      hideInSearch: true,
+      render: (_, record) =>
+        record?.group?.title ? <Tag color="purple">{record.group.title}</Tag> : <span>-</span>,
+    },
+    {
       title: '关键词',
       dataIndex: 'keyword',
       render: (_, record) => {

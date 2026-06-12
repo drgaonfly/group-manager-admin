@@ -93,6 +93,13 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
       },
     },
     {
+      title: '适用群组',
+      dataIndex: 'group',
+      width: 120,
+      render: (_: any, record: any) =>
+        record.group?.title ? <Tag color="purple">{record.group.title}</Tag> : <span>-</span>,
+    },
+    {
       title: <FormattedMessage id="reply_content" defaultMessage="回复内容" />,
       dataIndex: 'content',
       width: 160,

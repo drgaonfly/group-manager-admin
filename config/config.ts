@@ -171,6 +171,6 @@ export default defineConfig({
     hasDropdown: true,
   },
   tailwindcss: {
-    cssFilePath: './tailwind.css',
+    cssFilePath: '../tailwind.css',
   },
 });
