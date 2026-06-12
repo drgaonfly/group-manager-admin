@@ -2,7 +2,7 @@ import { message, Form } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
-import { updateItem } from '@/services/ant-design-pro/api';
+import { request } from '@umijs/max';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import {
@@ -13,6 +13,7 @@ import {
   ProFormDigit,
   ProFormSwitch,
 } from '@ant-design/pro-components';
+import GroupWelcomeGroupSelect from './GroupWelcomeGroupSelect';
 
 type menuItem = {
   _id: string;
@@ -23,13 +24,17 @@ type menuItem = {
 interface GroupWelcomeFormProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
+  /** 所属 Bot */
+  botId: string;
+  /** 编辑时传入现有记录，新建时为 null */
   currentRow?: any;
-  onSuccess?: (updatedBot?: any) => void;
+  onSuccess?: () => void;
 }
 
 const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   open,
   onCancel,
+  botId,
   currentRow,
   onSuccess,
 }) => {
@@ -40,41 +45,41 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const [content, setContent] = useState('');
   const [caption, setCaption] = useState('');
 
+  const isEdit = !!currentRow?._id;
+
   useEffect(() => {
-    if (open && currentRow?._id) {
+    if (open) {
       form.resetFields();
 
-      if (currentRow.groupWelcome) {
-        const welcomeData = currentRow.groupWelcome;
-        const formattedMenus = (welcomeData.menus || []).map((item: any, index: number) => ({
+      if (isEdit && currentRow) {
+        const formattedMenus = (currentRow.menus || []).map((item: any, index: number) => ({
           _id: item._id || `${Date.now()}-${index}`,
           name: item.name || '',
           url: item.url || '',
         }));
 
-        // 设置内容
-        setContent(toQuillHtml(welcomeData.contents?.join('\n') || ''));
-        setCaption(toQuillHtml(welcomeData.caption || ''));
-        setMedias(welcomeData.medias || []);
+        setContent(toQuillHtml(currentRow.contents?.join('\n') || ''));
+        setCaption(toQuillHtml(currentRow.caption || ''));
+        setMedias(currentRow.medias || []);
         setMenus(formattedMenus);
 
-        // 设置阅后即焚时间和置顶选项
         form.setFieldsValue({
-          deleteAfterSeconds: welcomeData.deleteAfterSeconds || 0,
-          pinNewMember: welcomeData.pinNewMember || false,
+          // group 经过 populate 后是对象，需转字符串
+          group: currentRow.group?._id
+            ? currentRow.group._id.toString()
+            : currentRow.group ?? undefined,
+          deleteAfterSeconds: currentRow.deleteAfterSeconds || 0,
+          pinNewMember: currentRow.pinNewMember || false,
         });
       } else {
         setContent('');
         setCaption('');
         setMedias([]);
         setMenus([]);
-        form.setFieldsValue({
-          deleteAfterSeconds: 0,
-          pinNewMember: false,
-        });
+        form.setFieldsValue({ deleteAfterSeconds: 0, pinNewMember: false });
       }
     }
-  }, [open, currentRow, form]);
+  }, [open, currentRow, isEdit, form]);
 
   const defaultMediaFileList: UploadFile[] = medias.map((url, idx) => ({
     uid: `${idx + 1}`,
@@ -116,12 +121,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       valueType: 'option',
       width: 150,
       render: (_, record, __, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record._id);
-          }}
-        >
+        <a key="editable" onClick={() => action?.startEditable?.(record._id)}>
           {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
         </a>,
       ],
@@ -136,7 +136,9 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       const telegramCaption = convertToTelegramHtml(caption);
       const formValues = form.getFieldsValue();
 
-      const groupWelcomeData = {
+      const payload = {
+        bot: botId,
+        group: formValues.group,
         contents: telegramContent
           ? telegramContent.split('\n').filter((v: string) => v.trim())
           : [],
@@ -147,11 +149,17 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         pinNewMember: formValues.pinNewMember || false,
       };
 
-      // 使用专门的群欢迎更新接口
-      const response: any = await updateItem(
-        `/bots/${currentRow._id}/group-welcome`,
-        groupWelcomeData,
-      );
+      if (isEdit) {
+        await request(`/group-welcomes/${currentRow._id}`, {
+          method: 'PUT',
+          data: payload,
+        });
+      } else {
+        await request('/group-welcomes', {
+          method: 'POST',
+          data: payload,
+        });
+      }
 
       hide();
       message.success(
@@ -164,12 +172,11 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       setMedias([]);
       setMenus([]);
       onCancel(false);
-      // 传递更新后的 bot 数据，便于刷新 currentRow 中的 groupWelcome
-      onSuccess?.(response?.data);
+      onSuccess?.();
 
       return true;
     } catch (error: any) {
-      console.error('更新失败:', error);
+      console.error('操作失败:', error);
       message.error(
         error?.response?.data?.message ?? (
           <FormattedMessage id="update_failed" defaultMessage="Update failed" />
@@ -181,7 +188,11 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
   return (
     <ModalForm
-      title={intl.formatMessage({ id: 'group_welcome_config', defaultMessage: '群欢迎配置' })}
+      title={
+        isEdit
+          ? intl.formatMessage({ id: 'edit_group_welcome', defaultMessage: '编辑群欢迎配置' })
+          : intl.formatMessage({ id: 'create_group_welcome', defaultMessage: '新建群欢迎配置' })
+      }
       open={open}
       form={form}
       width={800}
@@ -191,7 +202,10 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       }}
       onFinish={handleSubmit}
     >
-      {/* 富文本编辑器 - 单独占满一行 */}
+      {/* 群组选择 */}
+      <GroupWelcomeGroupSelect botId={botId} currentWelcomeId={currentRow?._id} />
+
+      {/* 欢迎消息 */}
       <Form.Item
         label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
         style={{ marginBottom: 24 }}
@@ -205,6 +219,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         />
       </Form.Item>
 
+      {/* 媒体说明 */}
       <Form.Item
         label={intl.formatMessage({ id: 'media_caption', defaultMessage: '媒体说明' })}
         style={{ marginBottom: 24 }}
@@ -241,29 +256,20 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
             defaultMessage: '阅后即焚（秒）',
           })}
           tooltip="设置消息发送后多少秒自动删除，0表示不删除"
-          fieldProps={{
-            min: 0,
-            precision: 0,
-            addonAfter: '秒',
-          }}
+          fieldProps={{ min: 0, precision: 0, addonAfter: '秒' }}
           placeholder="0"
           width="md"
         />
 
         <ProFormSwitch
           name="pinNewMember"
-          label={intl.formatMessage({
-            id: 'pin_new_member',
-            defaultMessage: '置顶新成员',
-          })}
+          label={intl.formatMessage({ id: 'pin_new_member', defaultMessage: '置顶新成员' })}
           tooltip="开启后，新成员加入时会置顶欢迎消息（需要机器人有管理员权限）"
-          fieldProps={{
-            checkedChildren: '开启',
-            unCheckedChildren: '关闭',
-          }}
+          fieldProps={{ checkedChildren: '开启', unCheckedChildren: '关闭' }}
         />
       </ProFormGroup>
 
+      {/* 菜单按钮 */}
       <EditableProTable<menuItem>
         rowKey="_id"
         headerTitle={intl.formatMessage({
@@ -276,15 +282,9 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({
-            _id: Date.now().toString(),
-            name: '',
-            url: '',
-          }),
+          record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
         }}
-        editable={{
-          type: 'multiple',
-        }}
+        editable={{ type: 'multiple' }}
       />
     </ModalForm>
   );
