@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Empty, Button, message, Space, Switch, Tag, Popconfirm } from 'antd';
+import {
+  Alert,
+  Card,
+  Table,
+  Empty,
+  Button,
+  message,
+  Space,
+  Switch,
+  Tag,
+  Popconfirm,
+  Tooltip,
+} from 'antd';
 import { ReloadOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { queryList, removeItem, updateItem, addItem } from '@/services/ant-design-pro/api';
 import AdRemovalForm from './AdRemovalForm';
@@ -102,6 +114,25 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
     }
   };
 
+  /** 将处罚配置渲染成可读文字 */
+  const renderPunishment = (punishment: any) => {
+    if (!punishment?.type) return <Tag>仅删除</Tag>;
+    if (punishment.type === 'kick') return <Tag color="red">踢出群</Tag>;
+    if (punishment.type === 'mute') {
+      const sec = punishment.muteDuration ?? 0;
+      let label = `${sec}秒`;
+      if (sec >= 86400) label = `${Math.floor(sec / 86400)}天`;
+      else if (sec >= 3600) label = `${Math.floor(sec / 3600)}小时`;
+      else if (sec >= 60) label = `${Math.floor(sec / 60)}分钟`;
+      return (
+        <Tooltip title={`禁言 ${punishment.muteDuration} 秒`}>
+          <Tag color="orange">禁言 {label}</Tag>
+        </Tooltip>
+      );
+    }
+    return <Tag>仅删除</Tag>;
+  };
+
   const columns = [
     {
       title: '规则名称',
@@ -109,17 +140,41 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
       key: 'name',
     },
     {
-      title: '模式',
+      title: '适用群组',
+      dataIndex: 'group',
+      key: 'group',
+      render: (group: any) => {
+        if (!group) return <Tag color="default">全部群组</Tag>;
+        const name = group?.title || group?.toString();
+        return <Tag color="blue">{name}</Tag>;
+      },
+    },
+    {
+      title: '行内模式',
       dataIndex: 'mode',
       key: 'mode',
       render: (val: string) =>
-        val === 'all' ? <Tag color="blue">全部命中</Tag> : <Tag color="green">任意命中</Tag>,
+        val === 'all' ? <Tag color="blue">全部词</Tag> : <Tag color="green">任意词</Tag>,
     },
     {
-      title: '关键词数量',
+      title: '关键词行数',
       dataIndex: 'keywords',
       key: 'keywords',
-      render: (keywords: any[]) => keywords?.length || 0,
+      render: (keywords: string[][]) => {
+        const lines = keywords?.length || 0;
+        const total = keywords?.reduce((sum, line) => sum + (line?.length || 0), 0) || 0;
+        return (
+          <Tooltip title={`共 ${lines} 行，${total} 个词`}>
+            <span>{lines} 行</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '处罚',
+      dataIndex: 'punishment',
+      key: 'punishment',
+      render: renderPunishment,
     },
     {
       title: '状态',
@@ -130,18 +185,6 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
           checked={checked}
           size="small"
           onChange={(val) => handleStatusChange(record, { isOnline: val })}
-        />
-      ),
-    },
-    {
-      title: '豁免管理员',
-      dataIndex: 'ignoreAdmin',
-      key: 'ignoreAdmin',
-      render: (checked: boolean, record: any) => (
-        <Switch
-          checked={checked}
-          size="small"
-          onChange={(val) => handleStatusChange(record, { ignoreAdmin: val })}
         />
       ),
     },
@@ -193,6 +236,13 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
         </Space>
       }
     >
+      <Alert
+        type="warning"
+        showIcon
+        style={{ marginBottom: 16 }}
+        message="权限提醒"
+        description="去除广告功能需要机器人在目标群组中拥有「删除消息」管理员权限；若需执行禁言/踢出处罚，还需同时拥有「封禁用户」权限。请确保已在群组设置中将机器人设为管理员并开启对应权限，否则规则命中后将无法执行相应操作。"
+      />
       <Table
         dataSource={data}
         columns={columns}
@@ -207,6 +257,7 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
         onSubmit={handleSubmit}
         initialValues={currentRecord}
         loading={loading}
+        botId={currentRow?._id}
       />
     </Card>
   );
