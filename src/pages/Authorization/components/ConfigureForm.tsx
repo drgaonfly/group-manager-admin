@@ -7,7 +7,6 @@ import {
   ProFormText,
   ProFormDigit,
   ProFormSelect,
-  ProFormSwitch,
 } from '@ant-design/pro-components';
 import { Form, Input, Tabs } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
@@ -259,12 +258,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
                         },
                       },
                     ]}
-                  />
-                  <ProFormSwitch
-                    name="canRecharge"
-                    label={intl.formatMessage({ id: 'canRecharge', defaultMessage: '链上充值' })}
-                    tooltip="开启后用户可通过链上转账充值积分"
-                    fieldProps={{ checkedChildren: '开启', unCheckedChildren: '关闭' }}
                   />
                 </ProFormGroup>
                 <Form.Item
