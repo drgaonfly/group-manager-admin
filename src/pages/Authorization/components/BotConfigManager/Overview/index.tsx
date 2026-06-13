@@ -19,7 +19,6 @@ import {
   AuditOutlined,
   BookOutlined,
   StopOutlined,
-  MoneyCollectOutlined,
   RedEnvelopeOutlined,
 } from '@ant-design/icons';
 
@@ -169,14 +168,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       color: '#f5222d',
       permission: currentUser?.adRemoval,
       desc: '自动删除违规广告消息',
-    },
-    {
-      key: 'canRecharge',
-      label: intl.formatMessage({ id: 'canRecharge', defaultMessage: '充值' }),
-      icon: <MoneyCollectOutlined />,
-      color: '#52c41a',
-      permission: currentUser?.recharge,
-      desc: '链上充值积分',
     },
     {
       key: 'canRedPacket',

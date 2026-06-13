@@ -328,7 +328,7 @@ export default {
   no_channels_joined: '未加入频道',
   add_reply_rule: '添加回复规则',
   replyRule: '回复规则',
-  speechStatic: '语音统计',
+  speechStatic: '发言统计',
   canBidirectional: '支持双向',
   canReportMemberNameUpdated: '可报告成员名称更新',
 
