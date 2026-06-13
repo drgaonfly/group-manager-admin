@@ -170,7 +170,7 @@ export default defineConfig({
   tabsLayout: {
     hasDropdown: true,
   },
-  tailwindcss: {
-    cssFilePath: '../tailwind.css',
-  },
+  // tailwindcss: {
+  //   cssFilePath: '../tailwind.css',
+  // },
 });

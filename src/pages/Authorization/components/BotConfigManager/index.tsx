@@ -6,15 +6,7 @@ import type { ProColumns } from '@ant-design/pro-components';
 import {
   SettingOutlined,
   AppstoreOutlined,
-  MessageOutlined,
-  KeyOutlined,
-  StopOutlined,
-  SmileOutlined,
-  SafetyOutlined,
-  BarChartOutlined,
-  CalendarOutlined,
-  TrophyOutlined,
-  AuditOutlined,
+  TeamOutlined,
   NotificationOutlined,
   BookOutlined,
 } from '@ant-design/icons';
@@ -23,15 +15,9 @@ import {
 import OverviewTab from './Overview';
 import ChannelPostTab from './ChannelPost';
 import TeachingTab from './Teaching';
-import GroupMessageGroupModal from './GroupMessage/GroupMessageGroupModal';
-import ReplyRuleGroupModal from './ReplyRule/ReplyRuleGroupModal';
-import AdRemovalGroupModal from './AdRemoval/AdRemovalGroupModal';
-import GroupWelcomeGroupModal from './GroupWelcome/GroupWelcomeGroupModal';
-import GroupVerifyGroupModal from './GroupVerify/GroupVerifyGroupModal';
-import SpeechStatisticsGroupModal from './SpeechStatistics/SpeechStatisticsGroupModal';
-import CheckinRuleGroupModal from './CheckinRule/CheckinRuleGroupModal';
-import LotteryRuleGroupModal from './LotteryRule/LotteryRuleGroupModal';
-import AuctionRuleGroupModal from './AuctionRule/AuctionRuleGroupModal';
+
+// 群组功能弹窗（点击群组"管理"后弹出）
+import GroupFeaturesModal from './GroupFeaturesModal';
 
 interface BotConfigManagerProps {
   open: boolean;
@@ -40,18 +26,6 @@ interface BotConfigManagerProps {
   currentUser: any;
   onBotUpdate?: (values: any) => Promise<void>;
 }
-
-/** 分群功能标识 */
-type GroupFeatureKey =
-  | 'groupMessage'
-  | 'replyRule'
-  | 'adRemoval'
-  | 'groupWelcome'
-  | 'groupVerify'
-  | 'speechStatistics'
-  | 'checkinRule'
-  | 'lotteryRule'
-  | 'auctionRule';
 
 const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   open,
@@ -64,9 +38,9 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
   const [activeTab, setActiveTab] = useState('overview');
   const [botConfig, setBotConfig] = useState<any>({});
 
-  // 当前选中的群组 + 功能弹窗状态
+  // 当前选中的群组，用于打开功能管理弹窗
   const [selectedGroup, setSelectedGroup] = useState<any>(null);
-  const [groupModalFeature, setGroupModalFeature] = useState<GroupFeatureKey | null>(null);
+  const [groupFeaturesOpen, setGroupFeaturesOpen] = useState(false);
 
   useEffect(() => {
     if (open && currentRow?._id) {
@@ -106,35 +80,21 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     }
   };
 
-  /** 打开某个群组的某个功能弹窗 */
-  const openGroupModal = (group: any, feature: GroupFeatureKey) => {
-    setSelectedGroup(group);
-    setGroupModalFeature(feature);
-  };
-
-  const closeGroupModal = () => {
-    setSelectedGroup(null);
-    setGroupModalFeature(null);
-  };
-
-  /**
-   * 分群功能的群组列表 Tab 内容
-   * ProTable 展示，参照 Group 页面风格，操作栏带「管理」按钮
-   */
-  const renderGroupTable = (featureKey: GroupFeatureKey) => {
+  /** 群组列表 Tab — ProTable，点击"管理"打开功能管理弹窗 */
+  const renderGroupsTab = () => {
     const groups: any[] = (currentRow?.groups || []).filter((g: any) => g.type !== 'channel');
 
     const columns: ProColumns<any>[] = [
       {
         title: intl.formatMessage({ id: 'title', defaultMessage: '群名' }),
         dataIndex: 'title',
-        width: 100,
+        width: 180,
         ellipsis: true,
       },
       {
         title: intl.formatMessage({ id: 'username', defaultMessage: '群组用户名' }),
         dataIndex: 'username',
-        width: 100,
+        width: 140,
         render: (username: any) =>
           username ? <Tag color="blue">@{username}</Tag> : <span style={{ color: '#bbb' }}>-</span>,
       },
@@ -147,7 +107,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       {
         title: intl.formatMessage({ id: 'pages.searchTable.titleOption', defaultMessage: '操作' }),
         valueType: 'option',
-        width: 50,
+        width: 80,
         fixed: 'right',
         render: (_: any, record: any) => [
           <Button
@@ -155,7 +115,10 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
             type="primary"
             size="small"
             icon={<SettingOutlined />}
-            onClick={() => openGroupModal(record, featureKey)}
+            onClick={() => {
+              setSelectedGroup(record);
+              setGroupFeaturesOpen(true);
+            }}
           >
             {intl.formatMessage({ id: 'manage', defaultMessage: '管理' })}
           </Button>,
@@ -188,7 +151,18 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     );
   };
 
-  // 动态生成 tab 列表
+  // 是否有任何群组功能启用
+  const hasGroupFeatures =
+    (botConfig.canGroupMessaging && currentUser?.groupMessage) ||
+    (botConfig.canReplyRule && currentUser?.replyRule) ||
+    botConfig.canRemoveAd ||
+    (botConfig.canGroupWelcome && currentUser?.groupWelcome) ||
+    (botConfig.canGroupVerify && currentUser?.groupVerify) ||
+    (botConfig.canSpeechStatic && currentUser?.speech_static) ||
+    (botConfig.canCheckIn && currentUser?.checkinRule) ||
+    (botConfig.canLotteryRule && currentUser?.lotteryRule) ||
+    (botConfig.canAuctionRule && currentUser?.auctionRule);
+
   const tabItems = useMemo(() => {
     const items: any[] = [];
 
@@ -210,119 +184,17 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
       ),
     });
 
-    // ── 分群功能 ──────────────────────────────────────────
-
-    if (botConfig.canGroupMessaging && currentUser?.groupMessage) {
+    // 群组管理 Tab - 有群组功能时显示
+    if (hasGroupFeatures) {
       items.push({
-        key: 'groupMessage',
+        key: 'groups',
         label: (
           <span>
-            <MessageOutlined />{' '}
-            {intl.formatMessage({ id: 'group_message', defaultMessage: '群发消息' })}
+            <TeamOutlined />{' '}
+            {intl.formatMessage({ id: 'group_management', defaultMessage: '群组管理' })}
           </span>
         ),
-        children: renderGroupTable('groupMessage'),
-      });
-    }
-
-    if (botConfig.canReplyRule && currentUser?.replyRule) {
-      items.push({
-        key: 'replyRule',
-        label: (
-          <span>
-            <KeyOutlined /> {intl.formatMessage({ id: 'reply_rule', defaultMessage: '关键词回复' })}
-          </span>
-        ),
-        children: renderGroupTable('replyRule'),
-      });
-    }
-
-    if (botConfig.canRemoveAd) {
-      items.push({
-        key: 'adRemoval',
-        label: (
-          <span>
-            <StopOutlined /> {intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' })}
-          </span>
-        ),
-        children: renderGroupTable('adRemoval'),
-      });
-    }
-
-    if (botConfig.canGroupWelcome && currentUser?.groupWelcome) {
-      items.push({
-        key: 'groupWelcome',
-        label: (
-          <span>
-            <SmileOutlined />{' '}
-            {intl.formatMessage({ id: 'group_welcome', defaultMessage: '群欢迎' })}
-          </span>
-        ),
-        children: renderGroupTable('groupWelcome'),
-      });
-    }
-
-    if (botConfig.canGroupVerify && currentUser?.groupVerify) {
-      items.push({
-        key: 'groupVerify',
-        label: (
-          <span>
-            <SafetyOutlined />{' '}
-            {intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' })}
-          </span>
-        ),
-        children: renderGroupTable('groupVerify'),
-      });
-    }
-
-    if (botConfig.canSpeechStatic && currentUser?.speech_static) {
-      items.push({
-        key: 'speechStatistics',
-        label: (
-          <span>
-            <BarChartOutlined />{' '}
-            {intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' })}
-          </span>
-        ),
-        children: renderGroupTable('speechStatistics'),
-      });
-    }
-
-    if (botConfig.canCheckIn && currentUser?.checkinRule) {
-      items.push({
-        key: 'checkinRule',
-        label: (
-          <span>
-            <CalendarOutlined />{' '}
-            {intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' })}
-          </span>
-        ),
-        children: renderGroupTable('checkinRule'),
-      });
-    }
-
-    if (botConfig.canLotteryRule && currentUser?.lotteryRule) {
-      items.push({
-        key: 'lotteryRule',
-        label: (
-          <span>
-            <TrophyOutlined />{' '}
-            {intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' })}
-          </span>
-        ),
-        children: renderGroupTable('lotteryRule'),
-      });
-    }
-
-    if (botConfig.canAuctionRule && currentUser?.auctionRule) {
-      items.push({
-        key: 'auctionRule',
-        label: (
-          <span>
-            <AuditOutlined /> {intl.formatMessage({ id: 'auction_rule', defaultMessage: '群竞拍' })}
-          </span>
-        ),
-        children: renderGroupTable('auctionRule'),
+        children: renderGroupsTab(),
       });
     }
 
@@ -354,7 +226,7 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     }
 
     return items;
-  }, [currentRow, currentUser, botConfig, onBotUpdate]);
+  }, [currentRow, currentUser, botConfig, onBotUpdate, hasGroupFeatures]);
 
   return (
     <>
@@ -383,79 +255,18 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         />
       </Modal>
 
-      {/* 分群功能管理弹窗 */}
-      {groupModalFeature === 'groupMessage' && (
-        <GroupMessageGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'replyRule' && (
-        <ReplyRuleGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'adRemoval' && (
-        <AdRemovalGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'groupWelcome' && (
-        <GroupWelcomeGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'groupVerify' && (
-        <GroupVerifyGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'speechStatistics' && (
-        <SpeechStatisticsGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'checkinRule' && (
-        <CheckinRuleGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'lotteryRule' && (
-        <LotteryRuleGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
-      {groupModalFeature === 'auctionRule' && (
-        <AuctionRuleGroupModal
-          open={!!selectedGroup}
-          onClose={closeGroupModal}
-          bot={currentRow}
-          group={selectedGroup}
-        />
-      )}
+      {/* 群组功能管理弹窗 */}
+      <GroupFeaturesModal
+        open={groupFeaturesOpen}
+        onClose={() => {
+          setGroupFeaturesOpen(false);
+          setSelectedGroup(null);
+        }}
+        bot={currentRow}
+        group={selectedGroup}
+        botConfig={botConfig}
+        currentUser={currentUser}
+      />
     </>
   );
 };
