@@ -1,16 +1,28 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, Tabs, message, Tag, Button } from 'antd';
+import { Modal, Tabs, message, Tag, Button, Empty } from 'antd';
 import { useIntl } from '@umijs/max';
 import { ProTable } from '@ant-design/pro-components';
 import type { ProColumns } from '@ant-design/pro-components';
-import { SettingOutlined } from '@ant-design/icons';
+import {
+  SettingOutlined,
+  AppstoreOutlined,
+  MessageOutlined,
+  KeyOutlined,
+  StopOutlined,
+  SmileOutlined,
+  SafetyOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  TrophyOutlined,
+  AuditOutlined,
+  NotificationOutlined,
+  BookOutlined,
+} from '@ant-design/icons';
 
 // 全局功能 Tab
 import OverviewTab from './Overview';
 import ChannelPostTab from './ChannelPost';
 import TeachingTab from './Teaching';
-
-// 分群功能的具体管理弹窗
 import GroupMessageGroupModal from './GroupMessage/GroupMessageGroupModal';
 import ReplyRuleGroupModal from './ReplyRule/ReplyRuleGroupModal';
 import AdRemovalGroupModal from './AdRemoval/AdRemovalGroupModal';
@@ -109,38 +121,40 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
 
   /**
    * 分群功能的群组列表 Tab 内容
-   * 右侧展示该 Bot 所有群（非频道），每行操作栏有「管理」按钮
+   * ProTable 展示，参照 Group 页面风格，操作栏带「管理」按钮
    */
   const renderGroupTable = (featureKey: GroupFeatureKey) => {
-    // 从 currentRow.groups 中过滤掉 channel 类型
     const groups: any[] = (currentRow?.groups || []).filter((g: any) => g.type !== 'channel');
 
     const columns: ProColumns<any>[] = [
       {
-        title: intl.formatMessage({ id: 'group_name', defaultMessage: '群组名称' }),
+        title: intl.formatMessage({ id: 'title', defaultMessage: '群名' }),
         dataIndex: 'title',
+        width: 100,
         ellipsis: true,
       },
       {
-        title: intl.formatMessage({ id: 'group_username', defaultMessage: '用户名' }),
+        title: intl.formatMessage({ id: 'username', defaultMessage: '群组用户名' }),
         dataIndex: 'username',
+        width: 100,
         render: (username: any) =>
           username ? <Tag color="blue">@{username}</Tag> : <span style={{ color: '#bbb' }}>-</span>,
       },
       {
-        title: intl.formatMessage({ id: 'group_type', defaultMessage: '类型' }),
+        title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
         dataIndex: 'type',
-        width: 110,
+        width: 100,
         render: (type: any) => <Tag>{type}</Tag>,
       },
       {
         title: intl.formatMessage({ id: 'pages.searchTable.titleOption', defaultMessage: '操作' }),
         valueType: 'option',
-        width: 100,
+        width: 50,
+        fixed: 'right',
         render: (_: any, record: any) => [
           <Button
             key="manage"
-            type="link"
+            type="primary"
             size="small"
             icon={<SettingOutlined />}
             onClick={() => openGroupModal(record, featureKey)}
@@ -162,7 +176,15 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         size="small"
         scroll={{ x: 'max-content' }}
         locale={{
-          emptyText: intl.formatMessage({ id: 'no_groups', defaultMessage: '该机器人暂无群组' }),
+          emptyText: (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={intl.formatMessage({
+                id: 'no_groups',
+                defaultMessage: '该机器人暂无群组',
+              })}
+            />
+          ),
         }}
       />
     );
@@ -175,7 +197,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     // 概览 Tab - 始终显示
     items.push({
       key: 'overview',
-      label: intl.formatMessage({ id: 'overview', defaultMessage: '概览' }),
+      label: (
+        <span>
+          <AppstoreOutlined /> {intl.formatMessage({ id: 'overview', defaultMessage: '概览' })}
+        </span>
+      ),
       children: (
         <OverviewTab
           currentRow={currentRow}
@@ -191,7 +217,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canGroupMessaging && currentUser?.groupMessage) {
       items.push({
         key: 'groupMessage',
-        label: intl.formatMessage({ id: 'group_message', defaultMessage: '群发消息' }),
+        label: (
+          <span>
+            <MessageOutlined />{' '}
+            {intl.formatMessage({ id: 'group_message', defaultMessage: '群发消息' })}
+          </span>
+        ),
         children: renderGroupTable('groupMessage'),
       });
     }
@@ -199,7 +230,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canReplyRule && currentUser?.replyRule) {
       items.push({
         key: 'replyRule',
-        label: intl.formatMessage({ id: 'reply_rule', defaultMessage: '关键词回复' }),
+        label: (
+          <span>
+            <KeyOutlined /> {intl.formatMessage({ id: 'reply_rule', defaultMessage: '关键词回复' })}
+          </span>
+        ),
         children: renderGroupTable('replyRule'),
       });
     }
@@ -207,7 +242,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canRemoveAd) {
       items.push({
         key: 'adRemoval',
-        label: intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' }),
+        label: (
+          <span>
+            <StopOutlined /> {intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' })}
+          </span>
+        ),
         children: renderGroupTable('adRemoval'),
       });
     }
@@ -215,7 +254,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canGroupWelcome && currentUser?.groupWelcome) {
       items.push({
         key: 'groupWelcome',
-        label: intl.formatMessage({ id: 'group_welcome', defaultMessage: '群欢迎' }),
+        label: (
+          <span>
+            <SmileOutlined />{' '}
+            {intl.formatMessage({ id: 'group_welcome', defaultMessage: '群欢迎' })}
+          </span>
+        ),
         children: renderGroupTable('groupWelcome'),
       });
     }
@@ -223,7 +267,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canGroupVerify && currentUser?.groupVerify) {
       items.push({
         key: 'groupVerify',
-        label: intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' }),
+        label: (
+          <span>
+            <SafetyOutlined />{' '}
+            {intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' })}
+          </span>
+        ),
         children: renderGroupTable('groupVerify'),
       });
     }
@@ -231,7 +280,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canSpeechStatic && currentUser?.speech_static) {
       items.push({
         key: 'speechStatistics',
-        label: intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' }),
+        label: (
+          <span>
+            <BarChartOutlined />{' '}
+            {intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' })}
+          </span>
+        ),
         children: renderGroupTable('speechStatistics'),
       });
     }
@@ -239,7 +293,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canCheckIn && currentUser?.checkinRule) {
       items.push({
         key: 'checkinRule',
-        label: intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' }),
+        label: (
+          <span>
+            <CalendarOutlined />{' '}
+            {intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' })}
+          </span>
+        ),
         children: renderGroupTable('checkinRule'),
       });
     }
@@ -247,7 +306,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canLotteryRule && currentUser?.lotteryRule) {
       items.push({
         key: 'lotteryRule',
-        label: intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' }),
+        label: (
+          <span>
+            <TrophyOutlined />{' '}
+            {intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' })}
+          </span>
+        ),
         children: renderGroupTable('lotteryRule'),
       });
     }
@@ -255,7 +319,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canAuctionRule && currentUser?.auctionRule) {
       items.push({
         key: 'auctionRule',
-        label: intl.formatMessage({ id: 'auction_rule', defaultMessage: '群竞拍' }),
+        label: (
+          <span>
+            <AuditOutlined /> {intl.formatMessage({ id: 'auction_rule', defaultMessage: '群竞拍' })}
+          </span>
+        ),
         children: renderGroupTable('auctionRule'),
       });
     }
@@ -265,7 +333,12 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canOpenChannelPost && currentUser?.channelPost) {
       items.push({
         key: 'channelPost',
-        label: intl.formatMessage({ id: 'channel_post', defaultMessage: '频道推广' }),
+        label: (
+          <span>
+            <NotificationOutlined />{' '}
+            {intl.formatMessage({ id: 'channel_post', defaultMessage: '频道推广' })}
+          </span>
+        ),
         children: <ChannelPostTab currentRow={currentRow} />,
       });
     }
@@ -273,7 +346,11 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
     if (botConfig.canTeaching && currentUser?.teaching) {
       items.push({
         key: 'teaching',
-        label: intl.formatMessage({ id: 'teaching', defaultMessage: '教学模块' }),
+        label: (
+          <span>
+            <BookOutlined /> {intl.formatMessage({ id: 'teaching', defaultMessage: '教学模块' })}
+          </span>
+        ),
         children: <TeachingTab currentRow={currentRow} onBotUpdate={onBotUpdate} />,
       });
     }
@@ -303,7 +380,8 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
           activeKey={activeTab}
           onChange={setActiveTab}
           items={tabItems}
-          tabBarStyle={{ minWidth: 120 }}
+          tabBarStyle={{ minWidth: 140 }}
+          style={{ minHeight: '60vh' }}
         />
       </Modal>
 
