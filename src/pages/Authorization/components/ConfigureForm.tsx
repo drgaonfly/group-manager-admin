@@ -15,7 +15,6 @@ import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 import useQueryList from '@/hooks/useQueryList';
 import KeyboardTab from './BotConfigManager/Keyboard';
-import RankConferralTab from './BotConfigManager/RankConferral';
 import SuccessTab from './BotConfigManager/Success';
 
 type menuItem = {
@@ -309,11 +308,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
                 }}
               />
             ),
-          },
-          {
-            key: 'rankConferral',
-            label: intl.formatMessage({ id: 'rank_conferral', defaultMessage: '授衔' }),
-            children: <RankConferralTab currentRow={values} />,
           },
           {
             key: 'success',

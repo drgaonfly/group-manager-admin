@@ -86,7 +86,6 @@ const BotConfigManager: React.FC<BotConfigManagerProps> = ({
         canAuctionRule: currentRow.canAuctionRule,
         canTeaching: currentRow.canTeaching,
         canRemoveAd: currentRow.canRemoveAd,
-        canRankConferral: currentRow.canRankConferral,
         canSuccess: currentRow.canSuccess,
         canRedPacket: currentRow.canRedPacket,
       });
