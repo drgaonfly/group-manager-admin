@@ -5,14 +5,11 @@ import {
   ProDescriptions,
   ProFormGroup,
   ProFormText,
-  ProFormDigit,
-  ProFormSelect,
 } from '@ant-design/pro-components';
 import { Form, Input, Tabs } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
-import useQueryList from '@/hooks/useQueryList';
 import KeyboardTab from './BotConfigManager/Keyboard';
 import SuccessTab from './BotConfigManager/Success';
 
@@ -41,9 +38,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const currentUser = initialState?.currentUser;
   const [menus, setmenu] = useState<menuItem[]>([]);
   const [multiImageUrl, setMultiImageUrl] = useState<string>('');
-  const { items: groups, loading: groupsLoading } = useQueryList('/groups');
-
-  console.log('groups', groups);
 
   // 只提取需要的字段，避免渲染大数据导致卡顿
   const safeValues = useMemo(() => {
@@ -222,43 +216,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
                       placeholder="https://t.me/"
                     />
                   )}
-                  <ProFormSelect
-                    width="md"
-                    label={intl.formatMessage({ id: 'post_source', defaultMessage: '新闻源频道' })}
-                    name="post_source"
-                    tooltip="选择作为新闻源的频道群组"
-                    showSearch
-                    options={groups
-                      .filter((g: any) => g.type === 'channel')
-                      .map((g: any) => ({
-                        label: g.title,
-                        value: g._id,
-                      }))}
-                    fieldProps={{ loading: groupsLoading }}
-                  />
-                  <ProFormDigit
-                    width="md"
-                    label={intl.formatMessage({
-                      id: 'balance_cleared_at',
-                      defaultMessage: '每月清零日期',
-                    })}
-                    name="balanceClearedAt"
-                    tooltip="每月几号自动清零所有用户的积分余额"
-                    placeholder="请输入每月清零日期"
-                    min={1}
-                    max={31}
-                    fieldProps={{ precision: 0, addonAfter: '号' }}
-                    rules={[
-                      {
-                        required: false,
-                        validator: async (_rule: any, value: any) => {
-                          if (value && (value < 1 || value > 31)) {
-                            throw new Error(intl.formatMessage({ id: 'balance_cleared_at_error' }));
-                          }
-                        },
-                      },
-                    ]}
-                  />
                 </ProFormGroup>
                 <Form.Item
                   label={intl.formatMessage({ id: 'multi_image', defaultMessage: 'Multi Image' })}
