@@ -16,6 +16,8 @@ interface SpeechStatisticsFormProps {
   currentRow: any;
   editingConfig?: any;
   onSaved?: () => void;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const CYCLE_OPTIONS = [
@@ -30,6 +32,7 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
   currentRow,
   editingConfig,
   onSaved,
+  fixedGroupId,
 }) => {
   // const intl = useIntl();
   const [form] = Form.useForm();
@@ -43,9 +46,11 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
         ...editingConfig,
         groupId: editingConfig.group?._id || editingConfig.group,
       });
-      // 新建时 initialValues 自动生效，无需额外 setFieldsValue
+    } else if (fixedGroupId) {
+      // 新建且外层已指定群组，预填并锁定
+      form.setFieldsValue({ groupId: fixedGroupId });
     }
-  }, [open, editingConfig]);
+  }, [open, editingConfig, fixedGroupId]);
 
   const botName = currentRow?.botName || currentRow?.userName || '';
   const groupName = editingConfig?.group?.title ? ` · ${editingConfig.group.title}` : '';
@@ -94,7 +99,12 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
     >
       {/* 基础统计 */}
 
-      <SpeechGroupSelect botId={currentRow?._id} />
+      {!fixedGroupId && <SpeechGroupSelect botId={currentRow?._id} />}
+      {fixedGroupId && (
+        <Form.Item name="groupId" hidden>
+          <input type="hidden" />
+        </Form.Item>
+      )}
 
       <ProFormGroup>
         <ProFormDigit

@@ -29,6 +29,8 @@ interface GroupWelcomeFormProps {
   /** 编辑时传入现有记录，新建时为 null */
   currentRow?: any;
   onSuccess?: () => void;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
@@ -37,6 +39,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   botId,
   currentRow,
   onSuccess,
+  fixedGroupId,
 }) => {
   const intl = useIntl();
   const [form] = Form.useForm();
@@ -64,7 +67,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         setMenus(formattedMenus);
 
         form.setFieldsValue({
-          // group 经过 populate 后是对象，需转字符串
           group: currentRow.group?._id
             ? currentRow.group._id.toString()
             : currentRow.group ?? undefined,
@@ -76,7 +78,12 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         setCaption('');
         setMedias([]);
         setMenus([]);
-        form.setFieldsValue({ deleteAfterSeconds: 0, pinNewMember: false });
+        form.setFieldsValue({
+          deleteAfterSeconds: 0,
+          pinNewMember: false,
+          // 新建时若外层固定了群组，预填
+          ...(fixedGroupId ? { group: fixedGroupId } : {}),
+        });
       }
     }
   }, [open, currentRow, isEdit, form]);
@@ -203,7 +210,13 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       onFinish={handleSubmit}
     >
       {/* 群组选择 */}
-      <GroupWelcomeGroupSelect botId={botId} currentWelcomeId={currentRow?._id} />
+      {fixedGroupId ? (
+        <Form.Item name="group" hidden initialValue={fixedGroupId}>
+          <input type="hidden" />
+        </Form.Item>
+      ) : (
+        <GroupWelcomeGroupSelect botId={botId} currentWelcomeId={currentRow?._id} />
+      )}
 
       {/* 欢迎消息 */}
       <Form.Item

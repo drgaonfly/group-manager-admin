@@ -37,11 +37,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       permission: currentUser?.replyRule,
     },
     {
-      key: 'canFreeKeyboard',
-      label: intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '键盘配置' }),
-      permission: currentUser?.keyboardConfig,
-    },
-    {
       key: 'canGroupWelcome',
       label: intl.formatMessage({ id: 'welcomeGroup', defaultMessage: '欢迎入群' }),
       permission: currentUser?.groupWelcome,
@@ -95,19 +90,9 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       permission: currentUser?.adRemoval,
     },
     {
-      key: 'canRankConferral',
-      label: intl.formatMessage({ id: 'canRankConferral', defaultMessage: '授衔' }),
-      permission: currentUser?.rankConferral,
-    },
-    {
       key: 'canRecharge',
       label: intl.formatMessage({ id: 'canRecharge', defaultMessage: '充值' }),
       permission: currentUser?.recharge,
-    },
-    {
-      key: 'canSuccess',
-      label: intl.formatMessage({ id: 'canSuccess', defaultMessage: '积分继承' }),
-      permission: currentUser?.success,
     },
     {
       key: 'canRedPacket',

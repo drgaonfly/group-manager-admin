@@ -16,6 +16,8 @@ interface Props {
   onSubmit: (values: any) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
+  /** 从外层直接传入群组 ID，新建时跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const CheckinRuleForm: React.FC<Props> = ({
@@ -24,6 +26,7 @@ const CheckinRuleForm: React.FC<Props> = ({
   onSubmit,
   onCancel,
   loading = false,
+  fixedGroupId,
 }) => {
   const intl = useIntl();
   const [form] = Form.useForm();
@@ -37,7 +40,8 @@ const CheckinRuleForm: React.FC<Props> = ({
   const [maxMultiplier, setMaxMultiplier] = useState(4);
 
   useEffect(() => {
-    if (editingRecord) {
+    if (editingRecord?._id) {
+      // 真正的编辑模式：有 _id
       form.setFieldsValue({
         group: editingRecord.group?._id,
         type: editingRecord.type,
@@ -62,9 +66,10 @@ const CheckinRuleForm: React.FC<Props> = ({
       );
       setMaxMultiplier(editingRecord.maxMultiplier || 4);
     } else {
+      // 新建模式（editingRecord 为 null，或仅携带 type 等预填值）
       form.resetFields();
       form.setFieldsValue({
-        type: 'daily',
+        type: editingRecord?.type ?? 'daily',
         reward: 10,
         keywords: '签到',
         isOnline: true,
@@ -128,13 +133,17 @@ const CheckinRuleForm: React.FC<Props> = ({
         deleteUserMsgAfterSeconds: 0,
       }}
     >
-      {/* 群组：编辑时只读，新建时下拉选择 */}
+      {/* 群组：编辑时只读，新建时若外层固定则隐藏，否则下拉选择 */}
       {editingRecord ? (
         <Form.Item label="签到群组">
           <span>
             {editingRecord?.group?.title || '-'}
             {editingRecord?.group?.username && ` (@${editingRecord.group.username})`}
           </span>
+        </Form.Item>
+      ) : fixedGroupId ? (
+        <Form.Item name="group" hidden initialValue={fixedGroupId}>
+          <input type="hidden" />
         </Form.Item>
       ) : (
         <CheckinRuleGroupSelect botId={currentRow?._id} />
@@ -148,6 +157,7 @@ const CheckinRuleForm: React.FC<Props> = ({
             rules={[{ required: true, message: '请选择签到类型' }]}
           >
             <Select
+              disabled={!!editingRecord?._id}
               options={[
                 { label: '每日签到', value: 'daily' },
                 { label: '初次签到', value: 'first' },

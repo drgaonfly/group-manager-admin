@@ -18,6 +18,8 @@ interface GroupVerifyFormProps {
   /** 编辑时传入现有记录 */
   currentRecord?: any;
   onSuccess?: () => void;
+  /** 从外层直接传入群组 ID，新建时跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
@@ -26,6 +28,7 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
   botId,
   currentRecord,
   onSuccess,
+  fixedGroupId,
 }) => {
   const intl = useIntl();
   const [form] = Form.useForm();
@@ -51,7 +54,11 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
           })),
         );
       } else {
-        form.setFieldsValue({ isActive: true });
+        form.setFieldsValue({
+          isActive: true,
+          // 新建时若外层已指定群组，预填并锁定
+          ...(fixedGroupId ? { group: fixedGroupId } : {}),
+        });
         setAsks([]);
       }
     }
@@ -186,7 +193,7 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
       }
     >
       <Form form={form} layout="vertical">
-        {/* 群组选择，编辑时禁用（不允许换群） */}
+        {/* 群组选择，编辑时或外层固定群组时只读 */}
         {isEdit ? (
           <Form.Item label="验证群组">
             <span>
@@ -194,6 +201,12 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
               {currentRecord?.group?.username && ` (@${currentRecord.group.username})`}
             </span>
           </Form.Item>
+        ) : fixedGroupId ? (
+          <>
+            <Form.Item name="group" hidden>
+              <input type="hidden" />
+            </Form.Item>
+          </>
         ) : (
           <GroupVerifyGroupSelect botId={botId} />
         )}

@@ -18,6 +18,8 @@ export interface AdRemovalFormProps {
   initialValues?: any;
   loading?: boolean;
   botId: string;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect（群组已固定，不可更改） */
+  fixedGroupId?: string;
 }
 
 /**
@@ -47,6 +49,7 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
   initialValues,
   loading,
   botId,
+  fixedGroupId,
 }) => {
   const isEdit = !!initialValues?._id;
 
@@ -58,12 +61,11 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
         keywordsText: keywordsToText(initialValues.keywords),
         punishmentType: initialValues.punishment?.type ?? 'none',
         muteDuration: initialValues.punishment?.muteDuration ?? 300,
-        // group 是 ObjectId 对象或字符串，统一转成字符串
         group: initialValues.group
           ? typeof initialValues.group === 'object'
             ? initialValues.group._id ?? initialValues.group.toString()
             : initialValues.group
-          : undefined,
+          : fixedGroupId ?? undefined,
       };
     }
     return {
@@ -71,7 +73,7 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
       mode: 'any',
       punishmentType: 'none',
       muteDuration: 300,
-      group: undefined,
+      group: fixedGroupId ?? undefined,
     };
   }, [initialValues]);
 
@@ -125,8 +127,14 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
         />
       </ProFormGroup>
 
-      {/* 适用群组 */}
-      <AdRemovalGroupSelect botId={botId} />
+      {/* 适用群组：从外层固定时不展示选择器 */}
+      {fixedGroupId ? (
+        <Form.Item name="group" hidden initialValue={fixedGroupId}>
+          <input type="hidden" />
+        </Form.Item>
+      ) : (
+        <AdRemovalGroupSelect botId={botId} />
+      )}
 
       {/* 匹配设置 */}
       <ProFormGroup>

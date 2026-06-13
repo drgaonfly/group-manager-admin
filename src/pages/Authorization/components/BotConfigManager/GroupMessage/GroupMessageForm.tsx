@@ -57,6 +57,8 @@ interface GroupMessageFormProps {
   onCancel: (visible: boolean) => void;
   currentRow?: any;
   onSuccess?: () => void;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
@@ -64,6 +66,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
   onCancel,
   currentRow,
   onSuccess,
+  fixedGroupId,
 }) => {
   const intl = useIntl();
   const [content, setContent] = useState('');
@@ -77,9 +80,13 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       setMedias(Array.isArray(currentRow.medias) ? currentRow.medias : []);
       setMenus(currentRow.menus || []);
       setContent('');
+      // 外层传入固定群组时预填
+      if (fixedGroupId) {
+        form.setFieldsValue({ group: fixedGroupId });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, currentRow]);
+  }, [open, currentRow, fixedGroupId]);
 
   // Default file list for showing existing medias
   const defaultMediaFileList: UploadFile[] = medias
@@ -211,7 +218,14 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         </Form.Item>
       </ProFormGroup>
 
-      <GroupMessageGroupSelect botId={currentRow?._id} />
+      {fixedGroupId ? (
+        // 群组已由外层固定，隐藏字段保值，不展示 Select
+        <Form.Item name="group" hidden initialValue={fixedGroupId}>
+          <input type="hidden" />
+        </Form.Item>
+      ) : (
+        <GroupMessageGroupSelect botId={currentRow?._id} />
+      )}
 
       <ProFormGroup>
         <ProFormDigit

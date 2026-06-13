@@ -30,9 +30,17 @@ interface Props {
   onOpenChange: (visible: boolean) => void;
   currentRow: any;
   onSuccess: () => void;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
-const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
+const ReplyRuleForm: React.FC<Props> = ({
+  open,
+  onOpenChange,
+  currentRow,
+  onSuccess,
+  fixedGroupId,
+}) => {
   const intl = useIntl();
   const [content, setContent] = useState('');
   const [form] = Form.useForm();
@@ -191,7 +199,13 @@ const ReplyRuleForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSucc
         />
       </ProFormGroup>
 
-      <ReplyRuleGroupSelect botId={currentRow?._id} />
+      {fixedGroupId ? (
+        <Form.Item name="group" hidden initialValue={fixedGroupId}>
+          <input type="hidden" />
+        </Form.Item>
+      ) : (
+        <ReplyRuleGroupSelect botId={currentRow?._id} />
+      )}
 
       <Form.Item label="回复内容" required style={{ marginBottom: 24 }}>
         <RichTextEditor

@@ -77,6 +77,8 @@ interface AuctionFormProps {
   onSubmit: (values: AuctionFormData) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const AuctionForm: React.FC<AuctionFormProps> = ({
@@ -85,6 +87,7 @@ const AuctionForm: React.FC<AuctionFormProps> = ({
   onSubmit,
   onCancel,
   loading = false,
+  fixedGroupId,
 }) => {
   const [form] = Form.useForm();
 
@@ -109,6 +112,8 @@ const AuctionForm: React.FC<AuctionFormProps> = ({
         isPinned: true,
         notifyContent: DEFAULT_NOTIFY_CONTENT,
         endNotifyContent: DEFAULT_END_NOTIFY_CONTENT,
+        // 外层传入固定群组时预填
+        ...(fixedGroupId ? { group: fixedGroupId } : {}),
       });
     }
   }, [currentRow, form]);
@@ -152,7 +157,13 @@ const AuctionForm: React.FC<AuctionFormProps> = ({
           <Input placeholder="请输入竞拍活动标题" />
         </Form.Item>
 
-        <BotGroupSelect botId={botId} currentAuctionId={currentRow?._id} />
+        {fixedGroupId ? (
+          <Form.Item name="group" hidden initialValue={fixedGroupId}>
+            <Input type="hidden" />
+          </Form.Item>
+        ) : (
+          <BotGroupSelect botId={botId} currentAuctionId={currentRow?._id} />
+        )}
 
         <Form.Item
           name="keywords"

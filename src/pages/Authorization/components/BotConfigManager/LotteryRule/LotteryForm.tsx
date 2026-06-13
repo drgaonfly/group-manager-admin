@@ -93,6 +93,8 @@ interface LotteryFormProps {
   onSubmit: (values: LotteryFormData) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
+  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  fixedGroupId?: string;
 }
 
 const LotteryForm: React.FC<LotteryFormProps> = ({
@@ -101,6 +103,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
   onSubmit,
   onCancel,
   loading = false,
+  fixedGroupId,
 }) => {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -139,6 +142,8 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
         notifyPin: false,
         joinSuccessPin: false,
         drawResultPin: false,
+        // 外层传入固定群组时预填
+        ...(fixedGroupId ? { group: fixedGroupId } : {}),
       });
     }
   }, [currentRow, form]);
@@ -292,7 +297,13 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
             <Input placeholder="请输入抽奖活动标题" />
           </Form.Item>
 
-          <LotteryGroupSelect botId={botId} currentLotteryId={currentRow?._id} />
+          {fixedGroupId ? (
+            <Form.Item name="group" hidden initialValue={fixedGroupId}>
+              <Input type="hidden" />
+            </Form.Item>
+          ) : (
+            <LotteryGroupSelect botId={botId} currentLotteryId={currentRow?._id} />
+          )}
 
           <Form.Item
             name="keywords"
