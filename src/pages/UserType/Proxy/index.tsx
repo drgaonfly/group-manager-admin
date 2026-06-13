@@ -10,7 +10,6 @@ import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Create from './components/Create';
 import Show from './components/Show';
-// import Recharge from './components/Recharge';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
@@ -114,7 +113,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
-  // const [rechargeModalVisible, setRechargeModalVisible] = useState(false);
   const access = useAccess();
 
   /**
@@ -220,10 +218,6 @@ const TableList: React.FC = () => {
           {
             name: intl.formatMessage({ id: 'rankConferral' }),
             enabled: record.rankConferral,
-          },
-          {
-            name: intl.formatMessage({ id: 'recharge' }),
-            enabled: record.recharge,
           },
           {
             name: intl.formatMessage({ id: 'success' }),
