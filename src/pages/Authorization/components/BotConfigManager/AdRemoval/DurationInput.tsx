@@ -4,7 +4,6 @@ import { Form, InputNumber, Select } from 'antd';
 // ─── 常量 ────────────────────────────────────────────────────────────────────
 
 export const TIME_UNIT_OPTIONS = [
-  { label: '秒', value: 'second' },
   { label: '分', value: 'minute' },
   { label: '时', value: 'hour' },
   { label: '日', value: 'day' },
@@ -45,7 +44,7 @@ export function fromSeconds(seconds: number): { value: number; unit: TimeUnit } 
   if (seconds >= 60 && seconds % 60 === 0) {
     return { value: seconds / 60, unit: 'minute' };
   }
-  return { value: seconds, unit: 'second' };
+  return { value: seconds, unit: 'minute' };
 }
 
 /** 将秒数格式化为可读文本（用于表格展示） */

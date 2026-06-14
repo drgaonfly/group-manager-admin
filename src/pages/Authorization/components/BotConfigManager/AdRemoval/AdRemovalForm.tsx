@@ -66,7 +66,7 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
       windowValue: 1,
       windowUnit: 'hour',
       selfDestructValue: 30,
-      selfDestructUnit: 'second',
+      selfDestructUnit: 'minute',
       group: fixedGroupId ?? undefined,
     };
 
