@@ -212,11 +212,7 @@ const CheckinRuleGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) =
         destroyOnClose
       >
         <CheckinRuleForm
-          currentRow={bot}
-          editingRecord={
-            editingRecord ? editingRecord : { type: editingType } // 新建时预填 type
-          }
-          fixedGroupId={group?._id}
+          editingRecord={editingRecord ? editingRecord : { type: editingType }}
           onSubmit={handleSubmit}
           onCancel={() => setFormOpen(false)}
         />

@@ -346,7 +346,6 @@ const CheckinRuleTab: React.FC<CheckinRuleTabProps> = ({ currentRow, onBotUpdate
         destroyOnClose
       >
         <CheckinRuleForm
-          currentRow={currentRow}
           editingRecord={editingRecord}
           onSubmit={handleSubmit}
           onCancel={() => setFormOpen(false)}
