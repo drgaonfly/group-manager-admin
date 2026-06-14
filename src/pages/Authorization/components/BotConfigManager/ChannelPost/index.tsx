@@ -5,7 +5,6 @@ import { FormattedMessage } from '@umijs/max';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
 import ChannelPostCreateForm from './ChannelPostForm';
-import ChannelPostUpdate from '@/pages/ChannelPost/components/Update';
 
 interface ChannelPostTabProps {
   currentRow: any;
@@ -16,7 +15,6 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
   const [channelPosts, setChannelPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [updateOpen, setUpdateOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const fetchData = async () => {
@@ -135,7 +133,7 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
             icon={<EditOutlined />}
             onClick={() => {
               setEditingRecord(record);
-              setUpdateOpen(true);
+              setFormOpen(true);
             }}
           />
           <Popconfirm
@@ -168,37 +166,20 @@ const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChang
 
       <ChannelPostCreateForm
         open={formOpen}
-        onOpenChange={setFormOpen}
+        onOpenChange={(v) => {
+          setFormOpen(v);
+          if (!v) setEditingRecord(null);
+        }}
         currentRow={currentRow}
+        editingRecord={editingRecord}
         onSuccess={() => {
           setFormOpen(false);
+          setEditingRecord(null);
           message.success(
-            <FormattedMessage id="channel_post_add_success" defaultMessage="频道推广添加成功" />,
+            <FormattedMessage id="channel_post_add_success" defaultMessage="操作成功" />,
           );
           fetchData();
           onDataChange?.();
-        }}
-      />
-
-      <ChannelPostUpdate
-        updateModalOpen={updateOpen}
-        onCancel={setUpdateOpen}
-        values={editingRecord || {}}
-        onSubmit={async (values) => {
-          try {
-            await updateItem(`/channel-posts/${values._id}`, values);
-            message.success(<FormattedMessage id="update_success" defaultMessage="更新成功" />);
-            setUpdateOpen(false);
-            setEditingRecord(null);
-            fetchData();
-            onDataChange?.();
-          } catch (error: any) {
-            message.error(
-              error?.response?.data?.message ?? (
-                <FormattedMessage id="update_failed" defaultMessage="更新失败" />
-              ),
-            );
-          }
         }}
       />
     </div>

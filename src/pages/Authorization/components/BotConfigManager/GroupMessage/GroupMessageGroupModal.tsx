@@ -4,7 +4,6 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
 import GroupMessageForm from './GroupMessageForm';
-import GroupMessageUpdate from '@/pages/GroupMessage/components/Update';
 
 interface Props {
   open: boolean;
@@ -17,7 +16,6 @@ const GroupMessageGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [updateOpen, setUpdateOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const fetchData = async () => {
@@ -106,7 +104,7 @@ const GroupMessageGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) 
             icon={<EditOutlined />}
             onClick={() => {
               setEditingRecord(record);
-              setUpdateOpen(true);
+              setFormOpen(true);
             }}
           />
           <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
@@ -143,33 +141,19 @@ const GroupMessageGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) 
         />
       </Modal>
 
-      {/* 新建：预填 bot + group */}
       <GroupMessageForm
         open={formOpen}
-        onCancel={setFormOpen}
+        onCancel={(v) => {
+          setFormOpen(v);
+          if (!v) setEditingRecord(null);
+        }}
         currentRow={bot}
+        editingRecord={editingRecord}
         fixedGroupId={group?._id}
         onSuccess={() => {
           setFormOpen(false);
+          setEditingRecord(null);
           fetchData();
-        }}
-      />
-
-      {/* 编辑 */}
-      <GroupMessageUpdate
-        updateModalOpen={updateOpen}
-        onCancel={setUpdateOpen}
-        values={editingRecord || {}}
-        onSubmit={async (values) => {
-          try {
-            await updateItem(`/group-messages/${values._id}`, values);
-            message.success('更新成功');
-            setUpdateOpen(false);
-            setEditingRecord(null);
-            fetchData();
-          } catch (e: any) {
-            message.error(e?.response?.data?.message ?? '更新失败');
-          }
         }}
       />
     </>

@@ -3,7 +3,6 @@ import { Form, Button, InputNumber, Row, Col, Space, Select, Switch, Tooltip } f
 import { useIntl } from '@umijs/max';
 import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
 import { PlusOutlined, MinusCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import CheckinRuleGroupSelect from './CheckinRuleGroupSelect';
 
 interface StreakCycle {
   days: number;
@@ -11,22 +10,17 @@ interface StreakCycle {
 }
 
 interface Props {
-  currentRow: any;
   editingRecord?: any;
   onSubmit: (values: any) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
-  /** 从外层直接传入群组 ID，新建时跳过 GroupSelect */
-  fixedGroupId?: string;
 }
 
 const CheckinRuleForm: React.FC<Props> = ({
-  currentRow,
   editingRecord,
   onSubmit,
   onCancel,
   loading = false,
-  fixedGroupId,
 }) => {
   const intl = useIntl();
   const [form] = Form.useForm();
@@ -133,22 +127,6 @@ const CheckinRuleForm: React.FC<Props> = ({
         deleteUserMsgAfterSeconds: 0,
       }}
     >
-      {/* 群组：编辑时只读，新建时若外层固定则隐藏，否则下拉选择 */}
-      {editingRecord ? (
-        <Form.Item label="签到群组">
-          <span>
-            {editingRecord?.group?.title || '-'}
-            {editingRecord?.group?.username && ` (@${editingRecord.group.username})`}
-          </span>
-        </Form.Item>
-      ) : fixedGroupId ? (
-        <Form.Item name="group" hidden initialValue={fixedGroupId}>
-          <input type="hidden" />
-        </Form.Item>
-      ) : (
-        <CheckinRuleGroupSelect botId={currentRow?._id} />
-      )}
-
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item

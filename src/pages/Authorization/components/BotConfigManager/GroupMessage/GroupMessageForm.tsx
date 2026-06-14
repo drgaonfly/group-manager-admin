@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
-import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 import {
@@ -19,7 +19,6 @@ import {
   EditableProTable,
   ProFormDateTimePicker,
 } from '@ant-design/pro-components';
-import GroupMessageGroupSelect from './GroupMessageGroupSelect';
 
 type menuItem = {
   _id: string;
@@ -27,37 +26,14 @@ type menuItem = {
   url: string;
 };
 
-const handleAdd = async (data: any) => {
-  const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
-
-  console.log('data', data);
-
-  try {
-    if (data.sendType === 'scheduled') {
-      await addItem('/group-messages', data);
-    } else {
-      await updateItem(`/bots/${data.bot?.toString()}/send-group-message`, data);
-    }
-    hide();
-    message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(
-      error?.response?.data?.message ?? (
-        <FormattedMessage id="add_failed" defaultMessage="Add failed, please try again" />
-      ),
-    );
-    return false;
-  }
-};
-
 interface GroupMessageFormProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
   currentRow?: any;
   onSuccess?: () => void;
-  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  /** 编辑时传入现有记录 */
+  editingRecord?: any;
+  /** 从外层直接传入群组 ID */
   fixedGroupId?: string;
 }
 
@@ -66,27 +42,44 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
   onCancel,
   currentRow,
   onSuccess,
+  editingRecord,
   fixedGroupId,
 }) => {
   const intl = useIntl();
+  const isEdit = !!editingRecord?._id;
   const [content, setContent] = useState('');
   const [medias, setMedias] = useState<string[]>([]);
   const [form] = Form.useForm();
-  const [menus, setMenus] = useState<menuItem[]>(currentRow?.menus || []);
+  const [menus, setMenus] = useState<menuItem[]>([]);
 
   useEffect(() => {
-    if (open && currentRow?._id) {
-      form.resetFields();
-      setMedias(Array.isArray(currentRow.medias) ? currentRow.medias : []);
-      setMenus(currentRow.menus || []);
+    if (!open) return;
+    form.resetFields();
+
+    if (isEdit) {
+      setContent(toQuillHtml(editingRecord.content || ''));
+      setMedias(Array.isArray(editingRecord.medias) ? editingRecord.medias : []);
+      setMenus(
+        (editingRecord.menus || []).map((m: any, i: number) => ({
+          _id: m._id || `menu-${i}`,
+          name: m.name,
+          url: m.url,
+        })),
+      );
+      form.setFieldsValue({
+        sendType: editingRecord.sendType || 'scheduled',
+        menus_per_row: editingRecord.menus_per_row || 1,
+        intervalTime: editingRecord.intervalTime || 0,
+        startAt: editingRecord.startAt,
+        endAt: editingRecord.endAt,
+        autoDeletePrevious: editingRecord.autoDeletePrevious || false,
+      });
+    } else {
       setContent('');
-      // 外层传入固定群组时预填
-      if (fixedGroupId) {
-        form.setFieldsValue({ group: fixedGroupId });
-      }
+      setMedias([]);
+      setMenus([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, currentRow, fixedGroupId]);
+  }, [open, editingRecord]);
 
   // Default file list for showing existing medias
   const defaultMediaFileList: UploadFile[] = medias
@@ -130,7 +123,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
       width: 200,
-      render: (text, record, _, action) => [
+      render: (_text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
@@ -143,47 +136,99 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
     },
   ];
 
+  const handleFinish = async (values: any) => {
+    const telegramContent = convertToTelegramHtml(content);
+
+    if (isEdit) {
+      // 编辑模式
+      const hide = message.loading('更新中...');
+      try {
+        await updateItem(`/group-messages/${editingRecord._id}`, {
+          ...values,
+          content: telegramContent,
+          medias,
+          menus: menus.map(({ name, url }) => ({ name, url })),
+          menus_per_row: values.menus_per_row,
+          startAt: toISOString(values.startAt),
+          endAt: toISOString(values.endAt),
+        });
+        hide();
+        message.success('更新成功');
+        form.resetFields();
+        setContent('');
+        setMedias([]);
+        setMenus([]);
+        onCancel(false);
+        onSuccess?.();
+        return true;
+      } catch (error: any) {
+        hide();
+        message.error(error?.response?.data?.message ?? '更新失败，请重试');
+        return false;
+      }
+    }
+
+    // 新建模式
+    const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
+    try {
+      const data = {
+        ...values,
+        content: telegramContent,
+        bot: currentRow?._id,
+        intervalTime:
+          values.sendType === 'immediate'
+            ? 0
+            : timeUnitToMinutes(values.intervalTime || 0, values.timeUnit as TimeUnit),
+        groups: fixedGroupId ? [fixedGroupId] : [],
+        group: fixedGroupId,
+        medias,
+        sendType: values.sendType,
+        menus: menus.map(({ name, url }) => ({ name, url })),
+        menus_per_row: values.menus_per_row,
+        startAt: toISOString(values.startAt),
+        endAt: toISOString(values.endAt),
+      };
+
+      if (data.sendType === 'scheduled') {
+        await addItem('/group-messages', data);
+      } else {
+        await updateItem(`/bots/${data.bot?.toString()}/send-group-message`, data);
+      }
+
+      hide();
+      message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
+      form.resetFields();
+      setContent('');
+      setMedias([]);
+      setMenus([]);
+      onCancel(false);
+      onSuccess?.();
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error(
+        error?.response?.data?.message ?? (
+          <FormattedMessage id="add_failed" defaultMessage="Add failed, please try again" />
+        ),
+      );
+      return false;
+    }
+  };
+
   return (
     <ModalForm
-      title={intl.formatMessage({ id: 'add_group_message', defaultMessage: 'Add Group Message' })}
+      title={
+        isEdit
+          ? intl.formatMessage({ id: 'edit_group_message', defaultMessage: '编辑群发消息' })
+          : intl.formatMessage({ id: 'add_group_message', defaultMessage: 'Add Group Message' })
+      }
       open={open}
       form={form}
       modalProps={{
         destroyOnClose: true,
         onCancel: () => onCancel(false),
       }}
-      onFinish={async (values: any) => {
-        const telegramContent = convertToTelegramHtml(content);
-        const data = {
-          ...values,
-          content: telegramContent,
-          bot: currentRow?._id,
-          intervalTime:
-            values.sendType === 'immediate'
-              ? 0
-              : timeUnitToMinutes(values.intervalTime || 0, values.timeUnit as TimeUnit),
-          groups: values.group ? [values.group] : [],
-          group: values.group,
-          medias: medias,
-          isRealtime: values.isRealtime,
-          sendType: values.sendType,
-          menus: menus.map(({ name, url }) => ({ name, url })),
-          menus_per_row: values.menus_per_row,
-          startAt: toISOString(values.startAt),
-          endAt: toISOString(values.endAt),
-        };
-
-        const success = await handleAdd(data);
-        if (success) {
-          form.resetFields();
-          setContent('');
-          setMedias([]);
-          setMenus([]);
-          onCancel(false);
-          onSuccess?.();
-        }
-        return success;
-      }}
+      onFinish={handleFinish}
     >
       {/* 富文本编辑器 - 单独占满一行 */}
       <Form.Item
@@ -217,15 +262,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           />
         </Form.Item>
       </ProFormGroup>
-
-      {fixedGroupId ? (
-        // 群组已由外层固定，隐藏字段保值，不展示 Select
-        <Form.Item name="group" hidden initialValue={fixedGroupId}>
-          <input type="hidden" />
-        </Form.Item>
-      ) : (
-        <GroupMessageGroupSelect botId={currentRow?._id} />
-      )}
 
       <ProFormGroup>
         <ProFormDigit

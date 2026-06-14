@@ -4,7 +4,6 @@ import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { FormattedMessage } from '@umijs/max';
 import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
 import ReplyRuleForm from './ReplyRuleForm';
-import ReplyRuleUpdate from '@/pages/ReplyRule/components/Update';
 
 interface ReplyRuleTabProps {
   currentRow: any;
@@ -15,7 +14,6 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
   const [replyRules, setReplyRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [updateOpen, setUpdateOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const fetchData = async () => {
@@ -191,7 +189,7 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
             icon={<EditOutlined />}
             onClick={() => {
               setEditingRecord(record);
-              setUpdateOpen(true);
+              setFormOpen(true);
             }}
           />
           <Popconfirm
@@ -224,37 +222,20 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
 
       <ReplyRuleForm
         open={formOpen}
-        onOpenChange={setFormOpen}
+        onOpenChange={(v) => {
+          setFormOpen(v);
+          if (!v) setEditingRecord(null);
+        }}
         currentRow={currentRow}
+        editingRecord={editingRecord}
         onSuccess={() => {
           setFormOpen(false);
+          setEditingRecord(null);
           message.success(
-            <FormattedMessage id="reply_rule_add_success" defaultMessage="回复规则添加成功" />,
+            <FormattedMessage id="reply_rule_add_success" defaultMessage="操作成功" />,
           );
           fetchData();
           onDataChange?.();
-        }}
-      />
-
-      <ReplyRuleUpdate
-        updateModalOpen={updateOpen}
-        onCancel={setUpdateOpen}
-        values={editingRecord || {}}
-        onSubmit={async (values) => {
-          try {
-            await updateItem(`/reply-rules/${values._id}`, values);
-            message.success(<FormattedMessage id="update_success" defaultMessage="更新成功" />);
-            setUpdateOpen(false);
-            setEditingRecord(null);
-            fetchData();
-            onDataChange?.();
-          } catch (error: any) {
-            message.error(
-              error?.response?.data?.message ?? (
-                <FormattedMessage id="update_failed" defaultMessage="更新失败" />
-              ),
-            );
-          }
         }}
       />
     </div>

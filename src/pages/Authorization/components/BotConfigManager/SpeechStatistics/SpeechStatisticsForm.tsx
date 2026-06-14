@@ -8,7 +8,6 @@ import {
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import { request } from '@umijs/max';
-import SpeechGroupSelect from './SpeechGroupSelect';
 
 interface SpeechStatisticsFormProps {
   open: boolean;
@@ -98,13 +97,6 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
       }}
     >
       {/* 基础统计 */}
-
-      {!fixedGroupId && <SpeechGroupSelect botId={currentRow?._id} />}
-      {fixedGroupId && (
-        <Form.Item name="groupId" hidden>
-          <input type="hidden" />
-        </Form.Item>
-      )}
 
       <ProFormGroup>
         <ProFormDigit

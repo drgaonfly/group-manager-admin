@@ -3,7 +3,6 @@ import { message, Form, Modal, Button, Space, Switch } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { request } from '@umijs/max';
 import { ProFormTextArea, ProColumns, EditableProTable } from '@ant-design/pro-components';
-import GroupVerifyGroupSelect from './GroupVerifyGroupSelect';
 
 type VerifyAsk = {
   _id: string;
@@ -193,24 +192,6 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
       }
     >
       <Form form={form} layout="vertical">
-        {/* 群组选择，编辑时或外层固定群组时只读 */}
-        {isEdit ? (
-          <Form.Item label="验证群组">
-            <span>
-              {currentRecord?.group?.title}
-              {currentRecord?.group?.username && ` (@${currentRecord.group.username})`}
-            </span>
-          </Form.Item>
-        ) : fixedGroupId ? (
-          <>
-            <Form.Item name="group" hidden>
-              <input type="hidden" />
-            </Form.Item>
-          </>
-        ) : (
-          <GroupVerifyGroupSelect botId={botId} />
-        )}
-
         <Form.Item name="isActive" label="是否启用" valuePropName="checked">
           <Switch checkedChildren="启用" unCheckedChildren="停用" />
         </Form.Item>

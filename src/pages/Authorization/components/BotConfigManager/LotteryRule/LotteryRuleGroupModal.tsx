@@ -210,7 +210,6 @@ const LotteryRuleGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) =
       >
         <LotteryForm
           currentRow={editingRecord}
-          botId={bot?._id}
           fixedGroupId={editingRecord ? undefined : group?._id}
           onSubmit={handleSubmit}
           onCancel={() => setFormModalOpen(false)}

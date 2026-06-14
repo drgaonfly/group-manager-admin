@@ -20,7 +20,6 @@ import { PlusOutlined, DeleteOutlined, EditOutlined, PushpinOutlined } from '@an
 import moment from 'moment';
 import RichTextEditor from '@/components/RichTextEditor';
 import MyUpload from '@/components/MyUpload';
-import LotteryGroupSelect from './LotteryGroupSelect';
 
 const { Option } = Select;
 
@@ -89,7 +88,6 @@ interface LotteryFormData {
 
 interface LotteryFormProps {
   currentRow: any;
-  botId: string;
   onSubmit: (values: LotteryFormData) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
@@ -99,7 +97,6 @@ interface LotteryFormProps {
 
 const LotteryForm: React.FC<LotteryFormProps> = ({
   currentRow,
-  botId,
   onSubmit,
   onCancel,
   loading = false,
@@ -296,14 +293,6 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           >
             <Input placeholder="请输入抽奖活动标题" />
           </Form.Item>
-
-          {fixedGroupId ? (
-            <Form.Item name="group" hidden initialValue={fixedGroupId}>
-              <Input type="hidden" />
-            </Form.Item>
-          ) : (
-            <LotteryGroupSelect botId={botId} currentLotteryId={currentRow?._id} />
-          )}
 
           <Form.Item
             name="keywords"

@@ -9,7 +9,6 @@ import {
   ProFormRadio,
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
-import AdRemovalGroupSelect from './AdRemovalGroupSelect';
 import DurationInput, { toSeconds, fromSeconds } from './DurationInput';
 
 export interface AdRemovalFormProps {
@@ -18,7 +17,7 @@ export interface AdRemovalFormProps {
   onSubmit: (values: any) => Promise<void>;
   initialValues?: any;
   loading?: boolean;
-  botId: string;
+  botId?: string;
   /** 从外层直接传入群组 ID，跳过 GroupSelect（群组已固定，不可更改） */
   fixedGroupId?: string;
 }
@@ -50,7 +49,6 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
   onSubmit,
   initialValues,
   loading,
-  botId,
   fixedGroupId,
 }) => {
   const isEdit = !!initialValues?._id;
@@ -165,15 +163,6 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
           width="lg"
         />
       </ProFormGroup>
-
-      {/* 适用群组 */}
-      {fixedGroupId ? (
-        <Form.Item name="group" hidden initialValue={fixedGroupId}>
-          <input type="hidden" />
-        </Form.Item>
-      ) : (
-        <AdRemovalGroupSelect botId={botId} />
-      )}
 
       {/* 匹配设置 */}
       <ProFormGroup>

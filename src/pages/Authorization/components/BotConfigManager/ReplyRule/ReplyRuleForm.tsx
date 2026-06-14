@@ -1,5 +1,5 @@
 import { useIntl } from '@umijs/max';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ModalForm,
   ProFormDigit,
@@ -11,11 +11,10 @@ import {
 } from '@ant-design/pro-components';
 import { Form, message } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
-import { addItem } from '@/services/ant-design-pro/api';
+import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
-import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
-import ReplyRuleGroupSelect from './ReplyRuleGroupSelect';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 
 type menuItem = {
   _id: string;
@@ -30,7 +29,9 @@ interface Props {
   onOpenChange: (visible: boolean) => void;
   currentRow: any;
   onSuccess: () => void;
-  /** 从外层直接传入群组 ID，跳过 GroupSelect */
+  /** 编辑时传入现有记录，新建时不传 */
+  editingRecord?: any;
+  /** 从外层直接传入群组 ID */
   fixedGroupId?: string;
 }
 
@@ -39,17 +40,51 @@ const ReplyRuleForm: React.FC<Props> = ({
   onOpenChange,
   currentRow,
   onSuccess,
+  editingRecord,
   fixedGroupId,
 }) => {
   const intl = useIntl();
+  const isEdit = !!editingRecord?._id;
   const [content, setContent] = useState('');
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [medias, setMedias] = useState<string[]>([]);
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
+  // 编辑时回填数据
+  useEffect(() => {
+    if (open && isEdit) {
+      setContent(toQuillHtml(editingRecord.content || ''));
+      setMedias(editingRecord.medias || []);
+      setMenus(
+        (editingRecord.menus || []).map((m: any, i: number) => ({
+          _id: m._id || `menu-${i}`,
+          name: m.name,
+          url: m.url,
+          row: m.row || 0,
+          style: m.style || 'primary',
+        })),
+      );
+      form.setFieldsValue({
+        keyword: Array.isArray(editingRecord.keyword)
+          ? editingRecord.keyword.join(', ')
+          : editingRecord.keyword,
+        deleteAfterSeconds: editingRecord.deleteAfterSeconds || 0,
+        deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds || 0,
+        replyToMessage: editingRecord.replyToMessage || false,
+        replyToAdmin: editingRecord.replyToAdmin !== false,
+      });
+    } else if (open && !isEdit) {
+      setContent('');
+      setMedias([]);
+      setMenus([]);
+    }
+  }, [open, editingRecord]);
+
   const handleSubmit = async (values: any) => {
-    const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
+    const hide = message.loading(
+      isEdit ? '更新中...' : <FormattedMessage id="adding" defaultMessage="Adding..." />,
+    );
     try {
       const telegramContent = convertToTelegramHtml(content);
       const keywordArray = (values.keyword || '')
@@ -62,6 +97,7 @@ const ReplyRuleForm: React.FC<Props> = ({
         keyword: keywordArray,
         content: telegramContent,
         bot: currentRow?._id,
+        group: fixedGroupId,
         menus: menus.map(({ name, url, row, style }) => ({
           name,
           url,
@@ -71,12 +107,17 @@ const ReplyRuleForm: React.FC<Props> = ({
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
       };
 
-      await addItem('/reply-rules', formData);
+      if (isEdit) {
+        await updateItem(`/reply-rules/${editingRecord._id}`, formData);
+      } else {
+        await addItem('/reply-rules', formData);
+      }
 
       hide();
-      message.success(<FormattedMessage id="add_successful" defaultMessage="添加成功" />);
+      message.success(
+        isEdit ? '更新成功' : <FormattedMessage id="add_successful" defaultMessage="添加成功" />,
+      );
       onSuccess();
-      // 重置表单
       form.resetFields();
       setContent('');
       setMenus([]);
@@ -163,7 +204,11 @@ const ReplyRuleForm: React.FC<Props> = ({
 
   return (
     <ModalForm
-      title={intl.formatMessage({ id: 'add_reply_rule', defaultMessage: '添加回复规则' })}
+      title={
+        isEdit
+          ? intl.formatMessage({ id: 'edit_reply_rule', defaultMessage: '编辑回复规则' })
+          : intl.formatMessage({ id: 'add_reply_rule', defaultMessage: '添加回复规则' })
+      }
       open={open}
       onOpenChange={(visible) => {
         if (!visible) {
@@ -198,14 +243,6 @@ const ReplyRuleForm: React.FC<Props> = ({
           tooltip="多个关键词用逗号分隔，任意一个匹配即触发回复。特殊关键词：<tron_address> 匹配所有波场地址"
         />
       </ProFormGroup>
-
-      {fixedGroupId ? (
-        <Form.Item name="group" hidden initialValue={fixedGroupId}>
-          <input type="hidden" />
-        </Form.Item>
-      ) : (
-        <ReplyRuleGroupSelect botId={currentRow?._id} />
-      )}
 
       <Form.Item label="回复内容" required style={{ marginBottom: 24 }}>
         <RichTextEditor
@@ -250,11 +287,18 @@ const ReplyRuleForm: React.FC<Props> = ({
 
       <Form.Item label="媒体文件（图片/视频）">
         <Upload
+          key={editingRecord?._id || 'new'}
           onFileUpload={(url: string) => {
             setMedias((prev) => [...prev, url]);
           }}
           accept=".jpg,.jpeg,.png,.gif,.mp4,.mov,.avi,.mkv,.webm"
           multiple
+          defaultFileList={medias.filter(Boolean).map((url, idx) => ({
+            uid: `media-${idx}`,
+            name: url.includes('/') ? url.split('/').pop()! : url,
+            status: 'done' as const,
+            url,
+          }))}
           onRemove={(file: UploadFile) => {
             const fileUrl = file.url || (file.response as any)?.data?.file;
             setMedias((prev) => prev.filter((m) => m !== fileUrl && !fileUrl?.includes(m)));

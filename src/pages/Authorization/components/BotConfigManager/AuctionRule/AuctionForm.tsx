@@ -14,7 +14,6 @@ import {
 import { PushpinOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import RichTextEditor from '@/components/RichTextEditor';
-import BotGroupSelect from './BotGroupSelect';
 
 const { TextArea } = Input;
 
@@ -73,7 +72,6 @@ interface AuctionFormData {
 
 interface AuctionFormProps {
   currentRow: any;
-  botId: string;
   onSubmit: (values: AuctionFormData) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
@@ -83,7 +81,6 @@ interface AuctionFormProps {
 
 const AuctionForm: React.FC<AuctionFormProps> = ({
   currentRow,
-  botId,
   onSubmit,
   onCancel,
   loading = false,
@@ -156,14 +153,6 @@ const AuctionForm: React.FC<AuctionFormProps> = ({
         >
           <Input placeholder="请输入竞拍活动标题" />
         </Form.Item>
-
-        {fixedGroupId ? (
-          <Form.Item name="group" hidden initialValue={fixedGroupId}>
-            <Input type="hidden" />
-          </Form.Item>
-        ) : (
-          <BotGroupSelect botId={botId} currentAuctionId={currentRow?._id} />
-        )}
 
         <Form.Item
           name="keywords"

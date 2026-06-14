@@ -130,7 +130,7 @@ const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         onCancel={setFormOpen}
         botId={bot?._id}
         currentRow={editingRecord ?? undefined}
-        fixedGroupId={editingRecord ? undefined : group?._id}
+        fixedGroupId={group?._id}
         onSuccess={() => {
           setFormOpen(false);
           fetchData();

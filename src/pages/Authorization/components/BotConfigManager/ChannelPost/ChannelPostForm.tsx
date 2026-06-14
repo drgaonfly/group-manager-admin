@@ -1,5 +1,5 @@
 import { useIntl } from '@umijs/max';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ModalForm,
   ProFormDigit,
@@ -18,7 +18,7 @@ import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
-import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 
@@ -33,14 +33,53 @@ interface Props {
   onOpenChange: (visible: boolean) => void;
   currentRow: any;
   onSuccess: () => void;
+  /** 编辑时传入现有记录 */
+  editingRecord?: any;
 }
 
-const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow, onSuccess }) => {
+const ChannelPostCreateForm: React.FC<Props> = ({
+  open,
+  onOpenChange,
+  currentRow,
+  onSuccess,
+  editingRecord,
+}) => {
   const intl = useIntl();
+  const isEdit = !!editingRecord?._id;
   const [content, setContent] = useState('');
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [medias, setMedias] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (isEdit) {
+      setContent(toQuillHtml(editingRecord.content || ''));
+      setMedias(editingRecord.medias || []);
+      setMenus(
+        (editingRecord.menus || []).map((m: any, i: number) => ({
+          _id: m._id || `menu-${i}`,
+          name: m.name,
+          url: m.url,
+        })),
+      );
+      form.setFieldsValue({
+        channels: (editingRecord.channels || []).map((c: any) => c?._id || c),
+        menus_per_row: editingRecord.menus_per_row || 1,
+        sendType: editingRecord.sendType || 'scheduled',
+        interval: editingRecord.interval || 1,
+        startAt: editingRecord.startAt,
+        endAt: editingRecord.endAt,
+        weight: editingRecord.weight || 0,
+        isOnline: editingRecord.isOnline !== false,
+        isClearLastPost: editingRecord.isClearLastPost || false,
+      });
+    } else {
+      setContent('');
+      setMedias([]);
+      setMenus([]);
+    }
+  }, [open, editingRecord]);
 
   // Default file list for showing existing medias
   const defaultMediaFileList: UploadFile[] = medias
@@ -98,19 +137,42 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
   ];
 
   const handleSubmit = async (values: any) => {
+    const telegramContent = convertToTelegramHtml(content);
+    const formData = {
+      ...values,
+      content: telegramContent,
+      bot: currentRow?._id,
+      menus: menus.map(({ name, url }) => ({ name, url })),
+      medias,
+      menus_per_row: values.menus_per_row || 1,
+    };
+
+    if (isEdit) {
+      const hide = message.loading('更新中...');
+      try {
+        await updateItem(`/channel-posts/${editingRecord._id}`, {
+          ...formData,
+          startAt: toISOString(values.startAt),
+          endAt: toISOString(values.endAt),
+        });
+        hide();
+        message.success('更新成功');
+        form.resetFields();
+        setContent('');
+        setMenus([]);
+        setMedias([]);
+        onSuccess();
+        return true;
+      } catch (error: any) {
+        hide();
+        message.error(error?.response?.data?.message ?? '更新失败，请重试');
+        return false;
+      }
+    }
+
     const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
     try {
       const sendType = values.sendType || 'scheduled';
-      const telegramContent = convertToTelegramHtml(content);
-      const formData = {
-        ...values,
-        content: telegramContent,
-        bot: currentRow?._id,
-        menus: menus.map(({ name, url }) => ({ name, url })),
-        medias: medias,
-        menus_per_row: values.menus_per_row || 1,
-      };
-
       if (sendType === 'immediate') {
         await updateItem(`/bots/${currentRow?._id}/send-channel-post`, formData);
       } else {
@@ -122,7 +184,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
           endAt: toISOString(values.endAt),
         });
       }
-
       hide();
       message.success(
         sendType === 'immediate' ? (
@@ -150,7 +211,11 @@ const ChannelPostCreateForm: React.FC<Props> = ({ open, onOpenChange, currentRow
 
   return (
     <ModalForm
-      title={intl.formatMessage({ id: 'add_channel_post', defaultMessage: '添加频道推广' })}
+      title={
+        isEdit
+          ? intl.formatMessage({ id: 'edit_channel_post', defaultMessage: '编辑频道推广' })
+          : intl.formatMessage({ id: 'add_channel_post', defaultMessage: '添加频道推广' })
+      }
       open={open}
       form={form}
       modalProps={{

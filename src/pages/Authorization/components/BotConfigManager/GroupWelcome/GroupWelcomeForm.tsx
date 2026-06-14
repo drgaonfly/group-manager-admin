@@ -13,7 +13,6 @@ import {
   ProFormDigit,
   ProFormSwitch,
 } from '@ant-design/pro-components';
-import GroupWelcomeGroupSelect from './GroupWelcomeGroupSelect';
 
 type menuItem = {
   _id: string;
@@ -209,16 +208,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       }}
       onFinish={handleSubmit}
     >
-      {/* 群组选择 */}
-      {fixedGroupId ? (
-        <Form.Item name="group" hidden initialValue={fixedGroupId}>
-          <input type="hidden" />
-        </Form.Item>
-      ) : (
-        <GroupWelcomeGroupSelect botId={botId} currentWelcomeId={currentRow?._id} />
-      )}
-
-      {/* 欢迎消息 */}
       <Form.Item
         label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
         style={{ marginBottom: 24 }}

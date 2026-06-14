@@ -225,7 +225,6 @@ const AuctionRuleGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) =
       >
         <AuctionForm
           currentRow={editingRecord}
-          botId={bot?._id}
           fixedGroupId={editingRecord ? undefined : group?._id}
           onSubmit={handleSubmit}
           onCancel={() => setFormModalOpen(false)}
