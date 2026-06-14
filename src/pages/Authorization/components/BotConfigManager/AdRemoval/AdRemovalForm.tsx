@@ -10,6 +10,7 @@ import {
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import AdRemovalGroupSelect from './AdRemovalGroupSelect';
+import DurationInput, { toSeconds, fromSeconds } from './DurationInput';
 
 export interface AdRemovalFormProps {
   open: boolean;
@@ -53,14 +54,38 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
 }) => {
   const isEdit = !!initialValues?._id;
 
-  // 把后端数据转成表单用的格式
   const formInitialValues = React.useMemo(() => {
+    const base = {
+      isOnline: true,
+      mode: 'any',
+      punishmentType: 'none',
+      muteDurationValue: 5,
+      muteDurationUnit: 'minute',
+      count: 0,
+      windowValue: 1,
+      windowUnit: 'hour',
+      selfDestructValue: 30,
+      selfDestructUnit: 'second',
+      group: fixedGroupId ?? undefined,
+    };
+
     if (initialValues) {
+      const muteParsed = fromSeconds(initialValues.punishment?.muteDuration ?? 300);
+      const windowParsed = fromSeconds(initialValues.warning?.windowSeconds ?? 3600);
+      const selfDestructParsed = fromSeconds(initialValues.warning?.selfDestructSeconds ?? 30);
+
       return {
+        ...base,
         ...initialValues,
         keywordsText: keywordsToText(initialValues.keywords),
         punishmentType: initialValues.punishment?.type ?? 'none',
-        muteDuration: initialValues.punishment?.muteDuration ?? 300,
+        muteDurationValue: muteParsed.value,
+        muteDurationUnit: muteParsed.unit,
+        count: initialValues.warning?.count ?? 0,
+        windowValue: windowParsed.value,
+        windowUnit: windowParsed.unit,
+        selfDestructValue: selfDestructParsed.value,
+        selfDestructUnit: selfDestructParsed.unit,
         group: initialValues.group
           ? typeof initialValues.group === 'object'
             ? initialValues.group._id ?? initialValues.group.toString()
@@ -68,29 +93,42 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
           : fixedGroupId ?? undefined,
       };
     }
-    return {
-      isOnline: true,
-      mode: 'any',
-      punishmentType: 'none',
-      muteDuration: 300,
-      group: fixedGroupId ?? undefined,
-    };
+    return base;
   }, [initialValues]);
 
   const handleSubmit = async (values: any) => {
-    const { keywordsText, punishmentType, muteDuration, ...rest } = values;
+    const {
+      keywordsText,
+      punishmentType,
+      muteDurationValue,
+      muteDurationUnit,
+      count,
+      windowValue,
+      windowUnit,
+      selfDestructValue,
+      selfDestructUnit,
+      ...rest
+    } = values;
 
     const keywords = textToKeywords(keywordsText || '');
 
     let punishment: { type: string; muteDuration?: number } | null = null;
     if (punishmentType === 'mute') {
-      punishment = { type: 'mute', muteDuration: Number(muteDuration) };
+      punishment = {
+        type: 'mute',
+        muteDuration: toSeconds(Number(muteDurationValue), muteDurationUnit),
+      };
     } else if (punishmentType === 'kick') {
       punishment = { type: 'kick' };
     }
 
-    // group 为 undefined/null 时传 null，让后端清空（全部群组生效）
-    await onSubmit({ ...rest, keywords, punishment, group: rest.group || null });
+    const warning = {
+      count: Number(count) || 0,
+      windowSeconds: toSeconds(Number(windowValue), windowUnit),
+      selfDestructSeconds: toSeconds(Number(selfDestructValue), selfDestructUnit),
+    };
+
+    await onSubmit({ ...rest, keywords, punishment, warning, group: rest.group || null });
   };
 
   return (
@@ -127,7 +165,7 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
         />
       </ProFormGroup>
 
-      {/* 适用群组：从外层固定时不展示选择器 */}
+      {/* 适用群组 */}
       {fixedGroupId ? (
         <Form.Item name="group" hidden initialValue={fixedGroupId}>
           <input type="hidden" />
@@ -141,11 +179,8 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
         <ProFormSelect
           name="mode"
           label="行内匹配模式"
-          tooltip="每行可填多个词（空格分隔）。any = 命中行内任意词触发；all = 行内所有词都出现才触发"
-          valueEnum={{
-            any: '命中任意词 (OR)',
-            all: '命中全部词 (AND)',
-          }}
+          tooltip="every行可填多个词（空格分隔）。any = 命中行内任意词触发；all = 行内所有词都出现才触发"
+          valueEnum={{ any: '命中任意词 (OR)', all: '命中全部词 (AND)' }}
           width="md"
         />
       </ProFormGroup>
@@ -163,7 +198,41 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
         }}
       />
 
-      {/* 处罚设置 */}
+      {/* ── 警告配置 ── */}
+      <ProFormDigit
+        name="count"
+        label="警告次数"
+        tooltip="触发处罚前允许的最大警告次数。填 0 则命中即直接处罚，不发警告。"
+        min={0}
+        max={100}
+        fieldProps={{ precision: 0, addonAfter: '次' }}
+        width="sm"
+      />
+
+      <Form.Item noStyle shouldUpdate={(prev, cur) => prev.count !== cur.count}>
+        {({ getFieldValue }) =>
+          Number(getFieldValue('count')) > 0 ? (
+            <>
+              <DurationInput
+                valueFieldName="windowValue"
+                unitFieldName="windowUnit"
+                label="警告时间窗口"
+                tooltip="多少时间内累积达到警告次数才触发处罚，填 0 秒表示不限时间（永久累计）"
+                min={0}
+              />
+              <DurationInput
+                valueFieldName="selfDestructValue"
+                unitFieldName="selfDestructUnit"
+                label="警告消息自焚"
+                tooltip="警告消息在多长时间后自动删除，填 0 表示不删除"
+                min={0}
+              />
+            </>
+          ) : null
+        }
+      </Form.Item>
+
+      {/* ── 处罚设置 ── */}
       <ProFormRadio.Group
         name="punishmentType"
         label="触发处罚"
@@ -175,19 +244,17 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
         ]}
       />
 
-      {/* 禁言时长：仅 punishmentType=mute 时显示 */}
       <Form.Item noStyle shouldUpdate={(prev, cur) => prev.punishmentType !== cur.punishmentType}>
         {({ getFieldValue }) =>
           getFieldValue('punishmentType') === 'mute' ? (
-            <ProFormDigit
-              name="muteDuration"
+            <DurationInput
+              valueFieldName="muteDurationValue"
+              unitFieldName="muteDurationUnit"
               label="禁言时长"
-              tooltip="单位：秒。例如 300 = 禁言 5 分钟，86400 = 禁言 1 天"
+              tooltip="Telegram 限制禁言时长最短 30 秒"
+              required
               min={1}
-              max={31536000}
-              fieldProps={{ addonAfter: '秒', precision: 0 }}
-              rules={[{ required: true, message: '请输入禁言时长' }]}
-              width="sm"
+              minSeconds={30}
             />
           ) : null
         }

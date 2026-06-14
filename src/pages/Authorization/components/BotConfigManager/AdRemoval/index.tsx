@@ -15,6 +15,7 @@ import {
 import { ReloadOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { queryList, removeItem, updateItem, addItem } from '@/services/ant-design-pro/api';
 import AdRemovalForm from './AdRemovalForm';
+import { formatDuration } from './DurationInput';
 
 interface AdRemovalTabProps {
   currentRow: any;
@@ -115,22 +116,54 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
   };
 
   /** 将处罚配置渲染成可读文字 */
-  const renderPunishment = (punishment: any) => {
-    if (!punishment?.type) return <Tag>仅删除</Tag>;
-    if (punishment.type === 'kick') return <Tag color="red">踢出群</Tag>;
+  const renderPunishment = (punishment: any, record: any) => {
+    const warning = record?.warning;
+    const warningCount = warning?.count ?? 0;
+    const warningTag =
+      warningCount > 0 ? (
+        <Tooltip
+          title={`警告 ${warningCount} 次后处罚，时间窗口 ${formatDuration(
+            warning?.windowSeconds ?? 0,
+          )}`}
+        >
+          <Tag color="gold" style={{ marginRight: 4 }}>
+            警告×{warningCount}
+          </Tag>
+        </Tooltip>
+      ) : null;
+
+    if (!punishment?.type)
+      return (
+        <>
+          {warningTag}
+          <Tag>仅删除</Tag>
+        </>
+      );
+    if (punishment.type === 'kick')
+      return (
+        <>
+          {warningTag}
+          <Tag color="red">踢出群</Tag>
+        </>
+      );
     if (punishment.type === 'mute') {
       const sec = punishment.muteDuration ?? 0;
-      let label = `${sec}秒`;
-      if (sec >= 86400) label = `${Math.floor(sec / 86400)}天`;
-      else if (sec >= 3600) label = `${Math.floor(sec / 3600)}小时`;
-      else if (sec >= 60) label = `${Math.floor(sec / 60)}分钟`;
+      const label = formatDuration(sec);
       return (
-        <Tooltip title={`禁言 ${punishment.muteDuration} 秒`}>
-          <Tag color="orange">禁言 {label}</Tag>
-        </Tooltip>
+        <>
+          {warningTag}
+          <Tooltip title={`禁言 ${punishment.muteDuration} 秒`}>
+            <Tag color="orange">禁言 {label}</Tag>
+          </Tooltip>
+        </>
       );
     }
-    return <Tag>仅删除</Tag>;
+    return (
+      <>
+        {warningTag}
+        <Tag>仅删除</Tag>
+      </>
+    );
   };
 
   const columns = [
@@ -174,7 +207,7 @@ const AdRemovalTab: React.FC<AdRemovalTabProps> = ({ currentRow, onBotUpdate }) 
       title: '处罚',
       dataIndex: 'punishment',
       key: 'punishment',
-      render: renderPunishment,
+      render: (punishment: any, record: any) => renderPunishment(punishment, record),
     },
     {
       title: '状态',
