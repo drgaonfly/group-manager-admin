@@ -24,23 +24,24 @@ export interface AdRemovalFormProps {
 }
 
 /**
- * 将 keywords 二维数组转成 textarea 字符串
- * [["广告", "推广"], ["代理"]] → "广告 推广\n代理"
+ * 将 keywords 数组转成 textarea 字符串，每个词占一行
+ * ["广告", "推广", "代理"] → "广告\n推广\n代理"
  */
-function keywordsToText(keywords: string[][] | undefined): string {
+function keywordsToText(keywords: string[] | undefined): string {
   if (!keywords || keywords.length === 0) return '';
-  return keywords.map((line) => line.join(' ')).join('\n');
+  return keywords.join('\n');
 }
 
 /**
- * 将 textarea 字符串解析回二维数组
- * "广告 推广\n代理" → [["广告", "推广"], ["代理"]]
+ * 将 textarea 字符串解析回词数组。
+ * 换行、逗号（全角/半角）、空格均视为分隔符，忽略空项。
+ * "广告, 推广\n代理 引流" → ["广告", "推广", "代理", "引流"]
  */
-function textToKeywords(text: string): string[][] {
+function textToKeywords(text: string): string[] {
   return text
-    .split('\n')
-    .map((line) => line.trim().split(/\s+/).filter(Boolean))
-    .filter((line) => line.length > 0);
+    .split(/[\n,，\s]+/)
+    .map((w) => w.trim())
+    .filter(Boolean);
 }
 
 const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
@@ -178,8 +179,8 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
       <ProFormGroup>
         <ProFormSelect
           name="mode"
-          label="行内匹配模式"
-          tooltip="every行可填多个词（空格分隔）。any = 命中行内任意词触发；all = 行内所有词都出现才触发"
+          label="匹配模式"
+          tooltip="any = 消息含任意一个关键词即命中（OR）；all = 消息含全部关键词才命中（AND）"
           valueEnum={{ any: '命中任意词 (OR)', all: '命中全部词 (AND)' }}
           width="md"
         />
@@ -189,9 +190,9 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
       <ProFormTextArea
         name="keywordsText"
         label="关键词"
-        tooltip="每行一条规则，行与行之间是「或」关系（OR）；同一行内多个词用空格隔开，匹配逻辑由上方「行内匹配模式」决定"
-        placeholder={`每行一条规则，同一行多个词用空格隔开，例如：\n广告 推广 引流\n代理招募\n加我微信`}
-        rules={[{ required: true, message: '请输入至少一行关键词' }]}
+        tooltip="换行、空格、逗号均可作为分隔符，每个词单独存储。匹配逻辑由上方「匹配模式」决定"
+        placeholder={`支持换行、空格、逗号分隔，例如：\n广告 推广\n代理,引流`}
+        rules={[{ required: true, message: '请输入至少一个关键词' }]}
         fieldProps={{
           autoSize: { minRows: 6, maxRows: 16 },
           style: { fontFamily: 'monospace', fontSize: 13 },
