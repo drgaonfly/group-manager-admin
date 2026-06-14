@@ -103,9 +103,24 @@ const LotteryRuleGroupModal: React.FC<Props> = ({ open, onClose, bot, group }) =
     }[status] || <Tag>{status}</Tag>);
 
   const columns = [
-    { title: '活动标题', dataIndex: 'title', ellipsis: true },
-    { title: '关键词', dataIndex: 'keywords', render: (k: string[]) => k?.join(', ') },
-    { title: '奖品数', dataIndex: 'prizes', render: (p: any[]) => p?.length || 0, width: 70 },
+    {
+      title: '活动标题',
+      width: 90,
+      dataIndex: 'title',
+      ellipsis: true,
+    },
+    {
+      title: '关键词',
+      width: 50,
+      dataIndex: 'keywords',
+      render: (k: string[]) => k?.join(', '),
+    },
+    {
+      title: '奖品数',
+      width: 50,
+      dataIndex: 'prizes',
+      render: (p: any[]) => p?.length || 0,
+    },
     {
       title: '置顶',
       key: 'pins',
