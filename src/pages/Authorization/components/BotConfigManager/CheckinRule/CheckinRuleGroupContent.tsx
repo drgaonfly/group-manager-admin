@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Space, message, Tag, Card, Row, Col, Spin, Empty, Popconfirm, Modal } from 'antd';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { queryList } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
+import useFeatureList from '../hooks/useFeatureList';
 import CheckinRuleForm from './CheckinRuleForm';
 
 interface Props {
@@ -23,38 +23,28 @@ const TYPE_COLOR: Record<RuleType, string> = {
   first: 'green',
 };
 
+/**
+ * CheckinRule uses a Card layout (one card per type: daily/first) instead of a table.
+ * It uses useFeatureList only for data loading + enabled gate — no FeatureListContainer.
+ */
 const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [rules, setRules] = useState<Record<RuleType, any>>({ daily: null, first: null });
-  const [loading, setLoading] = useState(false);
+  const { data, loading, fetchData } = useFeatureList({
+    apiPath: '/checkin-rules',
+    botId: bot?._id,
+    groupId: group?._id,
+    enabled: open,
+    deleteMode: 'single',
+  });
+
   const [formOpen, setFormOpen] = useState(false);
   const [editingType, setEditingType] = useState<RuleType>('daily');
   const [editingRecord, setEditingRecord] = useState<any>(null);
 
-  const fetchRules = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
-    try {
-      const res = await queryList('/checkin-rules', {
-        current: 1,
-        pageSize: 10,
-        botId: bot._id,
-        groupId: group._id,
-      });
-      const data: any[] = res?.data || [];
-      setRules({
-        daily: data.find((r) => r.type === 'daily') ?? null,
-        first: data.find((r) => r.type === 'first') ?? null,
-      });
-    } catch {
-      message.error('获取签到规则失败');
-    } finally {
-      setLoading(false);
-    }
+  // Build daily/first rule map from list data
+  const rules: Record<RuleType, any> = {
+    daily: data.find((r: any) => r.type === 'daily') ?? null,
+    first: data.find((r: any) => r.type === 'first') ?? null,
   };
-
-  useEffect(() => {
-    if (open) fetchRules();
-  }, [open, bot?._id, group?._id]);
 
   const handleEdit = (type: RuleType) => {
     setEditingType(type);
@@ -68,7 +58,7 @@ const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     try {
       await request(`/checkin-rules/${rule._id}`, { method: 'DELETE' });
       message.success('删除成功');
-      fetchRules();
+      fetchData();
     } catch {
       message.error('删除失败');
     }
@@ -89,7 +79,7 @@ const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       }
       message.success(editingRecord ? '更新成功' : '创建成功');
       setFormOpen(false);
-      fetchRules();
+      fetchData();
     } catch (e: any) {
       throw new Error(e?.response?.data?.message || e.message || '操作失败');
     }
@@ -157,17 +147,6 @@ const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
               <span style={{ color: '#888' }}>连续奖励：</span>
               {rule.enableStreakBonus ? <Tag color="blue">已启用</Tag> : <Tag>未启用</Tag>}
             </Col>
-            {(rule.deleteAfterSeconds > 0 || rule.deleteUserMsgAfterSeconds > 0) && (
-              <Col span={24}>
-                <span style={{ color: '#888' }}>自动删除：</span>
-                {rule.deleteAfterSeconds > 0 && (
-                  <Tag color="orange">回复 {rule.deleteAfterSeconds}s</Tag>
-                )}
-                {rule.deleteUserMsgAfterSeconds > 0 && (
-                  <Tag color="orange">用户消息 {rule.deleteUserMsgAfterSeconds}s</Tag>
-                )}
-              </Col>
-            )}
           </Row>
         ) : (
           <Empty

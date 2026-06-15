@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, message, Popconfirm, Tag, Tooltip, Modal } from 'antd';
+import React, { useState } from 'react';
+import { Button, Table, Space, Popconfirm, Tag, Tooltip, Modal, message } from 'antd';
 import {
-  PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   PlayCircleOutlined,
@@ -9,8 +8,9 @@ import {
   PushpinOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
-import { queryList } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
+import useFeatureList from '../hooks/useFeatureList';
+import FeatureListContainer from '../components/FeatureListContainer';
 import LotteryForm from './LotteryForm';
 
 interface Props {
@@ -20,51 +20,21 @@ interface Props {
 }
 
 const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formModalOpen, setFormModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
+    useFeatureList({
+      apiPath: '/lotteries',
+      botId: bot?._id,
+      groupId: group?._id,
+      enabled: open,
+      deleteMode: 'single',
+    });
+
   const [participantsModalOpen, setParticipantsModalOpen] = useState(false);
   const [participantsData, setParticipantsData] = useState<any[]>([]);
 
-  const fetchData = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
+  const handleDelete = async (id: string) => {
     try {
-      const res = await queryList('/lotteries', {
-        current: 1,
-        pageSize: 100,
-        botId: bot._id,
-        groupId: group._id,
-      });
-      if (res?.data) setData(res.data);
-    } catch {
-      message.error('获取抽奖列表失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, bot?._id, group?._id]);
-
-  const handleSubmit = async (values: any) => {
-    try {
-      const url = editingRecord ? `/lotteries/${editingRecord._id}` : '/lotteries';
-      const method = editingRecord ? 'PUT' : 'POST';
-      await request(url, { method, data: { ...values, bot: bot._id, group: group._id } });
-      message.success(editingRecord ? '更新成功' : '创建成功');
-      setFormModalOpen(false);
-      fetchData();
-    } catch (e: any) {
-      throw new Error(e?.message || '操作失败');
-    }
-  };
-
-  const handleDelete = async (record: any) => {
-    try {
-      await request(`/lotteries/${record._id}`, { method: 'DELETE' });
+      await request(`/lotteries/${id}`, { method: 'DELETE' });
       message.success('删除成功');
       fetchData();
     } catch {
@@ -72,9 +42,9 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     }
   };
 
-  const handleDraw = async (record: any) => {
+  const handleDraw = async (id: string) => {
     try {
-      await request(`/lotteries/${record._id}/draw`, { method: 'POST' });
+      await request(`/lotteries/${id}/draw`, { method: 'POST' });
       message.success('开奖成功');
       fetchData();
     } catch {
@@ -91,6 +61,19 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       }
     } catch {
       message.error('获取参与者失败');
+    }
+  };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      const url = editingRecord ? `/lotteries/${editingRecord._id}` : '/lotteries';
+      const method = editingRecord ? 'PUT' : 'POST';
+      await request(url, { method, data: { ...values, bot: bot._id, group: group._id } });
+      message.success(editingRecord ? '更新成功' : '创建成功');
+      closeForm();
+      fetchData();
+    } catch (e: any) {
+      throw new Error(e?.message || '操作失败');
     }
   };
 
@@ -129,7 +112,7 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     { title: '状态', dataIndex: 'status', width: 80, render: getStatusTag },
     {
       title: '操作',
-      width: 150,
+      width: 180,
       render: (_: any, record: any) => (
         <Space size="small">
           <Button icon={<UserOutlined />} size="small" onClick={() => showParticipants(record)}>
@@ -140,22 +123,15 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
               icon={<PlayCircleOutlined />}
               size="small"
               type="primary"
-              onClick={() => handleDraw(record)}
+              onClick={() => handleDraw(record._id)}
             >
               开奖
             </Button>
           )}
-          <Button
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => {
-              setEditingRecord(record);
-              setFormModalOpen(true);
-            }}
-          >
+          <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)}>
             编辑
           </Button>
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record)}>
+          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
             <Button icon={<DeleteOutlined />} size="small" danger>
               删除
             </Button>
@@ -167,32 +143,19 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
-      <div style={{ marginBottom: 12 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditingRecord(null);
-            setFormModalOpen(true);
-          }}
-        >
-          创建抽奖活动
-        </Button>
-      </div>
-      <Table
-        rowKey="_id"
-        dataSource={data}
-        columns={columns}
+      <FeatureListContainer
+        data={data}
         loading={loading}
-        size="small"
-        pagination={{ pageSize: 10 }}
+        columns={columns}
+        createButtonText="创建抽奖活动"
+        onCreateClick={openCreate}
         scroll={{ x: 900 }}
       />
 
       <Modal
         title={editingRecord ? '编辑抽奖活动' : '创建抽奖活动'}
-        open={formModalOpen}
-        onCancel={() => setFormModalOpen(false)}
+        open={formOpen}
+        onCancel={closeForm}
         footer={null}
         width="80%"
         style={{ maxWidth: 1000 }}
@@ -202,7 +165,7 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
           currentRow={editingRecord}
           fixedGroupId={group?._id}
           onSubmit={handleSubmit}
-          onCancel={() => setFormModalOpen(false)}
+          onCancel={closeForm}
         />
       </Modal>
 

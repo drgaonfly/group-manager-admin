@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, Switch, message, Popconfirm, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
+import React from 'react';
+import { Switch, Space, Button, Popconfirm, Tag } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import useFeatureList from '../hooks/useFeatureList';
+import FeatureListContainer from '../components/FeatureListContainer';
 import ReplyRuleForm from './ReplyRuleForm';
 
 interface Props {
@@ -11,52 +12,23 @@ interface Props {
 }
 
 const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
-
-  const fetchData = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
-    try {
-      const res = await queryList(
-        '/reply-rules',
-        { current: 1, pageSize: 100, botId: bot._id, groupId: group._id },
-        {},
-        {},
-      );
-      if (res?.data) setData(res.data);
-    } catch {
-      message.error('获取回复规则失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, bot?._id, group?._id]);
-
-  const handleDelete = async (id: string) => {
-    try {
-      await removeItem('/reply-rules', { ids: [id] });
-      message.success('删除成功');
-      fetchData();
-    } catch (e: any) {
-      message.error(e?.response?.data?.message ?? '删除失败');
-    }
-  };
-
-  const handleStatusChange = async (record: any, isOnline: boolean) => {
-    try {
-      await updateItem(`/reply-rules/${record._id}`, { isOnline });
-      message.success('状态更新成功');
-      fetchData();
-    } catch (e: any) {
-      message.error(e?.response?.data?.message ?? '更新失败');
-    }
-  };
+  const {
+    data,
+    loading,
+    formOpen,
+    editingRecord,
+    openCreate,
+    openEdit,
+    closeForm,
+    handleDelete,
+    handleStatusChange,
+    fetchData,
+  } = useFeatureList({
+    apiPath: '/reply-rules',
+    botId: bot?._id,
+    groupId: group?._id,
+    enabled: open,
+  });
 
   const columns = [
     {
@@ -113,10 +85,7 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
             type="link"
             size="small"
             icon={<EditOutlined />}
-            onClick={() => {
-              setEditingRecord(record);
-              setFormOpen(true);
-            }}
+            onClick={() => openEdit(record)}
           />
           <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
@@ -128,33 +97,24 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
-      <div style={{ marginBottom: 12 }}>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setFormOpen(true)}>
-          新建
-        </Button>
-      </div>
-      <Table
-        rowKey="_id"
-        dataSource={data}
-        columns={columns}
+      <FeatureListContainer
+        data={data}
         loading={loading}
-        size="small"
-        pagination={{ pageSize: 10 }}
+        columns={columns}
+        onCreateClick={openCreate}
         scroll={{ x: 650 }}
       />
 
       <ReplyRuleForm
         open={formOpen}
         onOpenChange={(v) => {
-          setFormOpen(v);
-          if (!v) setEditingRecord(null);
+          if (!v) closeForm();
         }}
         currentRow={bot}
         editingRecord={editingRecord}
         fixedGroupId={group?._id}
         onSuccess={() => {
-          setFormOpen(false);
-          setEditingRecord(null);
+          closeForm();
           fetchData();
         }}
       />

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, message, Tag, Dropdown, Modal } from 'antd';
+import React, { useState } from 'react';
+import { Button, Table, Space, Modal, Tag, Dropdown, message } from 'antd';
 import type { MenuProps } from 'antd';
 import {
-  PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   StopOutlined,
@@ -11,8 +10,9 @@ import {
   MoreOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
-import { queryList } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
+import useFeatureList from '../hooks/useFeatureList';
+import FeatureListContainer from '../components/FeatureListContainer';
 import AuctionForm from './AuctionForm';
 
 interface Props {
@@ -22,45 +22,25 @@ interface Props {
 }
 
 const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formModalOpen, setFormModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
+    useFeatureList({
+      apiPath: '/auctions',
+      botId: bot?._id,
+      groupId: group?._id,
+      enabled: open,
+      deleteMode: 'single',
+    });
+
   const [bidsModalOpen, setBidsModalOpen] = useState(false);
   const [bidsData, setBidsData] = useState<any[]>([]);
 
-  const fetchData = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
+  const handleDelete = async (id: string) => {
     try {
-      const res = await queryList('/auctions', {
-        current: 1,
-        pageSize: 100,
-        botId: bot._id,
-        groupId: group._id,
-      });
-      if (res?.data) setData(res.data);
-    } catch {
-      message.error('获取竞拍列表失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, bot?._id, group?._id]);
-
-  const handleSubmit = async (values: any) => {
-    try {
-      const url = editingRecord ? `/auctions/${editingRecord._id}` : '/auctions';
-      const method = editingRecord ? 'PUT' : 'POST';
-      await request(url, { method, data: { ...values, bot: bot._id, group: group._id } });
-      message.success(editingRecord ? '更新成功' : '创建成功');
-      setFormModalOpen(false);
+      await request(`/auctions/${id}`, { method: 'DELETE' });
+      message.success('删除成功');
       fetchData();
-    } catch (e: any) {
-      throw new Error(e?.message || '操作失败');
+    } catch {
+      message.error('删除失败');
     }
   };
 
@@ -74,16 +54,6 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     }
   };
 
-  const handleDelete = async (record: any) => {
-    try {
-      await request(`/auctions/${record._id}`, { method: 'DELETE' });
-      message.success('删除成功');
-      fetchData();
-    } catch {
-      message.error('删除失败');
-    }
-  };
-
   const showBids = async (record: any) => {
     try {
       const res = await request(`/auctions/${record._id}/bids`);
@@ -93,6 +63,19 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       }
     } catch {
       message.error('获取出价记录失败');
+    }
+  };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      const url = editingRecord ? `/auctions/${editingRecord._id}` : '/auctions';
+      const method = editingRecord ? 'PUT' : 'POST';
+      await request(url, { method, data: { ...values, bot: bot._id, group: group._id } });
+      message.success(editingRecord ? '更新成功' : '创建成功');
+      closeForm();
+      fetchData();
+    } catch (e: any) {
+      throw new Error(e?.message || '操作失败');
     }
   };
 
@@ -144,10 +127,7 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
             key: 'edit',
             icon: <EditOutlined />,
             label: '编辑',
-            onClick: () => {
-              setEditingRecord(record);
-              setFormModalOpen(true);
-            },
+            onClick: () => openEdit(record),
           },
           ...(record.status === 'ongoing' && moment(record.endTime).isAfter(moment())
             ? [
@@ -165,7 +145,8 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
             icon: <DeleteOutlined />,
             label: '删除',
             danger: true,
-            onClick: () => Modal.confirm({ title: '确定删除？', onOk: () => handleDelete(record) }),
+            onClick: () =>
+              Modal.confirm({ title: '确定删除？', onOk: () => handleDelete(record._id) }),
           },
         ];
         return (
@@ -182,32 +163,19 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
-      <div style={{ marginBottom: 12 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditingRecord(null);
-            setFormModalOpen(true);
-          }}
-        >
-          创建竞拍活动
-        </Button>
-      </div>
-      <Table
-        rowKey="_id"
-        dataSource={data}
-        columns={columns}
+      <FeatureListContainer
+        data={data}
         loading={loading}
-        size="small"
-        pagination={{ pageSize: 10 }}
+        columns={columns}
+        createButtonText="创建竞拍活动"
+        onCreateClick={openCreate}
         scroll={{ x: 900 }}
       />
 
       <Modal
         title={editingRecord ? '编辑竞拍活动' : '创建竞拍活动'}
-        open={formModalOpen}
-        onCancel={() => setFormModalOpen(false)}
+        open={formOpen}
+        onCancel={closeForm}
         footer={null}
         width="80%"
         style={{ maxWidth: 1000 }}
@@ -217,7 +185,7 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
           currentRow={editingRecord}
           fixedGroupId={group?._id}
           onSubmit={handleSubmit}
-          onCancel={() => setFormModalOpen(false)}
+          onCancel={closeForm}
         />
       </Modal>
 

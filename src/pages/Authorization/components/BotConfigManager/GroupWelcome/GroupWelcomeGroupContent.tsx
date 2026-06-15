@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, message, Popconfirm, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React from 'react';
+import { Space, Button, Popconfirm, Tag } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
+import { message } from 'antd';
+import useFeatureList from '../hooks/useFeatureList';
+import FeatureListContainer from '../components/FeatureListContainer';
 import GroupWelcomeForm from './GroupWelcomeForm';
 
 interface Props {
@@ -11,34 +14,18 @@ interface Props {
 }
 
 const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
+    useFeatureList({
+      apiPath: '/group-welcomes',
+      botId: bot?._id,
+      groupId: group?._id,
+      enabled: open,
+      deleteMode: 'single',
+    });
 
-  const fetchData = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
+  const handleDelete = async (id: string) => {
     try {
-      const res = await request('/group-welcomes', {
-        method: 'GET',
-        params: { botId: bot._id, groupId: group._id, pageSize: 50 },
-      });
-      if (res?.success) setData(res.data || []);
-    } catch {
-      message.error('获取群欢迎配置失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, bot?._id, group?._id]);
-
-  const handleDelete = async (record: any) => {
-    try {
-      await request(`/group-welcomes/${record._id}`, { method: 'DELETE' });
+      await request(`/group-welcomes/${id}`, { method: 'DELETE' });
       message.success('删除成功');
       fetchData();
     } catch {
@@ -82,17 +69,10 @@ const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       width: 120,
       render: (_: any, record: any) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => {
-              setEditingRecord(record);
-              setFormOpen(true);
-            }}
-          >
+          <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)}>
             编辑
           </Button>
-          <Popconfirm title="确定删除该群欢迎配置吗？" onConfirm={() => handleDelete(record)}>
+          <Popconfirm title="确定删除该群欢迎配置吗？" onConfirm={() => handleDelete(record._id)}>
             <Button icon={<DeleteOutlined />} size="small" danger>
               删除
             </Button>
@@ -104,35 +84,24 @@ const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
-      <div style={{ marginBottom: 12 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditingRecord(null);
-            setFormOpen(true);
-          }}
-        >
-          新建群欢迎
-        </Button>
-      </div>
-      <Table
-        rowKey="_id"
-        dataSource={data}
-        columns={columns}
+      <FeatureListContainer
+        data={data}
         loading={loading}
-        size="small"
-        pagination={{ pageSize: 10 }}
+        columns={columns}
+        createButtonText="新建群欢迎"
+        onCreateClick={openCreate}
       />
 
       <GroupWelcomeForm
         open={formOpen}
-        onCancel={setFormOpen}
+        onCancel={(v) => {
+          if (!v) closeForm();
+        }}
         botId={bot?._id}
         currentRow={editingRecord ?? undefined}
         fixedGroupId={group?._id}
         onSuccess={() => {
-          setFormOpen(false);
+          closeForm();
           fetchData();
         }}
       />

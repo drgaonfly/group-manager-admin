@@ -16,6 +16,10 @@ const CYCLE_LABEL: Record<string, string> = {
   monthly: '每月',
 };
 
+/**
+ * SpeechStatistics is a single-config-per-group pattern (not a list),
+ * so it keeps its own minimal state management instead of useFeatureList.
+ */
 const SpeechStatisticsGroupContent: React.FC<Props> = ({ open, bot, group }) => {
   const [config, setConfig] = useState<any>(null);
   const [loading, setLoading] = useState(false);

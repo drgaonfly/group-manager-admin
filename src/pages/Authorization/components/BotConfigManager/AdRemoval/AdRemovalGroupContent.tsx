@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, Switch, message, Popconfirm, Tag, Tooltip, Alert } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { queryList, updateItem, addItem } from '@/services/ant-design-pro/api';
+import React from 'react';
+import { Switch, Space, Button, Popconfirm, Tag, Tooltip, Alert } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
+import { message } from 'antd';
+import useFeatureList from '../hooks/useFeatureList';
+import FeatureListContainer from '../components/FeatureListContainer';
 import AdRemovalForm from './AdRemovalForm';
 import { formatDuration } from './DurationInput';
 
@@ -13,46 +16,33 @@ interface Props {
 }
 
 const AdRemovalGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentRecord, setCurrentRecord] = useState<any>(null);
+  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
+    useFeatureList({
+      apiPath: '/ad-removals',
+      botId: bot?._id,
+      groupId: group?._id,
+      enabled: open,
+      deleteMode: 'single',
+    });
 
-  const fetchData = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
-    try {
-      const res = await queryList('/ad-removals', { botId: bot._id, groupId: group._id });
-      if (res?.success) setData(res.data || []);
-    } catch {
-      message.error('获取广告拦截规则失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, bot?._id, group?._id]);
+  // AdRemoval uses a custom submit (not the generic hook's handleDelete/handleStatusChange)
+  // because the create path needs bot+group injected, and delete uses single mode.
 
   const handleSubmit = async (values: any) => {
     try {
-      setLoading(true);
       let res;
-      if (currentRecord?._id) {
-        res = await updateItem(`/ad-removals/${currentRecord._id}`, values);
+      if (editingRecord?._id) {
+        res = await updateItem(`/ad-removals/${editingRecord._id}`, values);
       } else {
         res = await addItem('/ad-removals', { ...values, bot: bot._id, group: group._id });
       }
       if ((res as any)?.success) {
-        message.success(currentRecord?._id ? '更新成功' : '添加成功');
-        setModalVisible(false);
+        message.success(editingRecord?._id ? '更新成功' : '添加成功');
+        closeForm();
         fetchData();
       }
     } catch {
       message.error('操作失败');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -111,8 +101,7 @@ const AdRemovalGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         </>
       );
     if (punishment.type === 'mute') {
-      const sec = punishment.muteDuration ?? 0;
-      const label = formatDuration(sec);
+      const label = formatDuration(punishment.muteDuration ?? 0);
       return (
         <>
           {warningTag}
@@ -172,15 +161,7 @@ const AdRemovalGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       key: 'action',
       render: (_: any, record: any) => (
         <Space>
-          <Button
-            type="link"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => {
-              setCurrentRecord(record);
-              setModalVisible(true);
-            }}
-          >
+          <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
             编辑
           </Button>
           <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record._id)}>
@@ -195,38 +176,27 @@ const AdRemovalGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
-      <Alert
-        type="warning"
-        showIcon
-        style={{ marginBottom: 12 }}
-        message="去除广告功能需要机器人在目标群组中拥有「删除消息」管理员权限。"
-      />
-      <div style={{ marginBottom: 12 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setCurrentRecord(null);
-            setModalVisible(true);
-          }}
-        >
-          添加规则
-        </Button>
-      </div>
-      <Table
-        rowKey="_id"
-        dataSource={data}
-        columns={columns}
+      <FeatureListContainer
+        data={data}
         loading={loading}
-        size="small"
+        columns={columns}
+        createButtonText="添加规则"
+        onCreateClick={openCreate}
         pagination={false}
+        headerExtra={
+          <Alert
+            type="warning"
+            showIcon
+            message="去除广告功能需要机器人在目标群组中拥有「删除消息」管理员权限。"
+          />
+        }
       />
 
       <AdRemovalForm
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
+        open={formOpen}
+        onCancel={closeForm}
         onSubmit={handleSubmit}
-        initialValues={currentRecord}
+        initialValues={editingRecord}
         loading={loading}
         botId={bot?._id}
         fixedGroupId={group?._id}

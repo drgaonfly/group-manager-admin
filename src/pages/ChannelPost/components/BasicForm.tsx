@@ -28,9 +28,11 @@ interface Props {
   newRecord?: boolean;
   onFinish: (formData: any) => Promise<void>;
   values?: any;
+  /** 隐藏定时发送相关字段（间隔、开始/结束时间），用于复制创建等即时场景 */
+  hideScheduleOptions?: boolean;
 }
 
-const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
+const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleOptions }) => {
   const intl = useIntl();
   const [content, setContent] = useState(toQuillHtml(values?.content || ''));
   const [form] = Form.useForm();
@@ -175,51 +177,55 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         />
       </ProFormGroup>
 
-      <ProFormGroup
-        label={intl.formatMessage({ id: 'interval_time', defaultMessage: '发送间隔' })}
-        style={{ marginBottom: 32 }}
-      >
-        <Space>
-          <ProFormSelect
-            name="timeUnit"
-            width="xs"
-            initialValue="hours"
-            options={[
-              {
-                label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
-                value: 'minutes',
-              },
-              {
-                label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
-                value: 'hours',
-              },
-              {
-                label: intl.formatMessage({ id: 'weeks', defaultMessage: 'Weeks' }),
-                value: 'weeks',
-              },
-            ]}
-            noStyle
-          />
-          <ProFormDigit name="interval" width="xs" min={1} noStyle />
-        </Space>
-      </ProFormGroup>
+      {!hideScheduleOptions && (
+        <>
+          <ProFormGroup
+            label={intl.formatMessage({ id: 'interval_time', defaultMessage: '发送间隔' })}
+            style={{ marginBottom: 32 }}
+          >
+            <Space>
+              <ProFormSelect
+                name="timeUnit"
+                width="xs"
+                initialValue="hours"
+                options={[
+                  {
+                    label: intl.formatMessage({ id: 'minutes', defaultMessage: 'Minutes' }),
+                    value: 'minutes',
+                  },
+                  {
+                    label: intl.formatMessage({ id: 'hours', defaultMessage: 'Hours' }),
+                    value: 'hours',
+                  },
+                  {
+                    label: intl.formatMessage({ id: 'weeks', defaultMessage: 'Weeks' }),
+                    value: 'weeks',
+                  },
+                ]}
+                noStyle
+              />
+              <ProFormDigit name="interval" width="xs" min={1} noStyle />
+            </Space>
+          </ProFormGroup>
 
-      <ProFormGroup>
-        <ProFormDateTimePicker
-          width="md"
-          name="startAt"
-          label="发送开始时间"
-          fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
-          tooltip="允许发送消息的开始时间"
-        />
-        <ProFormDateTimePicker
-          width="md"
-          name="endAt"
-          label="发送结束时间"
-          fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
-          tooltip="允许发送消息的结束时间"
-        />
-      </ProFormGroup>
+          <ProFormGroup>
+            <ProFormDateTimePicker
+              width="md"
+              name="startAt"
+              label="发送开始时间"
+              fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+              tooltip="允许发送消息的开始时间"
+            />
+            <ProFormDateTimePicker
+              width="md"
+              name="endAt"
+              label="发送结束时间"
+              fieldProps={{ format: 'YYYY-MM-DD HH:mm', showTime: { format: 'HH:mm' } }}
+              tooltip="允许发送消息的结束时间"
+            />
+          </ProFormGroup>
+        </>
+      )}
 
       <ProFormGroup>
         <ProFormDigit

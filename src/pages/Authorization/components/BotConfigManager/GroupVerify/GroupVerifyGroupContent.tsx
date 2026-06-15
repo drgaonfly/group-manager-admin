@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, message, Popconfirm, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React from 'react';
+import { Space, Button, Popconfirm, Tag, message } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
+import useFeatureList from '../hooks/useFeatureList';
+import FeatureListContainer from '../components/FeatureListContainer';
 import GroupVerifyForm from './GroupVerifyForm';
 
 interface Props {
@@ -11,34 +13,18 @@ interface Props {
 }
 
 const GroupVerifyGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
+    useFeatureList({
+      apiPath: '/group-verifies',
+      botId: bot?._id,
+      groupId: group?._id,
+      enabled: open,
+      deleteMode: 'single',
+    });
 
-  const fetchData = async () => {
-    if (!bot?._id || !group?._id) return;
-    setLoading(true);
+  const handleDelete = async (id: string) => {
     try {
-      const res = await request('/group-verifies', {
-        method: 'GET',
-        params: { botId: bot._id, groupId: group._id, current: 1, pageSize: 100 },
-      });
-      if (res?.success) setData(res.data || []);
-    } catch {
-      message.error('获取群验证列表失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, bot?._id, group?._id]);
-
-  const handleDelete = async (record: any) => {
-    try {
-      await request(`/group-verifies/${record._id}`, { method: 'DELETE' });
+      await request(`/group-verifies/${id}`, { method: 'DELETE' });
       message.success('删除成功');
       fetchData();
     } catch {
@@ -71,17 +57,10 @@ const GroupVerifyGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       width: 120,
       render: (_: any, record: any) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => {
-              setEditingRecord(record);
-              setFormOpen(true);
-            }}
-          >
+          <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)}>
             编辑
           </Button>
-          <Popconfirm title="确定删除该群验证配置吗？" onConfirm={() => handleDelete(record)}>
+          <Popconfirm title="确定删除该群验证配置吗？" onConfirm={() => handleDelete(record._id)}>
             <Button icon={<DeleteOutlined />} size="small" danger>
               删除
             </Button>
@@ -93,37 +72,24 @@ const GroupVerifyGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
-      <div style={{ marginBottom: 12 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditingRecord(null);
-            setFormOpen(true);
-          }}
-        >
-          新增群验证
-        </Button>
-      </div>
-      <Table
-        rowKey="_id"
-        dataSource={data}
-        columns={columns}
+      <FeatureListContainer
+        data={data}
         loading={loading}
-        size="small"
-        pagination={{ pageSize: 10 }}
+        columns={columns}
+        createButtonText="新增群验证"
+        onCreateClick={openCreate}
       />
 
       <GroupVerifyForm
         open={formOpen}
-        onCancel={() => setFormOpen(false)}
+        onCancel={closeForm}
         botId={bot?._id}
         currentRecord={editingRecord}
+        fixedGroupId={group?._id}
         onSuccess={() => {
-          setFormOpen(false);
+          closeForm();
           fetchData();
         }}
-        fixedGroupId={group?._id}
       />
     </>
   );
