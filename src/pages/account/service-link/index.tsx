@@ -34,7 +34,6 @@ const ServiceLink: React.FC = () => {
     checkinRule: boolean;
     lotteryRule: boolean;
     auctionRule: boolean;
-    teaching: boolean;
     adRemoval: boolean;
     rankConferral: boolean;
     recharge: boolean;
@@ -108,7 +107,6 @@ const ServiceLink: React.FC = () => {
               checkinRule: currentUser?.checkinRule || false,
               lotteryRule: currentUser?.lotteryRule || false,
               auctionRule: currentUser?.auctionRule || false,
-              teaching: currentUser?.teaching || false,
               adRemoval: currentUser?.adRemoval || false,
               rankConferral: currentUser?.rankConferral || false,
               recharge: currentUser?.recharge || false,
@@ -240,18 +238,6 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'auctionRule.tooltip',
                 defaultMessage: '开启后，可以创建和管理群组竞拍活动',
-              })}
-            />
-            <ProFormSwitch
-              name="teaching"
-              label={intl.formatMessage({
-                id: 'teaching',
-                defaultMessage: '教学模块',
-              })}
-              tooltip={intl.formatMessage({
-                id: 'teaching.tooltip',
-                defaultMessage:
-                  '开启后，代理可以为其下的机器人开启教学模块功能（注册老师、写车评等）',
               })}
             />
             <ProFormSwitch
@@ -477,22 +463,6 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'auctionRule.tooltip',
                   defaultMessage: '开启后，可以创建和管理群组竞拍活动',
-                })}
-              </Text>
-            </Descriptions.Item>
-
-            <Descriptions.Item
-              label={intl.formatMessage({
-                id: 'teaching',
-                defaultMessage: '教学模块',
-              })}
-            >
-              {renderStatusTag(currentUser?.teaching || false)}
-              <Text type="secondary" style={{ marginLeft: 16 }}>
-                {intl.formatMessage({
-                  id: 'teaching.tooltip',
-                  defaultMessage:
-                    '开启后，代理可以为其下的机器人开启教学模块功能（注册老师、写车评等）',
                 })}
               </Text>
             </Descriptions.Item>

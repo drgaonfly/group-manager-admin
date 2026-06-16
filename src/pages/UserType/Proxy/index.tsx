@@ -200,10 +200,6 @@ const TableList: React.FC = () => {
             enabled: record.auctionRule,
           },
           {
-            name: intl.formatMessage({ id: 'teaching' }),
-            enabled: record.teaching,
-          },
-          {
             name: intl.formatMessage({ id: 'replyRule' }),
             enabled: record.replyRule,
           },

@@ -4,7 +4,7 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { Button, message, Switch } from 'antd';
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
@@ -21,7 +21,7 @@ import AddAuthorizerForm from './components/AddAuthorizerForm';
 import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
 import StringArrayWithActions from './components/StringArrayWithAction';
 import BotConfigManager from './components/BotConfigManager';
-import CopyBotFeatureConfigModal from './components/CopyBotFeatureConfigModal';
+
 /**
  * @en-US Add node
  * @zh-CN 添加节点
@@ -122,7 +122,6 @@ const TableList: React.FC = () => {
   const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
   const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
   const [botConfigManagerOpen, setBotConfigManagerOpen] = useState<boolean>(false);
-  const [copyFeatureConfigOpen, setCopyFeatureConfigOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
     {
@@ -289,8 +288,7 @@ const TableList: React.FC = () => {
           currentUser?.groupVerify ||
           currentUser?.reportGroupMemberNameUpdated ||
           currentUser?.checkinRule ||
-          currentUser?.lotteryRule ||
-          currentUser?.teaching) && (
+          currentUser?.lotteryRule) && (
           <ActionButton
             key="botConfig"
             type="configure"
@@ -368,18 +366,6 @@ const TableList: React.FC = () => {
               }}
             >
               <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-            </Button>
-          ),
-          access.canSuperAdmin && (
-            <Button
-              key="copyFeatureConfig"
-              icon={<CopyOutlined />}
-              onClick={() => setCopyFeatureConfigOpen(true)}
-            >
-              {intl.formatMessage({
-                id: 'copy_bot_feature_config',
-                defaultMessage: '复制功能配置',
-              })}
             </Button>
           ),
         ]}
@@ -555,15 +541,6 @@ const TableList: React.FC = () => {
         }}
       />
 
-      {access.canSuperAdmin && (
-        <CopyBotFeatureConfigModal
-          open={copyFeatureConfigOpen}
-          onOpenChange={setCopyFeatureConfigOpen}
-          onSuccess={() => {
-            actionRef.current?.reload?.();
-          }}
-        />
-      )}
       <BotConfigManager
         open={botConfigManagerOpen}
         onCancel={setBotConfigManagerOpen}

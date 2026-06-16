@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Tabs } from 'antd';
+import { Modal, Tabs, Row, Col } from 'antd';
 import { useIntl } from '@umijs/max';
 import {
   MessageOutlined,
@@ -11,6 +11,8 @@ import {
   CalendarOutlined,
   TrophyOutlined,
   AuditOutlined,
+  TeamOutlined,
+  ClockCircleOutlined,
 } from '@ant-design/icons';
 
 import GroupMessageGroupContent from './GroupMessage/GroupMessageGroupContent';
@@ -28,17 +30,7 @@ interface GroupFeaturesModalProps {
   onClose: () => void;
   bot: any;
   group: any;
-  botConfig: {
-    canGroupMessaging?: boolean;
-    canReplyRule?: boolean;
-    canRemoveAd?: boolean;
-    canGroupWelcome?: boolean;
-    canGroupVerify?: boolean;
-    canSpeechStatic?: boolean;
-    canCheckIn?: boolean;
-    canLotteryRule?: boolean;
-    canAuctionRule?: boolean;
-  };
+  botConfig?: any; // 保留兼容性，不再使用
   currentUser: any;
 }
 
@@ -47,7 +39,6 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
   onClose,
   bot,
   group,
-  botConfig,
   currentUser,
 }) => {
   const intl = useIntl();
@@ -56,7 +47,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
   const tabItems = React.useMemo(() => {
     const items: any[] = [];
 
-    if (botConfig.canGroupMessaging && currentUser?.groupMessage) {
+    if (currentUser?.groupMessage) {
       items.push({
         key: 'groupMessage',
         label: (
@@ -69,7 +60,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canReplyRule && currentUser?.replyRule) {
+    if (currentUser?.replyRule) {
       items.push({
         key: 'replyRule',
         label: (
@@ -81,7 +72,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canRemoveAd) {
+    if (currentUser?.adRemoval) {
       items.push({
         key: 'adRemoval',
         label: (
@@ -93,7 +84,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canGroupWelcome && currentUser?.groupWelcome) {
+    if (currentUser?.groupWelcome) {
       items.push({
         key: 'groupWelcome',
         label: (
@@ -106,7 +97,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canGroupVerify && currentUser?.groupVerify) {
+    if (currentUser?.groupVerify) {
       items.push({
         key: 'groupVerify',
         label: (
@@ -119,7 +110,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canSpeechStatic && currentUser?.speech_static) {
+    if (currentUser?.speech_static) {
       items.push({
         key: 'speechStatistics',
         label: (
@@ -132,7 +123,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canCheckIn && currentUser?.checkinRule) {
+    if (currentUser?.checkinRule) {
       items.push({
         key: 'checkinRule',
         label: (
@@ -145,7 +136,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canLotteryRule && currentUser?.lotteryRule) {
+    if (currentUser?.lotteryRule) {
       items.push({
         key: 'lotteryRule',
         label: (
@@ -158,7 +149,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       });
     }
 
-    if (botConfig.canAuctionRule && currentUser?.auctionRule) {
+    if (currentUser?.auctionRule) {
       items.push({
         key: 'auctionRule',
         label: (
@@ -171,7 +162,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
     }
 
     return items;
-  }, [open, bot, group, botConfig, currentUser]);
+  }, [open, bot, group, currentUser]);
 
   // 当 tab 列表变化时，确保 activeTab 合法
   React.useEffect(() => {
@@ -197,6 +188,72 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       styles={{ body: { minHeight: '50vh', paddingTop: 16 } }}
       destroyOnClose
     >
+      {/* 群组统计卡片 */}
+      {group && (
+        <Row gutter={[12, 12]} style={{ marginBottom: 20 }}>
+          {[
+            {
+              label: '群成员',
+              value: group.botUsers?.length ?? 0,
+              icon: <TeamOutlined />,
+              color: '#1677ff',
+              bg: '#e6f4ff',
+            },
+            {
+              label: '已禁言',
+              value: group.mutedUsers?.length ?? 0,
+              icon: <StopOutlined />,
+              color: '#f5222d',
+              bg: '#fff1f0',
+            },
+            {
+              label: '待验证',
+              value: group.pendingVerifyUsers?.length ?? 0,
+              icon: <ClockCircleOutlined />,
+              color: '#fa8c16',
+              bg: '#fff7e6',
+            },
+          ].map((s) => (
+            <Col span={8} key={s.label}>
+              <div
+                style={{
+                  background: s.bg,
+                  border: `1px solid ${s.color}22`,
+                  borderRadius: 10,
+                  padding: '12px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 8,
+                    background: `${s.color}18`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 18,
+                    color: s.color,
+                    flexShrink: 0,
+                  }}
+                >
+                  {s.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: s.color, lineHeight: 1.2 }}>
+                    {s.value}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#666', marginTop: 2 }}>{s.label}</div>
+                </div>
+              </div>
+            </Col>
+          ))}
+        </Row>
+      )}
+
       {tabItems.length === 0 ? (
         <div style={{ textAlign: 'center', color: '#999', padding: '60px 0' }}>
           {intl.formatMessage({

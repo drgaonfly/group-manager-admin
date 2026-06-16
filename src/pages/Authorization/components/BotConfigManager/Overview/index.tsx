@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Switch, Tooltip, Badge } from 'antd';
+import { Row, Col, Tooltip, Badge } from 'antd';
 import { useIntl } from '@umijs/max';
 import {
   TeamOutlined,
@@ -17,7 +17,6 @@ import {
   CalendarOutlined,
   TrophyOutlined,
   AuditOutlined,
-  BookOutlined,
   StopOutlined,
   RedEnvelopeOutlined,
 } from '@ant-design/icons';
@@ -25,16 +24,11 @@ import {
 interface OverviewTabProps {
   currentRow: any;
   currentUser: any;
-  botConfig: any;
-  onBotConfigChange: (field: string, value: boolean) => Promise<void>;
+  botConfig?: any; // 保留兼容性，不再使用
+  onBotConfigChange?: (field: string, value: boolean) => Promise<void>; // 保留兼容性，不再使用
 }
 
-const OverviewTab: React.FC<OverviewTabProps> = ({
-  currentRow,
-  currentUser,
-  botConfig,
-  onBotConfigChange,
-}) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({ currentRow, currentUser }) => {
   const intl = useIntl();
 
   const groupCount = currentRow?.groups?.filter((g: any) => g.type !== 'channel').length || 0;
@@ -67,7 +61,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'groupMessage', defaultMessage: '群发消息' }),
       icon: <MessageOutlined />,
       color: '#1677ff',
-      permission: currentUser?.groupMessage,
+      enabled: !!currentUser?.groupMessage,
       desc: '定时向群组发送消息',
     },
     {
@@ -75,7 +69,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'channelPost', defaultMessage: '频道推广' }),
       icon: <NotificationOutlined />,
       color: '#722ed1',
-      permission: currentUser?.channelPost,
+      enabled: !!currentUser?.channelPost,
       desc: '定时向频道推送内容',
     },
     {
@@ -83,7 +77,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'replyRule', defaultMessage: '关键词回复' }),
       icon: <KeyOutlined />,
       color: '#13c2c2',
-      permission: currentUser?.replyRule,
+      enabled: !!currentUser?.replyRule,
       desc: '命中关键词后自动回复',
     },
     {
@@ -91,7 +85,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'welcomeGroup', defaultMessage: '欢迎入群' }),
       icon: <SmileOutlined />,
       color: '#52c41a',
-      permission: currentUser?.groupWelcome,
+      enabled: !!currentUser?.groupWelcome,
       desc: '新成员加入时发送欢迎消息',
     },
     {
@@ -99,7 +93,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'groupVerify', defaultMessage: '群组验证' }),
       icon: <SafetyOutlined />,
       color: '#fa8c16',
-      permission: currentUser?.groupVerify,
+      enabled: !!currentUser?.groupVerify,
       desc: '新成员入群前答题验证',
     },
     {
@@ -107,7 +101,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'speechStatic', defaultMessage: '发言统计' }),
       icon: <BarChartOutlined />,
       color: '#1677ff',
-      permission: currentUser?.speech_static,
+      enabled: !!currentUser?.speech_static,
       desc: '统计群内成员发言并发放积分',
     },
     {
@@ -115,7 +109,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canBidirectional', defaultMessage: '双向通信' }),
       icon: <RetweetOutlined />,
       color: '#eb2f96',
-      permission: currentUser?.bidirectional,
+      enabled: !!currentUser?.bidirectional,
       desc: '启用双向消息通道',
     },
     {
@@ -126,7 +120,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       }),
       icon: <IdcardOutlined />,
       color: '#722ed1',
-      permission: currentUser?.reportGroupMemberNameUpdated,
+      enabled: !!currentUser?.reportGroupMemberNameUpdated,
       desc: '成员修改昵称时发送通知',
     },
     {
@@ -134,7 +128,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canCheckIn', defaultMessage: '群签到' }),
       icon: <CalendarOutlined />,
       color: '#52c41a',
-      permission: currentUser?.checkinRule,
+      enabled: !!currentUser?.checkinRule,
       desc: '群内签到获取积分',
     },
     {
@@ -142,7 +136,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canLotteryRule', defaultMessage: '群抽奖' }),
       icon: <TrophyOutlined />,
       color: '#fa8c16',
-      permission: currentUser?.lotteryRule,
+      enabled: !!currentUser?.lotteryRule,
       desc: '群内举办抽奖活动',
     },
     {
@@ -150,23 +144,15 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canAuctionRule', defaultMessage: '群竞拍' }),
       icon: <AuditOutlined />,
       color: '#f5222d',
-      permission: currentUser?.auctionRule,
+      enabled: !!currentUser?.auctionRule,
       desc: '群内举办积分竞拍活动',
-    },
-    {
-      key: 'canTeaching',
-      label: intl.formatMessage({ id: 'canTeaching', defaultMessage: '教学模块' }),
-      icon: <BookOutlined />,
-      color: '#13c2c2',
-      permission: currentUser?.teaching,
-      desc: '认证老师与课程管理',
     },
     {
       key: 'canRemoveAd',
       label: intl.formatMessage({ id: 'canRemoveAd', defaultMessage: '去除广告' }),
       icon: <StopOutlined />,
       color: '#f5222d',
-      permission: currentUser?.adRemoval,
+      enabled: !!currentUser?.adRemoval,
       desc: '自动删除违规广告消息',
     },
     {
@@ -174,12 +160,12 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       label: intl.formatMessage({ id: 'canRedPacket', defaultMessage: '红包功能' }),
       icon: <RedEnvelopeOutlined />,
       color: '#f5222d',
-      permission: currentUser?.redPacket,
+      enabled: !!currentUser?.redPacket,
       desc: '群内发送积分红包',
     },
   ];
 
-  const visibleSwitches = featureSwitches.filter((item) => item.permission);
+  const visibleSwitches = featureSwitches;
 
   return (
     <div>
@@ -225,7 +211,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         ))}
       </Row>
 
-      {/* 功能开关标题 */}
+      {/* 功能权限标题 */}
       <div
         style={{
           display: 'flex',
@@ -235,16 +221,16 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         }}
       >
         <CustomerServiceOutlined style={{ color: '#1677ff', fontSize: 15 }} />
-        <span style={{ fontWeight: 600, fontSize: 14, color: '#1d2939' }}>功能开关</span>
+        <span style={{ fontWeight: 600, fontSize: 14, color: '#1d2939' }}>已开通功能</span>
         <span style={{ color: '#999', fontSize: 12 }}>
-          已开启 {visibleSwitches.filter((s) => botConfig[s.key]).length} / {visibleSwitches.length}
+          {visibleSwitches.filter((s) => s.enabled).length} / {visibleSwitches.length} 项已授权
         </span>
       </div>
 
-      {/* 功能卡片网格 */}
+      {/* 功能卡片网格 — 只读展示，权限由平台统一控制 */}
       <Row gutter={[12, 12]}>
         {visibleSwitches.map((item) => {
-          const isOn = !!botConfig[item.key];
+          const isOn = item.enabled;
           return (
             <Col span={8} key={item.key}>
               <div
@@ -256,8 +242,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                   borderRadius: 8,
                   border: isOn ? `1px solid ${item.color}44` : '1px solid #f0f0f0',
                   background: isOn ? `${item.color}08` : '#fafafa',
-                  transition: 'all 0.2s',
-                  cursor: 'default',
                 }}
               >
                 {/* 图标 */}
@@ -273,7 +257,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                     fontSize: 16,
                     color: isOn ? item.color : '#bfbfbf',
                     flexShrink: 0,
-                    transition: 'all 0.2s',
                   }}
                 >
                   {item.icon}
@@ -290,7 +273,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        transition: 'color 0.2s',
                       }}
                     >
                       {item.label}
@@ -300,28 +282,20 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                     status={isOn ? 'success' : 'default'}
                     text={
                       <span style={{ fontSize: 11, color: isOn ? '#52c41a' : '#bfbfbf' }}>
-                        {isOn ? '已开启' : '未开启'}
+                        {isOn ? '已授权' : '未授权'}
                       </span>
                     }
                   />
                 </div>
-
-                {/* 开关 */}
-                <Switch
-                  checked={isOn}
-                  size="small"
-                  style={{ flexShrink: 0 }}
-                  onChange={(checked) => onBotConfigChange(item.key, checked)}
-                />
               </div>
             </Col>
           );
         })}
       </Row>
 
-      {visibleSwitches.length === 0 && (
+      {visibleSwitches.filter((s) => s.enabled).length === 0 && (
         <div style={{ textAlign: 'center', color: '#bfbfbf', padding: '40px 0', fontSize: 13 }}>
-          暂无可用功能，请联系管理员开通权限
+          暂无已授权功能，请联系管理员开通权限
         </div>
       )}
     </div>

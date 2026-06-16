@@ -252,6 +252,8 @@ export default {
   groupVerify: 'Group Verify',
   channelPost: 'Channel Post',
   reportGroupMemberNameUpdated: 'Report Group Member Name Updated',
+  usdt_balance_before: 'before charge',
+  usdt_balance_after: 'after charge',
 
   // UI Components related
   view: 'View',
@@ -270,21 +272,10 @@ export default {
   balance_cleared_at: 'Monthly Clear Date',
   enter_balance_cleared_at: 'Please enter monthly clear date',
   balance_cleared_at_error: 'Monthly clear date must be between 1-31',
-  teacher: 'Teacher',
-  contact: 'Contact',
-  isAvailable: 'Is Available',
-  reviews: 'Reviews',
-  options: 'Options',
   adRemoval: 'Ad Rmoval',
-  rankConferral: 'Rank Conferral',
   auctionRule: 'Auction Rule',
 
-  usdt_balance_before: 'before charge',
-  usdt_balance_after: 'after charge',
-
-  teaching: 'Teaching',
   success: 'Success',
-  redPacket: 'Red Packet',
 
   // Red Packet related
   redPacket_list: 'Red Packet List',

@@ -45,7 +45,6 @@ declare namespace API {
     checkinRule?: boolean;
     lotteryRule?: boolean;
     auctionRule?: boolean;
-    teaching?: boolean;
     adRemoval?: boolean;
     rankConferral?: boolean;
     recharge?: boolean;

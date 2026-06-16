@@ -271,6 +271,7 @@ export default {
   interval_time: '间隔时间',
   send_type: '发送类型',
   usdt_balance: 'USDT余额',
+
   trx_balance: 'TRX余额',
   cancelled: '已取消',
   multi_content: 'start 内容',
@@ -367,20 +368,12 @@ export default {
   balance_cleared_at: '每月清零日期',
   enter_balance_cleared_at: '请输入每月清零日期',
   balance_cleared_at_error: '每月清零日期必须在1-31之间',
-  teacher: '老师',
-  contact: '联系方式',
-  isAvailable: '是否上课',
-  reviews: '评论数',
-  options: '操作',
-  approved: '已通过',
-  rejected: '已拒绝',
   adRemoval: '清除广告',
   auctionRule: '竞拍规则',
 
   usdt_balance_before: '充值前余额',
   usdt_balance_after: '充值后余额',
 
-  teaching: '教学',
   success: '积分继承',
   redPacket: '红包',
 
