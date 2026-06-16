@@ -33,7 +33,12 @@ const GroupVerifyGroupContent: React.FC<Props> = ({ open, bot, group }) => {
   };
 
   const columns = [
-    { title: '验证问题', dataIndex: 'question', ellipsis: true },
+    {
+      title: '验证问题',
+      width: 100,
+      dataIndex: 'question',
+      ellipsis: true,
+    },
     {
       title: '选项数',
       key: 'asks',
