@@ -37,6 +37,7 @@ const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     {
       title: '欢迎消息',
       dataIndex: 'contents',
+      width: 100,
       ellipsis: true,
       render: (contents: string[]) =>
         contents?.length ? (
