@@ -69,6 +69,7 @@ const ReplyRuleForm: React.FC<Props> = ({
         keyword: Array.isArray(editingRecord.keyword)
           ? editingRecord.keyword.join(', ')
           : editingRecord.keyword,
+        isFuzzy: editingRecord.isFuzzy || false,
         deleteAfterSeconds: editingRecord.deleteAfterSeconds || 0,
         deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds || 0,
         replyToMessage: editingRecord.replyToMessage || false,
@@ -227,6 +228,7 @@ const ReplyRuleForm: React.FC<Props> = ({
       }}
       onFinish={handleSubmit}
       initialValues={{
+        isFuzzy: false,
         replyToMessage: false,
         replyToAdmin: true,
         deleteAfterSeconds: 0,
@@ -241,6 +243,11 @@ const ReplyRuleForm: React.FC<Props> = ({
           rules={[{ required: true, message: '请输入关键词' }]}
           placeholder="多个关键词用逗号分隔，支持 <tron_address>"
           tooltip="多个关键词用逗号分隔，任意一个匹配即触发回复。特殊关键词：<tron_address> 匹配所有波场地址"
+        />
+        <ProFormSwitch
+          name="isFuzzy"
+          label="模糊匹配"
+          tooltip="开启后，消息中包含关键词即触发（包含匹配）；关闭则需要完全相等（精确匹配）"
         />
       </ProFormGroup>
 

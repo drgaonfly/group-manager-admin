@@ -50,6 +50,12 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       },
     },
     {
+      title: '模糊',
+      dataIndex: 'isFuzzy',
+      width: 60,
+      render: (v: boolean) => (v ? <Tag color="geekblue">模糊</Tag> : <Tag>精确</Tag>),
+    },
+    {
       title: '回复内容',
       dataIndex: 'content',
       ellipsis: true,
@@ -102,7 +108,7 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         loading={loading}
         columns={columns}
         onCreateClick={openCreate}
-        scroll={{ x: 650 }}
+        scroll={{ x: 710 }}
       />
 
       <ReplyRuleForm

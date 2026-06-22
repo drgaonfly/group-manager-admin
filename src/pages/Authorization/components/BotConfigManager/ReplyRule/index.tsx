@@ -47,6 +47,12 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
       },
     },
     {
+      title: '模糊',
+      dataIndex: 'isFuzzy',
+      width: 60,
+      render: (v: boolean) => (v ? <Tag color="geekblue">模糊</Tag> : <Tag>精确</Tag>),
+    },
+    {
       title: '适用群组',
       dataIndex: 'group',
       width: 120,
@@ -120,7 +126,7 @@ const ReplyRuleTab: React.FC<ReplyRuleTabProps> = ({ currentRow, onDataChange })
         loading={loading}
         columns={columns}
         onCreateClick={openCreate}
-        scroll={{ x: 700 }}
+        scroll={{ x: 760 }}
       />
 
       <ReplyRuleForm
