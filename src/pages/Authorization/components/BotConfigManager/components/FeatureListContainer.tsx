@@ -8,6 +8,7 @@ import { PlusOutlined } from '@ant-design/icons';
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface FeatureListContainerProps<T> {
+  title?: React.ReactNode;
   /** 列表数据 */
   data: T[];
   /** 加载状态 */
@@ -34,6 +35,7 @@ interface FeatureListContainerProps<T> {
 
 function FeatureListContainer<T extends object>(props: FeatureListContainerProps<T>): JSX.Element {
   const {
+    title,
     data,
     loading,
     columns,
@@ -49,7 +51,23 @@ function FeatureListContainer<T extends object>(props: FeatureListContainerProps
     <>
       {headerExtra && <div style={{ marginBottom: 12 }}>{headerExtra}</div>}
 
-      <div style={{ marginBottom: 12 }}>
+      <div
+        style={{
+          marginBottom: 12,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div
+          style={{
+            fontSize: 16,
+            fontWeight: 600,
+          }}
+        >
+          {title}
+        </div>
+
         <Button type="primary" icon={<PlusOutlined />} onClick={onCreateClick}>
           {createButtonText}
         </Button>
