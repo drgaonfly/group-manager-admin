@@ -7,7 +7,6 @@ import {
   EditableProTable,
   ProFormSwitch,
   ProFormSelect,
-  ProFormCheckbox,
   ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 import { Form, Input, Space } from 'antd';
@@ -69,7 +68,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
         ...values,
         proxy: values?.proxy?._id,
         bot: values?.bot?._id,
-        channels: values?.channels?.map((c: any) => c._id || c) || [],
+        channel: values?.channel?._id || values?.channel || undefined,
         isOnline: values?.isOnline ?? true,
         isClearLastPost: values?.isClearLastPost ?? false,
         interval: initialInterval,
@@ -145,11 +144,11 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
 
       <ProFormGroup>
         {values?.bot?.groups?.length > 0 ? (
-          <ProFormCheckbox.Group
-            name="channels"
+          <ProFormSelect
+            name="channel"
             width="md"
-            label={intl.formatMessage({ id: 'select_channels', defaultMessage: '选择频道' })}
-            rules={[{ required: true, message: '请选择至少一个频道' }]}
+            label={intl.formatMessage({ id: 'select_channel', defaultMessage: '选择频道' })}
+            rules={[{ required: true, message: '请选择频道' }]}
             options={values.bot.groups
               .filter((group: any) => group.type === 'channel')
               .map((channel: any) => ({
@@ -158,13 +157,16 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
               }))}
           />
         ) : (
-          <ProFormCheckbox
+          <ProFormSelect
+            name="channel"
             width="md"
-            label={intl.formatMessage({
+            label={intl.formatMessage({ id: 'select_channel', defaultMessage: '选择频道' })}
+            disabled
+            placeholder={intl.formatMessage({
               id: 'no_channels_joined',
               defaultMessage: '暂无频道',
             })}
-            disabled
+            options={[]}
           />
         )}
 

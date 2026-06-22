@@ -9,7 +9,6 @@ import {
   ProFormRadio,
   ProFormDependency,
   ProFormSelect,
-  ProFormCheckbox,
   ProFormDateTimePicker,
   ProColumns,
 } from '@ant-design/pro-components';
@@ -30,19 +29,22 @@ type menuItem = {
 
 interface Props {
   open: boolean;
-  onOpenChange: (visible: boolean) => void;
+  onClose: () => void;
   currentRow: any;
   onSuccess: () => void;
   /** 编辑时传入现有记录 */
   editingRecord?: any;
+  /** 固定的频道 ID（来自频道列表层，传入后不渲染频道选择） */
+  fixedChannelId?: string;
 }
 
-const ChannelPostCreateForm: React.FC<Props> = ({
+const ChannelPostForm: React.FC<Props> = ({
   open,
-  onOpenChange,
+  onClose,
   currentRow,
   onSuccess,
   editingRecord,
+  fixedChannelId,
 }) => {
   const intl = useIntl();
   const isEdit = !!editingRecord?._id;
@@ -64,7 +66,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({
         })),
       );
       form.setFieldsValue({
-        channels: (editingRecord.channels || []).map((c: any) => c?._id || c),
         menus_per_row: editingRecord.menus_per_row || 1,
         sendType: editingRecord.sendType || 'scheduled',
         interval: editingRecord.interval || 1,
@@ -81,7 +82,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({
     }
   }, [open, editingRecord]);
 
-  // Default file list for showing existing medias
   const defaultMediaFileList: UploadFile[] = medias
     ? medias.filter(Boolean).map((media, idx) => ({
         uid: String(idx + 1),
@@ -138,10 +138,12 @@ const ChannelPostCreateForm: React.FC<Props> = ({
 
   const handleSubmit = async (values: any) => {
     const telegramContent = convertToTelegramHtml(content);
+
     const formData = {
       ...values,
       content: telegramContent,
       bot: currentRow?._id,
+      channel: fixedChannelId, // 主字段：单个频道
       menus: menus.map(({ name, url }) => ({ name, url })),
       medias,
       menus_per_row: values.menus_per_row || 1,
@@ -157,10 +159,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({
         });
         hide();
         message.success('更新成功');
-        form.resetFields();
-        setContent('');
-        setMenus([]);
-        setMedias([]);
         onSuccess();
         return true;
       } catch (error: any) {
@@ -193,10 +191,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({
         ),
       );
       onSuccess();
-      form.resetFields();
-      setContent('');
-      setMenus([]);
-      setMedias([]);
       return true;
     } catch (error: any) {
       hide();
@@ -207,6 +201,13 @@ const ChannelPostCreateForm: React.FC<Props> = ({
       );
       return false;
     }
+  };
+
+  const resetState = () => {
+    form.resetFields();
+    setContent('');
+    setMenus([]);
+    setMedias([]);
   };
 
   return (
@@ -220,16 +221,16 @@ const ChannelPostCreateForm: React.FC<Props> = ({
       form={form}
       modalProps={{
         destroyOnClose: true,
-        onCancel: () => onOpenChange(false),
+        onCancel: () => {
+          resetState();
+          onClose();
+        },
       }}
       onOpenChange={(visible) => {
         if (!visible) {
-          form.resetFields();
-          setContent('');
-          setMenus([]);
-          setMedias([]);
+          resetState();
+          onClose();
         }
-        onOpenChange(visible);
       }}
       onFinish={handleSubmit}
       initialValues={{
@@ -279,30 +280,6 @@ const ChannelPostCreateForm: React.FC<Props> = ({
       </ProFormGroup>
 
       <ProFormGroup>
-        {currentRow?.groups?.length > 0 ? (
-          <ProFormCheckbox.Group
-            name="channels"
-            width="md"
-            label={intl.formatMessage({ id: 'select_channels', defaultMessage: '选择频道' })}
-            rules={[{ required: true, message: '请选择至少一个频道' }]}
-            options={currentRow.groups
-              .filter((group: any) => group.type === 'channel')
-              .map((channel: any) => ({
-                label: channel.title,
-                value: channel._id,
-              }))}
-          />
-        ) : (
-          <ProFormCheckbox
-            width="md"
-            label={intl.formatMessage({
-              id: 'no_channels_joined',
-              defaultMessage: '暂无频道',
-            })}
-            disabled
-          />
-        )}
-
         <ProFormDigit
           label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
           name="menus_per_row"
@@ -443,4 +420,4 @@ const ChannelPostCreateForm: React.FC<Props> = ({
   );
 };
 
-export default ChannelPostCreateForm;
+export default ChannelPostForm;

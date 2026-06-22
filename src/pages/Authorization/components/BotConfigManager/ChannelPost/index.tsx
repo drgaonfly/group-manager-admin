@@ -1,188 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Space, Switch, message, Popconfirm, Tag } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { FormattedMessage } from '@umijs/max';
-import { queryList, updateItem, removeItem } from '@/services/ant-design-pro/api';
-import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
-import ChannelPostCreateForm from './ChannelPostForm';
+import React, { useState } from 'react';
+import { Button, Empty, Tag } from 'antd';
+import { ProTable } from '@ant-design/pro-components';
+import type { ProColumns } from '@ant-design/pro-components';
+import { SettingOutlined } from '@ant-design/icons';
+import { useIntl } from '@umijs/max';
+import ChannelPostListModal from './ChannelPostListModal';
 
 interface ChannelPostTabProps {
   currentRow: any;
-  onDataChange?: () => void;
 }
 
-const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow, onDataChange }) => {
-  const [channelPosts, setChannelPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+const ChannelPostTab: React.FC<ChannelPostTabProps> = ({ currentRow }) => {
+  const intl = useIntl();
+  const [selectedChannel, setSelectedChannel] = useState<any>(null);
+  const [listModalOpen, setListModalOpen] = useState(false);
 
-  const fetchData = async () => {
-    if (!currentRow?._id) return;
-    setLoading(true);
-    try {
-      const response = await queryList(
-        '/channel-posts',
-        { current: 1, pageSize: 100, botId: currentRow._id },
-        {},
-        {},
-      );
-      if (response?.data) {
-        setChannelPosts(response.data);
-      }
-    } catch (error) {
-      console.error('获取频道推广失败:', error);
-    }
-    setLoading(false);
-  };
+  // 从 bot.groups 中过滤出频道
+  const channels: any[] = (currentRow?.groups || []).filter((g: any) => g.type === 'channel');
 
-  useEffect(() => {
-    fetchData();
-  }, [currentRow?._id]);
-
-  const handleDelete = async (id: string) => {
-    try {
-      await removeItem('/channel-posts', { ids: [id] });
-      message.success(<FormattedMessage id="delete_success" defaultMessage="删除成功" />);
-      fetchData();
-      onDataChange?.();
-    } catch (error: any) {
-      message.error(
-        error?.response?.data?.message ?? (
-          <FormattedMessage id="delete_failed" defaultMessage="删除失败" />
-        ),
-      );
-    }
-  };
-
-  const handleStatusChange = async (record: any, isOnline: boolean) => {
-    try {
-      await updateItem(`/channel-posts/${record._id}`, { isOnline });
-      message.success(
-        <FormattedMessage id="status_update_success" defaultMessage="状态更新成功" />,
-      );
-      fetchData();
-      onDataChange?.();
-    } catch (error: any) {
-      message.error(
-        error?.response?.data?.message ?? (
-          <FormattedMessage id="update_failed" defaultMessage="更新失败" />
-        ),
-      );
-    }
-  };
-
-  const columns = [
+  const columns: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id="channel" defaultMessage="频道" />,
-      dataIndex: 'channels',
-      width: 120,
-      render: (channels: any[]) => channels?.map((c) => c?.title).join(', ') || '-',
-    },
-    {
-      title: <FormattedMessage id="content" defaultMessage="内容" />,
-      dataIndex: 'content',
-      width: 200,
+      title: intl.formatMessage({ id: 'title', defaultMessage: '频道名称' }),
+      dataIndex: 'title',
       ellipsis: true,
-      render: (text: string) => (
-        <div
-          style={{ maxWidth: 200 }}
-          dangerouslySetInnerHTML={{ __html: text || '-' }}
-          title={text?.replace(/<[^>]+>/g, '') || ''}
-        />
-      ),
     },
     {
-      title: <FormattedMessage id="interval" defaultMessage="间隔" />,
-      dataIndex: 'interval',
-      width: 80,
-      render: formatInterval,
+      title: intl.formatMessage({ id: 'username', defaultMessage: '频道用户名' }),
+      dataIndex: 'username',
+      render: (username: any) =>
+        username ? <Tag color="blue">@{username}</Tag> : <span style={{ color: '#bbb' }}>-</span>,
     },
     {
-      title: <FormattedMessage id="time_window" defaultMessage="时间窗口" />,
-      width: 150,
-      render: (_: any, record: any) => formatTimeWindow(record),
-    },
-    {
-      title: <FormattedMessage id="clear_last_post" defaultMessage="清除上条" />,
-      dataIndex: 'isClearLastPost',
-      width: 80,
-      render: (val: boolean) => (val ? <Tag color="orange">是</Tag> : <Tag>否</Tag>),
-    },
-    {
-      title: <FormattedMessage id="status" defaultMessage="状态" />,
-      dataIndex: 'isOnline',
-      width: 90,
-      render: (_: any, record: any) => (
-        <Switch
-          checkedChildren="启用"
-          unCheckedChildren="禁用"
-          checked={record.isOnline}
-          onChange={(checked) => handleStatusChange(record, checked)}
-        />
-      ),
-    },
-    {
-      title: <FormattedMessage id="operation" defaultMessage="操作" />,
-      width: 100,
-      render: (_: any, record: any) => (
-        <Space size={0}>
-          <Button
-            type="link"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => {
-              setEditingRecord(record);
-              setFormOpen(true);
-            }}
-          />
-          <Popconfirm
-            title={<FormattedMessage id="confirm_delete" defaultMessage="确定删除？" />}
-            onConfirm={() => handleDelete(record._id)}
-          >
-            <Button type="link" danger size="small" icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </Space>
-      ),
+      title: intl.formatMessage({ id: 'pages.searchTable.titleOption', defaultMessage: '操作' }),
+      valueType: 'option',
+      width: 120,
+      fixed: 'right',
+      render: (_: any, record: any) => [
+        <Button
+          key="manage"
+          type="primary"
+          size="small"
+          icon={<SettingOutlined />}
+          onClick={() => {
+            setSelectedChannel(record);
+            setListModalOpen(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'channel_post_settings', defaultMessage: '推广设置' })}
+        </Button>,
+      ],
     },
   ];
 
   return (
-    <div style={{ height: '65vh', overflow: 'auto', paddingRight: 8 }}>
-      <div style={{ marginBottom: 16 }}>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setFormOpen(true)}>
-          <FormattedMessage id="add" defaultMessage="新建" />
-        </Button>
-      </div>
-      <Table
-        columns={columns}
-        dataSource={channelPosts}
+    <>
+      <ProTable<any>
         rowKey="_id"
-        loading={loading}
+        dataSource={channels}
+        columns={columns}
+        search={false}
+        pagination={false}
+        toolBarRender={false}
         size="small"
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 900 }}
+        scroll={{ x: 'max-content' }}
+        locale={{
+          emptyText: (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={intl.formatMessage({
+                id: 'no_channels',
+                defaultMessage: '该机器人暂无频道',
+              })}
+            />
+          ),
+        }}
       />
 
-      <ChannelPostCreateForm
-        open={formOpen}
-        onOpenChange={(v) => {
-          setFormOpen(v);
-          if (!v) setEditingRecord(null);
+      <ChannelPostListModal
+        open={listModalOpen}
+        onClose={() => {
+          setListModalOpen(false);
+          setSelectedChannel(null);
         }}
-        currentRow={currentRow}
-        editingRecord={editingRecord}
-        onSuccess={() => {
-          setFormOpen(false);
-          setEditingRecord(null);
-          message.success(
-            <FormattedMessage id="channel_post_add_success" defaultMessage="操作成功" />,
-          );
-          fetchData();
-          onDataChange?.();
-        }}
+        bot={currentRow}
+        channel={selectedChannel}
       />
-    </div>
+    </>
   );
 };
 
