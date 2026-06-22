@@ -23,7 +23,6 @@ const Create: React.FC<Props> = (props) => {
       const formData = {
         ...values,
         bot: botId || values.bot,
-        menus_per_row: values.menus_per_row || 1,
       };
 
       if (sendType === 'immediate') {

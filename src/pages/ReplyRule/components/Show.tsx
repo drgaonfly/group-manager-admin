@@ -124,11 +124,6 @@ const Show: React.FC<Props> = ({ onClose, open, currentRow }) => {
               ),
           },
           {
-            title: '每行菜单数',
-            dataIndex: 'menus_per_row',
-            render: (_, record) => record.menus_per_row || 1,
-          },
-          {
             title: '引用用户消息',
             dataIndex: 'replyToMessage',
             render: (_, record) =>

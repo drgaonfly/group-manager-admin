@@ -21,6 +21,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface Props {
@@ -35,7 +36,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
   const intl = useIntl();
   const [content, setContent] = useState(toQuillHtml(values?.content || ''));
   const [form] = Form.useForm();
-  const [menus, setMenus] = useState<menuItem[]>(values?.menus || []);
+  const [menus, setMenus] = useState<menuItem[]>(
+    (values?.menus || []).map((m: any, idx: number) => ({
+      _id: m._id || `menu-${idx}`,
+      name: m.name,
+      url: m.url,
+      row: m.row ?? 0,
+    })),
+  );
   const [medias, setMedias] = useState<string[]>(
     Array.isArray(values?.medias) ? values.medias : [],
   );
@@ -47,7 +55,14 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
       setContent(toQuillHtml(values.content));
     }
     if (values?.menus !== undefined) {
-      setMenus(values.menus || []);
+      setMenus(
+        (values.menus || []).map((m: any, idx: number) => ({
+          _id: m._id || `menu-${idx}`,
+          name: m.name,
+          url: m.url,
+          row: m.row ?? 0,
+        })),
+      );
     }
     if (Array.isArray(values?.medias)) {
       setMedias(values.medias);
@@ -74,7 +89,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
         interval: initialInterval,
         weight: values?.weight ?? 0,
         timeUnit: initialTimeUnit,
-        menus_per_row: values?.menus_per_row ?? 1,
         startAt: values?.startAt ? toDayjs(values.startAt) : undefined,
         endAt: values?.endAt ? toDayjs(values.endAt) : undefined,
       }}
@@ -98,7 +112,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
         await onFinish({
           ...formValues,
           content: telegramContent,
-          menus: menus.map(({ name, url }) => ({ name, url })),
+          menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
           medias: medias,
           interval,
           startAt: toISOString(formValues.startAt),
@@ -169,14 +183,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
             options={[]}
           />
         )}
-
-        <ProFormDigit
-          width="md"
-          name="menus_per_row"
-          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
-          min={1}
-          tooltip="设置内联菜单每行显示的按钮数量"
-        />
       </ProFormGroup>
 
       {!hideScheduleOptions && (
@@ -271,6 +277,21 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
             },
           },
           {
+            title: '行号',
+            dataIndex: 'row',
+            valueType: 'digit',
+            width: 80,
+            formItemProps: {
+              rules: [{ required: true, message: '请输入行号' }],
+            },
+            fieldProps: {
+              min: 0,
+              precision: 0,
+              placeholder: '0',
+            },
+            tooltip: '相同行号的按钮会显示在同一行',
+          },
+          {
             title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
             valueType: 'option',
             width: 200,
@@ -296,6 +317,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values, hideScheduleO
             _id: Date.now().toString(),
             name: '',
             url: '',
+            row: 0,
           }),
         }}
         size="small"

@@ -21,6 +21,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface Props {
@@ -37,6 +38,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       _id: m._id || `menu-${idx}`,
       name: m.name,
       url: m.url,
+      row: m.row ?? 0,
     })),
   );
   const [medias, setMedias] = useState<string[]>(
@@ -64,6 +66,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           _id: m._id || `menu-${idx}`,
           name: m.name,
           url: m.url,
+          row: m.row ?? 0,
         })),
       );
     }
@@ -103,6 +106,21 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           },
         ],
       },
+    },
+    {
+      title: '行号',
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入行号' }],
+      },
+      fieldProps: {
+        min: 0,
+        precision: 0,
+        placeholder: '0',
+      },
+      tooltip: '相同行号的按钮会显示在同一行',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
@@ -146,7 +164,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           ...formValues,
           content: telegramContent,
           medias: medias,
-          menus: menus.map(({ name, url }) => ({ name, url })),
+          menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
           intervalTime,
           startAt: toISOString(formValues.startAt),
           endAt: toISOString(formValues.endAt),
@@ -221,13 +239,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             disabled
           />
         )}
-
-        <ProFormDigit
-          width="md"
-          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
-          name="menus_per_row"
-          min={1}
-        />
       </ProForm.Group>
 
       <ProForm.Group
@@ -306,6 +317,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             _id: Date.now().toString(),
             name: '',
             url: '',
+            row: 0,
           }),
         }}
       />

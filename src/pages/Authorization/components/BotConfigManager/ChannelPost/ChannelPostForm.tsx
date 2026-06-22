@@ -25,6 +25,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface Props {
@@ -63,10 +64,10 @@ const ChannelPostForm: React.FC<Props> = ({
           _id: m._id || `menu-${i}`,
           name: m.name,
           url: m.url,
+          row: m.row ?? 0,
         })),
       );
       form.setFieldsValue({
-        menus_per_row: editingRecord.menus_per_row || 1,
         sendType: editingRecord.sendType || 'scheduled',
         interval: editingRecord.interval || 1,
         startAt: editingRecord.startAt,
@@ -120,6 +121,21 @@ const ChannelPostForm: React.FC<Props> = ({
       },
     },
     {
+      title: '行号',
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入行号' }],
+      },
+      fieldProps: {
+        min: 0,
+        precision: 0,
+        placeholder: '0',
+      },
+      tooltip: '相同行号的按钮会显示在同一行',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
       width: 200,
@@ -144,9 +160,8 @@ const ChannelPostForm: React.FC<Props> = ({
       content: telegramContent,
       bot: currentRow?._id,
       channel: fixedChannelId, // 主字段：单个频道
-      menus: menus.map(({ name, url }) => ({ name, url })),
+      menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
       medias,
-      menus_per_row: values.menus_per_row || 1,
     };
 
     if (isEdit) {
@@ -240,7 +255,6 @@ const ChannelPostForm: React.FC<Props> = ({
         isClearLastPost: false,
         sendType: 'immediate',
         timeUnit: 'hours',
-        menus_per_row: 1,
       }}
     >
       {/* 富文本编辑器 */}
@@ -280,14 +294,6 @@ const ChannelPostForm: React.FC<Props> = ({
       </ProFormGroup>
 
       <ProFormGroup>
-        <ProFormDigit
-          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: '每行菜单数' })}
-          name="menus_per_row"
-          width="md"
-          min={1}
-          fieldProps={{ style: { width: '100%' } }}
-        />
-
         <ProFormRadio.Group
           name="sendType"
           label={intl.formatMessage({ id: 'send_type', defaultMessage: '发送类型' })}
@@ -409,6 +415,7 @@ const ChannelPostForm: React.FC<Props> = ({
             _id: Date.now().toString(),
             name: '',
             url: '',
+            row: 0,
           }),
         }}
       />

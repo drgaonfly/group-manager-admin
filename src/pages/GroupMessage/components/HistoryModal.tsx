@@ -53,7 +53,6 @@ const HistoryModal: React.FC<Props> = ({ open, onClose, groupMessageId, currentR
       bot: currentRow?.bot, // 完整的 bot 对象，包含 groups
       groups: currentRow?.groups?.map((g: any) => g._id || g) || [],
       menus: currentRow?.menus || [],
-      menus_per_row: currentRow?.menus_per_row || 1,
       intervalTime: currentRow?.intervalTime || 1,
     });
     setCreateModalOpen(true);

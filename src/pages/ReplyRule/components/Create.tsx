@@ -32,7 +32,6 @@ const Create: React.FC<CreateProps> = ({ open, onOpenChange, onFinish }) => {
         const finalValues = {
           ...values,
           ...extraData,
-          menus_per_row: values.menus_per_row || 1,
         };
         return await onFinish(finalValues);
       }}

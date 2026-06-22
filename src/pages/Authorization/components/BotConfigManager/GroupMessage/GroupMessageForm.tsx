@@ -24,6 +24,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface GroupMessageFormProps {
@@ -64,11 +65,11 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           _id: m._id || `menu-${i}`,
           name: m.name,
           url: m.url,
+          row: m.row ?? 0,
         })),
       );
       form.setFieldsValue({
         sendType: editingRecord.sendType || 'scheduled',
-        menus_per_row: editingRecord.menus_per_row || 1,
         intervalTime: editingRecord.intervalTime || 0,
         startAt: editingRecord.startAt,
         endAt: editingRecord.endAt,
@@ -120,6 +121,21 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       },
     },
     {
+      title: '行号',
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入行号' }],
+      },
+      fieldProps: {
+        min: 0,
+        precision: 0,
+        placeholder: '0',
+      },
+      tooltip: '相同行号的按钮会显示在同一行',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
       width: 200,
@@ -147,8 +163,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           ...values,
           content: telegramContent,
           medias,
-          menus: menus.map(({ name, url }) => ({ name, url })),
-          menus_per_row: values.menus_per_row,
+          menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
         });
@@ -183,8 +198,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         group: fixedGroupId,
         medias,
         sendType: values.sendType,
-        menus: menus.map(({ name, url }) => ({ name, url })),
-        menus_per_row: values.menus_per_row,
+        menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
         startAt: toISOString(values.startAt),
         endAt: toISOString(values.endAt),
       };
@@ -264,24 +278,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       </ProFormGroup>
 
       <ProFormGroup>
-        <ProFormDigit
-          label={intl.formatMessage({ id: 'menus_per_row', defaultMessage: 'Menus Per Row' })}
-          name="menus_per_row"
-          width="md"
-          min={1}
-          initialValue={1}
-          fieldProps={{ style: { width: '100%' } }}
-        />
-
-        {/* <ProFormDigit
-          name="weight"
-          width="sm"
-          label={intl.formatMessage({ id: 'weight', defaultMessage: '权重' })}
-          min={0}
-          initialValue={0}
-          tooltip={'数字越大, 越靠后发送'}
-        /> */}
-
         <ProFormRadio.Group
           name="sendType"
           label={intl.formatMessage({ id: 'send_type', defaultMessage: 'Send Type' })}
@@ -394,6 +390,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             _id: Date.now().toString(),
             name: '',
             url: '',
+            row: 0,
           }),
         }}
       />

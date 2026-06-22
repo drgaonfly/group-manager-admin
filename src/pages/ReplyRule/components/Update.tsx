@@ -38,7 +38,6 @@ const Update: React.FC<UpdateProps> = ({ onSubmit, onCancel, updateModalOpen, va
           _id: values._id,
           ...formValues,
           ...extraData,
-          menus_per_row: formValues.menus_per_row || 1,
         };
         await onSubmit(finalValues);
       }}
