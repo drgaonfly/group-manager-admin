@@ -296,7 +296,6 @@ export default {
   message_required: '请输入消息内容',
 
   // 代理配置相关
-  bidirectional: '双向',
   groupMessage: '群发',
   keyboardConfig: '自由键盘',
   speech_static: '群组内发言统计',
@@ -330,7 +329,6 @@ export default {
   add_reply_rule: '添加回复规则',
   replyRule: '回复规则',
   speechStatic: '发言统计',
-  canBidirectional: '支持双向',
   canReportMemberNameUpdated: '可报告成员名称更新',
 
   // UI 组件相关

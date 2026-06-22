@@ -22,7 +22,6 @@ const ServiceLink: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSubmit = async (values: {
-    bidirectional: boolean;
     groupMessage: boolean;
     keyboardConfig: boolean;
     speech_static: boolean;
@@ -95,7 +94,6 @@ const ServiceLink: React.FC = () => {
           <ProForm
             onFinish={handleSubmit}
             initialValues={{
-              bidirectional: currentUser?.bidirectional || false,
               groupMessage: currentUser?.groupMessage || false,
               keyboardConfig: currentUser?.keyboardConfig || false,
               speech_static: currentUser?.speech_static || false,
@@ -128,14 +126,6 @@ const ServiceLink: React.FC = () => {
               })}
               min={0}
               fieldProps={{ precision: 0 }}
-            />
-            <ProFormSwitch
-              name="bidirectional"
-              label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
-              tooltip={intl.formatMessage({
-                id: 'bidirectional.tooltip',
-                defaultMessage: '开启后，拥有者可以回复客户消息，回复会自动转发给客户',
-              })}
             />
             <ProFormSwitch
               name="groupMessage"
@@ -306,18 +296,6 @@ const ServiceLink: React.FC = () => {
               label={intl.formatMessage({ id: 'botCount', defaultMessage: '当前机器人数量' })}
             >
               {currentUser?.botCount || 0}
-            </Descriptions.Item>
-
-            <Descriptions.Item
-              label={intl.formatMessage({ id: 'bidirectional', defaultMessage: '双向转发' })}
-            >
-              {renderStatusTag(currentUser?.bidirectional || false)}
-              <Text type="secondary" style={{ marginLeft: 16 }}>
-                {intl.formatMessage({
-                  id: 'bidirectional.tooltip',
-                  defaultMessage: '开启后，拥有者可以回复客户消息，回复会自动转发给客户',
-                })}
-              </Text>
             </Descriptions.Item>
 
             <Descriptions.Item

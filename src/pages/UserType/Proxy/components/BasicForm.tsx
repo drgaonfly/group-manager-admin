@@ -161,7 +161,6 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           {intl.formatMessage({ id: 'botFeatures' })}
         </Title>
         <ProForm.Group>
-          <ProFormSwitch label={intl.formatMessage({ id: 'bidirectional' })} name="bidirectional" />
           <ProFormSwitch label={intl.formatMessage({ id: 'groupMessage' })} name="groupMessage" />
           <ProFormSwitch
             label={intl.formatMessage({ id: 'keyboardConfig' })}

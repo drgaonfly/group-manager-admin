@@ -31,7 +31,6 @@ declare namespace API {
     balance?: number;
     serviceLink?: string;
     serviceLinks?: string;
-    bidirectional?: boolean;
     groupMessage?: boolean;
     keyboardConfig?: boolean;
     speech_static?: boolean;

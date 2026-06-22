@@ -160,10 +160,6 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         const features = [
           {
-            name: intl.formatMessage({ id: 'bidirectional' }),
-            enabled: record.bidirectional,
-          },
-          {
             name: intl.formatMessage({ id: 'groupMessage' }),
             enabled: record.groupMessage,
           },

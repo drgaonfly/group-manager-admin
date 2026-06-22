@@ -284,7 +284,6 @@ const TableList: React.FC = () => {
           currentUser?.keyboardConfig ||
           currentUser?.speech_static ||
           currentUser?.groupWelcome ||
-          currentUser?.bidirectional ||
           currentUser?.groupVerify ||
           currentUser?.reportGroupMemberNameUpdated ||
           currentUser?.checkinRule ||

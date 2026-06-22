@@ -241,7 +241,6 @@ export default {
   message_required: 'Please enter message content',
 
   // Proxy configuration related
-  bidirectional: 'Bidirectional',
   groupMessage: 'Group Message',
   keyboardConfig: 'Keyboard Config',
   speech_static: 'Speech Static',

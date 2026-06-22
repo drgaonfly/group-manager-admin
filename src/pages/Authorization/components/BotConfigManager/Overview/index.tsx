@@ -12,7 +12,6 @@ import {
   SmileOutlined,
   SafetyOutlined,
   BarChartOutlined,
-  RetweetOutlined,
   IdcardOutlined,
   CalendarOutlined,
   TrophyOutlined,
@@ -103,14 +102,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ currentRow, currentUser }) =>
       color: '#1677ff',
       enabled: !!currentUser?.speech_static,
       desc: '统计群内成员发言并发放积分',
-    },
-    {
-      key: 'canBidirectional',
-      label: intl.formatMessage({ id: 'canBidirectional', defaultMessage: '双向通信' }),
-      icon: <RetweetOutlined />,
-      color: '#eb2f96',
-      enabled: !!currentUser?.bidirectional,
-      desc: '启用双向消息通道',
     },
     {
       key: 'canReportMemberNameUpdated',
