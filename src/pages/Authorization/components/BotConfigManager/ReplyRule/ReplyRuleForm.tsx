@@ -7,14 +7,14 @@ import {
   EditableProTable,
   ProFormSwitch,
   ProFormText,
-  ProFormTextArea,
   ProColumns,
 } from '@ant-design/pro-components';
-import { Form, message, Space, Tag } from 'antd';
+import { Form, message } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 
 type menuItem = {
   _id: string;
@@ -54,7 +54,7 @@ const ReplyRuleForm: React.FC<Props> = ({
   // 编辑时回填数据
   useEffect(() => {
     if (open && isEdit) {
-      setContent(editingRecord.content || '');
+      setContent(toQuillHtml(editingRecord.content || ''));
       setMedias(editingRecord.medias || []);
       setMenus(
         (editingRecord.menus || []).map((m: any, i: number) => ({
@@ -70,7 +70,6 @@ const ReplyRuleForm: React.FC<Props> = ({
           ? editingRecord.keyword.join(', ')
           : editingRecord.keyword,
         isFuzzy: editingRecord.isFuzzy || false,
-        content: editingRecord.content || '',
         deleteAfterSeconds: editingRecord.deleteAfterSeconds || 0,
         deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds || 0,
         replyToMessage: editingRecord.replyToMessage || false,
@@ -88,6 +87,7 @@ const ReplyRuleForm: React.FC<Props> = ({
       isEdit ? '更新中...' : <FormattedMessage id="adding" defaultMessage="Adding..." />,
     );
     try {
+      const telegramContent = convertToTelegramHtml(content);
       const keywordArray = (values.keyword || '')
         .split(/[,，\n]/)
         .map((k: string) => k.trim())
@@ -96,7 +96,7 @@ const ReplyRuleForm: React.FC<Props> = ({
       const formData = {
         ...values,
         keyword: keywordArray,
-        content: content,
+        content: telegramContent,
         bot: currentRow?._id,
         group: fixedGroupId,
         menus: menus.map(({ name, url, row, style }) => ({
@@ -133,30 +133,6 @@ const ReplyRuleForm: React.FC<Props> = ({
       );
       return false;
     }
-  };
-
-  const variables = [
-    { key: '{userId}', label: '用户ID', desc: '用户的 Telegram ID' },
-    { key: '{nickname}', label: '用户昵称', desc: '用户的昵称/名字' },
-    { key: '{userName}', label: '用户名', desc: '用户的 @username' },
-    { key: '{userBalance}', label: '用户积分', desc: '用户的积分余额' },
-    {
-      key: '{userBalanceRanking}',
-      label: '用户积分排名',
-      desc: '显示当前用户在本群的积分排名数字',
-    },
-    {
-      key: '{userBalanceRankingList}',
-      label: '用户积分榜单',
-      desc: '显示本群积分排名前10的用户列表',
-    },
-    { key: '{groupTitle}', label: '群名称', desc: '当前群组的名称' },
-    { key: '{currentTime}', label: '当前时间', desc: '消息发送时的时间' },
-    { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
-  ];
-
-  const insertVariable = (variable: string) => {
-    setContent((prev) => prev + variable);
   };
 
   const menuColumns: ProColumns<menuItem>[] = [
@@ -275,33 +251,14 @@ const ReplyRuleForm: React.FC<Props> = ({
         />
       </ProFormGroup>
 
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ marginRight: 8, color: '#666', fontSize: 12 }}>插入变量：</span>
-        <Space wrap size={[4, 4]}>
-          {variables.map((v) => (
-            <Tag
-              key={v.key}
-              color="blue"
-              style={{ cursor: 'pointer' }}
-              onClick={() => insertVariable(v.key)}
-              title={v.desc}
-            >
-              {v.label}
-            </Tag>
-          ))}
-        </Space>
-      </div>
-
-      <ProFormTextArea
-        name="content"
-        label="回复内容"
-        required
-        rules={[{ required: true, message: '请输入回复内容' }]}
-        fieldProps={{
-          placeholder: '请输入回复内容，支持变量...',
-          rows: 8,
-        }}
-      />
+      <Form.Item label="回复内容" required style={{ marginBottom: 24 }}>
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="请输入回复内容，支持富文本格式和变量..."
+          height={200}
+        />
+      </Form.Item>
 
       <ProFormGroup>
         <ProFormDigit

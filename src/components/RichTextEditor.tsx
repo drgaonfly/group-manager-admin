@@ -1,7 +1,7 @@
-import React, { useRef, useMemo, useImperativeHandle, forwardRef, useId } from 'react';
+import React, { useMemo, useImperativeHandle, forwardRef, useId } from 'react';
 import { Space, Tag } from 'antd';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 
 // 所有可用变量
 const ALL_VARIABLES = [
@@ -101,89 +101,76 @@ export interface RichTextEditorRef {
   getTelegramHtml: () => string;
 }
 
-// Quill 编辑器配置
-const quillModules = {
-  toolbar: [
-    ['bold', 'italic', 'underline', 'strike'],
-    ['link'],
-    ['blockquote', 'code-block'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['clean'],
-  ],
-};
-
-const quillFormats = [
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'link',
-  'blockquote',
-  'code-block',
-  'list',
-  'bullet',
-];
-
-// 将 Quill HTML 转换为 Telegram 支持的 HTML
+// 将 TipTap HTML 转换为 Telegram 支持的 HTML
 export const convertToTelegramHtml = (html: string): string => {
   if (!html) return '';
-  return (
-    html
-      .replace(/<strong>/g, '<b>')
-      .replace(/<\/strong>/g, '</b>')
-      .replace(/<em>/g, '<i>')
-      .replace(/<\/em>/g, '</i>')
-      .replace(/<s>/g, '<s>')
-      .replace(/<\/s>/g, '</s>')
-      .replace(/<pre class="ql-syntax"[^>]*>/g, '<pre>')
-      .replace(/<\/pre>/g, '</pre>')
-      // blockquote：保留内容并在结束时换行
-      .replace(/<blockquote>/g, '')
-      .replace(/<\/blockquote>/g, '\n')
-      // 有序/无序列表容器
-      .replace(/<ol>/g, '')
-      .replace(/<\/ol>/g, '')
-      .replace(/<ul>/g, '')
-      .replace(/<\/ul>/g, '')
-      // 列表项
-      .replace(/<li>/g, '• ')
-      .replace(/<\/li>/g, '\n')
-      // 空段落（Quill 用来表示空行）
-      .replace(/<p><br\s*\/?><\/p>/g, '\n')
-      .replace(/<br\s*\/?>/g, '\n')
-      // 普通段落：开标签去掉，关标签换行
-      .replace(/<p>/g, '')
-      .replace(/<\/p>/g, '\n')
-      .replace(/&nbsp;/g, ' ')
-      .trim()
-  );
+  let text = html
+    .replace(/<strong>/g, '<b>')
+    .replace(/<\/strong>/g, '</b>')
+    .replace(/<em>/g, '<i>')
+    .replace(/<\/em>/g, '</i>')
+    .replace(/<s>/g, '<s>')
+    .replace(/<\/s>/g, '</s>')
+    .replace(/<pre>/g, '<pre>')
+    .replace(/<\/pre>/g, '</pre>')
+    // blockquote：保留内容并在结束时换行
+    .replace(/<blockquote>/g, '')
+    .replace(/<\/blockquote>/g, '\n')
+    // 有序/无序列表容器
+    .replace(/<ol>/g, '')
+    .replace(/<\/ol>/g, '')
+    .replace(/<ul>/g, '')
+    .replace(/<\/ul>/g, '')
+    // 列表项
+    .replace(/<li>/g, '• ')
+    .replace(/<\/li>/g, '\n')
+    // 空段落（TipTap 用来表示空行）
+    .replace(/<p><\/p>/g, '\n')
+    .replace(/<br\s*\/?>/g, '\n')
+    // 普通段落：开标签去掉，关标签换行
+    .replace(/<p>/g, '')
+    .replace(/<\/p>/g, '\n')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/^\s+/, '');
+
+  // 移除开头和结尾的换行
+  text = text.replace(/^\n+/, '').replace(/\n+$/, '');
+  return text;
 };
 
-// 将换行符文本转换为 Quill HTML
-export const toQuillHtml = (text: string): string =>
-  text
-    ? text
-        .split('\n')
-        .filter((line, index, arr) => !(index === arr.length - 1 && line === ''))
-        .map((line) => `<p>${line || '<br>'}</p>`)
-        .join('')
-    : '';
+// 将换行符文本转换为 TipTap HTML
+export const toQuillHtml = (text: string): string => {
+  if (!text) return '';
+  // 如果输入已经是 HTML 格式，直接返回
+  if (text.startsWith('<')) {
+    return text;
+  }
+  const lines = text.split('\n');
+  // 保留所有行，包括空行（用于表示空段落）
+  return lines.map((line) => `<p>${line || ''}</p>`).join('');
+};
 
 const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
-  (
-    {
-      value = '',
-      onChange,
-      placeholder = '请输入内容...',
-      height = 200,
-      variables = 'all',
-      showVariables = true,
-      title,
-    },
-    ref,
-  ) => {
-    const quillRef = useRef<ReactQuill>(null);
+  ({ value = '', onChange, height = 200, variables = 'all', showVariables = true, title }, ref) => {
     const editorId = useId().replace(/:/g, '');
+
+    // TipTap 编辑器
+    const editor = useEditor({
+      extensions: [StarterKit],
+      content: toQuillHtml(value),
+      onUpdate: ({ editor }) => {
+        const html = editor.getHTML();
+        const text = convertToTelegramHtml(html);
+        if (text !== value) {
+          onChange?.(text);
+        }
+      },
+      editorProps: {
+        attributes: {
+          style: `min-height: ${height}px; padding: 12px;`,
+        },
+      },
+    });
 
     // 解析要显示的变量
     const displayVariables = useMemo(() => {
@@ -223,19 +210,14 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
 
     // 插入变量到编辑器
     const insertVariable = (variable: string) => {
-      const editor = quillRef.current?.getEditor();
       if (editor) {
-        const range = editor.getSelection(true);
-        if (range) {
-          editor.insertText(range.index, variable);
-          editor.setSelection(range.index + variable.length, 0);
-        }
+        editor.chain().focus().insertContent(variable).run();
       }
     };
 
     // 暴露方法给父组件
     useImperativeHandle(ref, () => ({
-      getEditor: () => quillRef.current?.getEditor(),
+      getEditor: () => editor,
       insertText: (text: string) => insertVariable(text),
       getTelegramHtml: () => convertToTelegramHtml(value),
     }));
@@ -262,21 +244,24 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
           </div>
         )}
         <div id={editorId} style={{ background: '#fff', borderRadius: 4, marginBottom: 16 }}>
-          <ReactQuill
-            ref={quillRef}
-            theme="snow"
-            value={value}
-            onChange={onChange}
-            modules={quillModules}
-            formats={quillFormats}
-            placeholder={placeholder}
-          />
+          <EditorContent editor={editor} />
           <style>{`
-            #${editorId} .ql-container {
+            #${editorId} .ProseMirror {
               min-height: ${height}px;
+              border: 1px solid #d9d9d9;
+              border-radius: 4px;
+              padding: 12px;
             }
-            #${editorId} .ql-editor {
-              min-height: ${height}px;
+            #${editorId} .ProseMirror:focus {
+              border-color: #40a9ff;
+              outline: none;
+            }
+            #${editorId} .ProseMirror p.is-editor-empty:first-child::before {
+              content: attr(data-placeholder);
+              float: left;
+              color: #999;
+              pointer-events: none;
+              height: 0;
             }
           `}</style>
         </div>
