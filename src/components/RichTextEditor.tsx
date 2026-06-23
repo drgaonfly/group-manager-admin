@@ -1,7 +1,17 @@
 import React, { useMemo, useImperativeHandle, forwardRef, useId } from 'react';
-import { Space, Tag } from 'antd';
+import { Space, Tag, Button } from 'antd';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
+import { TextStyle } from '@tiptap/extension-text-style';
+import {
+  BoldOutlined,
+  ItalicOutlined,
+  UnderlineOutlined,
+  LinkOutlined,
+  UnorderedListOutlined,
+  OrderedListOutlined,
+} from '@ant-design/icons';
 
 // 所有可用变量
 const ALL_VARIABLES = [
@@ -113,6 +123,9 @@ export const convertToTelegramHtml = (html: string): string => {
     .replace(/<\/s>/g, '</s>')
     .replace(/<pre>/g, '<pre>')
     .replace(/<\/pre>/g, '</pre>')
+    // 链接：保留 Telegram 格式
+    .replace(/<a href="([^"]*)">/g, '<a href="$1">')
+    .replace(/<\/a>/g, '</a>')
     // blockquote：保留内容并在结束时换行
     .replace(/<blockquote>/g, '')
     .replace(/<\/blockquote>/g, '\n')
@@ -141,8 +154,8 @@ export const convertToTelegramHtml = (html: string): string => {
 // 将换行符文本转换为 TipTap HTML
 export const toQuillHtml = (text: string): string => {
   if (!text) return '';
-  // 如果输入已经是 HTML 格式，直接返回
-  if (text.startsWith('<')) {
+  // 如果输入已经是 HTML 格式且没有换行符，直接返回
+  if (text.startsWith('<') && !text.includes('\n')) {
     return text;
   }
   const lines = text.split('\n');
@@ -156,7 +169,7 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
 
     // TipTap 编辑器
     const editor = useEditor({
-      extensions: [StarterKit],
+      extensions: [StarterKit, Link, TextStyle],
       content: toQuillHtml(value),
       onUpdate: ({ editor }) => {
         const html = editor.getHTML();
@@ -244,6 +257,51 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
           </div>
         )}
         <div id={editorId} style={{ background: '#fff', borderRadius: 4, marginBottom: 16 }}>
+          <div style={{ marginBottom: 8, borderBottom: '1px solid #f0f0f0', paddingBottom: 8 }}>
+            <Space size={4}>
+              <Button
+                size="small"
+                icon={<BoldOutlined />}
+                onClick={() => editor?.chain().focus().toggleBold().run()}
+                type={editor?.isActive('bold') ? 'primary' : 'default'}
+              />
+              <Button
+                size="small"
+                icon={<ItalicOutlined />}
+                onClick={() => editor?.chain().focus().toggleItalic().run()}
+                type={editor?.isActive('italic') ? 'primary' : 'default'}
+              />
+              <Button
+                size="small"
+                icon={<UnderlineOutlined />}
+                onClick={() => editor?.chain().focus().toggleStrike().run()}
+                type={editor?.isActive('strike') ? 'primary' : 'default'}
+              />
+              <Button
+                size="small"
+                icon={<LinkOutlined />}
+                onClick={() => {
+                  const url = window.prompt('请输入链接地址:');
+                  if (url) {
+                    editor?.chain().focus().setLink({ href: url }).run();
+                  }
+                }}
+                type={editor?.isActive('link') ? 'primary' : 'default'}
+              />
+              <Button
+                size="small"
+                icon={<UnorderedListOutlined />}
+                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                type={editor?.isActive('bulletList') ? 'primary' : 'default'}
+              />
+              <Button
+                size="small"
+                icon={<OrderedListOutlined />}
+                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+                type={editor?.isActive('orderedList') ? 'primary' : 'default'}
+              />
+            </Space>
+          </div>
           <EditorContent editor={editor} />
           <style>{`
             #${editorId} .ProseMirror {
