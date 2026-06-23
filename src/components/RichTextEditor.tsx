@@ -127,30 +127,36 @@ const quillFormats = [
 // 将 Quill HTML 转换为 Telegram 支持的 HTML
 export const convertToTelegramHtml = (html: string): string => {
   if (!html) return '';
-  return html
-    .replace(/<strong>/g, '<b>')
-    .replace(/<\/strong>/g, '</b>')
-    .replace(/<em>/g, '<i>')
-    .replace(/<\/em>/g, '</i>')
-    .replace(/<s>/g, '<s>')
-    .replace(/<\/s>/g, '</s>')
-    .replace(/<pre class="ql-syntax" spellcheck="false">/g, '<pre>')
-    .replace(/<\/pre>/g, '</pre>')
-    .replace(/<blockquote>/g, '')
-    .replace(/<\/blockquote>/g, '')
-    .replace(/<ol>/g, '')
-    .replace(/<\/ol>/g, '')
-    .replace(/<ul>/g, '')
-    .replace(/<\/ul>/g, '')
-    .replace(/<li>/g, '• ')
-    .replace(/<\/li>/g, '\n')
-    .replace(/<p><br><\/p>/g, '\n')
-    .replace(/<br\s*\/?>/g, '\n')
-    .replace(/<p>/g, '')
-    .replace(/<\/p>/g, '\n')
-    .replace(/&nbsp;/g, ' ') // 将 &nbsp; 转换为普通空格
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
+  return (
+    html
+      .replace(/<strong>/g, '<b>')
+      .replace(/<\/strong>/g, '</b>')
+      .replace(/<em>/g, '<i>')
+      .replace(/<\/em>/g, '</i>')
+      .replace(/<s>/g, '<s>')
+      .replace(/<\/s>/g, '</s>')
+      .replace(/<pre class="ql-syntax"[^>]*>/g, '<pre>')
+      .replace(/<\/pre>/g, '</pre>')
+      // blockquote：保留内容并在结束时换行
+      .replace(/<blockquote>/g, '')
+      .replace(/<\/blockquote>/g, '\n')
+      // 有序/无序列表容器
+      .replace(/<ol>/g, '')
+      .replace(/<\/ol>/g, '')
+      .replace(/<ul>/g, '')
+      .replace(/<\/ul>/g, '')
+      // 列表项
+      .replace(/<li>/g, '• ')
+      .replace(/<\/li>/g, '\n')
+      // 空段落（Quill 用来表示空行）
+      .replace(/<p><br\s*\/?><\/p>/g, '\n')
+      .replace(/<br\s*\/?>/g, '\n')
+      // 普通段落：开标签去掉，关标签换行
+      .replace(/<p>/g, '')
+      .replace(/<\/p>/g, '\n')
+      .replace(/&nbsp;/g, ' ')
+      .trim()
+  );
 };
 
 // 将换行符文本转换为 Quill HTML
@@ -158,6 +164,7 @@ export const toQuillHtml = (text: string): string =>
   text
     ? text
         .split('\n')
+        .filter((line, index, arr) => !(index === arr.length - 1 && line === ''))
         .map((line) => `<p>${line || '<br>'}</p>`)
         .join('')
     : '';

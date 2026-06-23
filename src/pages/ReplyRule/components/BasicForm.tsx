@@ -1,5 +1,5 @@
 import { Form, Space, Tag, Select } from 'antd';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 import BotSelect from '@/components/BotSelect';
@@ -9,12 +9,11 @@ import {
   ProFormGroup,
   ProFormDigit,
   ProFormSwitch,
+  ProFormTextArea,
   ProColumns,
   EditableProTable,
 } from '@ant-design/pro-components';
 import React from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
 const { Option } = Select;
 
@@ -40,7 +39,6 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [botGroups, setBotGroups] = useState<any[]>([]);
   const [groupsLoading, setGroupsLoading] = useState(false);
-  const quillRef = React.useRef<ReactQuill>(null);
 
   const loadBotGroups = async (botId: string) => {
     if (!botId) {
@@ -81,76 +79,8 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
     { key: '{currentBot}', label: '当前机器人', desc: '当前机器人的昵称' },
   ];
 
-  const quillModules = useMemo(
-    () => ({
-      toolbar: [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['link'],
-        ['blockquote', 'code-block'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['clean'],
-      ],
-    }),
-    [],
-  );
-
-  const quillFormats = [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'link',
-    'blockquote',
-    'code-block',
-    'list',
-    'bullet',
-  ];
-
   const insertVariable = (variable: string) => {
-    const editor = quillRef.current?.getEditor();
-    if (editor) {
-      const range = editor.getSelection(true);
-      if (range) {
-        editor.insertText(range.index, variable);
-        editor.setSelection(range.index + variable.length, 0);
-      }
-    }
-  };
-
-  const convertToQuillHtml = (text: string): string => {
-    if (!text) return '';
-    return text
-      .split('\n')
-      .map((line) => `<p>${line || '<br>'}</p>`)
-      .join('');
-  };
-
-  const convertToTelegramHtml = (html: string): string => {
-    if (!html) return '';
-    let result = html
-      .replace(/<strong>/g, '<b>')
-      .replace(/<\/strong>/g, '</b>')
-      .replace(/<em>/g, '<i>')
-      .replace(/<\/em>/g, '</i>')
-      .replace(/<s>/g, '<s>')
-      .replace(/<\/s>/g, '</s>')
-      .replace(/<pre class="ql-syntax" spellcheck="false">/g, '<pre>')
-      .replace(/<\/pre>/g, '</pre>')
-      .replace(/<blockquote>/g, '')
-      .replace(/<\/blockquote>/g, '')
-      .replace(/<ol>/g, '')
-      .replace(/<\/ol>/g, '')
-      .replace(/<ul>/g, '')
-      .replace(/<\/ul>/g, '')
-      .replace(/<li>/g, '• ')
-      .replace(/<\/li>/g, '\n')
-      .replace(/<p><br><\/p>/g, '\n')
-      .replace(/<br\s*\/?>/g, '\n')
-      .replace(/<p>/g, '')
-      .replace(/<\/p>/g, '\n')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
-    return result;
+    setContent((prev) => prev + variable);
   };
 
   useEffect(() => {
@@ -159,7 +89,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         ? initialValues.keyword.join(', ')
         : initialValues.keyword || '';
       setKeywords(keywordStr);
-      setContent(convertToQuillHtml(initialValues.content || ''));
+      setContent(initialValues.content || '');
       const mediaList = initialValues.medias || [];
       setMedias(mediaList);
       setFileList(
@@ -216,7 +146,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         .filter((k) => k);
       return {
         keyword: keywordArray,
-        content: convertToTelegramHtml(content),
+        content: content,
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
         menus: menus.map(({ name, url, row, style }) => ({
           name,
@@ -375,36 +305,35 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         />
       </ProFormGroup>
 
-      <Form.Item label="回复内容" required rules={[{ required: true, message: '请输入回复内容' }]}>
-        <div style={{ marginBottom: 8 }}>
-          <span style={{ marginRight: 8, color: '#666', fontSize: 12 }}>插入变量：</span>
-          <Space wrap size={[4, 4]}>
-            {variables.map((v) => (
-              <Tag
-                key={v.key}
-                color="blue"
-                style={{ cursor: 'pointer' }}
-                onClick={() => insertVariable(v.key)}
-                title={v.desc}
-              >
-                {v.label}
-              </Tag>
-            ))}
-          </Space>
-        </div>
-        <div style={{ background: '#fff', borderRadius: 4, marginBottom: 50 }}>
-          <ReactQuill
-            ref={quillRef}
-            theme="snow"
-            value={content}
-            onChange={setContent}
-            modules={quillModules}
-            formats={quillFormats}
-            placeholder="请输入回复内容，支持富文本格式和变量..."
-            style={{ height: 200 }}
-          />
-        </div>
-      </Form.Item>
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ marginRight: 8, color: '#666', fontSize: 12 }}>插入变量：</span>
+        <Space wrap size={[4, 4]}>
+          {variables.map((v) => (
+            <Tag
+              key={v.key}
+              color="blue"
+              style={{ cursor: 'pointer' }}
+              onClick={() => insertVariable(v.key)}
+              title={v.desc}
+            >
+              {v.label}
+            </Tag>
+          ))}
+        </Space>
+      </div>
+
+      <ProFormTextArea
+        name="content"
+        label="回复内容"
+        required
+        rules={[{ required: true, message: '请输入回复内容' }]}
+        fieldProps={{
+          value: content,
+          onChange: (e) => setContent(e.target.value),
+          placeholder: '请输入回复内容，支持变量...',
+          rows: 8,
+        }}
+      />
 
       <Form.Item label="媒体文件（图片/视频）">
         <Upload
