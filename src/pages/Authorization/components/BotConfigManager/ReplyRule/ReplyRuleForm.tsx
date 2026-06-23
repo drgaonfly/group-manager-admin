@@ -70,6 +70,7 @@ const ReplyRuleForm: React.FC<Props> = ({
           ? editingRecord.keyword.join(', ')
           : editingRecord.keyword,
         isFuzzy: editingRecord.isFuzzy || false,
+        content: editingRecord.content || '',
         deleteAfterSeconds: editingRecord.deleteAfterSeconds || 0,
         deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds || 0,
         replyToMessage: editingRecord.replyToMessage || false,
@@ -297,8 +298,6 @@ const ReplyRuleForm: React.FC<Props> = ({
         required
         rules={[{ required: true, message: '请输入回复内容' }]}
         fieldProps={{
-          value: content,
-          onChange: (e) => setContent(e.target.value),
           placeholder: '请输入回复内容，支持变量...',
           rows: 8,
         }}

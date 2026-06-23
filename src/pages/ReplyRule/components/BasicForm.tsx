@@ -293,6 +293,11 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
 
       <ProFormGroup>
         <ProFormSwitch
+          name="isFuzzy"
+          label="模糊匹配"
+          tooltip="开启后，消息中包含关键词即触发（包含匹配）；关闭则需要完全相等（精确匹配）"
+        />
+        <ProFormSwitch
           name="replyToMessage"
           label="引用用户消息"
           tooltip="启用后回复时会引用触发关键词的消息"
@@ -328,8 +333,6 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         required
         rules={[{ required: true, message: '请输入回复内容' }]}
         fieldProps={{
-          value: content,
-          onChange: (e) => setContent(e.target.value),
           placeholder: '请输入回复内容，支持变量...',
           rows: 8,
         }}
