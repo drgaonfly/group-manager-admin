@@ -187,6 +187,13 @@ export default [
     icon: 'TableOutlined',
     component: './Authorization',
   },
+
+  {
+    path: '/bots/:id',
+    layout: false,
+    component: './index',
+  },
+
   // wallet
   {
     path: '/wallets',

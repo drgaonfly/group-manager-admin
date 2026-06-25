@@ -1,4 +1,4 @@
-import { useIntl, useModel } from '@umijs/max';
+import { useIntl, useModel, history } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -276,32 +276,20 @@ const TableList: React.FC = () => {
             })}
           </ActionButton>
         ),
-        // 功能配置 - 超级管理员或具备任一项功能代理权限时显示
-        (access.canSuperAdmin ||
-          currentUser?.groupMessage ||
-          currentUser?.channelPost ||
-          currentUser?.replyRule ||
-          currentUser?.keyboardConfig ||
-          currentUser?.speech_static ||
-          currentUser?.groupWelcome ||
-          currentUser?.groupVerify ||
-          currentUser?.reportGroupMemberNameUpdated ||
-          currentUser?.checkinRule ||
-          currentUser?.lotteryRule) && (
-          <ActionButton
-            key="botConfig"
-            type="configure"
-            onClick={() => {
-              setCurrentRow(record);
-              setBotConfigManagerOpen(true);
-            }}
-          >
-            {intl.formatMessage({
-              id: 'feature_config',
-              defaultMessage: '功能配置',
-            })}
-          </ActionButton>
-        ),
+
+        <ActionButton
+          key="botConfig"
+          type="configure"
+          onClick={() => {
+            setCurrentRow(record);
+            setBotConfigManagerOpen(true);
+          }}
+        >
+          {intl.formatMessage({
+            id: 'feature_config',
+            defaultMessage: '功能配置',
+          })}
+        </ActionButton>,
         <ActionButton
           key="detail"
           type="detail"
@@ -311,6 +299,15 @@ const TableList: React.FC = () => {
           }}
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
+        </ActionButton>,
+        <ActionButton
+          key="botDetail"
+          type="detail"
+          onClick={() => {
+            history.push(`/bots/${record._id}`);
+          }}
+        >
+          <FormattedMessage id="single_pannel" defaultMessage="single_pannel" />
         </ActionButton>,
         access.canUpdateBot && (
           <ActionButton
