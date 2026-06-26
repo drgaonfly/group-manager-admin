@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, InputNumber, Row, Col, Space, Select, Switch, Tooltip } from 'antd';
 import { useIntl } from '@umijs/max';
-import RichTextEditor, { convertToTelegramHtml } from '@/components/RichTextEditor';
+import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import { PlusOutlined, MinusCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 interface StreakCycle {
@@ -50,7 +50,7 @@ const CheckinRuleForm: React.FC<Props> = ({
         deleteAfterSeconds: editingRecord.deleteAfterSeconds ?? 0,
         deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds ?? 0,
       });
-      setSuccessContent(editingRecord.success_content || '');
+      setSuccessContent(toQuillHtml(editingRecord.success_content || ''));
       setEnableStreakBonus(editingRecord.enableStreakBonus || false);
       setStreakCycles(
         editingRecord.streakCycles?.length
@@ -82,7 +82,7 @@ const CheckinRuleForm: React.FC<Props> = ({
       ]);
       setMaxMultiplier(4);
     }
-  }, [editingRecord, form]);
+  }, [editingRecord]);
 
   const handleFinish = async (values: any) => {
     const keywordArray = Array.isArray(values.keywords)

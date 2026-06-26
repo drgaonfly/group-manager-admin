@@ -1,4 +1,4 @@
-import React, { useMemo, useImperativeHandle, forwardRef, useId } from 'react';
+import React, { useMemo, useImperativeHandle, forwardRef, useId, useEffect, useRef } from 'react';
 import { Space, Tag, Button } from 'antd';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -179,7 +179,7 @@ export const fromTelegramHtml = (html: string): string => {
 
 // 将换行符文本转换为 TipTap HTML
 export const toQuillHtml = (text: string): string => {
-  if (!text) return '';
+  if (!text) return '<p></p>';
   // 如果输入已经是 HTML 格式，尝试从 Telegram HTML 转换
   if (text.startsWith('<')) {
     return fromTelegramHtml(text);
@@ -192,17 +192,21 @@ export const toQuillHtml = (text: string): string => {
 const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
   ({ value = '', onChange, height = 200, variables = 'all', showVariables = true, title }, ref) => {
     const editorId = useId().replace(/:/g, '');
+    const isInternalChangeRef = useRef(false);
 
     // TipTap 编辑器
     const editor = useEditor({
       extensions: [StarterKit, Link, TextStyle],
       content: toQuillHtml(value),
       onUpdate: ({ editor }) => {
+        isInternalChangeRef.current = true;
         const html = editor.getHTML();
         const text = convertToTelegramHtml(html);
-        if (text !== value) {
-          onChange?.(text);
-        }
+        onChange?.(text);
+        // 延迟重置标志，避免 useEffect 立即响应
+        setTimeout(() => {
+          isInternalChangeRef.current = false;
+        }, 0);
       },
       editorProps: {
         attributes: {
@@ -210,6 +214,13 @@ const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(
         },
       },
     });
+
+    // 当外部 value 改变时更新编辑器（仅在非内部编辑时）
+    useEffect(() => {
+      if (editor && !isInternalChangeRef.current) {
+        editor.commands.setContent(toQuillHtml(value));
+      }
+    }, [value, editor]);
 
     // 解析要显示的变量
     const displayVariables = useMemo(() => {
