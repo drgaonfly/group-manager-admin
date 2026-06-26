@@ -151,12 +151,38 @@ export const convertToTelegramHtml = (html: string): string => {
   return text;
 };
 
+// 将 Telegram HTML 转换为 TipTap HTML
+export const fromTelegramHtml = (html: string): string => {
+  if (!html) return '';
+  let text = html
+    // Telegram HTML -> TipTap HTML
+    .replace(/<b>/g, '<strong>')
+    .replace(/<\/b>/g, '</strong>')
+    .replace(/<i>/g, '<em>')
+    .replace(/<\/i>/g, '</em>')
+    .replace(/<u>/g, '<u>')
+    .replace(/<\/u>/g, '</u>')
+    .replace(/<s>/g, '<s>')
+    .replace(/<\/s>/g, '</s>')
+    .replace(/<pre>/g, '<pre>')
+    .replace(/<\/pre>/g, '</pre>')
+    // 链接保持不变
+    // 换行符转换为段落
+    .replace(/\n/g, '</p><p>')
+    // 如果不是以段落标签开头，添加开始标签
+    .replace(/^(?!<p>)/, '<p>')
+    // 如果不是以段落标签结尾，添加结束标签
+    .replace(/(?<!<\/p>)$/, '</p>');
+
+  return text;
+};
+
 // 将换行符文本转换为 TipTap HTML
 export const toQuillHtml = (text: string): string => {
   if (!text) return '';
-  // 如果输入已经是 HTML 格式且没有换行符，直接返回
-  if (text.startsWith('<') && !text.includes('\n')) {
-    return text;
+  // 如果输入已经是 HTML 格式，尝试从 Telegram HTML 转换
+  if (text.startsWith('<')) {
+    return fromTelegramHtml(text);
   }
   const lines = text.split('\n');
   // 保留所有行，包括空行（用于表示空段落）
