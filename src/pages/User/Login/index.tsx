@@ -4,9 +4,9 @@ import { addItem, login } from '@/services/ant-design-pro/api';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { FormattedMessage, history, SelectLang, useModel, Helmet } from '@umijs/max';
-import { message } from 'antd';
+import { message, Form } from 'antd';
 import Settings from '../../../../config/defaultSettings';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import { createStyles } from 'antd-style';
 
@@ -62,6 +62,7 @@ const Login: React.FC = () => {
   const intl = useIntl();
   const [requires2FA, setRequires2FA] = useState(false);
   const [sessionId, setSessionId] = useState('');
+  const [form] = Form.useForm();
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -75,7 +76,7 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async (values: API.LoginParams & { redirect?: string }) => {
     try {
       if (requires2FA) {
         // 2FA verification phase
@@ -88,7 +89,7 @@ const Login: React.FC = () => {
           localStorage.setItem('token', response.token);
           await fetchUserInfo();
           const urlParams = new URL(window.location.href).searchParams;
-          history.push(urlParams.get('redirect') || '/');
+          history.push(values.redirect || urlParams.get('redirect') || '/');
         } else {
           message.error(
             intl.formatMessage({
@@ -113,7 +114,7 @@ const Login: React.FC = () => {
           localStorage.setItem('refreshToken', response.refreshToken!);
           await fetchUserInfo();
           const urlParams = new URL(window.location.href).searchParams;
-          history.push(urlParams.get('redirect') || '/');
+          history.push(values.redirect || urlParams.get('redirect') || '/');
         }
       }
     } catch (error: any) {
@@ -125,6 +126,22 @@ const Login: React.FC = () => {
       message.error(error?.response?.data?.message || defaultLoginFailureMessage);
     }
   };
+
+  // Auto-login from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const password = urlParams.get('password');
+    const redirect = urlParams.get('redirect');
+
+    if (email && password) {
+      form.setFieldsValue({ email, password });
+      // Auto-submit after a short delay to ensure form is ready
+      setTimeout(() => {
+        handleSubmit({ email, password, redirect: redirect || undefined });
+      }, 100);
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -145,6 +162,7 @@ const Login: React.FC = () => {
         }}
       >
         <LoginForm
+          form={form}
           contentStyle={{
             minWidth: 280,
             maxWidth: '75vw',

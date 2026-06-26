@@ -107,32 +107,20 @@ const BotDetail: React.FC = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f5f6fa' }}>
+    <Layout className="min-h-screen bg-gray-50">
       {/* 顶部导航栏 */}
-      <Header
-        style={{
-          background: '#fff',
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-        }}
-      >
+      <Header className="bg-white px-4 sm:px-6 flex items-center gap-3 shadow-sm sticky top-0 z-100">
         <Button
           type="text"
           icon={<ArrowLeftOutlined />}
           onClick={() => history.back()}
-          style={{ fontWeight: 500 }}
+          className="font-medium"
         >
           {intl.formatMessage({ id: 'back', defaultMessage: '返回' })}
         </Button>
-        <div style={{ width: 1, height: 20, background: '#e8e8e8' }} />
-        <RobotOutlined style={{ color: '#1677ff', fontSize: 18 }} />
-        <span style={{ fontSize: 16, fontWeight: 600, color: '#222' }}>
+        <div className="w-px h-5 bg-gray-200" />
+        <RobotOutlined className="text-blue-500 text-lg" />
+        <span className="text-base sm:text-lg font-semibold text-gray-800 truncate flex-1">
           {loading
             ? intl.formatMessage({ id: 'bot_detail', defaultMessage: '机器人详情' })
             : bot
@@ -151,19 +139,19 @@ const BotDetail: React.FC = () => {
         )}
       </Header>
 
-      <Content style={{ padding: '24px', width: '100%' }}>
+      <Content className="p-4 sm:p-6 w-full">
         {loading ? (
           <Card>
             <Skeleton active paragraph={{ rows: 5 }} />
           </Card>
         ) : !bot ? (
           <Card>
-            <div style={{ textAlign: 'center', padding: '80px 0', color: '#999' }}>
+            <div className="text-center py-20 text-gray-400">
               {intl.formatMessage({ id: 'bot_not_found', defaultMessage: '机器人不存在' })}
             </div>
           </Card>
         ) : (
-          <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Space direction="vertical" size={8} className="w-full">
             {/* 统计卡片 */}
             <Row gutter={[12, 12]}>
               {[
@@ -184,39 +172,23 @@ const BotDetail: React.FC = () => {
               ].map((s) => (
                 <Col xs={12} sm={6} key={s.label}>
                   <div
-                    style={{
-                      background: s.bg,
-                      border: `1px solid ${s.color}22`,
-                      borderRadius: 8,
-                      padding: '10px 14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10,
-                    }}
+                    className="rounded-lg p-3.5 sm:p-4 flex items-center gap-2.5 sm:gap-3"
+                    style={{ background: s.bg, border: `1px solid ${s.color}22` }}
                   >
                     <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 10,
-                        background: `${s.color}18`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: 20,
-                        color: s.color,
-                        flexShrink: 0,
-                      }}
+                      className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center text-xl sm:text-2xl flex-shrink-0"
+                      style={{ background: `${s.color}18`, color: s.color }}
                     >
                       {s.icon}
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <div
-                        style={{ fontSize: 24, fontWeight: 700, color: s.color, lineHeight: 1.2 }}
+                        className="text-xl sm:text-2xl font-bold leading-tight"
+                        style={{ color: s.color }}
                       >
                         {s.value}
                       </div>
-                      <div style={{ fontSize: 12, color: '#666', marginTop: 2 }}>{s.label}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{s.label}</div>
                     </div>
                   </div>
                 </Col>
@@ -227,29 +199,35 @@ const BotDetail: React.FC = () => {
             <Card
               title={
                 <Space>
-                  <TeamOutlined style={{ color: '#1677ff' }} />
+                  <TeamOutlined className="text-blue-500" />
                   {intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })}
                   <Tag color="blue">{groups.length}</Tag>
                 </Space>
               }
+              className="overflow-hidden"
             >
-              <ProTable<any>
-                rowKey="_id"
-                dataSource={groups}
-                columns={groupColumns}
-                search={false}
-                pagination={{ pageSize: 20 }}
-                toolBarRender={false}
-                size="middle"
-                scroll={{ x: 'max-content' }}
-                locale={{
-                  emptyText: (
-                    <div style={{ textAlign: 'center', padding: '40px 0', color: '#999' }}>
-                      {intl.formatMessage({ id: 'no_groups', defaultMessage: '该机器人暂无群组' })}
-                    </div>
-                  ),
-                }}
-              />
+              <div className="overflow-x-auto">
+                <ProTable<any>
+                  rowKey="_id"
+                  dataSource={groups}
+                  columns={groupColumns}
+                  search={false}
+                  pagination={{ pageSize: 20 }}
+                  toolBarRender={false}
+                  size="middle"
+                  scroll={{ x: 'max-content' }}
+                  locale={{
+                    emptyText: (
+                      <div className="text-center py-10 text-gray-400">
+                        {intl.formatMessage({
+                          id: 'no_groups',
+                          defaultMessage: '该机器人暂无群组',
+                        })}
+                      </div>
+                    ),
+                  }}
+                />
+              </div>
             </Card>
           </Space>
         )}

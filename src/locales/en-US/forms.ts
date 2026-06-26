@@ -364,4 +364,17 @@ export default {
   speechRewardPoints: 'Points Per Message',
   speechRewardMaxTimes: 'Max Reward Times Per Cycle',
   speech_reward_max_times_required: 'Please enter max reward times',
+
+  // Bot detail page related
+  members: 'Members',
+  back: 'Back',
+  groups: 'Groups',
+  no_groups: 'No groups for this bot',
+  manage: 'Manage',
+  bot_detail: 'Bot Detail',
+  bot_not_found: 'Bot not found',
+  feature_management: 'Feature Management',
+  ad_removal: 'Ad Removal',
+  title: 'Group Name',
+  load_failed: 'Load failed',
 };

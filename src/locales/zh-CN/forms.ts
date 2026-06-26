@@ -461,4 +461,17 @@ export default {
   speechRewardPoints: '每次发言奖励积分',
   speechRewardMaxTimes: '周期内最多奖励次数',
   speech_reward_max_times_required: '请输入最多奖励次数',
+
+  // 机器人详情页面相关
+  members: '成员数',
+  back: '返回',
+  groups: '群组数',
+  no_groups: '该机器人暂无群组',
+  manage: '管理',
+  bot_detail: '机器人详情',
+  bot_not_found: '机器人不存在',
+  feature_management: '功能管理',
+  ad_removal: '广告移除',
+  title: '群名',
+  load_failed: '加载失败',
 };
