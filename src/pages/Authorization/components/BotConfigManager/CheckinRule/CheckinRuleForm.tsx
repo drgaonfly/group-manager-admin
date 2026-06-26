@@ -41,8 +41,11 @@ const CheckinRuleForm: React.FC<Props> = ({
         type: editingRecord.type,
         reward: editingRecord.reward,
         keywords: Array.isArray(editingRecord.keywords)
-          ? editingRecord.keywords.join(', ')
-          : editingRecord.keywords,
+          ? editingRecord.keywords
+          : editingRecord.keywords
+              ?.split(/[,，\n]/)
+              .map((k: string) => k.trim())
+              .filter((k: string) => k) || [],
         isOnline: editingRecord.isOnline !== false,
         deleteAfterSeconds: editingRecord.deleteAfterSeconds ?? 0,
         deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds ?? 0,
@@ -65,7 +68,7 @@ const CheckinRuleForm: React.FC<Props> = ({
       form.setFieldsValue({
         type: editingRecord?.type ?? 'daily',
         reward: 10,
-        keywords: '签到',
+        keywords: ['签到'],
         isOnline: true,
         deleteAfterSeconds: 0,
         deleteUserMsgAfterSeconds: 0,
@@ -82,10 +85,12 @@ const CheckinRuleForm: React.FC<Props> = ({
   }, [editingRecord, form]);
 
   const handleFinish = async (values: any) => {
-    const keywordArray = (values.keywords || '')
-      .split(/[,，\n]/)
-      .map((k: string) => k.trim())
-      .filter((k: string) => k);
+    const keywordArray = Array.isArray(values.keywords)
+      ? values.keywords.filter((k: string) => k && k.trim())
+      : (values.keywords || '')
+          .split(/[,，\n]/)
+          .map((k: string) => k.trim())
+          .filter((k: string) => k);
 
     const formData = {
       ...values,
@@ -121,7 +126,7 @@ const CheckinRuleForm: React.FC<Props> = ({
       initialValues={{
         type: 'daily',
         reward: 10,
-        keywords: '签到',
+        keywords: ['签到'],
         isOnline: true,
         deleteAfterSeconds: 0,
         deleteUserMsgAfterSeconds: 0,
