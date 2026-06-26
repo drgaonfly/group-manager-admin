@@ -12,6 +12,7 @@ import {
   EditableProTable,
   ProFormDigit,
   ProFormSwitch,
+  ProFormSelect,
 } from '@ant-design/pro-components';
 
 type menuItem = {
@@ -46,8 +47,23 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [content, setContent] = useState('');
   const [caption, setCaption] = useState('');
+  const [groups, setGroups] = useState<any[]>([]);
 
   const isEdit = !!currentRow?._id;
+
+  // Fetch groups for the bot
+  useEffect(() => {
+    if (open && botId && !fixedGroupId) {
+      request(`/bots/${botId}`)
+        .then((res: any) => {
+          const botGroups = (res?.data?.groups || []).filter((g: any) => g.type !== 'channel');
+          setGroups(botGroups);
+        })
+        .catch((err: any) => {
+          console.error('Failed to fetch groups:', err);
+        });
+    }
+  }, [open, botId, fixedGroupId]);
 
   useEffect(() => {
     if (open) {
@@ -85,7 +101,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         });
       }
     }
-  }, [open, currentRow, isEdit, form]);
+  }, [open, currentRow, isEdit, form, fixedGroupId]);
 
   const defaultMediaFileList: UploadFile[] = medias.map((url, idx) => ({
     uid: `${idx + 1}`,
@@ -208,6 +224,31 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       }}
       onFinish={handleSubmit}
     >
+      {fixedGroupId ? (
+        <Form.Item name="group" hidden initialValue={fixedGroupId}>
+          <input />
+        </Form.Item>
+      ) : (
+        <ProFormSelect
+          name="group"
+          label={intl.formatMessage({ id: 'group', defaultMessage: '群组' })}
+          options={groups.map((g) => ({ label: g.title, value: g._id }))}
+          placeholder={intl.formatMessage({
+            id: 'please_select_groups',
+            defaultMessage: '请选择群组',
+          })}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({
+                id: 'please_select_groups',
+                defaultMessage: '请选择群组',
+              }),
+            },
+          ]}
+          disabled={isEdit}
+        />
+      )}
       <Form.Item
         label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
         style={{ marginBottom: 24 }}
