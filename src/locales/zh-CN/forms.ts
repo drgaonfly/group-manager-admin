@@ -474,4 +474,5 @@ export default {
   ad_removal: '广告移除',
   title: '群名',
   load_failed: '加载失败',
+  single_pannel: '面板',
 };

@@ -64,21 +64,6 @@ const BotDetail: React.FC = () => {
       render: (type: any) => <Tag>{type}</Tag>,
     },
     {
-      title: intl.formatMessage({ id: 'isOnline', defaultMessage: '状态' }),
-      dataIndex: 'isOnline',
-      width: 90,
-      render: (isOnline: any) => (
-        <Badge
-          status={isOnline ? 'success' : 'default'}
-          text={
-            isOnline
-              ? intl.formatMessage({ id: 'platform.online', defaultMessage: '在线' })
-              : intl.formatMessage({ id: 'platform.offline', defaultMessage: '离线' })
-          }
-        />
-      ),
-    },
-    {
       title: intl.formatMessage({ id: 'members', defaultMessage: '成员数' }),
       dataIndex: 'botUsers',
       width: 90,

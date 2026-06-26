@@ -377,4 +377,5 @@ export default {
   ad_removal: 'Ad Removal',
   title: 'Group Name',
   load_failed: 'Load failed',
+  single_pannel: 'Single Pannel',
 };
