@@ -85,7 +85,7 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
           } else {
             await request('/speech-configs', {
               method: 'POST',
-              data: { ...values, botId: currentRow._id },
+              data: { ...values, botId: currentRow._id, groupId: values.groupId },
             });
           }
           onOpenChange(false);
