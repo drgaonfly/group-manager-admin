@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ModalForm,
   ProFormDigit,
@@ -35,7 +35,22 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
 }) => {
   // const intl = useIntl();
   const [form] = Form.useForm();
+  const [groups, setGroups] = useState<any[]>([]);
   const isEdit = !!editingConfig;
+
+  // Fetch groups for the bot
+  useEffect(() => {
+    if (open && currentRow?._id && !fixedGroupId) {
+      request(`/bots/${currentRow._id}`)
+        .then((res: any) => {
+          const botGroups = (res?.data?.groups || []).filter((g: any) => g.type !== 'channel');
+          setGroups(botGroups);
+        })
+        .catch((err: any) => {
+          console.error('Failed to fetch groups:', err);
+        });
+    }
+  }, [open, currentRow?._id, fixedGroupId]);
 
   useEffect(() => {
     if (!open) return;
@@ -96,6 +111,21 @@ const SpeechStatisticsForm: React.FC<SpeechStatisticsFormProps> = ({
         }
       }}
     >
+      {fixedGroupId ? (
+        <Form.Item name="groupId" hidden initialValue={fixedGroupId}>
+          <input />
+        </Form.Item>
+      ) : (
+        <ProFormSelect
+          name="groupId"
+          label="群组"
+          options={groups.map((g) => ({ label: g.title, value: g._id }))}
+          placeholder="请选择群组"
+          rules={[{ required: true, message: '请选择群组' }]}
+          disabled={isEdit}
+        />
+      )}
+
       {/* 基础统计 */}
 
       <ProFormGroup>
