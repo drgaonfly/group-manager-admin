@@ -17,9 +17,6 @@ import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
-import AddAuthorizerForm from './components/AddAuthorizerForm';
-import DeleteAuthorizerForm from './components/DeleteAuthorizerForm';
-import StringArrayWithActions from './components/StringArrayWithAction';
 import BotConfigManager from './components/BotConfigManager';
 
 /**
@@ -119,8 +116,6 @@ const TableList: React.FC = () => {
   const [activeKey, setActiveKey] = useState<string | undefined>('');
   const [addOwnerModalVisible, setAddOwnerModalVisible] = useState<boolean>(false);
   const [deleteOwnerModalVisible, setDeleteOwnerModalVisible] = useState<boolean>(false);
-  const [addAuthorizerModalVisible, setAddAuthorizerModalVisible] = useState<boolean>(false);
-  const [deleteAuthorizerModalVisible, setDeleteAuthorizerModalVisible] = useState<boolean>(false);
   const [botConfigManagerOpen, setBotConfigManagerOpen] = useState<boolean>(false);
 
   const columns: ProColumns<any>[] = [
@@ -179,29 +174,50 @@ const TableList: React.FC = () => {
         return groups.length;
       },
     },
-    // add owners
+    // owner
     {
-      title: intl.formatMessage({ id: 'owners', defaultMessage: '拥有者' }),
-      dataIndex: 'owners',
+      title: intl.formatMessage({ id: 'owner', defaultMessage: 'Owner' }),
+      dataIndex: 'owner',
       hideInSearch: true,
       hideInTable: false,
       align: 'center',
-      width: 150,
-      render: (_, record) => (
-        <StringArrayWithActions
-          values={record.owners || []}
-          onAdd={() => {
-            setCurrentRow(record);
-            setAddOwnerModalVisible(true);
-          }}
-          onDelete={() => {
-            setCurrentRow(record);
-            setDeleteOwnerModalVisible(true);
-          }}
-          labelAdd={intl.formatMessage({ id: 'add_owner' })}
-          labelDelete={intl.formatMessage({ id: 'delete_owner' })}
-        />
-      ),
+      width: 160,
+      render: (_, record) => {
+        const owner = record.owner;
+        return (
+          <span>
+            {owner ? (
+              <span style={{ marginRight: 4 }}>
+                {owner.userName ? `@${owner.userName}` : owner.firstName || '-'}
+              </span>
+            ) : (
+              <span style={{ color: '#ccc', marginRight: 4 }}>未设置</span>
+            )}
+            <ActionButton
+              key="setOwner"
+              type="edit"
+              onClick={() => {
+                setCurrentRow(record);
+                setAddOwnerModalVisible(true);
+              }}
+            >
+              {intl.formatMessage({ id: 'set_owner', defaultMessage: '设置' })}
+            </ActionButton>
+            {owner && (
+              <ActionButton
+                key="removeOwner"
+                type="delete"
+                onClick={() => {
+                  setCurrentRow(record);
+                  setDeleteOwnerModalVisible(true);
+                }}
+              >
+                {intl.formatMessage({ id: 'remove', defaultMessage: '移除' })}
+              </ActionButton>
+            )}
+          </span>
+        );
+      },
     },
     // {
     //   title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
@@ -516,27 +532,6 @@ const TableList: React.FC = () => {
           }
         }}
       />
-      <AddAuthorizerForm
-        open={addAuthorizerModalVisible}
-        onCancel={setAddAuthorizerModalVisible}
-        values={currentRow || {}}
-        onSuccess={() => {
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-        }}
-      />
-      <DeleteAuthorizerForm
-        open={deleteAuthorizerModalVisible}
-        onCancel={setDeleteAuthorizerModalVisible}
-        values={currentRow || {}}
-        onSuccess={() => {
-          if (actionRef.current) {
-            actionRef.current.reload();
-          }
-        }}
-      />
-
       <BotConfigManager
         open={botConfigManagerOpen}
         onCancel={setBotConfigManagerOpen}

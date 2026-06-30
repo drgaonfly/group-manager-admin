@@ -130,13 +130,30 @@ const Login: React.FC = () => {
   // Auto-login from URL parameters
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const jwtToken = urlParams.get('jwtToken');
     const email = urlParams.get('email');
     const password = urlParams.get('password');
-    const redirect = urlParams.get('redirect');
+    const redirect = urlParams.get('redirect') || '/';
 
+    // jwtToken 直接登录（Bot 端换取，无需账密）
+    if (jwtToken) {
+      localStorage.setItem('token', jwtToken);
+      flushSync(() => {
+        initialState?.fetchUserInfo?.().then((userInfo) => {
+          if (userInfo) {
+            setInitialState((s) => ({ ...s, currentUser: userInfo }));
+          }
+        });
+      });
+      setTimeout(() => {
+        history.push(redirect);
+      }, 100);
+      return;
+    }
+
+    // 账密自动登录
     if (email && password) {
       form.setFieldsValue({ email, password });
-      // Auto-submit after a short delay to ensure form is ready
       setTimeout(() => {
         handleSubmit({ email, password, redirect: redirect || undefined });
       }, 100);

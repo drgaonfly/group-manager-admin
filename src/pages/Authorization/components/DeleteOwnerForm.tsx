@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useIntl } from '@umijs/max';
-import { Form, Input, message, Select } from 'antd';
+import { message, Modal } from 'antd';
 import { FormattedMessage } from '@umijs/max';
-import { ModalForm } from '@ant-design/pro-components';
 import { updateItem } from '@/services/ant-design-pro/api';
 
 interface DeleteOwnerFormProps {
@@ -12,35 +11,22 @@ interface DeleteOwnerFormProps {
   onSuccess: () => void;
 }
 
-const DeleteOwnerForm: React.FC<DeleteOwnerFormProps> = (props) => {
-  const { open, onCancel, values, onSuccess } = props;
+const DeleteOwnerForm: React.FC<DeleteOwnerFormProps> = ({ open, onCancel, values, onSuccess }) => {
   const intl = useIntl();
-  const [form] = Form.useForm();
-  const [owners, setOwners] = useState<string[]>([]);
 
-  // 当values变化时，更新owners列表
-  useEffect(() => {
-    if (values && values.owners && Array.isArray(values.owners)) {
-      setOwners(values.owners);
-    } else {
-      setOwners([]);
-    }
-  }, [values]);
+  const owner = values?.owner;
+  const ownerName = owner?.userName ? `@${owner.userName}` : owner?.firstName || 'Owner';
 
-  const handleDeleteOwner = async (formValues: { owner: string }) => {
+  const handleConfirm = async () => {
     const hide = message.loading(<FormattedMessage id="deleting" defaultMessage="Deleting..." />);
     try {
-      // 调用API删除owner
-      await updateItem(`/bots/${values._id}/delete-owner`, {
-        owner: formValues.owner,
-        id: values._id,
-      });
+      await updateItem(`/bots/${values._id}/delete-owner`, {});
       hide();
       message.success(
         <FormattedMessage id="delete_successful" defaultMessage="Deleted successfully" />,
       );
-      onSuccess(); // 刷新列表
-      return true;
+      onSuccess();
+      onCancel(false);
     } catch (error: any) {
       hide();
       message.error(
@@ -48,60 +34,26 @@ const DeleteOwnerForm: React.FC<DeleteOwnerFormProps> = (props) => {
           <FormattedMessage id="delete_failed" defaultMessage="Delete failed, please try again!" />
         ),
       );
-      return false;
     }
   };
 
   return (
-    <ModalForm
-      title={intl.formatMessage({ id: 'delete_owner', defaultMessage: '删除拥有者' })}
-      width="500px"
-      form={form}
-      modalProps={{
-        destroyOnClose: true,
-        maskClosable: false,
-      }}
+    <Modal
+      title={intl.formatMessage({ id: 'delete_owner', defaultMessage: '移除 Owner' })}
       open={open}
-      onOpenChange={onCancel}
-      onFinish={async (formValues) => {
-        const success = await handleDeleteOwner(formValues as { owner: string });
-        if (success) {
-          onCancel(false);
-          form.resetFields();
-        }
-        return success;
-      }}
+      onCancel={() => onCancel(false)}
+      onOk={handleConfirm}
+      okText={intl.formatMessage({ id: 'confirm', defaultMessage: '确认移除' })}
+      okButtonProps={{ danger: true }}
+      cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: '取消' })}
     >
-      <Form.Item
-        name="owner"
-        label={intl.formatMessage({ id: 'owner', defaultMessage: 'Owner' })}
-        rules={[
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'select_owner_required',
-              defaultMessage: '请选择要删除的电报机器人id',
-            }),
-          },
-        ]}
-      >
-        <Select
-          placeholder={intl.formatMessage({
-            id: 'select_owner',
-            defaultMessage: '请选择要删除的电报机器人id',
-          })}
-          options={owners.map((owner: any) => ({ label: owner.displayName, value: owner._id }))}
-          notFoundContent={intl.formatMessage({
-            id: 'no_owners',
-            defaultMessage: '请选择要删除的电报机器人id',
-          })}
-        />
-      </Form.Item>
-
-      <Form.Item name="_id" hidden initialValue={values._id}>
-        <Input type="hidden" />
-      </Form.Item>
-    </ModalForm>
+      <p>
+        {intl.formatMessage(
+          { id: 'confirm_remove_owner', defaultMessage: '确认移除 {name} 的 Owner 权限？' },
+          { name: <strong>{ownerName}</strong> },
+        )}
+      </p>
+    </Modal>
   );
 };
 

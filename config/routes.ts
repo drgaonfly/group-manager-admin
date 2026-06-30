@@ -24,6 +24,11 @@ export default [
     ],
   },
   {
+    path: '/public/bots/:id/:username',
+    layout: false,
+    component: './Public/BotGroups',
+  },
+  {
     path: '/',
     component: './Welcome',
   },
@@ -188,6 +193,11 @@ export default [
     component: './Authorization',
   },
 
+  {
+    path: '/bots/:id/:username',
+    layout: false,
+    component: './index',
+  },
   {
     path: '/bots/:id',
     layout: false,

@@ -10,7 +10,7 @@ import GroupFeaturesModal from '@/pages/Authorization/components/BotConfigManage
 const { Header, Content } = Layout;
 
 const BotDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, username } = useParams<{ id: string; username?: string }>();
   const intl = useIntl();
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
@@ -25,7 +25,12 @@ const BotDetail: React.FC = () => {
     if (!id) return;
     setLoading(true);
     try {
-      const res: any = await simpleGet(`/bots/${id}`);
+      // 有 username 时传给后端过滤群组（public bot 场景）
+      const decodedUsername = username ? decodeURIComponent(username) : '';
+      const res: any = await simpleGet(
+        `/bots/${id}`,
+        decodedUsername ? { username: decodedUsername } : undefined,
+      );
       setBot(res?.data ?? res);
     } catch (err: any) {
       message.error(
@@ -41,7 +46,10 @@ const BotDetail: React.FC = () => {
     loadBot();
   }, [id]);
 
-  const groups: any[] = (bot?.groups || []).filter((g: any) => g.type !== 'channel');
+  // 后端已按 username 过滤群组，直接用
+  const allGroups: any[] = (bot?.groups || []).filter((g: any) => g.type !== 'channel');
+  const decodedUsername = username ? decodeURIComponent(username) : '';
+  const groups = allGroups;
 
   const groupColumns: ProColumns<any>[] = [
     {
@@ -121,6 +129,11 @@ const BotDetail: React.FC = () => {
                 : intl.formatMessage({ id: 'platform.offline', defaultMessage: '离线' })
             }
           />
+        )}
+        {username && (
+          <Tag color="geekblue" style={{ marginLeft: 8 }}>
+            @{decodedUsername}
+          </Tag>
         )}
       </Header>
 

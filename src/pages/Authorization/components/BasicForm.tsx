@@ -5,9 +5,7 @@ import {
   ProFormText,
   ProFormSwitch,
   ProFormTextArea,
-  // ProFormSelect,
-  // ProFormDependency,
-  // ProFormDateTimePicker,
+  ProFormSelect,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import ProxySelect from '@/components/proxysSelects';
@@ -29,22 +27,18 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         user: values?.user?._id,
       }}
       onFinish={async (values) => {
-        await onFinish({
-          ...values,
-        });
+        await onFinish({ ...values });
       }}
       submitter={{
-        render: (props, dom) => {
-          return (
-            <div style={{ textAlign: 'right' }}>
-              {dom.map((button, index) => (
-                <span key={index} style={{ marginLeft: 8 }}>
-                  {button}
-                </span>
-              ))}
-            </div>
-          );
-        },
+        render: (props, dom) => (
+          <div style={{ textAlign: 'right' }}>
+            {dom.map((button, index) => (
+              <span key={index} style={{ marginLeft: 8 }}>
+                {button}
+              </span>
+            ))}
+          </div>
+        ),
       }}
     >
       <ProForm.Group>
@@ -55,8 +49,42 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           name="token"
           disabled={!newRecord && !access.canSuperAdmin}
         />
-
         {access.canSuperAdmin && <ProxySelect />}
+      </ProForm.Group>
+
+      <ProForm.Group>
+        {access.canSuperAdmin && (
+          <ProFormSelect
+            width="md"
+            name="type"
+            label={intl.formatMessage({ id: 'type', defaultMessage: '机器人类型' })}
+            initialValue="private"
+            options={[
+              {
+                label: intl.formatMessage({
+                  id: 'bot_type_public',
+                  defaultMessage: '公共机器人（可克隆）',
+                }),
+                value: 'public',
+              },
+              {
+                label: intl.formatMessage({
+                  id: 'bot_type_private',
+                  defaultMessage: '专属机器人（克隆产物）',
+                }),
+                value: 'private',
+              },
+            ]}
+            tooltip="public：/start 显示克隆按钮；custom：克隆产物，不可再克隆"
+          />
+        )}
+        <ProFormSwitch
+          label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
+          name="isOnline"
+          initialValue={true}
+          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
+          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
+        />
       </ProForm.Group>
 
       <ProForm.Group>
@@ -64,17 +92,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           width="md"
           label={intl.formatMessage({ id: 'remark', defaultMessage: '备注' })}
           name="remark"
-          fieldProps={{
-            autoSize: { minRows: 6 },
-          }}
-        />
-
-        <ProFormSwitch
-          label={intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' })}
-          name="isOnline"
-          initialValue={true}
-          checkedChildren={intl.formatMessage({ id: 'platform.online' })}
-          unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
+          fieldProps={{ autoSize: { minRows: 4 } }}
         />
       </ProForm.Group>
 
