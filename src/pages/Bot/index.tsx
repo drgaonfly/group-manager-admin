@@ -177,6 +177,15 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '类型',
+      dataIndex: 'type',
+      hideInSearch: true,
+      valueEnum: {
+        public: { text: '公共', status: 'Success' },
+        private: { text: '专属', status: 'Default' },
+      },
+    },
+    {
       title: intl.formatMessage({ id: 'BotStartMessage', defaultMessage: 'BotStartMessage' }),
       dataIndex: 'message',
       hideInSearch: true,
