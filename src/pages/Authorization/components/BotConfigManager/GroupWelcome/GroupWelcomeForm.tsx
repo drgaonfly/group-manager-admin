@@ -68,8 +68,12 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         const formattedMenus = (currentRow.menus || []).map((item: any, index: number) => ({
           _id: item._id || `${Date.now()}-${index}`,
           name: item.name || '',
+          type: item.type || 'url',
           url: item.url || '',
+          callback: item.callback,
+          copy_text: item.copy_text,
           row: item.row ?? 1,
+          style: item.style || 'primary',
         }));
 
         setContent(toQuillHtml(currentRow.contents?.join('\n') || ''));
@@ -122,7 +126,15 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           : [],
         caption: telegramCaption || '',
         medias,
-        menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 1 })),
+        menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
+          name,
+          type: type || 'url',
+          url,
+          callback,
+          copy_text,
+          row: row ?? 1,
+          style: style || 'primary',
+        })),
         deleteAfterSeconds: formValues.deleteAfterSeconds || 0,
         pinNewMember: formValues.pinNewMember || false,
       };
@@ -275,7 +287,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           defaultMessage: '欢迎菜单配置',
         })}
       >
-        <InlineMenuEditor value={menus} onChange={setMenus} />
+        <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
       </Form.Item>
     </ModalForm>
   );

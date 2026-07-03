@@ -58,8 +58,12 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         (editingRecord.menus || []).map((m: any, i: number) => ({
           _id: m._id || `menu-${i}`,
           name: m.name,
+          type: m.type || 'url',
           url: m.url,
+          callback: m.callback,
+          copy_text: m.copy_text,
           row: m.row ?? 1,
+          style: m.style || 'primary',
         })),
       );
       form.setFieldsValue({
@@ -97,7 +101,15 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           ...values,
           content: telegramContent,
           medias,
-          menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 1 })),
+          menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
+            name,
+            type: type || 'url',
+            url,
+            callback,
+            copy_text,
+            row: row ?? 1,
+            style: style || 'primary',
+          })),
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
         });
@@ -132,7 +144,15 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         group: fixedGroupId,
         medias,
         sendType: values.sendType,
-        menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
+        menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
+          name,
+          type: type || 'url',
+          url,
+          callback,
+          copy_text,
+          row: row ?? 1,
+          style: style || 'primary',
+        })),
         startAt: toISOString(values.startAt),
         endAt: toISOString(values.endAt),
       };
@@ -310,7 +330,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           defaultMessage: '内联菜单配置',
         })}
       >
-        <InlineMenuEditor value={menus} onChange={setMenus} />
+        <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
       </Form.Item>
     </ModalForm>
   );

@@ -35,10 +35,19 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     {
       title: '内容',
       dataIndex: 'content',
+      width: 150,
       ellipsis: true,
       render: (text: string) => (
         <div dangerouslySetInnerHTML={{ __html: text || '-' }} style={{ maxWidth: 240 }} />
       ),
+    },
+    {
+      title: '类型',
+      dataIndex: 'sendType',
+      width: 150,
+      ellipsis: true,
+      render: (_: any, record: any) =>
+        record.sendType === 'immediate' ? '立即发送' : '定时循环发送',
     },
     {
       title: '间隔',

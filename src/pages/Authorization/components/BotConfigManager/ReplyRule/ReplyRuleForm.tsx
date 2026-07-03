@@ -52,7 +52,10 @@ const ReplyRuleForm: React.FC<Props> = ({
         (editingRecord.menus || []).map((m: any, i: number) => ({
           _id: m._id || `menu-${i}`,
           name: m.name,
+          type: m.type || 'url',
           url: m.url,
+          callback: m.callback,
+          copy_text: m.copy_text,
           row: m.row || 1,
           style: m.style || 'primary',
         })),
@@ -91,9 +94,12 @@ const ReplyRuleForm: React.FC<Props> = ({
         content: telegramContent,
         bot: currentRow?._id,
         group: fixedGroupId,
-        menus: menus.map(({ name, url, row, style }) => ({
+        menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
           name,
+          type: type || 'url',
           url,
+          callback,
+          copy_text,
           row: row || 1,
           style: style || 'primary',
         })),

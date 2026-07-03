@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { Button, Modal, Form, Input, Select, Tooltip, Space } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons';
 
+export type MenuItemType = 'url' | 'callback' | 'copy_text';
 export type MenuItemStyle = 'primary' | 'success' | 'danger';
 
 export interface InlineMenuItem {
   _id: string;
   name: string;
-  url: string;
+  type: MenuItemType;
+  url?: string;
+  callback?: string;
+  copy_text?: string;
   row: number;
   style?: MenuItemStyle;
 }
@@ -23,10 +27,18 @@ const styleColorMap: Record<MenuItemStyle, { bg: string; border: string; text: s
 interface ButtonConfigModalProps {
   open: boolean;
   item: Partial<InlineMenuItem>;
-  onOk: (values: Pick<InlineMenuItem, 'name' | 'url' | 'style'>) => void;
+  onOk: (
+    values: Pick<InlineMenuItem, 'name' | 'type' | 'url' | 'callback' | 'copy_text' | 'style'>,
+  ) => void;
   onCancel: () => void;
   showStyle?: boolean;
 }
+
+const TYPE_OPTIONS = [
+  { label: '🔗 URL 链接', value: 'url', desc: '打开外部链接' },
+  { label: '💬 Callback', value: 'callback', desc: '点击后弹窗提示' },
+  { label: '📋 复制文本', value: 'copy_text', desc: '点击后复制指定文本' },
+];
 
 const ButtonConfigModal: React.FC<ButtonConfigModalProps> = ({
   open,
@@ -36,12 +48,18 @@ const ButtonConfigModal: React.FC<ButtonConfigModalProps> = ({
   showStyle = false,
 }) => {
   const [form] = Form.useForm();
+  const [currentType, setCurrentType] = useState<MenuItemType>('url');
 
   React.useEffect(() => {
     if (open) {
+      const type = item.type || 'url';
+      setCurrentType(type);
       form.setFieldsValue({
         name: item.name || '',
+        type,
         url: item.url || '',
+        callback: item.callback || '',
+        copy_text: item.copy_text || '',
         style: item.style || 'primary',
       });
     }
@@ -64,7 +82,7 @@ const ButtonConfigModal: React.FC<ButtonConfigModalProps> = ({
         form.resetFields();
         onCancel();
       }}
-      width={400}
+      width={440}
       destroyOnClose
     >
       <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
@@ -75,17 +93,58 @@ const ButtonConfigModal: React.FC<ButtonConfigModalProps> = ({
         >
           <Input placeholder="例如：点击领取" autoFocus />
         </Form.Item>
-        <Form.Item
-          name="url"
-          label="按钮链接"
-          rules={[
-            { required: true, message: '请输入链接' },
-            { pattern: /^https?:\/\/.+/, message: '请输入有效链接（https://...）' },
-          ]}
-        >
-          <Input placeholder="https://t.me/..." />
+
+        <Form.Item name="type" label="按钮类型" rules={[{ required: true }]}>
+          <Select
+            options={TYPE_OPTIONS.map((o) => ({
+              label: (
+                <span>
+                  {o.label}
+                  <span style={{ color: '#8c8c8c', fontSize: 12, marginLeft: 6 }}>{o.desc}</span>
+                </span>
+              ),
+              value: o.value,
+            }))}
+            onChange={(v) => setCurrentType(v as MenuItemType)}
+          />
         </Form.Item>
-        {showStyle && (
+
+        {currentType === 'url' && (
+          <Form.Item
+            name="url"
+            label="链接地址"
+            rules={[
+              { required: true, message: '请输入链接' },
+              { pattern: /^https?:\/\/.+/, message: '请输入有效链接（https://...）' },
+            ]}
+          >
+            <Input placeholder="https://t.me/..." />
+          </Form.Item>
+        )}
+
+        {currentType === 'callback' && (
+          <Form.Item
+            name="callback"
+            label="弹窗提示文字"
+            tooltip="用户点击按钮后，Telegram 会弹窗显示此处填写的文字"
+            rules={[{ required: true, message: '请输入弹窗文字' }]}
+          >
+            <Input.TextArea placeholder="例如：余额不足，请充值" rows={3} />
+          </Form.Item>
+        )}
+
+        {currentType === 'copy_text' && (
+          <Form.Item
+            name="copy_text"
+            label="复制内容"
+            tooltip="用户点击后会自动复制此处填写的文本内容到剪贴板"
+            rules={[{ required: true, message: '请输入要复制的文本' }]}
+          >
+            <Input.TextArea placeholder="点击后将复制此内容..." rows={3} />
+          </Form.Item>
+        )}
+
+        {showStyle && currentType === 'url' && (
           <Form.Item name="style" label="按钮样式">
             <Select
               options={[
@@ -158,22 +217,38 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
   };
 
   // 弹窗确认
-  const handleModalOk = (vals: Pick<InlineMenuItem, 'name' | 'url' | 'style'>) => {
+  const handleModalOk = (
+    vals: Pick<InlineMenuItem, 'name' | 'type' | 'url' | 'callback' | 'copy_text' | 'style'>,
+  ) => {
+    const cleaned: Partial<InlineMenuItem> = {
+      name: vals.name,
+      type: vals.type,
+      style: vals.style,
+      url: undefined,
+      callback: undefined,
+      copy_text: undefined,
+    };
+    switch (vals.type) {
+      case 'url':
+        cleaned.url = vals.url;
+        break;
+      case 'callback':
+        cleaned.callback = vals.callback;
+        break;
+      case 'copy_text':
+        cleaned.copy_text = vals.copy_text;
+        break;
+    }
+
     if (editingItem._id) {
-      // 编辑已有按钮
-      triggerChange(value.map((m) => (m._id === editingItem._id ? { ...m, ...vals } : m)));
+      // 编辑已有按钮：用 cleaned 完整替换，不继承旧字段
+      triggerChange(value.map((m) => (m._id === editingItem._id ? { ...m, ...cleaned } : m)));
     } else {
       // 新建按钮
       triggerChange([
         ...value,
-        {
-          _id: Date.now().toString(),
-          row: editingItem.row ?? 1,
-          ...vals,
-          style: vals.style || 'primary',
-        },
+        { _id: Date.now().toString(), row: editingItem.row ?? 1, ...cleaned } as InlineMenuItem,
       ]);
-      // 如果是从空行添加的，把该行从 emptyRows 移除
       setEmptyRows((prev) => prev.filter((r) => r !== editingItem.row));
     }
     setModalOpen(false);
@@ -225,7 +300,24 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
 
               {/* 该行按钮 */}
               {buttonsInRow(row).map((item) => {
-                const colors = styleColorMap[item.style || 'primary'];
+                const useStyle = showStyle && (item.type || 'url') === 'url';
+                const colors = useStyle
+                  ? styleColorMap[item.style || 'primary']
+                  : { bg: '#f5f5f5', border: '#d9d9d9', text: '#595959' };
+                const typeIconMap: Record<MenuItemType, string> = {
+                  url: '🔗',
+                  callback: '💬',
+                  copy_text: '📋',
+                };
+                const typeIcon = typeIconMap[item.type || 'url'];
+                const tooltipContent =
+                  item.type === 'url'
+                    ? item.url
+                    : item.type === 'callback'
+                    ? `callback: ${item.callback}`
+                    : item.type === 'copy_text'
+                    ? `复制: ${item.copy_text}`
+                    : item.url;
                 return (
                   <div
                     key={item._id}
@@ -241,7 +333,8 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
                       fontSize: 13,
                     }}
                   >
-                    <Tooltip title={item.url} placement="top">
+                    <span style={{ fontSize: 11, opacity: 0.8 }}>{typeIcon}</span>
+                    <Tooltip title={tooltipContent} placement="top">
                       <span
                         style={{
                           maxWidth: 100,
