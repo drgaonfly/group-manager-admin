@@ -65,7 +65,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           _id: m._id || `menu-${i}`,
           name: m.name,
           url: m.url,
-          row: m.row ?? 0,
+          row: m.row ?? 1,
         })),
       );
       form.setFieldsValue({
@@ -163,7 +163,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           ...values,
           content: telegramContent,
           medias,
-          menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
+          menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 1 })),
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
         });
@@ -390,7 +390,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             _id: Date.now().toString(),
             name: '',
             url: '',
-            row: 0,
+            row: 1,
           }),
         }}
       />

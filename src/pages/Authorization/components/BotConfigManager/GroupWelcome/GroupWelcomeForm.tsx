@@ -19,6 +19,7 @@ type menuItem = {
   _id: string;
   name: string;
   url: string;
+  row: number;
 };
 
 interface GroupWelcomeFormProps {
@@ -74,6 +75,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           _id: item._id || `${Date.now()}-${index}`,
           name: item.name || '',
           url: item.url || '',
+          row: item.row ?? 1,
         }));
 
         setContent(toQuillHtml(currentRow.contents?.join('\n') || ''));
@@ -139,6 +141,21 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       },
     },
     {
+      title: '行号',
+      dataIndex: 'row',
+      valueType: 'digit',
+      width: 80,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入行号' }],
+      },
+      fieldProps: {
+        min: 0,
+        precision: 0,
+        placeholder: '0',
+      },
+      tooltip: '相同行号的按钮会显示在同一行',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       valueType: 'option',
       width: 150,
@@ -166,7 +183,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           : [],
         caption: telegramCaption || '',
         medias,
-        menus: menus.map(({ name, url }) => ({ name, url })),
+        menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 1 })),
         deleteAfterSeconds: formValues.deleteAfterSeconds || 0,
         pinNewMember: formValues.pinNewMember || false,
       };
@@ -325,7 +342,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         recordCreatorProps={{
           newRecordType: 'dataSource',
           position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), name: '', url: '' }),
+          record: () => ({ _id: Date.now().toString(), name: '', url: '', row: 1 }),
         }}
         editable={{ type: 'multiple' }}
       />
