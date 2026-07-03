@@ -4,10 +4,8 @@ import {
   ModalForm,
   ProFormDigit,
   ProFormGroup,
-  EditableProTable,
   ProFormSwitch,
   ProFormText,
-  ProColumns,
 } from '@ant-design/pro-components';
 import { Form, message } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
@@ -15,14 +13,9 @@ import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
+import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 
-type menuItem = {
-  _id: string;
-  name: string;
-  url: string;
-  row: number;
-  style: 'primary' | 'success' | 'danger';
-};
+type menuItem = InlineMenuItem;
 
 interface Props {
   open: boolean;
@@ -49,7 +42,6 @@ const ReplyRuleForm: React.FC<Props> = ({
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [medias, setMedias] = useState<string[]>([]);
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
   // 编辑时回填数据
   useEffect(() => {
@@ -61,7 +53,7 @@ const ReplyRuleForm: React.FC<Props> = ({
           _id: m._id || `menu-${i}`,
           name: m.name,
           url: m.url,
-          row: m.row || 0,
+          row: m.row || 1,
           style: m.style || 'primary',
         })),
       );
@@ -102,7 +94,7 @@ const ReplyRuleForm: React.FC<Props> = ({
         menus: menus.map(({ name, url, row, style }) => ({
           name,
           url,
-          row: row || 0,
+          row: row || 1,
           style: style || 'primary',
         })),
         medias: medias.map((m) => (m.includes('/') ? m.split('/').pop() : m)),
@@ -134,74 +126,6 @@ const ReplyRuleForm: React.FC<Props> = ({
       return false;
     }
   };
-
-  const menuColumns: ProColumns<menuItem>[] = [
-    {
-      title: '按钮名称',
-      dataIndex: 'name',
-      formItemProps: { rules: [{ required: true, message: '请输入按钮名称' }] },
-    },
-    {
-      title: '链接',
-      dataIndex: 'url',
-      formItemProps: {
-        rules: [
-          { required: true, message: '请输入链接' },
-          { pattern: /^https?:\/\/.+/, message: '请输入有效的链接' },
-        ],
-      },
-    },
-    {
-      title: '样式',
-      dataIndex: 'style',
-      valueType: 'select',
-      width: 100,
-      formItemProps: {
-        rules: [{ required: true, message: '请选择样式' }],
-      },
-      fieldProps: {
-        options: [
-          { label: '蓝色', value: 'primary' },
-          { label: '绿色', value: 'success' },
-          { label: '红色', value: 'danger' },
-        ],
-      },
-      render: (_, record) => {
-        const styleMap = {
-          primary: { color: '#1890ff', text: '蓝色' },
-          success: { color: '#52c41a', text: '绿色' },
-          danger: { color: '#ff4d4f', text: '红色' },
-        };
-        const style = styleMap[record.style] || styleMap.primary;
-        return <span style={{ color: style.color, fontWeight: 'bold' }}>{style.text}</span>;
-      },
-    },
-    {
-      title: '行号',
-      dataIndex: 'row',
-      valueType: 'digit',
-      width: 80,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行号' }],
-      },
-      fieldProps: {
-        min: 0,
-        precision: 0,
-        placeholder: '0',
-      },
-      tooltip: '相同行号的按钮会显示在同一行',
-    },
-    {
-      title: '操作',
-      valueType: 'option',
-      width: 100,
-      render: (_, record, __, action) => [
-        <a key="editable" onClick={() => action?.startEditable?.(`${record._id}`)}>
-          编辑
-        </a>,
-      ],
-    },
-  ];
 
   return (
     <ModalForm
@@ -314,29 +238,9 @@ const ReplyRuleForm: React.FC<Props> = ({
         />
       </Form.Item>
 
-      <EditableProTable<menuItem>
-        rowKey="_id"
-        headerTitle="内联菜单配置"
-        columns={menuColumns}
-        value={menus}
-        onChange={(value) => setMenus([...value])}
-        editable={{
-          type: 'multiple',
-          editableKeys,
-          onChange: setEditableRowKeys,
-        }}
-        recordCreatorProps={{
-          newRecordType: 'dataSource',
-          position: 'bottom',
-          record: () => ({
-            _id: Date.now().toString(),
-            name: '',
-            url: '',
-            row: 0,
-            style: 'primary',
-          }),
-        }}
-      />
+      <Form.Item label="内联菜单配置">
+        <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
+      </Form.Item>
     </ModalForm>
   );
 };

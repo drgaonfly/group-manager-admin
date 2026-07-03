@@ -5,6 +5,7 @@ import { UploadFile } from 'antd/es/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
+import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 import {
@@ -15,17 +16,10 @@ import {
   ProFormRadio,
   ProFormSwitch,
   ProFormDependency,
-  ProColumns,
-  EditableProTable,
   ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 
-type menuItem = {
-  _id: string;
-  name: string;
-  url: string;
-  row: number;
-};
+type menuItem = InlineMenuItem;
 
 interface GroupMessageFormProps {
   open: boolean;
@@ -91,66 +85,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         url,
       }))
     : [];
-
-  const menuColumns: ProColumns<menuItem>[] = [
-    {
-      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
-      dataIndex: 'name',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'menu_name_required',
-              defaultMessage: '请输入按钮名称',
-            }),
-          },
-        ],
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
-      dataIndex: 'url',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }),
-          },
-        ],
-      },
-    },
-    {
-      title: '行号',
-      dataIndex: 'row',
-      valueType: 'digit',
-      width: 80,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行号' }],
-      },
-      fieldProps: {
-        min: 0,
-        precision: 0,
-        placeholder: '0',
-      },
-      tooltip: '相同行号的按钮会显示在同一行',
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-      valueType: 'option',
-      width: 200,
-      render: (_text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(`${record._id}`);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
-      ],
-    },
-  ];
 
   const handleFinish = async (values: any) => {
     const telegramContent = convertToTelegramHtml(content);
@@ -370,30 +304,14 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         }
       </ProFormDependency>
 
-      <EditableProTable<menuItem>
-        rowKey="_id"
-        headerTitle={intl.formatMessage({
+      <Form.Item
+        label={intl.formatMessage({
           id: 'inline_menu_config',
           defaultMessage: '内联菜单配置',
         })}
-        columns={menuColumns}
-        value={menus}
-        name="menus"
-        onChange={(value: readonly menuItem[]) => setMenus([...value])}
-        editable={{
-          type: 'multiple',
-        }}
-        recordCreatorProps={{
-          newRecordType: 'dataSource',
-          position: 'bottom',
-          record: () => ({
-            _id: Date.now().toString(),
-            name: '',
-            url: '',
-            row: 1,
-          }),
-        }}
-      />
+      >
+        <InlineMenuEditor value={menus} onChange={setMenus} />
+      </Form.Item>
     </ModalForm>
   );
 };

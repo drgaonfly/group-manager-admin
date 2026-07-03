@@ -5,22 +5,16 @@ import { UploadFile } from 'antd/es/upload/interface';
 import { request } from '@umijs/max';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
+import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import {
   ModalForm,
   ProFormGroup,
-  ProColumns,
-  EditableProTable,
   ProFormDigit,
   ProFormSwitch,
   ProFormSelect,
 } from '@ant-design/pro-components';
 
-type menuItem = {
-  _id: string;
-  name: string;
-  url: string;
-  row: number;
-};
+type menuItem = InlineMenuItem;
 
 interface GroupWelcomeFormProps {
   open: boolean;
@@ -111,61 +105,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
     status: 'done',
     url,
   }));
-
-  const menuColumns: ProColumns<menuItem>[] = [
-    {
-      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮' }),
-      dataIndex: 'name',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'menu_name_required',
-              defaultMessage: '请输入按钮名称',
-            }),
-          },
-        ],
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'url', defaultMessage: '菜单链接' }),
-      dataIndex: 'url',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入菜单链接' }),
-          },
-        ],
-      },
-    },
-    {
-      title: '行号',
-      dataIndex: 'row',
-      valueType: 'digit',
-      width: 80,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行号' }],
-      },
-      fieldProps: {
-        min: 0,
-        precision: 0,
-        placeholder: '0',
-      },
-      tooltip: '相同行号的按钮会显示在同一行',
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-      valueType: 'option',
-      width: 150,
-      render: (_, record, __, action) => [
-        <a key="editable" onClick={() => action?.startEditable?.(record._id)}>
-          {intl.formatMessage({ id: 'edit', defaultMessage: '编辑' })}
-        </a>,
-      ],
-    },
-  ];
 
   const handleSubmit = async () => {
     try {
@@ -330,22 +269,14 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       </ProFormGroup>
 
       {/* 菜单按钮 */}
-      <EditableProTable<menuItem>
-        rowKey="_id"
-        headerTitle={intl.formatMessage({
+      <Form.Item
+        label={intl.formatMessage({
           id: 'welcome_menu_config',
           defaultMessage: '欢迎菜单配置',
         })}
-        columns={menuColumns}
-        value={menus}
-        onChange={(value) => setMenus([...value])}
-        recordCreatorProps={{
-          newRecordType: 'dataSource',
-          position: 'bottom',
-          record: () => ({ _id: Date.now().toString(), name: '', url: '', row: 1 }),
-        }}
-        editable={{ type: 'multiple' }}
-      />
+      >
+        <InlineMenuEditor value={menus} onChange={setMenus} />
+      </Form.Item>
     </ModalForm>
   );
 };
