@@ -51,7 +51,7 @@ const HistoryModal: React.FC<Props> = ({ open, onClose, channelPostId, currentRo
       content: record.content,
       medias: record.medias || [],
       bot: currentRow?.bot, // 完整的 bot 对象，包含 groups
-      channels: currentRow?.channels?.map((c: any) => c._id || c) || [],
+      channel: currentRow?.channel?._id || currentRow?.channel,
       menus: currentRow?.menus || [],
       interval: currentRow?.interval || 60,
       isOnline: true,

@@ -4,13 +4,11 @@ import {
   ModalForm,
   ProFormDigit,
   ProFormGroup,
-  EditableProTable,
   ProFormSwitch,
   ProFormRadio,
   ProFormDependency,
   ProFormSelect,
   ProFormDateTimePicker,
-  ProColumns,
 } from '@ant-design/pro-components';
 import { Form, Input, message, Space } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
@@ -18,15 +16,11 @@ import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
+import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 
-type menuItem = {
-  _id: string;
-  name: string;
-  url: string;
-  row: number;
-};
+type menuItem = InlineMenuItem;
 
 interface Props {
   open: boolean;
@@ -63,8 +57,12 @@ const ChannelPostForm: React.FC<Props> = ({
         (editingRecord.menus || []).map((m: any, i: number) => ({
           _id: m._id || `menu-${i}`,
           name: m.name,
+          type: m.type || 'url',
           url: m.url,
-          row: m.row ?? 0,
+          callback: m.callback,
+          copy_text: m.copy_text,
+          row: m.row ?? 1,
+          style: m.style || 'primary',
         })),
       );
       form.setFieldsValue({
@@ -92,66 +90,6 @@ const ChannelPostForm: React.FC<Props> = ({
       }))
     : [];
 
-  const menuColumns: ProColumns<menuItem>[] = [
-    {
-      title: intl.formatMessage({ id: 'name', defaultMessage: '按钮名称' }),
-      dataIndex: 'name',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({
-              id: 'menu_name_required',
-              defaultMessage: '请输入按钮名称',
-            }),
-          },
-        ],
-      },
-    },
-    {
-      title: intl.formatMessage({ id: 'url', defaultMessage: '链接地址' }),
-      dataIndex: 'url',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'url_required', defaultMessage: '请输入链接地址' }),
-          },
-        ],
-      },
-    },
-    {
-      title: '行号',
-      dataIndex: 'row',
-      valueType: 'digit',
-      width: 80,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行号' }],
-      },
-      fieldProps: {
-        min: 0,
-        precision: 0,
-        placeholder: '0',
-      },
-      tooltip: '相同行号的按钮会显示在同一行',
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
-      valueType: 'option',
-      width: 200,
-      render: (_, record, __, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(`${record._id}`);
-          }}
-        >
-          {intl.formatMessage({ id: 'edit' })}
-        </a>,
-      ],
-    },
-  ];
-
   const handleSubmit = async (values: any) => {
     const telegramContent = convertToTelegramHtml(content);
 
@@ -160,7 +98,15 @@ const ChannelPostForm: React.FC<Props> = ({
       content: telegramContent,
       bot: currentRow?._id,
       channel: fixedChannelId, // 主字段：单个频道
-      menus: menus.map(({ name, url, row }) => ({ name, url, row: row ?? 0 })),
+      menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
+        name,
+        type: type || 'url',
+        url,
+        callback,
+        copy_text,
+        row: row ?? 1,
+        style: style || 'primary',
+      })),
       medias,
     };
 
@@ -395,30 +341,14 @@ const ChannelPostForm: React.FC<Props> = ({
         }
       </ProFormDependency>
 
-      <EditableProTable<menuItem>
-        rowKey="_id"
-        headerTitle={intl.formatMessage({
+      <Form.Item
+        label={intl.formatMessage({
           id: 'inline_menu_config',
           defaultMessage: '内联菜单配置',
         })}
-        columns={menuColumns}
-        value={menus}
-        name="menus"
-        onChange={(value: readonly menuItem[]) => setMenus([...value])}
-        editable={{
-          type: 'multiple',
-        }}
-        recordCreatorProps={{
-          newRecordType: 'dataSource',
-          position: 'bottom',
-          record: () => ({
-            _id: Date.now().toString(),
-            name: '',
-            url: '',
-            row: 0,
-          }),
-        }}
-      />
+      >
+        <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
+      </Form.Item>
 
       <Form.Item name="bot" hidden>
         <Input value={currentRow?._id} />

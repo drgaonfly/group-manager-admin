@@ -6,6 +6,7 @@ import { Badge, Button, Card, Col, Layout, Row, Skeleton, Space, Tag, message } 
 import { ArrowLeftOutlined, RobotOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons';
 import { simpleGet } from '@/services/ant-design-pro/api';
 import GroupFeaturesModal from '@/pages/Authorization/components/BotConfigManager/GroupFeaturesModal';
+import ChannelFeaturesModal from '@/pages/Authorization/components/BotConfigManager/ChannelFeaturesModal';
 
 const { Header, Content } = Layout;
 
@@ -20,6 +21,9 @@ const BotDetail: React.FC = () => {
 
   const [selectedGroup, setSelectedGroup] = useState<any>(null);
   const [groupFeaturesOpen, setGroupFeaturesOpen] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState<any>(null);
+  const [channelFeaturesOpen, setChannelFeaturesOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'groups' | 'channels'>('groups');
 
   const loadBot = async () => {
     if (!id) return;
@@ -48,8 +52,10 @@ const BotDetail: React.FC = () => {
 
   // 后端已按 username 过滤群组，直接用
   const allGroups: any[] = (bot?.groups || []).filter((g: any) => g.type !== 'channel');
+  const allChannels: any[] = (bot?.groups || []).filter((g: any) => g.type === 'channel');
   const decodedUsername = username ? decodeURIComponent(username) : '';
   const groups = allGroups;
+  const channels = allChannels;
 
   const groupColumns: ProColumns<any>[] = [
     {
@@ -89,8 +95,8 @@ const BotDetail: React.FC = () => {
           size="small"
           icon={<SettingOutlined />}
           onClick={() => {
-            setSelectedGroup(record);
-            setGroupFeaturesOpen(true);
+            setSelectedChannel(record);
+            setChannelFeaturesOpen(true);
           }}
         >
           {intl.formatMessage({ id: 'manage', defaultMessage: '管理' })}
@@ -154,24 +160,41 @@ const BotDetail: React.FC = () => {
             <Row gutter={[12, 12]}>
               {[
                 {
+                  key: 'groups',
                   label: intl.formatMessage({ id: 'groups', defaultMessage: '群组数' }),
                   value: groups.length,
                   icon: <TeamOutlined />,
                   color: '#1677ff',
-                  bg: '#e6f4ff',
+                  bg: activeTab === 'groups' ? '#bae0ff' : '#e6f4ff',
+                  borderColor: activeTab === 'groups' ? '#1677ff' : '#1677ff22',
                 },
                 {
+                  key: 'channels',
+                  label: intl.formatMessage({ id: 'channels', defaultMessage: '频道数' }),
+                  value: channels.length,
+                  icon: <TeamOutlined />,
+                  color: '#722ed1',
+                  bg: activeTab === 'channels' ? '#d8adf0' : '#f9f0ff',
+                  borderColor: activeTab === 'channels' ? '#722ed1' : '#722ed122',
+                },
+                {
+                  key: 'users',
                   label: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数' }),
                   value: bot.botUserConfigs?.length ?? 0,
                   icon: <TeamOutlined />,
                   color: '#52c41a',
                   bg: '#f6ffed',
+                  borderColor: '#52c41a22',
                 },
               ].map((s) => (
-                <Col xs={12} sm={6} key={s.label}>
+                <Col xs={12} sm={6} key={s.key}>
                   <div
-                    className="rounded-lg p-3.5 sm:p-4 flex items-center gap-2.5 sm:gap-3"
-                    style={{ background: s.bg, border: `1px solid ${s.color}22` }}
+                    className="rounded-lg p-3.5 sm:p-4 flex items-center gap-2.5 sm:gap-3 cursor-pointer transition-all hover:shadow-md"
+                    style={{ background: s.bg, border: `1px solid ${s.borderColor}` }}
+                    onClick={() => {
+                      if (s.key === 'groups') setActiveTab('groups');
+                      if (s.key === 'channels') setActiveTab('channels');
+                    }}
                   >
                     <div
                       className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center text-xl sm:text-2xl flex-shrink-0"
@@ -193,13 +216,19 @@ const BotDetail: React.FC = () => {
               ))}
             </Row>
 
-            {/* 群组列表 */}
+            {/* 群组/频道列表 */}
             <Card
               title={
                 <Space>
-                  <TeamOutlined className="text-blue-500" />
-                  {intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })}
-                  <Tag color="blue">{groups.length}</Tag>
+                  <TeamOutlined
+                    className={activeTab === 'groups' ? 'text-blue-500' : 'text-purple-500'}
+                  />
+                  {activeTab === 'groups'
+                    ? intl.formatMessage({ id: 'group_list', defaultMessage: '群组列表' })
+                    : intl.formatMessage({ id: 'channel_list', defaultMessage: '频道列表' })}
+                  <Tag color={activeTab === 'groups' ? 'blue' : 'purple'}>
+                    {activeTab === 'groups' ? groups.length : channels.length}
+                  </Tag>
                 </Space>
               }
               className="overflow-hidden"
@@ -207,7 +236,7 @@ const BotDetail: React.FC = () => {
               <div className="overflow-x-auto">
                 <ProTable<any>
                   rowKey="_id"
-                  dataSource={groups}
+                  dataSource={activeTab === 'groups' ? groups : channels}
                   columns={groupColumns}
                   search={false}
                   pagination={{ pageSize: 20 }}
@@ -217,10 +246,15 @@ const BotDetail: React.FC = () => {
                   locale={{
                     emptyText: (
                       <div className="text-center py-10 text-gray-400">
-                        {intl.formatMessage({
-                          id: 'no_groups',
-                          defaultMessage: '该机器人暂无群组',
-                        })}
+                        {activeTab === 'groups'
+                          ? intl.formatMessage({
+                              id: 'no_groups',
+                              defaultMessage: '该机器人暂无群组',
+                            })
+                          : intl.formatMessage({
+                              id: 'no_channels',
+                              defaultMessage: '该机器人暂无频道',
+                            })}
                       </div>
                     ),
                   }}
@@ -239,6 +273,17 @@ const BotDetail: React.FC = () => {
         }}
         bot={bot}
         group={selectedGroup}
+        currentUser={currentUser}
+      />
+
+      <ChannelFeaturesModal
+        open={channelFeaturesOpen}
+        onClose={() => {
+          setChannelFeaturesOpen(false);
+          setSelectedChannel(null);
+        }}
+        bot={bot}
+        channel={selectedChannel}
         currentUser={currentUser}
       />
     </Layout>

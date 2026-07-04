@@ -83,21 +83,13 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: intl.formatMessage({ id: 'channels', defaultMessage: '频道' }),
-      dataIndex: 'channels',
+      title: intl.formatMessage({ id: 'channel', defaultMessage: '频道' }),
+      dataIndex: 'channel',
       hideInSearch: true,
       ellipsis: true,
       width: 200,
       render: (_, record) => {
-        // 优先显示 channels 数组
-        if (record?.channels && record.channels.length > 0) {
-          return record.channels.map((c: any) => c.title || c).join(', ');
-        }
-        // 兼容旧数据：显示单个 channel
-        if (record?.channel?.title) {
-          return record.channel.title;
-        }
-        return record?.url || '-';
+        return record?.channel?.title || '-';
       },
     },
     {
