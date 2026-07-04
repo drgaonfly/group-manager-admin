@@ -12,10 +12,6 @@ import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
 import SuccessTab from './BotConfigManager/Success';
 
-type menuItem = {
-  _id: string;
-};
-
 export type FormValueType = Partial<API.ItemData>;
 
 export type UpdateFormProps = {
@@ -23,7 +19,6 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalOpen: boolean;
   values: {
-    menus?: any;
     user?: any;
   } & Partial<API.ItemData>;
 };
@@ -35,7 +30,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
   const { updateModalOpen, onCancel, onSubmit, values } = props;
   const { initialState } = useModel('@@initialState');
   const currentUser = initialState?.currentUser;
-  const [menus, setmenu] = useState<menuItem[]>([]);
   const [multiImageUrl, setMultiImageUrl] = useState<string>('');
 
   // 只提取需要的字段，避免渲染大数据导致卡顿
@@ -53,7 +47,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
         ...safeValues,
       });
 
-      setmenu(values?.menus || []);
       setMultiImageUrl(values?.multi_image || '');
     }
   }, [updateModalOpen, values?._id]);
@@ -107,14 +100,10 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
           ...values,
           ...formValues,
           multi_image: multiImageUrl,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          menus: menus.map(({ _id, ...rest }) => rest),
         });
       }}
       initialValues={{
         ...safeValues,
-        presets: values?.presets?.map((item: any) => item._id),
-        menus: values?.menus?.map((item: any) => item._id),
       }}
     >
       <Tabs
