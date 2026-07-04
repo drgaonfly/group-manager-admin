@@ -68,7 +68,6 @@ const ReplyRuleForm: React.FC<Props> = ({
         deleteAfterSeconds: editingRecord.deleteAfterSeconds || 0,
         deleteUserMsgAfterSeconds: editingRecord.deleteUserMsgAfterSeconds || 0,
         replyToMessage: editingRecord.replyToMessage || false,
-        replyToAdmin: editingRecord.replyToAdmin !== false,
       });
     } else if (open && !isEdit) {
       setContent('');
@@ -160,7 +159,6 @@ const ReplyRuleForm: React.FC<Props> = ({
       initialValues={{
         isFuzzy: false,
         replyToMessage: false,
-        replyToAdmin: true,
         deleteAfterSeconds: 0,
         deleteUserMsgAfterSeconds: 0,
       }}
@@ -214,11 +212,6 @@ const ReplyRuleForm: React.FC<Props> = ({
           name="replyToMessage"
           label="引用用户消息"
           tooltip="启用后回复时会引用触发关键词的消息"
-        />
-        <ProFormSwitch
-          name="replyToAdmin"
-          label="回复管理员"
-          tooltip="关闭后不会回复群组管理员的消息"
         />
       </ProFormGroup>
 

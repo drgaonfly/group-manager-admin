@@ -195,7 +195,6 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
         bot: botId,
         group: groupId ? String(groupId) : undefined,
         replyToMessage: initialValues.replyToMessage || false,
-        replyToAdmin: initialValues.replyToAdmin !== false,
         deleteAfterSeconds: initialValues.deleteAfterSeconds || 0,
         deleteUserMsgAfterSeconds: initialValues.deleteUserMsgAfterSeconds || 0,
       });
@@ -366,12 +365,6 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
           name="replyToMessage"
           label="引用用户消息"
           tooltip="启用后回复时会引用触发关键词的消息"
-        />
-        <ProFormSwitch
-          name="replyToAdmin"
-          label="回复管理员"
-          tooltip="关闭后不会回复群组管理员的消息"
-          initialValue={true}
         />
       </ProFormGroup>
 

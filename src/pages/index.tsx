@@ -95,8 +95,13 @@ const BotDetail: React.FC = () => {
           size="small"
           icon={<SettingOutlined />}
           onClick={() => {
-            setSelectedChannel(record);
-            setChannelFeaturesOpen(true);
+            if (activeTab === 'groups') {
+              setSelectedGroup(record);
+              setGroupFeaturesOpen(true);
+            } else {
+              setSelectedChannel(record);
+              setChannelFeaturesOpen(true);
+            }
           }}
         >
           {intl.formatMessage({ id: 'manage', defaultMessage: '管理' })}

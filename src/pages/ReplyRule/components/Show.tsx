@@ -130,12 +130,6 @@ const Show: React.FC<Props> = ({ onClose, open, currentRow }) => {
               record.replyToMessage ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
           },
           {
-            title: '回复管理员',
-            dataIndex: 'replyToAdmin',
-            render: (_, record) =>
-              record.replyToAdmin !== false ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
-          },
-          {
             title: '阅后即焚',
             dataIndex: 'deleteAfterSeconds',
             render: (_, record) =>

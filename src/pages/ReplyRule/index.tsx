@@ -169,13 +169,6 @@ const TableList: React.FC = () => {
       render: (_, record) => (record.replyToMessage ? <Tag color="green">是</Tag> : <Tag>否</Tag>),
     },
     {
-      title: '回复管理员',
-      dataIndex: 'replyToAdmin',
-      hideInSearch: true,
-      render: (_, record) =>
-        record.replyToAdmin !== false ? <Tag color="green">是</Tag> : <Tag>否</Tag>,
-    },
-    {
       title: '阅后即焚',
       dataIndex: 'deleteAfterSeconds',
       hideInSearch: true,
