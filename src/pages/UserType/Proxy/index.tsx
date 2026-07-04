@@ -164,10 +164,6 @@ const TableList: React.FC = () => {
             enabled: record.groupMessage,
           },
           {
-            name: intl.formatMessage({ id: 'keyboardConfig' }),
-            enabled: record.keyboardConfig,
-          },
-          {
             name: intl.formatMessage({ id: 'speech_static' }),
             enabled: record.speech_static,
           },
