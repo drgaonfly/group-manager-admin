@@ -10,7 +10,6 @@ import { Form, Input, Tabs } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
-import KeyboardTab from './BotConfigManager/Keyboard';
 import SuccessTab from './BotConfigManager/Success';
 
 type menuItem = {
@@ -245,18 +244,6 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
                   <Input type="hidden" />
                 </Form.Item>
               </>
-            ),
-          },
-          {
-            key: 'keyboard',
-            label: intl.formatMessage({ id: 'free_keyboard', defaultMessage: '自由键盘' }),
-            children: (
-              <KeyboardTab
-                currentRow={values}
-                onBotUpdate={async (updated) => {
-                  await onSubmit({ ...values, ...updated });
-                }}
-              />
             ),
           },
           {
