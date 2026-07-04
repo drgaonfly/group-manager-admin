@@ -7,6 +7,7 @@ import { ArrowLeftOutlined, RobotOutlined, SettingOutlined, TeamOutlined } from 
 import { simpleGet } from '@/services/ant-design-pro/api';
 import GroupFeaturesModal from '@/pages/Authorization/components/BotConfigManager/GroupFeaturesModal';
 import ChannelFeaturesModal from '@/pages/Authorization/components/BotConfigManager/ChannelFeaturesModal';
+import BotUserForm from '@/pages/Authorization/components/BotUserForm';
 
 const { Header, Content } = Layout;
 
@@ -24,6 +25,8 @@ const BotDetail: React.FC = () => {
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
   const [channelFeaturesOpen, setChannelFeaturesOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'groups' | 'channels'>('groups');
+  const [botUserFormOpen, setBotUserFormOpen] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   const loadBot = async () => {
     if (!id) return;
@@ -81,7 +84,18 @@ const BotDetail: React.FC = () => {
       title: intl.formatMessage({ id: 'members', defaultMessage: '成员数' }),
       dataIndex: 'botUsers',
       width: 90,
-      render: (botUsers: any) => botUsers?.length ?? 0,
+      render: (botUsers: any, record: any) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => {
+            setSelectedGroupId(record._id);
+            setBotUserFormOpen(true);
+          }}
+        >
+          {botUsers?.length ?? 0}
+        </Button>
+      ),
     },
     {
       title: intl.formatMessage({ id: 'pages.searchTable.titleOption', defaultMessage: '操作' }),
@@ -290,6 +304,13 @@ const BotDetail: React.FC = () => {
         bot={bot}
         channel={selectedChannel}
         currentUser={currentUser}
+      />
+
+      <BotUserForm
+        open={botUserFormOpen}
+        onCancel={setBotUserFormOpen}
+        groupId={selectedGroupId || ''}
+        botId={id || ''}
       />
     </Layout>
   );
