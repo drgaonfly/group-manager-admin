@@ -24,6 +24,17 @@ export default [
     ],
   },
   {
+    path: '/webapp',
+    layout: false,
+    routes: [
+      {
+        name: 'webapp-login',
+        path: '/webapp/login',
+        component: './Webapp/Login',
+      },
+    ],
+  },
+  {
     path: '/public/bots/:id/:username',
     layout: false,
     component: './Public/BotGroups',

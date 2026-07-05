@@ -1,9 +1,7 @@
-import React from 'react';
-import { Space, Button, Popconfirm, Tag, message } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Button, message, Tag, Descriptions } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import useFeatureList from '../hooks/useFeatureList';
-import FeatureListContainer from '../components/FeatureListContainer';
 import GroupVerifyForm from './GroupVerifyForm';
 
 interface Props {
@@ -12,88 +10,83 @@ interface Props {
   group: any;
 }
 
+/**
+ * GroupVerify is a single-config-per-group pattern (not a list),
+ * so it keeps its own minimal state management instead of useFeatureList.
+ */
 const GroupVerifyGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
-    useFeatureList({
-      apiPath: '/group-verifies',
-      botId: bot?._id,
-      groupId: group?._id,
-      enabled: open,
-      deleteMode: 'single',
-    });
+  const [config, setConfig] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
 
-  const handleDelete = async (id: string) => {
+  const fetchConfig = async () => {
+    if (!bot?._id || !group?._id) return;
+    setLoading(true);
     try {
-      await request(`/group-verifies/${id}`, { method: 'DELETE' });
-      message.success('删除成功');
-      fetchData();
+      const res = await request('/group-verifies', {
+        method: 'GET',
+        params: { botId: bot._id, groupId: group._id, current: 1, pageSize: 1 },
+      });
+      setConfig(res?.data?.[0] ?? null);
     } catch {
-      message.error('删除失败');
+      message.error('获取群验证配置失败');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const columns = [
-    {
-      title: '验证问题',
-      width: 100,
-      dataIndex: 'question',
-      ellipsis: true,
-    },
-    {
-      title: '选项数',
-      key: 'asks',
-      width: 70,
-      render: (_: any, r: any) => r.asks?.length ?? 0,
-    },
-    {
-      title: '正确答案数',
-      key: 'correct',
-      width: 90,
-      render: (_: any, r: any) => r.asks?.filter((a: any) => a.isCorrect).length ?? 0,
-    },
-    {
-      title: '状态',
-      dataIndex: 'isActive',
-      width: 80,
-      render: (v: boolean) => (v ? <Tag color="green">启用</Tag> : <Tag color="default">停用</Tag>),
-    },
-    {
-      title: '操作',
-      width: 120,
-      render: (_: any, record: any) => (
-        <Space size="small">
-          <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)}>
-            编辑
-          </Button>
-          <Popconfirm title="确定删除该群验证配置吗？" onConfirm={() => handleDelete(record._id)}>
-            <Button icon={<DeleteOutlined />} size="small" danger>
-              删除
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  useEffect(() => {
+    if (open) fetchConfig();
+  }, [open, bot?._id, group?._id]);
 
   return (
     <>
-      <FeatureListContainer
-        data={data}
-        loading={loading}
-        columns={columns}
-        createButtonText="新增群验证"
-        onCreateClick={openCreate}
-      />
+      <div style={{ marginBottom: 16, textAlign: 'right' }}>
+        <Button
+          type="primary"
+          icon={<EditOutlined />}
+          loading={loading}
+          onClick={() => setFormOpen(true)}
+        >
+          {config ? '修改配置' : '新建配置'}
+        </Button>
+      </div>
+
+      {config ? (
+        <Descriptions bordered size="small" column={1}>
+          <Descriptions.Item label="验证问题">{config.question || '-'}</Descriptions.Item>
+          <Descriptions.Item label="选项数">{config.asks?.length || 0}</Descriptions.Item>
+          <Descriptions.Item label="正确答案数">
+            {config.asks?.filter((a: any) => a.isCorrect).length || 0}
+          </Descriptions.Item>
+          <Descriptions.Item label="状态">
+            <Tag color={config.isActive ? 'green' : 'default'}>
+              {config.isActive ? '启用' : '停用'}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="答案选项">
+            {config.asks?.map((ask: any, idx: number) => (
+              <Tag key={idx} color={ask.isCorrect ? 'green' : 'default'}>
+                {ask.name} {ask.isCorrect ? '(正确)' : ''}
+              </Tag>
+            )) || '-'}
+          </Descriptions.Item>
+        </Descriptions>
+      ) : (
+        <div style={{ textAlign: 'center', color: '#999', padding: '32px 0' }}>
+          该群组暂未配置群验证，点击「新建配置」开始设置
+        </div>
+      )}
 
       <GroupVerifyForm
         open={formOpen}
-        onCancel={closeForm}
+        onCancel={() => setFormOpen(false)}
         botId={bot?._id}
-        currentRecord={editingRecord}
+        currentRecord={config}
         fixedGroupId={group?._id}
         onSuccess={() => {
-          closeForm();
-          fetchData();
+          setFormOpen(false);
+          fetchConfig();
         }}
       />
     </>

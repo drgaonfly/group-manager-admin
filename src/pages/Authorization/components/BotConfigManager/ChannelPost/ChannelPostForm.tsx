@@ -132,25 +132,18 @@ const ChannelPostForm: React.FC<Props> = ({
     const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
     try {
       const sendType = values.sendType || 'scheduled';
-      if (sendType === 'immediate') {
-        await updateItem(`/bots/${currentRow?._id}/send-channel-post`, formData);
-      } else {
-        const interval = timeUnitToMinutes(values.interval || 1, values.timeUnit as TimeUnit);
-        await addItem('/channel-posts', {
-          ...formData,
-          interval,
-          startAt: toISOString(values.startAt),
-          endAt: toISOString(values.endAt),
-        });
-      }
+      const interval = timeUnitToMinutes(values.interval || 1, values.timeUnit as TimeUnit);
+
+      // 所有频道推广都创建记录
+      await addItem('/channel-posts', {
+        ...formData,
+        interval: sendType === 'immediate' ? 0 : interval,
+        startAt: toISOString(values.startAt),
+        endAt: toISOString(values.endAt),
+      });
+
       hide();
-      message.success(
-        sendType === 'immediate' ? (
-          <FormattedMessage id="send_successful" defaultMessage="发送成功" />
-        ) : (
-          <FormattedMessage id="add_successful" defaultMessage="添加成功" />
-        ),
-      );
+      message.success(<FormattedMessage id="add_successful" defaultMessage="添加成功" />);
       onSuccess();
       return true;
     } catch (error: any) {

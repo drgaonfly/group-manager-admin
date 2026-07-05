@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { message, Form, Modal, Button, Space, Switch } from 'antd';
+import { message, Form, Modal, Button, Space, Switch, Input } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { request } from '@umijs/max';
 import { ProFormTextArea, ProColumns, EditableProTable } from '@ant-design/pro-components';
@@ -143,7 +143,7 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
 
       const payload = {
         bot: botId,
-        group: values.group,
+        group: values.group || fixedGroupId,
         question: values.question,
         asks: asks.map(({ name, isCorrect }) => ({
           name,
@@ -180,8 +180,9 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
       title={isEdit ? '编辑群验证配置' : '创建群验证配置'}
       open={open}
       onCancel={onCancel}
-      width={800}
+      width={window.innerWidth < 768 ? '100%' : 800}
       destroyOnClose
+      style={window.innerWidth < 768 ? { margin: 0, maxWidth: '100vw' } : undefined}
       footer={
         <Space>
           <Button onClick={onCancel}>取消</Button>
@@ -192,6 +193,10 @@ const GroupVerifyForm: React.FC<GroupVerifyFormProps> = ({
       }
     >
       <Form form={form} layout="vertical">
+        <Form.Item name="group" hidden>
+          <Input />
+        </Form.Item>
+
         <Form.Item name="isActive" label="是否启用" valuePropName="checked">
           <Switch checkedChildren="启用" unCheckedChildren="停用" />
         </Form.Item>

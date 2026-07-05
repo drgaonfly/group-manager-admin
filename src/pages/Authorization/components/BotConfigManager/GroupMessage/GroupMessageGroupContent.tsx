@@ -92,6 +92,48 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     },
   ];
 
+  // 移动端卡片渲染函数
+  const renderMobileCard = (record: any) => {
+    return (
+      <>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <div
+              className="text-sm text-gray-800 mb-1"
+              dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+            />
+            <div className="text-xs text-gray-500">
+              {record.sendType === 'immediate' ? '立即发送' : '定时循环发送'}
+            </div>
+          </div>
+          <Switch
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+            checked={record.isOnline}
+            onChange={(checked) => handleStatusChange(record, checked)}
+            className="ml-2"
+          />
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="text-xs text-gray-500">
+            {record.intervalTime && <span>间隔: {formatInterval(record.intervalTime)}</span>}
+          </div>
+          <Space size={0}>
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(record)}
+            />
+            <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+              <Button type="link" danger size="small" icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Space>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <FeatureListContainer
@@ -100,6 +142,7 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         columns={columns}
         onCreateClick={openCreate}
         scroll={{ x: 600 }}
+        renderMobileCard={renderMobileCard}
       />
 
       <GroupMessageForm

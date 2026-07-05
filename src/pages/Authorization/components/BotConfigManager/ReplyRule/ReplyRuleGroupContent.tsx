@@ -101,6 +101,59 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     },
   ];
 
+  // 移动端卡片渲染函数
+  const renderMobileCard = (record: any) => {
+    const keywords = Array.isArray(record.keyword) ? record.keyword : [record.keyword];
+    return (
+      <>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm text-gray-800 mb-1">
+              <Space wrap size={[4, 4]}>
+                {keywords.slice(0, 3).map((k: string, i: number) => (
+                  <Tag key={i} color="blue">
+                    {k}
+                  </Tag>
+                ))}
+                {keywords.length > 3 && <Tag>+{keywords.length - 3}</Tag>}
+              </Space>
+            </div>
+            <div className="text-xs text-gray-500 flex items-center gap-2">
+              <Tag color={record.isFuzzy ? 'geekblue' : 'default'}>
+                {record.isFuzzy ? '模糊' : '精确'}
+              </Tag>
+              {record.deleteAfterSeconds && <Tag color="orange">{record.deleteAfterSeconds}秒</Tag>}
+            </div>
+          </div>
+          <Switch
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+            checked={record.isOnline}
+            onChange={(checked) => handleStatusChange(record, checked)}
+            className="ml-2"
+          />
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div
+            className="text-xs text-gray-600 flex-1 min-w-0 truncate"
+            dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+          />
+          <Space size={0} className="ml-2">
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(record)}
+            />
+            <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+              <Button type="link" danger size="small" icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Space>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <FeatureListContainer
@@ -109,6 +162,7 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         columns={columns}
         onCreateClick={openCreate}
         scroll={{ x: 710 }}
+        renderMobileCard={renderMobileCard}
       />
 
       <ReplyRuleForm

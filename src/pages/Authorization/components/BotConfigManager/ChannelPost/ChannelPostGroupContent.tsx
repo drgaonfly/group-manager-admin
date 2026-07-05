@@ -109,6 +109,52 @@ const ChannelPostGroupContent: React.FC<Props> = ({ open, bot, channel }) => {
     },
   ];
 
+  // 移动端卡片渲染函数
+  const renderMobileCard = (record: any) => {
+    return (
+      <>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <div
+              className="text-sm text-gray-800 mb-1"
+              dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+            />
+            <div className="text-xs text-gray-500">
+              {record.sendType === 'immediate' ? '立即发送' : '定时循环发送'}
+            </div>
+          </div>
+          <Switch
+            checkedChildren={intl.formatMessage({ id: 'enabled', defaultMessage: '启用' })}
+            unCheckedChildren={intl.formatMessage({ id: 'disabled', defaultMessage: '禁用' })}
+            checked={record.isOnline}
+            onChange={(checked) => handleStatusChange(record, checked)}
+            className="ml-2"
+          />
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="text-xs text-gray-500 flex items-center gap-2">
+            {record.interval && <span>间隔: {formatInterval(record.interval)}</span>}
+            {record.isClearLastPost && <Tag color="orange">清除上条</Tag>}
+          </div>
+          <Space size={0} className="ml-2">
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(record)}
+            />
+            <Popconfirm
+              title={intl.formatMessage({ id: 'confirm_delete', defaultMessage: '确定删除？' })}
+              onConfirm={() => handleDelete(record._id)}
+            >
+              <Button type="link" danger size="small" icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Space>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <FeatureListContainer
@@ -121,6 +167,7 @@ const ChannelPostGroupContent: React.FC<Props> = ({ open, bot, channel }) => {
         })}
         onCreateClick={openCreate}
         scroll={{ x: 800 }}
+        renderMobileCard={renderMobileCard}
       />
 
       <ChannelPostForm

@@ -141,6 +141,54 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     },
   ];
 
+  // 移动端卡片渲染函数
+  const renderMobileCard = (record: any) => {
+    return (
+      <>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-gray-800 mb-1">{record.title}</div>
+            <div className="text-xs text-gray-500 flex items-center gap-2">
+              <span>{record.keywords?.join(', ') || '-'}</span>
+              <span>{record.prizes?.length || 0} 奖品</span>
+            </div>
+          </div>
+          {getStatusTag(record.status)}
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="text-xs text-gray-500 flex items-center gap-2">
+            {record.notifyPin && <Tag color="blue">活动</Tag>}
+            {record.joinSuccessPin && <Tag color="blue">参与</Tag>}
+            {record.drawResultPin && <Tag color="blue">开奖</Tag>}
+          </div>
+          <Space size={0} className="ml-2">
+            <Button icon={<UserOutlined />} size="small" onClick={() => showParticipants(record)}>
+              参与者
+            </Button>
+            {record.status === 'ongoing' && (
+              <Button
+                icon={<PlayCircleOutlined />}
+                size="small"
+                type="primary"
+                onClick={() => handleDraw(record._id)}
+              >
+                开奖
+              </Button>
+            )}
+            <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)}>
+              编辑
+            </Button>
+            <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+              <Button icon={<DeleteOutlined />} size="small" danger>
+                删除
+              </Button>
+            </Popconfirm>
+          </Space>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <FeatureListContainer
@@ -150,6 +198,7 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         createButtonText="创建抽奖活动"
         onCreateClick={openCreate}
         scroll={{ x: 900 }}
+        renderMobileCard={renderMobileCard}
       />
 
       <Modal
@@ -157,8 +206,8 @@ const LotteryRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         open={formOpen}
         onCancel={closeForm}
         footer={null}
-        width="80%"
-        style={{ maxWidth: 1000 }}
+        width={window.innerWidth < 768 ? '100%' : '80%'}
+        style={window.innerWidth < 768 ? { margin: 0, maxWidth: '100vw' } : { maxWidth: 1000 }}
         destroyOnClose
       >
         <LotteryForm

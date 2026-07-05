@@ -161,6 +161,54 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     },
   ];
 
+  // 移动端卡片渲染函数
+  const renderMobileCard = (record: any) => {
+    return (
+      <>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-gray-800 mb-1">{record.title}</div>
+            <div className="text-xs text-gray-500 flex items-center gap-2">
+              <span>{record.startingPrice}积分</span>
+              <span>{record.bids?.length || 0} 出价</span>
+            </div>
+          </div>
+          {getStatusTag(record.status, record.endTime)}
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="text-xs text-gray-500 flex items-center gap-2">
+            {record.isPinned && (
+              <Tag color="blue" icon={<PushpinOutlined />}>
+                置顶
+              </Tag>
+            )}
+            <span>{moment(record.endTime).format('MM-DD HH:mm')}</span>
+          </div>
+          <Space size={0} className="ml-2">
+            <Button icon={<UserOutlined />} size="small" onClick={() => showBids(record)} />
+            <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)} />
+            {record.status === 'ongoing' && moment(record.endTime).isAfter(moment()) && (
+              <Button
+                icon={<StopOutlined />}
+                size="small"
+                danger
+                onClick={() => handleEnd(record)}
+              />
+            )}
+            <Button
+              icon={<DeleteOutlined />}
+              size="small"
+              danger
+              onClick={() =>
+                Modal.confirm({ title: '确定删除？', onOk: () => handleDelete(record._id) })
+              }
+            />
+          </Space>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <FeatureListContainer
@@ -170,6 +218,7 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         createButtonText="创建竞拍活动"
         onCreateClick={openCreate}
         scroll={{ x: 900 }}
+        renderMobileCard={renderMobileCard}
       />
 
       <Modal
@@ -177,8 +226,8 @@ const AuctionRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         open={formOpen}
         onCancel={closeForm}
         footer={null}
-        width="80%"
-        style={{ maxWidth: 1000 }}
+        width={window.innerWidth < 768 ? '100%' : '80%'}
+        style={window.innerWidth < 768 ? { margin: 0, maxWidth: '100vw' } : { maxWidth: 1000 }}
         destroyOnClose
       >
         <AuctionForm

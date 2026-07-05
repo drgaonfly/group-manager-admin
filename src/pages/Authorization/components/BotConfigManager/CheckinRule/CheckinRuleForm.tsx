@@ -133,7 +133,7 @@ const CheckinRuleForm: React.FC<Props> = ({
       }}
     >
       <Row gutter={16}>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Form.Item
             name="type"
             label={intl.formatMessage({ id: 'checkin_type', defaultMessage: '签到类型' })}
@@ -148,7 +148,7 @@ const CheckinRuleForm: React.FC<Props> = ({
             />
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Form.Item
             name="reward"
             label={intl.formatMessage({ id: 'reward_points', defaultMessage: '奖励积分' })}
@@ -199,7 +199,7 @@ const CheckinRuleForm: React.FC<Props> = ({
           >
             {streakCycles.map((cycle, index) => (
               <Row key={index} gutter={8} style={{ marginBottom: 8 }}>
-                <Col span={10}>
+                <Col xs={12} sm={10}>
                   <InputNumber
                     value={cycle.days}
                     onChange={(v) => updateStreakCycle(index, 'days', v || 1)}
@@ -209,7 +209,7 @@ const CheckinRuleForm: React.FC<Props> = ({
                     placeholder="天数"
                   />
                 </Col>
-                <Col span={10}>
+                <Col xs={12} sm={10}>
                   <InputNumber
                     value={cycle.multiplier}
                     onChange={(v) => updateStreakCycle(index, 'multiplier', v || 1)}
@@ -220,7 +220,7 @@ const CheckinRuleForm: React.FC<Props> = ({
                     placeholder="倍率"
                   />
                 </Col>
-                <Col span={4}>
+                <Col xs={24} sm={4}>
                   {streakCycles.length > 1 && (
                     <Button
                       type="text"
@@ -266,7 +266,7 @@ const CheckinRuleForm: React.FC<Props> = ({
 
       {/* 阅后即焚 */}
       <Row gutter={16}>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Form.Item
             name="deleteAfterSeconds"
             label={
@@ -281,7 +281,7 @@ const CheckinRuleForm: React.FC<Props> = ({
             <InputNumber min={0} precision={0} style={{ width: '100%' }} placeholder="0 = 不删除" />
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Form.Item
             name="deleteUserMsgAfterSeconds"
             label={

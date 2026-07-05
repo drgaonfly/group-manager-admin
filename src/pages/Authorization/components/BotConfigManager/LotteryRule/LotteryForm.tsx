@@ -19,7 +19,7 @@ import { PlusOutlined, DeleteOutlined, EditOutlined, PushpinOutlined } from '@an
 // import { useIntl } from '@umijs/max';
 import moment from 'moment';
 import RichTextEditor from '@/components/RichTextEditor';
-import MyUpload from '@/components/MyUpload';
+import Upload from '@/components/Upload';
 
 const { Option } = Select;
 
@@ -270,17 +270,18 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
       </Form.Item>
       {/* 步骤导航 */}
       <div style={{ marginBottom: 24 }}>
-        <Space>
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:overflow-x-auto">
           {steps.map((step, index) => (
             <Button
               key={step.key}
               type={currentStep === index ? 'primary' : 'default'}
               onClick={() => setCurrentStep(index)}
+              className="flex-shrink-0"
             >
               {step.title}
             </Button>
           ))}
-        </Space>
+        </div>
       </div>
 
       {/* 步骤内容 */}
@@ -311,10 +312,9 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item name="media" label="媒体文件">
-            <MyUpload
+            <Upload
               onFileUpload={handleMediaUpload}
               accept="image/*,video/*"
-              url="/upload"
               onRemove={handleMediaRemove}
             />
           </Form.Item>

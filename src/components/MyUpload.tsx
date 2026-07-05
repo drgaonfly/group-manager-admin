@@ -114,7 +114,7 @@ const MyUpload: React.FC<MyUploadProps> = ({
       accept={accept || defaultAccept}
       maxCount={maxCount}
       fileList={fileList}
-      style={{ width: 328 }}
+      style={{ width: '100%', maxWidth: 328 }}
       onRemove={onRemove}
       onChange={(info) => {
         if (info.file.status !== 'uploading') {

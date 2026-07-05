@@ -27,6 +27,8 @@ interface FeatureListContainerProps<T> {
   pagination?: false | TablePaginationConfig;
   /** 滚动配置 */
   scroll?: TableProps<T>['scroll'];
+  /** 移动端卡片渲染函数 */
+  renderMobileCard?: (record: T) => React.ReactNode;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -45,43 +47,55 @@ function FeatureListContainer<T extends object>(props: FeatureListContainerProps
     headerExtra,
     pagination,
     scroll,
+    renderMobileCard,
   } = props;
 
   return (
     <>
-      {headerExtra && <div style={{ marginBottom: 12 }}>{headerExtra}</div>}
+      {headerExtra && <div className="mb-3">{headerExtra}</div>}
 
-      <div
-        style={{
-          marginBottom: 12,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{
-            fontSize: 16,
-            fontWeight: 600,
-          }}
-        >
-          {title}
-        </div>
+      <div className="flex justify-between items-center mb-3">
+        <div className="text-base sm:text-lg font-semibold">{title}</div>
 
         <Button type="primary" icon={<PlusOutlined />} onClick={onCreateClick}>
           {createButtonText}
         </Button>
       </div>
 
-      <Table<T>
-        rowKey={rowKey}
-        dataSource={data}
-        columns={columns}
-        loading={loading}
-        size="small"
-        pagination={pagination === false ? false : { pageSize: 10, ...pagination }}
-        scroll={scroll}
-      />
+      {/* 移动端卡片视图 */}
+      <div className="sm:hidden">
+        {data.map((record: any) => (
+          <div
+            key={record[rowKey] || record._id}
+            className="bg-white border border-gray-200 rounded-lg p-4 mb-3 shadow-sm"
+          >
+            {/* 子组件需要通过自定义渲染来处理移动端卡片内容 */}
+            {typeof renderMobileCard === 'function' ? (
+              renderMobileCard(record)
+            ) : (
+              <div className="text-gray-500">暂无移动端视图</div>
+            )}
+          </div>
+        ))}
+        {data.length === 0 && <div className="text-center py-10 text-gray-400">暂无数据</div>}
+      </div>
+
+      {/* 桌面端表格视图 */}
+      <div className="hidden sm:block">
+        <Table<T>
+          rowKey={rowKey}
+          dataSource={data}
+          columns={columns}
+          loading={loading}
+          size="small"
+          pagination={
+            pagination === false
+              ? false
+              : { pageSize: 10, ...pagination, simple: window.innerWidth < 768 }
+          }
+          scroll={scroll}
+        />
+      </div>
     </>
   );
 }

@@ -61,14 +61,15 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
       open={open}
       onCancel={onClose}
       footer={null}
-      width="80%"
-      style={{ maxWidth: 1100, top: 20 }}
+      width="100%"
+      style={{ maxWidth: 1100, top: 20, margin: 0 }}
       styles={{ body: { minHeight: '50vh', paddingTop: 16 } }}
       destroyOnClose
+      centered
     >
       {/* 频道统计卡片 */}
       {channel && (
-        <Row gutter={[12, 12]} style={{ marginBottom: 20 }}>
+        <Row gutter={[12, 12]} className="mb-5">
           {[
             {
               label: '频道成员',
@@ -78,39 +79,25 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
               bg: '#f9f0ff',
             },
           ].map((s) => (
-            <Col span={8} key={s.label}>
+            <Col xs={24} sm={12} md={8} key={s.label}>
               <div
-                style={{
-                  background: s.bg,
-                  border: `1px solid ${s.color}22`,
-                  borderRadius: 10,
-                  padding: '12px 16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                }}
+                className="rounded-lg p-3 sm:p-4 flex items-center gap-3"
+                style={{ background: s.bg, border: `1px solid ${s.color}22` }}
               >
                 <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 8,
-                    background: `${s.color}18`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 18,
-                    color: s.color,
-                    flexShrink: 0,
-                  }}
+                  className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl flex-shrink-0"
+                  style={{ background: `${s.color}18`, color: s.color }}
                 >
                   {s.icon}
                 </div>
-                <div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: s.color, lineHeight: 1.2 }}>
+                <div className="flex-1 min-w-0">
+                  <div
+                    className="text-xl sm:text-2xl font-bold leading-tight"
+                    style={{ color: s.color }}
+                  >
                     {s.value}
                   </div>
-                  <div style={{ fontSize: 12, color: '#666', marginTop: 2 }}>{s.label}</div>
+                  <div className="text-xs text-gray-600 mt-0.5">{s.label}</div>
                 </div>
               </div>
             </Col>
@@ -119,7 +106,7 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
       )}
 
       {tabItems.length === 0 ? (
-        <div style={{ textAlign: 'center', color: '#999', padding: '60px 0' }}>
+        <div className="text-center text-gray-400 py-15">
           {intl.formatMessage({
             id: 'no_channel_features_enabled',
             defaultMessage: '该机器人暂未启用任何频道功能',
@@ -127,11 +114,11 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
         </div>
       ) : (
         <Tabs
-          tabPosition="left"
+          tabPosition={window.innerWidth < 768 ? 'top' : 'left'}
           activeKey={activeTab}
           onChange={setActiveTab}
           items={tabItems}
-          tabBarStyle={{ minWidth: 120 }}
+          tabBarStyle={{ minWidth: window.innerWidth < 768 ? 'auto' : 120 }}
           style={{ minHeight: '50vh' }}
         />
       )}

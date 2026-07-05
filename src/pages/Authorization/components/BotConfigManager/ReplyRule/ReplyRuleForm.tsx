@@ -150,10 +150,11 @@ const ReplyRuleForm: React.FC<Props> = ({
         onOpenChange(visible);
       }}
       form={form}
-      width={800}
+      width={window.innerWidth < 768 ? '100%' : 800}
       modalProps={{
         destroyOnClose: true,
         maskClosable: false,
+        style: window.innerWidth < 768 ? { margin: 0, maxWidth: '100vw' } : undefined,
       }}
       onFinish={handleSubmit}
       initialValues={{

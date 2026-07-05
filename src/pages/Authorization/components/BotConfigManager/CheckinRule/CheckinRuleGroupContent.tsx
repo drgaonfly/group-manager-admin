@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Button, Space, message, Tag, Card, Row, Col, Spin, Empty, Popconfirm, Modal } from 'antd';
+import {
+  Button,
+  Space,
+  message,
+  Tag,
+  Card,
+  Spin,
+  Empty,
+  Popconfirm,
+  Modal,
+  Descriptions,
+} from 'antd';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import useFeatureList from '../hooks/useFeatureList';
@@ -132,22 +143,15 @@ const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         style={{ marginBottom: 16 }}
       >
         {rule ? (
-          <Row gutter={[16, 8]}>
-            <Col span={12}>
-              <span style={{ color: '#888' }}>触发词：</span>
-              {(rule.keywords || []).map((k: string, i: number) => (
-                <Tag key={i}>{k}</Tag>
-              ))}
-            </Col>
-            <Col span={6}>
-              <span style={{ color: '#888' }}>奖励积分：</span>
-              <strong>{rule.reward}</strong>
-            </Col>
-            <Col span={6}>
-              <span style={{ color: '#888' }}>连续奖励：</span>
+          <Descriptions bordered size="small" column={1}>
+            <Descriptions.Item label="触发词">
+              {(rule.keywords || []).map((k: string, i: number) => <Tag key={i}>{k}</Tag>) || '-'}
+            </Descriptions.Item>
+            <Descriptions.Item label="奖励积分">{rule.reward}</Descriptions.Item>
+            <Descriptions.Item label="连续奖励">
               {rule.enableStreakBonus ? <Tag color="blue">已启用</Tag> : <Tag>未启用</Tag>}
-            </Col>
-          </Row>
+            </Descriptions.Item>
+          </Descriptions>
         ) : (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -171,8 +175,8 @@ const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         open={formOpen}
         onCancel={() => setFormOpen(false)}
         footer={null}
-        width="80%"
-        style={{ maxWidth: 900 }}
+        width={window.innerWidth < 768 ? '100%' : '80%'}
+        style={window.innerWidth < 768 ? { margin: 0, maxWidth: '100vw' } : { maxWidth: 900 }}
         destroyOnClose
       >
         <CheckinRuleForm

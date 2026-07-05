@@ -1,10 +1,7 @@
-import React from 'react';
-import { Space, Button, Popconfirm, Tag } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Button, message, Tag, Descriptions } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import { message } from 'antd';
-import useFeatureList from '../hooks/useFeatureList';
-import FeatureListContainer from '../components/FeatureListContainer';
 import GroupWelcomeForm from './GroupWelcomeForm';
 
 interface Props {
@@ -13,97 +10,90 @@ interface Props {
   group: any;
 }
 
+/**
+ * GroupWelcome is a single-config-per-group pattern (not a list),
+ * so it keeps its own minimal state management instead of useFeatureList.
+ */
 const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
-  const { data, loading, formOpen, editingRecord, openCreate, openEdit, closeForm, fetchData } =
-    useFeatureList({
-      apiPath: '/group-welcomes',
-      botId: bot?._id,
-      groupId: group?._id,
-      enabled: open,
-      deleteMode: 'single',
-    });
+  const [config, setConfig] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
 
-  const handleDelete = async (id: string) => {
+  const fetchConfig = async () => {
+    if (!bot?._id || !group?._id) return;
+    setLoading(true);
     try {
-      await request(`/group-welcomes/${id}`, { method: 'DELETE' });
-      message.success('删除成功');
-      fetchData();
+      const res = await request('/group-welcomes', {
+        method: 'GET',
+        params: { botId: bot._id, groupId: group._id, current: 1, pageSize: 1 },
+      });
+      setConfig(res?.data?.[0] ?? null);
     } catch {
-      message.error('删除失败');
+      message.error('获取群欢迎配置失败');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const columns = [
-    {
-      title: '欢迎消息',
-      dataIndex: 'contents',
-      width: 100,
-      ellipsis: true,
-      render: (contents: string[]) =>
-        contents?.length ? (
-          contents[0].replace(/<[^>]+>/g, '').slice(0, 50) + '…'
-        ) : (
-          <span style={{ color: '#bbb' }}>默认消息</span>
-        ),
-    },
-    {
-      title: '媒体',
-      dataIndex: 'medias',
-      width: 70,
-      render: (medias: string[]) =>
-        medias?.length ? <Tag color="blue">{medias.length} 个</Tag> : '-',
-    },
-    {
-      title: '阅后即焚',
-      dataIndex: 'deleteAfterSeconds',
-      width: 90,
-      render: (v: number) => (v > 0 ? `${v}秒` : <span style={{ color: '#bbb' }}>关闭</span>),
-    },
-    {
-      title: '置顶新成员',
-      dataIndex: 'pinNewMember',
-      width: 90,
-      render: (v: boolean) => (v ? <Tag color="green">开启</Tag> : <Tag>关闭</Tag>),
-    },
-    {
-      title: '操作',
-      width: 120,
-      render: (_: any, record: any) => (
-        <Space size="small">
-          <Button icon={<EditOutlined />} size="small" onClick={() => openEdit(record)}>
-            编辑
-          </Button>
-          <Popconfirm title="确定删除该群欢迎配置吗？" onConfirm={() => handleDelete(record._id)}>
-            <Button icon={<DeleteOutlined />} size="small" danger>
-              删除
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  useEffect(() => {
+    if (open) fetchConfig();
+  }, [open, bot?._id, group?._id]);
 
   return (
     <>
-      <FeatureListContainer
-        data={data}
-        loading={loading}
-        columns={columns}
-        createButtonText="新建群欢迎"
-        onCreateClick={openCreate}
-      />
+      <div style={{ marginBottom: 16, textAlign: 'right' }}>
+        <Button
+          type="primary"
+          icon={<EditOutlined />}
+          loading={loading}
+          onClick={() => setFormOpen(true)}
+        >
+          {config ? '修改配置' : '新建配置'}
+        </Button>
+      </div>
+
+      {config ? (
+        <Descriptions bordered size="small" column={1}>
+          <Descriptions.Item label="欢迎消息">
+            {config.contents?.length ? (
+              <div dangerouslySetInnerHTML={{ __html: config.contents[0] }} />
+            ) : (
+              <span style={{ color: '#bbb' }}>默认消息</span>
+            )}
+          </Descriptions.Item>
+          <Descriptions.Item label="媒体">
+            {config.medias?.length ? <Tag color="blue">{config.medias.length} 个</Tag> : '-'}
+          </Descriptions.Item>
+          <Descriptions.Item label="阅后即焚">
+            {config.deleteAfterSeconds > 0 ? (
+              `${config.deleteAfterSeconds}秒`
+            ) : (
+              <span style={{ color: '#bbb' }}>关闭</span>
+            )}
+          </Descriptions.Item>
+          <Descriptions.Item label="置顶新成员">
+            <Tag color={config.pinNewMember ? 'green' : 'default'}>
+              {config.pinNewMember ? '开启' : '关闭'}
+            </Tag>
+          </Descriptions.Item>
+        </Descriptions>
+      ) : (
+        <div style={{ textAlign: 'center', color: '#999', padding: '32px 0' }}>
+          该群组暂未配置群欢迎，点击「新建配置」开始设置
+        </div>
+      )}
 
       <GroupWelcomeForm
         open={formOpen}
         onCancel={(v) => {
-          if (!v) closeForm();
+          if (!v) setFormOpen(false);
         }}
         botId={bot?._id}
-        currentRow={editingRecord ?? undefined}
+        currentRow={config ?? undefined}
         fixedGroupId={group?._id}
         onSuccess={() => {
-          closeForm();
-          fetchData();
+          setFormOpen(false);
+          fetchConfig();
         }}
       />
     </>

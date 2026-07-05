@@ -174,6 +174,49 @@ const AdRemovalGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     },
   ];
 
+  // 移动端卡片渲染函数
+  const renderMobileCard = (record: any) => {
+    return (
+      <>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-gray-800 mb-1">{record.name}</div>
+            <div className="text-xs text-gray-500 flex items-center gap-2">
+              <Tag color={record.mode === 'all' ? 'blue' : 'green'}>
+                {record.mode === 'all' ? '全部词' : '任意词'}
+              </Tag>
+              <span>{record.keywords?.length || 0} 行</span>
+            </div>
+          </div>
+          <Switch
+            checked={record.isOnline}
+            size="small"
+            onChange={(v) => handleStatusChange(record, v)}
+            className="ml-2"
+          />
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="text-xs text-gray-600">{renderPunishment(record.punishment, record)}</div>
+          <Space size={0} className="ml-2">
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(record)}
+            >
+              编辑
+            </Button>
+            <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record._id)}>
+              <Button type="link" size="small" danger icon={<DeleteOutlined />}>
+                删除
+              </Button>
+            </Popconfirm>
+          </Space>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <FeatureListContainer
@@ -183,6 +226,7 @@ const AdRemovalGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         createButtonText="添加规则"
         onCreateClick={openCreate}
         pagination={false}
+        renderMobileCard={renderMobileCard}
         headerExtra={
           <Alert
             type="warning"

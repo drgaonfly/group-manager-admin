@@ -142,8 +142,11 @@ const AdRemovalForm: React.FC<AdRemovalFormProps> = ({
       modalProps={{
         destroyOnClose: true,
         confirmLoading: loading,
-        width: '60%',
-        style: { maxWidth: 900, minWidth: 580 },
+        width: window.innerWidth < 768 ? '100%' : '60%',
+        style:
+          window.innerWidth < 768
+            ? { margin: 0, maxWidth: '100vw' }
+            : { maxWidth: 900, minWidth: 580 },
       }}
     >
       {/* 基本信息 */}

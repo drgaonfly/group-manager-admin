@@ -90,8 +90,10 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
       }
       open={open}
       onCancel={() => onCancel(false)}
-      width="90%"
+      width="100%"
+      style={{ maxWidth: 800, margin: 0 }}
       footer={null}
+      centered
     >
       <ProTable
         search={false}
@@ -104,8 +106,10 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
           showSizeChanger: true,
           onChange: handlePageChange,
           onShowSizeChange: handlePageChange,
+          simple: window.innerWidth < 768,
         }}
         size="small"
+        scroll={{ x: window.innerWidth < 768 ? 'max-content' : undefined }}
       />
     </Modal>
   );

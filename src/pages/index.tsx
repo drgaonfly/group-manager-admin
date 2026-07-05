@@ -66,11 +66,13 @@ const BotDetail: React.FC = () => {
       dataIndex: 'title',
       width: 180,
       ellipsis: true,
+      responsive: ['sm'],
     },
     {
       title: intl.formatMessage({ id: 'username', defaultMessage: '群组用户名' }),
       dataIndex: 'username',
       width: 140,
+      responsive: ['sm'],
       render: (username: any) =>
         username ? <Tag color="blue">@{username}</Tag> : <span style={{ color: '#bbb' }}>-</span>,
     },
@@ -78,12 +80,14 @@ const BotDetail: React.FC = () => {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
       width: 100,
+      responsive: ['md'],
       render: (type: any) => <Tag>{type}</Tag>,
     },
     {
       title: intl.formatMessage({ id: 'members', defaultMessage: '成员数' }),
       dataIndex: 'botUsers',
       width: 90,
+      responsive: ['sm'],
       render: (botUsers: any, record: any) => (
         <Button
           type="link"
@@ -252,7 +256,66 @@ const BotDetail: React.FC = () => {
               }
               className="overflow-hidden"
             >
-              <div className="overflow-x-auto">
+              {/* 移动端卡片视图 */}
+              <div className="sm:hidden">
+                {(activeTab === 'groups' ? groups : channels).map((record: any) => (
+                  <div
+                    key={record._id}
+                    className="bg-white border border-gray-200 rounded-lg p-4 mb-3 shadow-sm"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-semibold text-gray-800 truncate">
+                          {record.title}
+                        </h3>
+                        {record.username && (
+                          <p className="text-sm text-gray-500">@{record.username}</p>
+                        )}
+                      </div>
+                      <Tag color={activeTab === 'groups' ? 'blue' : 'purple'} className="ml-2">
+                        {record.type}
+                      </Tag>
+                    </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="text-sm text-gray-600">
+                        <span className="font-medium">{record.botUsers?.length ?? 0}</span> 成员
+                      </div>
+                      <Button
+                        type="primary"
+                        size="small"
+                        icon={<SettingOutlined />}
+                        onClick={() => {
+                          if (activeTab === 'groups') {
+                            setSelectedGroup(record);
+                            setGroupFeaturesOpen(true);
+                          } else {
+                            setSelectedChannel(record);
+                            setChannelFeaturesOpen(true);
+                          }
+                        }}
+                      >
+                        {intl.formatMessage({ id: 'manage', defaultMessage: '管理' })}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {(activeTab === 'groups' ? groups : channels).length === 0 && (
+                  <div className="text-center py-10 text-gray-400">
+                    {activeTab === 'groups'
+                      ? intl.formatMessage({
+                          id: 'no_groups',
+                          defaultMessage: '该机器人暂无群组',
+                        })
+                      : intl.formatMessage({
+                          id: 'no_channels',
+                          defaultMessage: '该机器人暂无频道',
+                        })}
+                  </div>
+                )}
+              </div>
+
+              {/* 桌面端表格视图 */}
+              <div className="hidden sm:block overflow-x-auto">
                 <ProTable<any>
                   rowKey="_id"
                   dataSource={activeTab === 'groups' ? groups : channels}

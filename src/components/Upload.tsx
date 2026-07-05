@@ -90,7 +90,7 @@ const MyUpload: React.FC<MyUploadProps> = ({
       accept={accept || defaultAccept}
       maxCount={multiple ? undefined : 1}
       defaultFileList={defaultFileList}
-      style={{ width: 328 }}
+      style={{ width: '100%', maxWidth: 328 }}
     >
       <p className="ant-upload-drag-icon">
         <InboxOutlined />

@@ -157,11 +157,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         endAt: toISOString(values.endAt),
       };
 
-      if (data.sendType === 'scheduled') {
-        await addItem('/group-messages', data);
-      } else {
-        await updateItem(`/bots/${data.bot?.toString()}/send-group-message`, data);
-      }
+      // 所有群发消息都创建记录
+      await addItem('/group-messages', data);
 
       hide();
       message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
@@ -195,6 +192,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       modalProps={{
         destroyOnClose: true,
         onCancel: () => onCancel(false),
+        width: window.innerWidth < 768 ? '100%' : 800,
+        style: window.innerWidth < 768 ? { margin: 0, maxWidth: '100vw' } : undefined,
       }}
       onFinish={handleFinish}
     >
