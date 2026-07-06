@@ -64,6 +64,7 @@ import { fetchMenuData, currentUser as queryCurrentUser } from '@/services/ant-d
 import React, { ReactElement } from 'react';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+const webappLoginPath = '/webapp/login';
 
 const iconEnum: { [key: string]: ReactElement<any, any> } = {
   UsergroupAddOutlined: <UsergroupAddOutlined />,
@@ -165,7 +166,7 @@ export async function getInitialState(): Promise<{
   };
   // 如果不是登录页面，执行
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  if (location.pathname !== loginPath && location.pathname !== webappLoginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,

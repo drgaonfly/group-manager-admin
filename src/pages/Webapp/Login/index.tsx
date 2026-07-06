@@ -21,7 +21,9 @@ const WebappLogin: React.FC = () => {
     if (jwtToken) {
       setStatus('保存登录凭证...');
       try {
-        localStorage.setItem('token', jwtToken);
+        // URL decode the token
+        const decodedToken = decodeURIComponent(jwtToken);
+        localStorage.setItem('token', decodedToken);
         setStatus('登录凭证已保存');
       } catch (e: any) {
         const errorMsg = `localStorage 错误: ${e?.message || '未知错误'}`;
