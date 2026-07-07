@@ -20,7 +20,7 @@ const ProxysSelect: React.FC<Props> = ({ newRecord = true, onChange }) => {
         value: proxy._id,
       }))}
       width="md"
-      name="proxy"
+      name="user"
       label={intl.formatMessage({ id: 'agent' })}
       showSearch
       fieldProps={{
