@@ -245,6 +245,7 @@ const TableList: React.FC = () => {
       valueType: 'password',
       hideInSearch: true,
       copyable: true,
+      hideInTable: !access.canSuperAdmin,
     },
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
@@ -260,6 +261,7 @@ const TableList: React.FC = () => {
           checkedChildren={intl.formatMessage({ id: 'platform.online' })}
           unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
           checked={record.isOnline}
+          disabled={!access.canSuperAdmin}
           onChange={async () => {
             await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
             if (actionRef.current) {
