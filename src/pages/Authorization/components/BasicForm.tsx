@@ -6,6 +6,7 @@ import {
   ProFormSwitch,
   ProFormTextArea,
   ProFormSelect,
+  ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import ProxySelect from '@/components/proxysSelects';
@@ -86,6 +87,21 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
           unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
         />
       </ProForm.Group>
+
+      {access.canSuperAdmin && (
+        <ProForm.Group>
+          <ProFormDateTimePicker
+            width="md"
+            name="disabledAt"
+            label={intl.formatMessage({ id: 'disabledAt', defaultMessage: '禁用时间' })}
+            placeholder={intl.formatMessage({
+              id: 'disabledAt_placeholder',
+              defaultMessage: '请选择禁用时间',
+            })}
+            tooltip="机器人禁用时间，过期后将无法使用功能"
+          />
+        </ProForm.Group>
+      )}
 
       <ProForm.Group>
         <ProFormTextArea
