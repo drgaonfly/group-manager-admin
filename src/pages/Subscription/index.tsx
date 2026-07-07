@@ -8,7 +8,6 @@ import React, { useRef, useState } from 'react';
 import Update from './components/Update';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
-import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
 
 const STATUS_TAG: Record<string, { color: string; text: string }> = {
@@ -70,7 +69,6 @@ const SubscriptionTableList: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'user', defaultMessage: 'Bot User' }),
       dataIndex: 'botUser',
-      hideInSearch: true,
       render: (_, record) => {
         return (
           record.botUser?.userName ||
@@ -101,12 +99,7 @@ const SubscriptionTableList: React.FC = () => {
       hideInSearch: true,
       render: (amount) => `${amount} USDT`,
     },
-    {
-      title: intl.formatMessage({ id: 'paidAmount', defaultMessage: 'Paid Amount' }),
-      dataIndex: 'paidAmount',
-      hideInSearch: true,
-      render: (paidAmount) => (paidAmount ? `${paidAmount} USDT` : '-'),
-    },
+
     {
       title: intl.formatMessage({ id: 'toAddress', defaultMessage: 'To Address' }),
       dataIndex: 'toAddress',
@@ -121,12 +114,6 @@ const SubscriptionTableList: React.FC = () => {
       copyable: true,
       ellipsis: true,
       render: (txHash) => txHash || '-',
-    },
-    {
-      title: intl.formatMessage({ id: 'orderExpiredAt', defaultMessage: 'Order Expired At' }),
-      dataIndex: 'orderExpiredAt',
-      hideInSearch: true,
-      valueType: 'dateTime',
     },
     {
       title: intl.formatMessage({ id: 'startDate', defaultMessage: 'Start Date' }),
@@ -159,6 +146,8 @@ const SubscriptionTableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Actions" />,
       dataIndex: 'option',
       valueType: 'option',
+      width: 150,
+      fixed: 'right',
       render: (_, record) => [
         <ActionButton
           key="detail"
@@ -170,27 +159,15 @@ const SubscriptionTableList: React.FC = () => {
         >
           <FormattedMessage id="detail" defaultMessage="Detail" />
         </ActionButton>,
-        access.canUpdateSubscription && (
-          <ActionButton
-            key="edit"
-            type="edit"
-            onClick={() => {
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
-            }}
-          >
-            {intl.formatMessage({ id: 'edit' })}
-          </ActionButton>
-        ),
-        access.canDeleteSubscription && (
-          <DeleteLink
-            onOk={async () => {
-              await handleRemove([record._id!]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          />
-        ),
+        // access.canDeleteSubscription && (
+        //   <DeleteLink
+        //     onOk={async () => {
+        //       await handleRemove([record._id!]);
+        //       setSelectedRows([]);
+        //       actionRef.current?.reloadAndRest?.();
+        //     }}
+        //   />
+        // ),
       ],
     },
   ];

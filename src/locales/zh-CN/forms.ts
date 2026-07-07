@@ -480,4 +480,5 @@ export default {
   title: '群名',
   load_failed: '加载失败',
   single_pannel: '面板',
+  timeout: '超时',
 };

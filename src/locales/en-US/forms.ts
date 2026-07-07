@@ -384,4 +384,5 @@ export default {
   title: 'Group Name',
   load_failed: 'Load failed',
   single_pannel: 'Single Pannel',
+  timeout: 'Timeout',
 };
