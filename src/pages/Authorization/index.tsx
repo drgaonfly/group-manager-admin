@@ -169,18 +169,18 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'user_count', defaultMessage: '用户数量' }),
-      dataIndex: 'botUserConfigs',
+      dataIndex: 'botUserConfigsCount',
       hideInSearch: true,
-      renderText: (botUserConfigs) => {
-        return botUserConfigs.length;
+      renderText: (botUserConfigsCount) => {
+        return botUserConfigsCount || 0;
       },
     },
     {
       title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
-      dataIndex: 'groups',
+      dataIndex: 'groupsCount',
       hideInSearch: true,
-      renderText: (groups) => {
-        return groups.length;
+      renderText: (groupsCount) => {
+        return groupsCount || 0;
       },
     },
     // owner
