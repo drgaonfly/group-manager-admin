@@ -12,7 +12,6 @@ import {
   SmileOutlined,
   SafetyOutlined,
   BarChartOutlined,
-  IdcardOutlined,
   CalendarOutlined,
   TrophyOutlined,
   AuditOutlined,
@@ -102,17 +101,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ currentRow, currentUser }) =>
       color: '#1677ff',
       enabled: !!currentUser?.speech_static,
       desc: '统计群内成员发言并发放积分',
-    },
-    {
-      key: 'canReportMemberNameUpdated',
-      label: intl.formatMessage({
-        id: 'canReportMemberNameUpdated',
-        defaultMessage: '名称变更播报',
-      }),
-      icon: <IdcardOutlined />,
-      color: '#722ed1',
-      enabled: !!currentUser?.reportGroupMemberNameUpdated,
-      desc: '成员修改昵称时发送通知',
     },
     {
       key: 'canCheckIn',

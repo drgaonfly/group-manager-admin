@@ -23,18 +23,15 @@ const ServiceLink: React.FC = () => {
 
   const handleSubmit = async (values: {
     groupMessage: boolean;
-    keyboardConfig: boolean;
     speech_static: boolean;
     groupWelcome: boolean;
     channelPost: boolean;
     groupVerify: boolean;
-    reportGroupMemberNameUpdated: boolean;
     replyRule: boolean;
     checkinRule: boolean;
     lotteryRule: boolean;
     auctionRule: boolean;
     adRemoval: boolean;
-    rankConferral: boolean;
     recharge: boolean;
     success: boolean;
     redPacket: boolean;
@@ -95,19 +92,16 @@ const ServiceLink: React.FC = () => {
             onFinish={handleSubmit}
             initialValues={{
               groupMessage: currentUser?.groupMessage || false,
-              keyboardConfig: currentUser?.keyboardConfig || false,
+
               speech_static: currentUser?.speech_static || false,
               groupWelcome: currentUser?.groupWelcome || false,
               channelPost: currentUser?.channelPost || false,
               groupVerify: currentUser?.groupVerify || false,
-              reportGroupMemberNameUpdated: currentUser?.reportGroupMemberNameUpdated || false,
               replyRule: currentUser?.replyRule || false,
               checkinRule: currentUser?.checkinRule || false,
               lotteryRule: currentUser?.lotteryRule || false,
               auctionRule: currentUser?.auctionRule || false,
               adRemoval: currentUser?.adRemoval || false,
-              rankConferral: currentUser?.rankConferral || false,
-              recharge: currentUser?.recharge || false,
               success: currentUser?.success || false,
               redPacket: currentUser?.redPacket || false,
               availableBotCount: currentUser?.availableBotCount || 0,
@@ -173,17 +167,6 @@ const ServiceLink: React.FC = () => {
               tooltip={intl.formatMessage({
                 id: 'groupVerify.tooltip',
                 defaultMessage: '开启后，新成员加入群组时需要通过验证问题才能加入',
-              })}
-            />
-            <ProFormSwitch
-              name="reportGroupMemberNameUpdated"
-              label={intl.formatMessage({
-                id: 'reportGroupMemberNameUpdated',
-                defaultMessage: '群成员改名通知',
-              })}
-              tooltip={intl.formatMessage({
-                id: 'reportGroupMemberNameUpdated.tooltip',
-                defaultMessage: '开启后，群成员修改用户名、名字或姓氏时会在群里通知',
               })}
             />
             <ProFormSwitch
@@ -311,18 +294,6 @@ const ServiceLink: React.FC = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label={intl.formatMessage({ id: 'keyboardConfig', defaultMessage: '自定义键盘' })}
-            >
-              {renderStatusTag(currentUser?.keyboardConfig || false)}
-              <Text type="secondary" style={{ marginLeft: 16 }}>
-                {intl.formatMessage({
-                  id: 'keyboardConfig.tooltip',
-                  defaultMessage: '开启后，可以在机器人配置中自定义 Telegram 键盘按钮',
-                })}
-              </Text>
-            </Descriptions.Item>
-
-            <Descriptions.Item
               label={intl.formatMessage({ id: 'speech_static', defaultMessage: '群组内发言统计' })}
             >
               {renderStatusTag(currentUser?.speech_static || false)}
@@ -366,21 +337,6 @@ const ServiceLink: React.FC = () => {
                 {intl.formatMessage({
                   id: 'groupVerify.tooltip',
                   defaultMessage: '开启后，新成员加入群组时需要通过验证问题才能加入',
-                })}
-              </Text>
-            </Descriptions.Item>
-
-            <Descriptions.Item
-              label={intl.formatMessage({
-                id: 'reportGroupMemberNameUpdated',
-                defaultMessage: '群成员改名通知',
-              })}
-            >
-              {renderStatusTag(currentUser?.reportGroupMemberNameUpdated || false)}
-              <Text type="secondary" style={{ marginLeft: 16 }}>
-                {intl.formatMessage({
-                  id: 'reportGroupMemberNameUpdated.tooltip',
-                  defaultMessage: '开启后，群成员修改用户名、名字或姓氏时会在群里通知',
                 })}
               </Text>
             </Descriptions.Item>
@@ -457,21 +413,6 @@ const ServiceLink: React.FC = () => {
                   id: 'adRemoval.tooltip',
                   defaultMessage:
                     '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
-                })}
-              </Text>
-            </Descriptions.Item>
-
-            <Descriptions.Item
-              label={intl.formatMessage({
-                id: 'recharge',
-                defaultMessage: '充值',
-              })}
-            >
-              {renderStatusTag(currentUser?.recharge || false)}
-              <Text type="secondary" style={{ marginLeft: 16 }}>
-                {intl.formatMessage({
-                  id: 'recharge.tooltip',
-                  defaultMessage: '开启后，代理可以为其下的机器人开启充值功能',
                 })}
               </Text>
             </Descriptions.Item>

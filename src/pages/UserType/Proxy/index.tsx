@@ -180,10 +180,6 @@ const TableList: React.FC = () => {
             enabled: record.channelPost,
           },
           {
-            name: intl.formatMessage({ id: 'reportGroupMemberNameUpdated' }),
-            enabled: record.reportGroupMemberNameUpdated,
-          },
-          {
             name: intl.formatMessage({ id: 'lotteryRule' }),
             enabled: record.lotteryRule,
           },

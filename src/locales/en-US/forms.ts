@@ -249,7 +249,6 @@ export default {
   groupWelcome: 'Group Welcome',
   groupVerify: 'Group Verify',
   channelPost: 'Channel Post',
-  reportGroupMemberNameUpdated: 'Report Group Member Name Updated',
   usdt_balance_before: 'before charge',
   usdt_balance_after: 'after charge',
 
