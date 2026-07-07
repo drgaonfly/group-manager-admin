@@ -286,7 +286,7 @@ const TableList: React.FC = () => {
       valueType: 'option',
       fixed: 'right',
       render: (_, record) => [
-        access.canUpdateBot && (
+        (access.canSuperAdmin || (access.canUpdateBot && record.type !== 'public')) && (
           <ActionButton
             key="configure"
             type="configure"
@@ -334,7 +334,7 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="single_pannel" defaultMessage="single_pannel" />
         </ActionButton>,
-        access.canUpdateBot && (
+        (access.canSuperAdmin || (access.canUpdateBot && record.type !== 'public')) && (
           <ActionButton
             key="edit"
             type="edit"
@@ -348,7 +348,7 @@ const TableList: React.FC = () => {
             {intl.formatMessage({ id: 'edit' })}
           </ActionButton>
         ),
-        access.canDeleteBot && (
+        (access.canSuperAdmin || (access.canDeleteBot && record.type !== 'public')) && (
           <DeleteLink
             onOk={async () => {
               await handleRemove([record._id!]);

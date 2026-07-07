@@ -10,7 +10,6 @@ import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
-import SubscriptionPlan from '@/enums/subscriptionPlan';
 
 const STATUS_TAG: Record<string, { color: string; text: string }> = {
   pending: { color: 'processing', text: '待付款' },
@@ -61,22 +60,30 @@ const SubscriptionTableList: React.FC = () => {
 
   const columns: ProColumns<API.ItemData>[] = [
     {
-      title: intl.formatMessage({ id: 'id', defaultMessage: 'ID' }),
-      dataIndex: 'id',
+      title: intl.formatMessage({ id: 'bot', defaultMessage: '机器人' }),
+      dataIndex: 'bot',
       hideInSearch: true,
+      render: (_, record) => {
+        return record.bot?.botName || '-';
+      },
     },
     {
       title: intl.formatMessage({ id: 'user', defaultMessage: 'Bot User' }),
       dataIndex: 'botUser',
+      hideInSearch: true,
       render: (_, record) => {
-        return record.botUser.firstName + ' ' + record.botUser.lastName;
+        return (
+          record.botUser?.userName ||
+          record.botUser?.firstName + ' ' + record.botUser?.lastName ||
+          '-'
+        );
       },
     },
     {
-      title: intl.formatMessage({ id: 'plan', defaultMessage: 'Plan' }),
-      dataIndex: 'plan',
+      title: intl.formatMessage({ id: 'months', defaultMessage: '订阅月数' }),
+      dataIndex: 'months',
       hideInSearch: true,
-      valueEnum: SubscriptionPlan,
+      render: (months) => `${months} 个月`,
     },
     {
       title: intl.formatMessage({ id: 'status', defaultMessage: 'Status' }),
