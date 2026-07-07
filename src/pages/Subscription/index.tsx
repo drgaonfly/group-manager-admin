@@ -5,17 +5,13 @@ import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-componen
 import { FormattedMessage, useAccess } from '@umijs/max';
 import { message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import dayjs from 'dayjs';
 import Update from './components/Update';
 import Show from './components/Show';
 import DeleteButton from '@/components/DeleteButton';
 import ActionButton from '@/components/ActionButton';
-
-const STATUS_TAG: Record<string, { color: string; text: string }> = {
-  pending: { color: 'processing', text: '待付款' },
-  paid: { color: 'success', text: '已付款' },
-  expired: { color: 'default', text: '已到期' },
-  timeout: { color: 'error', text: '订单超时' },
-};
+import SubscriptionTag from '@/enums/subscriptionTag';
+import Statistics from './components/Statistics';
 
 const handleUpdate = async (fields: any) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
@@ -49,12 +45,15 @@ const handleRemove = async (ids: any) => {
 
 const SubscriptionTableList: React.FC = () => {
   const intl = useIntl();
+  const STATUS_TAG = SubscriptionTag();
   const [updateModalOpen, handleUpdateModalOpen] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [activeKey, setActiveKey] = useState<string | undefined>('');
+  const [subscriptionData, setSubscriptionData] = useState<any[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(dayjs());
   const access = useAccess();
 
   const columns: ProColumns<API.ItemData>[] = [
@@ -173,12 +172,25 @@ const SubscriptionTableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
-      <ProTable<API.ItemData, API.PageParams>
-        headerTitle={intl.formatMessage({
+    <PageContainer
+      header={{
+        title: intl.formatMessage({
           id: 'subscription_list',
           defaultMessage: 'Subscription List',
-        })}
+        }),
+      }}
+    >
+      <Statistics
+        data={subscriptionData}
+        selectedMonth={selectedMonth}
+        onMonthChange={(date) => {
+          setSelectedMonth(date || dayjs());
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+      />
+      <ProTable<API.ItemData, API.PageParams>
         actionRef={actionRef}
         rowKey="_id"
         toolbar={{
@@ -215,9 +227,19 @@ const SubscriptionTableList: React.FC = () => {
             },
           },
         }}
-        request={(params, sort, filter) =>
-          queryList('/subscriptions', { ...params, status: activeKey }, sort, filter)
-        }
+        request={async (params, sort, filter) => {
+          const result = await queryList(
+            '/subscriptions',
+            { ...params, status: activeKey },
+            sort,
+            filter,
+          );
+          // 保存原始数据供 Statistics 组件使用
+          if (result.data) {
+            setSubscriptionData(result.data);
+          }
+          return result;
+        }}
         columns={columns}
         rowSelection={
           access.canUpdateSubscription && {
