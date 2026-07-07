@@ -188,7 +188,7 @@ const TableList: React.FC = () => {
       title: intl.formatMessage({ id: 'owner', defaultMessage: 'Owner' }),
       dataIndex: 'owner',
       hideInSearch: true,
-      hideInTable: false,
+      hideInTable: !access.canSuperAdmin,
       align: 'center',
       width: 160,
       render: (_, record) => {
@@ -202,19 +202,17 @@ const TableList: React.FC = () => {
             ) : (
               <span style={{ color: '#ccc', marginRight: 4 }}>未设置</span>
             )}
-            {access.canSuperAdmin && (
-              <ActionButton
-                key="setOwner"
-                type="edit"
-                onClick={() => {
-                  setCurrentRow(record);
-                  setAddOwnerModalVisible(true);
-                }}
-              >
-                {intl.formatMessage({ id: 'set_owner', defaultMessage: '设置' })}
-              </ActionButton>
-            )}
-            {owner && access.canSuperAdmin && (
+            <ActionButton
+              key="setOwner"
+              type="edit"
+              onClick={() => {
+                setCurrentRow(record);
+                setAddOwnerModalVisible(true);
+              }}
+            >
+              {intl.formatMessage({ id: 'set_owner', defaultMessage: '设置' })}
+            </ActionButton>
+            {owner && (
               <ActionButton
                 key="removeOwner"
                 type="delete"
@@ -245,7 +243,12 @@ const TableList: React.FC = () => {
       valueType: 'password',
       hideInSearch: true,
       copyable: true,
-      hideInTable: !access.canSuperAdmin,
+      render: (_, record: any) => {
+        if (record.type === 'public' && !access.canSuperAdmin) {
+          return '***';
+        }
+        return record.token;
+      },
     },
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: '是否在线' }),
@@ -261,7 +264,7 @@ const TableList: React.FC = () => {
           checkedChildren={intl.formatMessage({ id: 'platform.online' })}
           unCheckedChildren={intl.formatMessage({ id: 'platform.offline' })}
           checked={record.isOnline}
-          disabled={!access.canSuperAdmin}
+          disabled={record.type === 'public' && !access.canSuperAdmin}
           onChange={async () => {
             await handleUpdate({ _id: record._id, isOnline: !record.isOnline });
             if (actionRef.current) {
