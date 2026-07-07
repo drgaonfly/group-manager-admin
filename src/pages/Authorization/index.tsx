@@ -202,17 +202,19 @@ const TableList: React.FC = () => {
             ) : (
               <span style={{ color: '#ccc', marginRight: 4 }}>未设置</span>
             )}
-            <ActionButton
-              key="setOwner"
-              type="edit"
-              onClick={() => {
-                setCurrentRow(record);
-                setAddOwnerModalVisible(true);
-              }}
-            >
-              {intl.formatMessage({ id: 'set_owner', defaultMessage: '设置' })}
-            </ActionButton>
-            {owner && (
+            {access.canSuperAdmin && (
+              <ActionButton
+                key="setOwner"
+                type="edit"
+                onClick={() => {
+                  setCurrentRow(record);
+                  setAddOwnerModalVisible(true);
+                }}
+              >
+                {intl.formatMessage({ id: 'set_owner', defaultMessage: '设置' })}
+              </ActionButton>
+            )}
+            {owner && access.canSuperAdmin && (
               <ActionButton
                 key="removeOwner"
                 type="delete"
