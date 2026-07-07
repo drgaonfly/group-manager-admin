@@ -188,7 +188,6 @@ export default {
   botUser: '机器人用户',
   show_transactions: '显示交易',
   expiresAt: '到期时间',
-  show_payments: '显示支付',
   operators: '操作员',
   group_list: '群组列表',
   paymentAmount: '实际支付金额',

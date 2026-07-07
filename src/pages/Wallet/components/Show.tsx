@@ -17,7 +17,7 @@ const Show: React.FC<Props> = (props) => {
   const filteredColumns = columns
     .filter((col) => col.dataIndex !== 'option')
     .filter((_, index) => index !== 3);
-  const [paymentPagination, setPaymentPagination] = useState<{ current: number; pageSize: number }>(
+  const [receiptPagination, setReceiptPagination] = useState<{ current: number; pageSize: number }>(
     {
       current: 1,
       pageSize: 5,
@@ -50,8 +50,8 @@ const Show: React.FC<Props> = (props) => {
           />
           <ReceiptTable
             receipts={currentRow?.receipts || []}
-            pagination={paymentPagination}
-            setPagination={setPaymentPagination}
+            pagination={receiptPagination}
+            setPagination={setReceiptPagination}
           />
         </>
       )}

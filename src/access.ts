@@ -179,16 +179,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     canGetSubscription:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/subscriptions', 'GET')),
 
-    // Payment权限
-    canCreatePayment:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/payments', 'POST')),
-    canDeletePayment:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/payments', 'DELETE')),
-    canUpdatePayment:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/payments/:id', 'PUT')),
-    canGetPayment:
-      currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/payments', 'GET')),
-
     // BotMessage
     canCreateBotMessage:
       currentUser && (currentUser.isAdmin || checkPermission(currentUser, '/bot-messages', 'POST')),

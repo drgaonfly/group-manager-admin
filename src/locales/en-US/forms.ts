@@ -151,7 +151,6 @@ export default {
   usdt_amount: 'USDT Amount',
   botUser: 'Bot User',
   show_transactions: 'Show Transactions',
-  show_payments: 'Show Payments',
   operators: 'Operators',
   group_list: 'Group List',
   paymentAmount: ' Payment Actually',
