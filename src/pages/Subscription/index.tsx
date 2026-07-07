@@ -12,6 +12,13 @@ import DeleteLink from '@/components/DeleteLink';
 import ActionButton from '@/components/ActionButton';
 import SubscriptionPlan from '@/enums/subscriptionPlan';
 
+const STATUS_TAG: Record<string, { color: string; text: string }> = {
+  pending: { color: 'processing', text: '待付款' },
+  paid: { color: 'success', text: '已付款' },
+  expired: { color: 'default', text: '已到期' },
+  timeout: { color: 'error', text: '订单超时' },
+};
+
 const handleUpdate = async (fields: any) => {
   const hide = message.loading(<FormattedMessage id="updating" defaultMessage="Updating..." />);
   try {
@@ -75,46 +82,69 @@ const SubscriptionTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'status', defaultMessage: 'Status' }),
       dataIndex: 'status',
       hideInSearch: true,
-      render: (_, record) =>
-        intl.formatMessage({
-          id: `${record.status}`,
-        }),
+      render: (_, record) => {
+        const status = record.status || 'pending';
+        const cfg = STATUS_TAG[status] ?? { color: 'default', text: status };
+        return <Tag color={cfg.color}>{cfg.text}</Tag>;
+      },
     },
     {
-      title: intl.formatMessage({ id: 'isAuto', defaultMessage: 'Auto Renewal' }),
-      dataIndex: 'isAuto',
+      title: intl.formatMessage({ id: 'amount', defaultMessage: 'Amount' }),
+      dataIndex: 'amount',
       hideInSearch: true,
-      render: (isAuto) => (
-        <Tag color={isAuto ? 'green' : 'default'}>
-          {intl.formatMessage({
-            id: isAuto ? 'subscription_autoRenewal' : 'subscription_manualRenewal',
-            defaultMessage: isAuto ? 'Auto Renewal' : 'Manual Renewal',
-          })}
-        </Tag>
-      ),
+      render: (amount) => `${amount} USDT`,
     },
-    // {
-    //   title: intl.formatMessage({ id: 'isTrial', defaultMessage: 'Trial' }),
-    //   dataIndex: 'isTrial',
-    //   hideInSearch: true,
-    //   render: (isTrial) => (
-    //     <Tag color={isTrial ? 'blue' : 'default'}>
-    //       {intl.formatMessage({
-    //         id: isTrial ? 'subscription_trial' : 'subscription_regular',
-    //         defaultMessage: isTrial ? 'Trial' : 'Regular',
-    //       })}
-    //     </Tag>
-    //   ),
-    // },
     {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'CreatedAt' }),
-      dataIndex: 'createdAt',
+      title: intl.formatMessage({ id: 'paidAmount', defaultMessage: 'Paid Amount' }),
+      dataIndex: 'paidAmount',
+      hideInSearch: true,
+      render: (paidAmount) => (paidAmount ? `${paidAmount} USDT` : '-'),
+    },
+    {
+      title: intl.formatMessage({ id: 'toAddress', defaultMessage: 'To Address' }),
+      dataIndex: 'toAddress',
+      hideInSearch: true,
+      copyable: true,
+      ellipsis: true,
+    },
+    {
+      title: intl.formatMessage({ id: 'txHash', defaultMessage: 'Tx Hash' }),
+      dataIndex: 'txHash',
+      hideInSearch: true,
+      copyable: true,
+      ellipsis: true,
+      render: (txHash) => txHash || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'orderExpiredAt', defaultMessage: 'Order Expired At' }),
+      dataIndex: 'orderExpiredAt',
       hideInSearch: true,
       valueType: 'dateTime',
     },
     {
-      title: intl.formatMessage({ id: 'expiredAt', defaultMessage: 'ExpiredAt' }),
-      dataIndex: 'expiredAt',
+      title: intl.formatMessage({ id: 'startDate', defaultMessage: 'Start Date' }),
+      dataIndex: 'startDate',
+      hideInSearch: true,
+      valueType: 'dateTime',
+      render: (_, record) => record.startDate || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'endDate', defaultMessage: 'End Date' }),
+      dataIndex: 'endDate',
+      hideInSearch: true,
+      valueType: 'dateTime',
+      render: (_, record) => record.endDate || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'paidAt', defaultMessage: 'Paid At' }),
+      dataIndex: 'paidAt',
+      hideInSearch: true,
+      valueType: 'dateTime',
+      render: (_, record) => record.paidAt || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'Created At' }),
+      dataIndex: 'createdAt',
       hideInSearch: true,
       valueType: 'dateTime',
     },
@@ -177,16 +207,20 @@ const SubscriptionTableList: React.FC = () => {
                 key: '',
               },
               {
-                label: <FormattedMessage id="active" defaultMessage="active" />,
-                key: 'active',
+                label: <FormattedMessage id="pending" defaultMessage="pending" />,
+                key: 'pending',
+              },
+              {
+                label: <FormattedMessage id="paid" defaultMessage="paid" />,
+                key: 'paid',
               },
               {
                 label: <FormattedMessage id="expired" defaultMessage="expired" />,
                 key: 'expired',
               },
               {
-                label: <FormattedMessage id="canceled" defaultMessage="canceled" />,
-                key: 'canceled',
+                label: <FormattedMessage id="timeout" defaultMessage="timeout" />,
+                key: 'timeout',
               },
             ],
             onChange: (key: any) => {
