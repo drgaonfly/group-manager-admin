@@ -224,16 +224,19 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
         styles={{
           body: { minHeight: '60vh', paddingTop: 24 },
         }}
+        className="md:top-5"
         destroyOnClose
       >
-        <Tabs
-          tabPosition="left"
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          items={tabItems}
-          tabBarStyle={{ minWidth: 140 }}
-          style={{ minHeight: '60vh' }}
-        />
+        <div className="md:block">
+          <Tabs
+            tabPosition={window.innerWidth < 768 ? 'top' : 'left'}
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            items={tabItems}
+            tabBarStyle={{ minWidth: window.innerWidth < 768 ? 'auto' : 140 }}
+            style={{ minHeight: '60vh' }}
+          />
+        </div>
       </Modal>
 
       {/* 群组功能管理弹窗 */}

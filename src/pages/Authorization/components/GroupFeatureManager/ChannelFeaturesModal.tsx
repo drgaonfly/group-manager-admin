@@ -59,10 +59,20 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
       onCancel={onClose}
       footer={null}
       width="100%"
-      style={{ maxWidth: 1100, top: 20, margin: 0 }}
-      styles={{ body: { minHeight: '50vh', paddingTop: 16 } }}
+      style={{ maxWidth: 1100, top: 0, margin: 0, paddingBottom: 0 }}
+      styles={{
+        body: { minHeight: '50vh', paddingTop: 16 },
+        content: {
+          height: '100vh',
+          maxHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 0, // 移动端无圆角
+        },
+      }}
       destroyOnClose
-      centered
+      centered={window.innerWidth >= 768}
+      className="md:!top-5 md:!rounded-lg [&_.ant-modal-content]:rounded-none md:[&_.ant-modal-content]:rounded-lg"
     >
       {tabItems.length === 0 ? (
         <div className="text-center text-gray-400 py-15">
