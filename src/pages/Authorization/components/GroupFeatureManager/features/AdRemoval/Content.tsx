@@ -6,7 +6,7 @@ import { request } from '@umijs/max';
 import { message } from 'antd';
 import useFeatureList from '../../../hooks/useFeatureList';
 import FeatureListContainer from '../../components/FeatureListContainer';
-import AdRemovalForm from './AdRemovalForm';
+import AdRemovalForm from './Form';
 import { formatDuration } from './DurationInput';
 
 interface Props {

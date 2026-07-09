@@ -3,7 +3,7 @@ import { Modal, Tabs, Row, Col } from 'antd';
 import { useIntl } from '@umijs/max';
 import { MessageOutlined, TeamOutlined } from '@ant-design/icons';
 
-import ChannelPostGroupContent from './features/ChannelPost/ChannelPostGroupContent';
+import ChannelPost from './features/ChannelPost/Content';
 
 interface ChannelFeaturesModalProps {
   open: boolean;
@@ -35,7 +35,7 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'channel_post', defaultMessage: '频道推广' })}
           </span>
         ),
-        children: <ChannelPostGroupContent open={open} bot={bot} channel={channel} />,
+        children: <ChannelPost open={open} bot={bot} channel={channel} />,
       });
     }
 

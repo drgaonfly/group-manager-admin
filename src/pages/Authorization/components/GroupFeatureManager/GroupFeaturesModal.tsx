@@ -16,16 +16,16 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 
-import GroupMessageGroupContent from './features/GroupMessage/GroupMessageGroupContent';
-import ReplyRuleGroupContent from './features/ReplyRule/ReplyRuleGroupContent';
-import AdRemovalGroupContent from './features/AdRemoval/AdRemovalGroupContent';
-import GroupWelcomeGroupContent from './features/GroupWelcome/GroupWelcomeGroupContent';
-import GroupVerifyGroupContent from './features/GroupVerify/GroupVerifyGroupContent';
-import SpeechStatisticsGroupContent from './features/SpeechStatistics/SpeechStatisticsGroupContent';
-import CheckinRuleGroupContent from './features/CheckinRule/CheckinRuleGroupContent';
-import LotteryRuleGroupContent from './features/LotteryRule/LotteryRuleGroupContent';
-import AuctionRuleGroupContent from './features/AuctionRule/AuctionRuleGroupContent';
-import ServiceMessageGroupContent from './features/ServiceMessage/ServiceMessageGroupContent';
+import GroupMessage from './features/GroupMessage/Content';
+import ReplyRule from './features/ReplyRule/Content';
+import AdRemoval from './features/AdRemoval/Content';
+import GroupWelcome from './features/GroupWelcome/Content';
+import GroupVerify from './features/GroupVerify/Content';
+import SpeechStatistics from './features/SpeechStatistics/Content';
+import CheckinRule from './features/CheckinRule/Content';
+import LotteryRule from './features/LotteryRule/Content';
+import AuctionRule from './features/AuctionRule/Content';
+import ServiceMessage from './features/ServiceMessage/Content';
 
 interface GroupFeaturesModalProps {
   open: boolean;
@@ -58,7 +58,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'group_message', defaultMessage: '群发消息' })}
           </span>
         ),
-        children: <GroupMessageGroupContent open={open} bot={bot} group={group} />,
+        children: <GroupMessage open={open} bot={bot} group={group} />,
       });
     }
 
@@ -70,7 +70,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             <KeyOutlined /> {intl.formatMessage({ id: 'reply_rule', defaultMessage: '关键词回复' })}
           </span>
         ),
-        children: <ReplyRuleGroupContent open={open} bot={bot} group={group} />,
+        children: <ReplyRule open={open} bot={bot} group={group} />,
       });
     }
 
@@ -82,7 +82,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             <StopOutlined /> {intl.formatMessage({ id: 'ad_removal', defaultMessage: '去除广告' })}
           </span>
         ),
-        children: <AdRemovalGroupContent open={open} bot={bot} group={group} />,
+        children: <AdRemoval open={open} bot={bot} group={group} />,
       });
     }
 
@@ -95,7 +95,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'service_message', defaultMessage: '服务消息' })}
           </span>
         ),
-        children: <ServiceMessageGroupContent open={open} bot={bot} group={group} />,
+        children: <ServiceMessage open={open} bot={bot} group={group} />,
       });
     }
 
@@ -108,7 +108,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'group_welcome', defaultMessage: '群欢迎' })}
           </span>
         ),
-        children: <GroupWelcomeGroupContent open={open} bot={bot} group={group} />,
+        children: <GroupWelcome open={open} bot={bot} group={group} />,
       });
     }
 
@@ -121,7 +121,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'group_verify', defaultMessage: '群组验证' })}
           </span>
         ),
-        children: <GroupVerifyGroupContent open={open} bot={bot} group={group} />,
+        children: <GroupVerify open={open} bot={bot} group={group} />,
       });
     }
 
@@ -134,7 +134,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'speech_statistics', defaultMessage: '发言统计' })}
           </span>
         ),
-        children: <SpeechStatisticsGroupContent open={open} bot={bot} group={group} />,
+        children: <SpeechStatistics open={open} bot={bot} group={group} />,
       });
     }
 
@@ -147,7 +147,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'checkin_rule', defaultMessage: '群签到' })}
           </span>
         ),
-        children: <CheckinRuleGroupContent open={open} bot={bot} group={group} />,
+        children: <CheckinRule open={open} bot={bot} group={group} />,
       });
     }
 
@@ -160,7 +160,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             {intl.formatMessage({ id: 'lottery_rule', defaultMessage: '群抽奖' })}
           </span>
         ),
-        children: <LotteryRuleGroupContent open={open} bot={bot} group={group} />,
+        children: <LotteryRule open={open} bot={bot} group={group} />,
       });
     }
 
@@ -172,7 +172,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
             <AuditOutlined /> {intl.formatMessage({ id: 'auction_rule', defaultMessage: '群竞拍' })}
           </span>
         ),
-        children: <AuctionRuleGroupContent open={open} bot={bot} group={group} />,
+        children: <AuctionRule open={open} bot={bot} group={group} />,
       });
     }
 

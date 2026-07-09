@@ -179,50 +179,35 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
     );
   };
 
-  // 是否有任何群组功能启用 — 只看平台授予代理的权限，不再检查 Bot 自身开关
-  const hasGroupFeatures =
-    currentUser?.groupMessage ||
-    currentUser?.channelPost ||
-    currentUser?.replyRule ||
-    currentUser?.adRemoval ||
-    currentUser?.groupWelcome ||
-    currentUser?.groupVerify ||
-    currentUser?.speech_static ||
-    currentUser?.checkinRule ||
-    currentUser?.lotteryRule ||
-    currentUser?.auctionRule ||
-    currentUser?.serviceMessage;
-
   const tabItems = useMemo(() => {
     const items: any[] = [];
 
     // 群组管理 Tab - 有群组功能时显示
-    if (hasGroupFeatures) {
-      items.push({
-        key: 'groups',
-        label: (
-          <span>
-            <TeamOutlined />{' '}
-            {intl.formatMessage({ id: 'group_management', defaultMessage: '群组管理' })}
-          </span>
-        ),
-        children: renderGroupsTab(),
-      });
 
-      items.push({
-        key: 'channels',
-        label: (
-          <span>
-            <NotificationOutlined />{' '}
-            {intl.formatMessage({ id: 'channel_management', defaultMessage: '频道管理' })}
-          </span>
-        ),
-        children: renderChannelsTab(),
-      });
-    }
+    items.push({
+      key: 'groups',
+      label: (
+        <span>
+          <TeamOutlined />{' '}
+          {intl.formatMessage({ id: 'group_management', defaultMessage: '群组管理' })}
+        </span>
+      ),
+      children: renderGroupsTab(),
+    });
+
+    items.push({
+      key: 'channels',
+      label: (
+        <span>
+          <NotificationOutlined />{' '}
+          {intl.formatMessage({ id: 'channel_management', defaultMessage: '频道管理' })}
+        </span>
+      ),
+      children: renderChannelsTab(),
+    });
 
     return items;
-  }, [currentRow, currentUser, onBotUpdate, hasGroupFeatures]);
+  }, [currentRow, currentUser, onBotUpdate]);
 
   return (
     <>

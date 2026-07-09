@@ -13,7 +13,7 @@ import moment from 'moment';
 import { request } from '@umijs/max';
 import useFeatureList from '../../../hooks/useFeatureList';
 import FeatureListContainer from '../../components/FeatureListContainer';
-import AuctionForm from './AuctionForm';
+import AuctionForm from './Form';
 
 interface Props {
   open: boolean;

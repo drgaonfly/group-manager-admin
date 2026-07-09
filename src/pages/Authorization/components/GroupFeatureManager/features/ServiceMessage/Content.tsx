@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import FeatureListContainer from '../../components/FeatureListContainer';
 import useFeatureList from '../../../hooks/useFeatureList';
-import ServiceMessageForm from './ServiceMessageForm';
+import ServiceMessageForm from './Form';
 
 interface ServiceMessageConfigGroupContentProps {
   open: boolean;

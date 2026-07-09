@@ -14,7 +14,7 @@ import {
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import useFeatureList from '../../../hooks/useFeatureList';
-import CheckinRuleForm from './CheckinRuleForm';
+import CheckinRuleForm from './Form';
 
 interface Props {
   open: boolean;

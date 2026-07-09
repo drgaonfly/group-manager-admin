@@ -1,18 +1,21 @@
 import React from 'react';
-import { Switch, Space, Button, Popconfirm } from 'antd';
+import { Switch, Space, Button, Popconfirm, Tag } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useIntl } from '@umijs/max';
 import useFeatureList from '../../../hooks/useFeatureList';
 import FeatureListContainer from '../../components/FeatureListContainer';
 import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
-import GroupMessageForm from './GroupMessageForm';
+import ChannelPostForm from './Form';
 
 interface Props {
   open: boolean;
   bot: any;
-  group: any;
+  channel: any;
 }
 
-const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
+const ChannelPostGroupContent: React.FC<Props> = ({ open, bot, channel }) => {
+  const intl = useIntl();
+
   const {
     data,
     loading,
@@ -25,24 +28,29 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     handleStatusChange,
     fetchData,
   } = useFeatureList({
-    apiPath: '/group-messages',
+    apiPath: '/channel-posts',
     botId: bot?._id,
-    groupId: group?._id,
+    groupId: channel?._id,
     enabled: open,
+    deleteMode: 'batch',
+    statusField: 'isOnline',
   });
 
   const columns = [
     {
-      title: '内容',
+      title: intl.formatMessage({ id: 'content', defaultMessage: '内容' }),
       dataIndex: 'content',
-      width: 150,
       ellipsis: true,
       render: (text: string) => (
-        <div dangerouslySetInnerHTML={{ __html: text || '-' }} style={{ maxWidth: 240 }} />
+        <div
+          dangerouslySetInnerHTML={{ __html: text || '-' }}
+          title={text?.replace(/<[^>]+>/g, '') || ''}
+          style={{ maxWidth: 220 }}
+        />
       ),
     },
     {
-      title: '类型',
+      title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'sendType',
       width: 150,
       ellipsis: true,
@@ -50,32 +58,38 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         record.sendType === 'immediate' ? '立即发送' : '定时循环发送',
     },
     {
-      title: '间隔',
-      dataIndex: 'intervalTime',
+      title: intl.formatMessage({ id: 'interval', defaultMessage: '间隔' }),
+      dataIndex: 'interval',
       width: 80,
       render: formatInterval,
     },
     {
-      title: '时间窗口',
+      title: intl.formatMessage({ id: 'time_window', defaultMessage: '时间窗口' }),
       width: 150,
       render: (_: any, record: any) => formatTimeWindow(record),
     },
     {
-      title: '状态',
+      title: intl.formatMessage({ id: 'clear_last_post', defaultMessage: '清除上条' }),
+      dataIndex: 'isClearLastPost',
+      width: 80,
+      render: (val: boolean) => (val ? <Tag color="orange">是</Tag> : <Tag>否</Tag>),
+    },
+    {
+      title: intl.formatMessage({ id: 'status', defaultMessage: '状态' }),
       dataIndex: 'isOnline',
       width: 90,
       render: (_: any, record: any) => (
         <Switch
-          checkedChildren="启用"
-          unCheckedChildren="禁用"
+          checkedChildren={intl.formatMessage({ id: 'enabled', defaultMessage: '启用' })}
+          unCheckedChildren={intl.formatMessage({ id: 'disabled', defaultMessage: '禁用' })}
           checked={record.isOnline}
           onChange={(checked) => handleStatusChange(record, checked)}
         />
       ),
     },
     {
-      title: '操作',
-      width: 90,
+      title: intl.formatMessage({ id: 'pages.searchTable.titleOption', defaultMessage: '操作' }),
+      width: 100,
       render: (_: any, record: any) => (
         <Space size={0}>
           <Button
@@ -84,7 +98,10 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
             icon={<EditOutlined />}
             onClick={() => openEdit(record)}
           />
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+          <Popconfirm
+            title={intl.formatMessage({ id: 'confirm_delete', defaultMessage: '确定删除？' })}
+            onConfirm={() => handleDelete(record._id)}
+          >
             <Button type="link" danger size="small" icon={<DeleteOutlined />} />
           </Popconfirm>
         </Space>
@@ -107,25 +124,29 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
             </div>
           </div>
           <Switch
-            checkedChildren="启用"
-            unCheckedChildren="禁用"
+            checkedChildren={intl.formatMessage({ id: 'enabled', defaultMessage: '启用' })}
+            unCheckedChildren={intl.formatMessage({ id: 'disabled', defaultMessage: '禁用' })}
             checked={record.isOnline}
             onChange={(checked) => handleStatusChange(record, checked)}
             className="ml-2"
           />
         </div>
         <div className="flex items-center justify-between mt-3">
-          <div className="text-xs text-gray-500">
-            {record.intervalTime && <span>间隔: {formatInterval(record.intervalTime)}</span>}
+          <div className="text-xs text-gray-500 flex items-center gap-2">
+            {record.interval && <span>间隔: {formatInterval(record.interval)}</span>}
+            {record.isClearLastPost && <Tag color="orange">清除上条</Tag>}
           </div>
-          <Space size={0}>
+          <Space size={0} className="ml-2">
             <Button
               type="link"
               size="small"
               icon={<EditOutlined />}
               onClick={() => openEdit(record)}
             />
-            <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record._id)}>
+            <Popconfirm
+              title={intl.formatMessage({ id: 'confirm_delete', defaultMessage: '确定删除？' })}
+              onConfirm={() => handleDelete(record._id)}
+            >
               <Button type="link" danger size="small" icon={<DeleteOutlined />} />
             </Popconfirm>
           </Space>
@@ -140,19 +161,21 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         data={data}
         loading={loading}
         columns={columns}
+        createButtonText={intl.formatMessage({
+          id: 'add_channel_post',
+          defaultMessage: '新建推广',
+        })}
         onCreateClick={openCreate}
-        scroll={{ x: 600 }}
+        scroll={{ x: 800 }}
         renderMobileCard={renderMobileCard}
       />
 
-      <GroupMessageForm
+      <ChannelPostForm
         open={formOpen}
-        onCancel={(v) => {
-          if (!v) closeForm();
-        }}
+        onClose={closeForm}
         currentRow={bot}
+        fixedChannelId={channel?._id}
         editingRecord={editingRecord}
-        fixedGroupId={group?._id}
         onSuccess={() => {
           closeForm();
           fetchData();
@@ -162,4 +185,4 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
   );
 };
 
-export default GroupMessageGroupContent;
+export default ChannelPostGroupContent;

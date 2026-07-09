@@ -1,9 +1,10 @@
 import React from 'react';
-import { Switch, Space, Button, Popconfirm, Tag } from 'antd';
+import { Switch, Space, Button, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import useFeatureList from '../../../hooks/useFeatureList';
 import FeatureListContainer from '../../components/FeatureListContainer';
-import ReplyRuleForm from './ReplyRuleForm';
+import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
+import GroupMessageForm from './Form';
 
 interface Props {
   open: boolean;
@@ -11,7 +12,7 @@ interface Props {
   group: any;
 }
 
-const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
+const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
   const {
     data,
     loading,
@@ -24,7 +25,7 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     handleStatusChange,
     fetchData,
   } = useFeatureList({
-    apiPath: '/reply-rules',
+    apiPath: '/group-messages',
     botId: bot?._id,
     groupId: group?._id,
     enabled: open,
@@ -32,42 +33,32 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   const columns = [
     {
-      title: '关键词',
-      dataIndex: 'keyword',
-      width: 160,
-      render: (keywords: string[]) => {
-        const arr = Array.isArray(keywords) ? keywords : [keywords];
-        return (
-          <Space wrap size={[4, 4]}>
-            {arr.slice(0, 3).map((k, i) => (
-              <Tag key={i} color="blue">
-                {k}
-              </Tag>
-            ))}
-            {arr.length > 3 && <Tag>+{arr.length - 3}</Tag>}
-          </Space>
-        );
-      },
-    },
-    {
-      title: '模糊',
-      dataIndex: 'isFuzzy',
-      width: 60,
-      render: (v: boolean) => (v ? <Tag color="geekblue">模糊</Tag> : <Tag>精确</Tag>),
-    },
-    {
-      title: '回复内容',
+      title: '内容',
       dataIndex: 'content',
+      width: 150,
       ellipsis: true,
       render: (text: string) => (
-        <div dangerouslySetInnerHTML={{ __html: text || '-' }} style={{ maxWidth: 200 }} />
+        <div dangerouslySetInnerHTML={{ __html: text || '-' }} style={{ maxWidth: 240 }} />
       ),
     },
     {
-      title: '阅后即焚',
-      dataIndex: 'deleteAfterSeconds',
-      width: 90,
-      render: (v: number) => (v ? <Tag color="orange">{v}秒</Tag> : '-'),
+      title: '类型',
+      dataIndex: 'sendType',
+      width: 150,
+      ellipsis: true,
+      render: (_: any, record: any) =>
+        record.sendType === 'immediate' ? '立即发送' : '定时循环发送',
+    },
+    {
+      title: '间隔',
+      dataIndex: 'intervalTime',
+      width: 80,
+      render: formatInterval,
+    },
+    {
+      title: '时间窗口',
+      width: 150,
+      render: (_: any, record: any) => formatTimeWindow(record),
     },
     {
       title: '状态',
@@ -103,26 +94,16 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   // 移动端卡片渲染函数
   const renderMobileCard = (record: any) => {
-    const keywords = Array.isArray(record.keyword) ? record.keyword : [record.keyword];
     return (
       <>
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1 min-w-0">
-            <div className="text-sm text-gray-800 mb-1">
-              <Space wrap size={[4, 4]}>
-                {keywords.slice(0, 3).map((k: string, i: number) => (
-                  <Tag key={i} color="blue">
-                    {k}
-                  </Tag>
-                ))}
-                {keywords.length > 3 && <Tag>+{keywords.length - 3}</Tag>}
-              </Space>
-            </div>
-            <div className="text-xs text-gray-500 flex items-center gap-2">
-              <Tag color={record.isFuzzy ? 'geekblue' : 'default'}>
-                {record.isFuzzy ? '模糊' : '精确'}
-              </Tag>
-              {record.deleteAfterSeconds && <Tag color="orange">{record.deleteAfterSeconds}秒</Tag>}
+            <div
+              className="text-sm text-gray-800 mb-1"
+              dangerouslySetInnerHTML={{ __html: record.content || '-' }}
+            />
+            <div className="text-xs text-gray-500">
+              {record.sendType === 'immediate' ? '立即发送' : '定时循环发送'}
             </div>
           </div>
           <Switch
@@ -134,11 +115,10 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
           />
         </div>
         <div className="flex items-center justify-between mt-3">
-          <div
-            className="text-xs text-gray-600 flex-1 min-w-0 truncate"
-            dangerouslySetInnerHTML={{ __html: record.content || '-' }}
-          />
-          <Space size={0} className="ml-2">
+          <div className="text-xs text-gray-500">
+            {record.intervalTime && <span>间隔: {formatInterval(record.intervalTime)}</span>}
+          </div>
+          <Space size={0}>
             <Button
               type="link"
               size="small"
@@ -161,13 +141,13 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
         loading={loading}
         columns={columns}
         onCreateClick={openCreate}
-        scroll={{ x: 710 }}
+        scroll={{ x: 600 }}
         renderMobileCard={renderMobileCard}
       />
 
-      <ReplyRuleForm
+      <GroupMessageForm
         open={formOpen}
-        onOpenChange={(v) => {
+        onCancel={(v) => {
           if (!v) closeForm();
         }}
         currentRow={bot}
@@ -182,4 +162,4 @@ const ReplyRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
   );
 };
 
-export default ReplyRuleGroupContent;
+export default GroupMessageGroupContent;
