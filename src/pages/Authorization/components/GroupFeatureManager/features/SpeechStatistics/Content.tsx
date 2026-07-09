@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, message, Tag, Descriptions } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import SpeechStatisticsForm from './SpeechStatisticsForm';
+import SpeechStatisticsForm from './Form';
 
 interface Props {
   open: boolean;
