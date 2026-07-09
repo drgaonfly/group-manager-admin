@@ -207,6 +207,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'redPacket' }),
             enabled: record.success,
           },
+          {
+            name: intl.formatMessage({ id: 'serviceMessage', defaultMessage: '服务消息' }),
+            enabled: record.serviceMessage,
+          },
         ];
 
         return (

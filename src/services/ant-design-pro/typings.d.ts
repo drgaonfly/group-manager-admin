@@ -45,6 +45,7 @@ declare namespace API {
     adRemoval?: boolean;
     success?: boolean;
     redPacket?: boolean;
+    serviceMessage?: boolean;
   };
 
   // Example type definition

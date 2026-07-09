@@ -13,6 +13,7 @@ import {
   AuditOutlined,
   TeamOutlined,
   ClockCircleOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 
 import GroupMessageGroupContent from './GroupMessage/GroupMessageGroupContent';
@@ -24,6 +25,7 @@ import SpeechStatisticsGroupContent from './SpeechStatistics/SpeechStatisticsGro
 import CheckinRuleGroupContent from './CheckinRule/CheckinRuleGroupContent';
 import LotteryRuleGroupContent from './LotteryRule/LotteryRuleGroupContent';
 import AuctionRuleGroupContent from './AuctionRule/AuctionRuleGroupContent';
+import ServiceMessageConfigGroupContent from './ServiceMessage/ServiceMessageGroupContent';
 
 interface GroupFeaturesModalProps {
   open: boolean;
@@ -81,6 +83,19 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
           </span>
         ),
         children: <AdRemovalGroupContent open={open} bot={bot} group={group} />,
+      });
+    }
+
+    if (currentUser?.serviceMessage) {
+      items.push({
+        key: 'serviceMessage',
+        label: (
+          <span>
+            <DeleteOutlined />{' '}
+            {intl.formatMessage({ id: 'service_message', defaultMessage: '服务消息' })}
+          </span>
+        ),
+        children: <ServiceMessageConfigGroupContent open={open} bot={bot} group={group} />,
       });
     }
 

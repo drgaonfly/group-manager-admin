@@ -176,6 +176,10 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             label={intl.formatMessage({ id: 'redPacket', defaultMessage: '红包' })}
             name="redPacket"
           />
+          <ProFormSwitch
+            label={intl.formatMessage({ id: 'serviceMessage', defaultMessage: '服务消息' })}
+            name="serviceMessage"
+          />
         </ProForm.Group>
       </div>
 

@@ -32,6 +32,7 @@ const ServiceLink: React.FC = () => {
     lotteryRule: boolean;
     auctionRule: boolean;
     adRemoval: boolean;
+    serviceMessage: boolean;
     recharge: boolean;
     success: boolean;
     redPacket: boolean;
@@ -102,6 +103,7 @@ const ServiceLink: React.FC = () => {
               lotteryRule: currentUser?.lotteryRule || false,
               auctionRule: currentUser?.auctionRule || false,
               adRemoval: currentUser?.adRemoval || false,
+              serviceMessage: currentUser?.serviceMessage || false,
               success: currentUser?.success || false,
               redPacket: currentUser?.redPacket || false,
               availableBotCount: currentUser?.availableBotCount || 0,
@@ -223,6 +225,18 @@ const ServiceLink: React.FC = () => {
                 id: 'adRemoval.tooltip',
                 defaultMessage:
                   '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
+              })}
+            />
+            <ProFormSwitch
+              name="serviceMessage"
+              label={intl.formatMessage({
+                id: 'serviceMessage',
+                defaultMessage: '服务消息',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'serviceMessage.tooltip',
+                defaultMessage:
+                  '开启后，可以配置自动删除指定类型的服务消息（如新成员加入、群组信息修改等）',
               })}
             />
             <ProFormSwitch
@@ -413,6 +427,22 @@ const ServiceLink: React.FC = () => {
                   id: 'adRemoval.tooltip',
                   defaultMessage:
                     '开启后，代理可以为其下的机器人开启去除广告功能（自动删除广告消息等）',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'serviceMessage',
+                defaultMessage: '服务消息',
+              })}
+            >
+              {renderStatusTag(currentUser?.serviceMessage || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'serviceMessage.tooltip',
+                  defaultMessage:
+                    '开启后，可以配置自动删除指定类型的服务消息（如新成员加入、群组信息修改等）',
                 })}
               </Text>
             </Descriptions.Item>
