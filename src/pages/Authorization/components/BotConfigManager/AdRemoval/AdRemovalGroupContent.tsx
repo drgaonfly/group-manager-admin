@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
 import { message } from 'antd';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import FeatureListContainer from '../components/FeatureListContainer';
 import AdRemovalForm from './AdRemovalForm';
 import { formatDuration } from './DurationInput';

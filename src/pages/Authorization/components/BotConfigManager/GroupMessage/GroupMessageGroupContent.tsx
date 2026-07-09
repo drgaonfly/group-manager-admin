@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Space, Button, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import FeatureListContainer from '../components/FeatureListContainer';
 import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';
 import GroupMessageForm from './GroupMessageForm';

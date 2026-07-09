@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Space, Switch, Popconfirm, Tag } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import FeatureListContainer from '../components/FeatureListContainer';
 import ChannelPostForm from './ChannelPostForm';
 import { formatInterval, formatTimeWindow } from '@/utils/intervalUtils';

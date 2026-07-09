@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Tag, Space, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import FeatureListContainer from '../components/FeatureListContainer';
 import SpeechStatisticsForm from './SpeechStatisticsForm';
 

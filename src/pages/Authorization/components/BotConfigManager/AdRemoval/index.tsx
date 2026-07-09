@@ -3,7 +3,7 @@ import { Alert, Button, message, Space, Switch, Tag, Popconfirm, Tooltip } from 
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { updateItem, addItem } from '@/services/ant-design-pro/api';
 import { request } from '@umijs/max';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import FeatureListContainer from '../components/FeatureListContainer';
 import AdRemovalForm from './AdRemovalForm';
 import { formatDuration } from './DurationInput';

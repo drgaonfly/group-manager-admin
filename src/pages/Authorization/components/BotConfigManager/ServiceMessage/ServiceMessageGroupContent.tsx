@@ -3,7 +3,7 @@ import { Button, Space, Tag, Popconfirm, Alert } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import FeatureListContainer from '../components/FeatureListContainer';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import ServiceMessageConfigForm from './ServiceMessageForm';
 
 interface ServiceMessageConfigGroupContentProps {

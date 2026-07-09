@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Table, Modal, message, Space, Tag, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined, HistoryOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-import useFeatureList from '../hooks/useFeatureList';
+import useFeatureList from '../../hooks/useFeatureList';
 import FeatureListContainer from '../components/FeatureListContainer';
 import CheckinRuleForm from './CheckinRuleForm';
 
