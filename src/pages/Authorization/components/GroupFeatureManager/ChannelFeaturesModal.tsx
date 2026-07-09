@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, Tabs, Row, Col } from 'antd';
+import { Modal, Tabs } from 'antd';
 import { useIntl } from '@umijs/max';
-import { MessageOutlined, TeamOutlined } from '@ant-design/icons';
+import { MessageOutlined } from '@ant-design/icons';
 
 import ChannelPost from './features/ChannelPost/Content';
 
@@ -54,10 +54,7 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
 
   return (
     <Modal
-      title={`${channel?.title || ''} — ${intl.formatMessage({
-        id: 'channel_feature_management',
-        defaultMessage: '频道功能管理',
-      })}`}
+      title={`${channel?.title || ''}`}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -67,44 +64,6 @@ const ChannelFeaturesModal: React.FC<ChannelFeaturesModalProps> = ({
       destroyOnClose
       centered
     >
-      {/* 频道统计卡片 */}
-      {channel && (
-        <Row gutter={[12, 12]} className="mb-5">
-          {[
-            {
-              label: '频道成员',
-              value: channel.botUsers?.length ?? 0,
-              icon: <TeamOutlined />,
-              color: '#722ed1',
-              bg: '#f9f0ff',
-            },
-          ].map((s) => (
-            <Col xs={24} sm={12} md={8} key={s.label}>
-              <div
-                className="rounded-lg p-3 sm:p-4 flex items-center gap-3"
-                style={{ background: s.bg, border: `1px solid ${s.color}22` }}
-              >
-                <div
-                  className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl flex-shrink-0"
-                  style={{ background: `${s.color}18`, color: s.color }}
-                >
-                  {s.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div
-                    className="text-xl sm:text-2xl font-bold leading-tight"
-                    style={{ color: s.color }}
-                  >
-                    {s.value}
-                  </div>
-                  <div className="text-xs text-gray-600 mt-0.5">{s.label}</div>
-                </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      )}
-
       {tabItems.length === 0 ? (
         <div className="text-center text-gray-400 py-15">
           {intl.formatMessage({

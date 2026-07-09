@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Tabs, Row, Col } from 'antd';
+import { Modal, Tabs } from 'antd';
 import { useIntl } from '@umijs/max';
 import {
   MessageOutlined,
@@ -11,8 +11,6 @@ import {
   CalendarOutlined,
   TrophyOutlined,
   AuditOutlined,
-  TeamOutlined,
-  ClockCircleOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
 
@@ -191,10 +189,7 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
 
   return (
     <Modal
-      title={`${group?.title || ''} — ${intl.formatMessage({
-        id: 'feature_management',
-        defaultMessage: '功能管理',
-      })}`}
+      title={`${group?.title || ''}`}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -204,58 +199,6 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
       destroyOnClose
       centered
     >
-      {/* 群组统计卡片 */}
-      {group && (
-        <Row gutter={[12, 12]} className="mb-5">
-          {[
-            {
-              label: '群成员',
-              value: group.botUsers?.length ?? 0,
-              icon: <TeamOutlined />,
-              color: '#1677ff',
-              bg: '#e6f4ff',
-            },
-            {
-              label: '已禁言',
-              value: group.mutedUsers?.length ?? 0,
-              icon: <StopOutlined />,
-              color: '#f5222d',
-              bg: '#fff1f0',
-            },
-            {
-              label: '待验证',
-              value: group.pendingVerifyUsers?.length ?? 0,
-              icon: <ClockCircleOutlined />,
-              color: '#fa8c16',
-              bg: '#fff7e6',
-            },
-          ].map((s) => (
-            <Col xs={24} sm={12} md={8} key={s.label}>
-              <div
-                className="rounded-lg p-3 sm:p-4 flex items-center gap-3"
-                style={{ background: s.bg, border: `1px solid ${s.color}22` }}
-              >
-                <div
-                  className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl flex-shrink-0"
-                  style={{ background: `${s.color}18`, color: s.color }}
-                >
-                  {s.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div
-                    className="text-xl sm:text-2xl font-bold leading-tight"
-                    style={{ color: s.color }}
-                  >
-                    {s.value}
-                  </div>
-                  <div className="text-xs text-gray-600 mt-0.5">{s.label}</div>
-                </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      )}
-
       {tabItems.length === 0 ? (
         <div className="text-center text-gray-400 py-15">
           {intl.formatMessage({
