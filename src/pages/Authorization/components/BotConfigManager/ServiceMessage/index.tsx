@@ -1,3 +1,3 @@
-import ServiceMessageConfigGroupContent from './ServiceMessageGroupContent';
+import ServiceMessageGroupContent from './ServiceMessageGroupContent';
 
-export default ServiceMessageConfigGroupContent;
+export default ServiceMessageGroupContent;

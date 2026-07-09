@@ -12,7 +12,7 @@ interface ServiceMessageConfigGroupContentProps {
   group: any;
 }
 
-const ServiceMessageConfigGroupContent: React.FC<ServiceMessageConfigGroupContentProps> = ({
+const ServiceMessageGroupContent: React.FC<ServiceMessageConfigGroupContentProps> = ({
   open,
   bot,
   group,
@@ -202,4 +202,4 @@ const ServiceMessageConfigGroupContent: React.FC<ServiceMessageConfigGroupConten
   );
 };
 
-export default ServiceMessageConfigGroupContent;
+export default ServiceMessageGroupContent;
