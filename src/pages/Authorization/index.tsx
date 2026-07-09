@@ -17,7 +17,7 @@ import ConfigureForm from './components/ConfigureForm';
 import CopyToClipboard from '@/components/CopyToClipboard';
 import AddOwnerForm from './components/AddOwnerForm';
 import DeleteOwnerForm from './components/DeleteOwnerForm';
-import BotConfigManager from './components/BotConfigManager';
+import GroupFeatureManager from './components/GroupFeatureManager';
 
 /**
  * @en-US Add node
@@ -177,10 +177,10 @@ const TableList: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'group', defaultMessage: '群组' }),
-      dataIndex: 'groupsCount',
+      dataIndex: 'groups',
       hideInSearch: true,
-      renderText: (groupsCount) => {
-        return groupsCount || 0;
+      renderText: (groups) => {
+        return groups?.length;
       },
     },
     // owner
@@ -548,7 +548,7 @@ const TableList: React.FC = () => {
           }
         }}
       />
-      <BotConfigManager
+      <GroupFeatureManager
         open={botConfigManagerOpen}
         onCancel={setBotConfigManagerOpen}
         currentRow={currentRow}

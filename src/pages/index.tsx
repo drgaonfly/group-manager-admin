@@ -5,8 +5,8 @@ import type { ProColumns } from '@ant-design/pro-components';
 import { Badge, Button, Card, Col, Layout, Row, Skeleton, Space, Tag, message } from 'antd';
 import { ArrowLeftOutlined, RobotOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons';
 import { simpleGet } from '@/services/ant-design-pro/api';
-import GroupFeaturesModal from '@/pages/Authorization/components/BotConfigManager/GroupFeaturesModal';
-import ChannelFeaturesModal from '@/pages/Authorization/components/BotConfigManager/ChannelFeaturesModal';
+import GroupFeaturesModal from '@/pages/Authorization/components/GroupFeatureManager/GroupFeaturesModal';
+import ChannelFeaturesModal from '@/pages/Authorization/components/GroupFeatureManager/ChannelFeaturesModal';
 import BotUserForm from '@/pages/Authorization/components/BotUserForm';
 
 const { Header, Content } = Layout;

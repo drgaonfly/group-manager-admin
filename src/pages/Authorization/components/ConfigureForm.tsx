@@ -10,7 +10,7 @@ import { Form, Input, Tabs } from 'antd';
 import { useAccess, useIntl, useModel } from '@umijs/max';
 import { UploadFile } from 'antd/es/upload/interface';
 import Upload from '@/components/Upload';
-import SuccessTab from './BotConfigManager/Success';
+// import SuccessTab from './BotConfigManager/Success';
 
 export type FormValueType = Partial<API.ItemData>;
 
@@ -235,11 +235,11 @@ const ConfigureForm: React.FC<UpdateFormProps> = (props) => {
               </>
             ),
           },
-          {
-            key: 'success',
-            label: intl.formatMessage({ id: 'success', defaultMessage: '积分继承' }),
-            children: <SuccessTab currentRow={values} />,
-          },
+          // {
+          //   key: 'success',
+          //   label: intl.formatMessage({ id: 'success', defaultMessage: '积分继承' }),
+          //   children: <SuccessTab currentRow={values} />,
+          // },
         ]}
       />
     </ModalForm>
