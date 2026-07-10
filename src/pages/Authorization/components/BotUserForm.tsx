@@ -91,12 +91,6 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
         return text !== undefined && text !== null ? text : '-';
       },
     },
-    {
-      title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      valueType: 'dateTime',
-    },
   ];
 
   return (
@@ -107,7 +101,7 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
       open={open}
       onCancel={() => onCancel(false)}
       width="100%"
-      style={{ maxWidth: 800, margin: 0 }}
+      style={{ maxWidth: 1200, margin: 0 }}
       footer={null}
       centered
     >
@@ -117,6 +111,7 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
         dataSource={members}
         rowKey="_id"
         loading={loading}
+        toolBarRender={false}
         pagination={{
           ...pagination,
           showSizeChanger: true,

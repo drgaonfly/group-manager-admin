@@ -277,9 +277,16 @@ const BotDetail: React.FC = () => {
                       </Tag>
                     </div>
                     <div className="flex items-center justify-between mt-3">
-                      <div className="text-sm text-gray-600">
+                      <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                          setSelectedGroupId(record._id);
+                          setBotUserFormOpen(true);
+                        }}
+                      >
                         <span className="font-medium">{record.botUsers?.length ?? 0}</span> 成员
-                      </div>
+                      </Button>
                       <Button
                         type="primary"
                         size="small"
