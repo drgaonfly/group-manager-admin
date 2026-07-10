@@ -24,14 +24,16 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
     if (!groupId || !botId) return;
     setLoading(true);
     try {
-      const res: any = await simpleGet(`/groups/${groupId}/members`, {
+      // 调用新接口：直接获取带有 usdt_balance 的群组成员列表
+      const res: any = await simpleGet(`/groups/${groupId}/members-with-balance`, {
         botId,
         current,
         pageSize,
       });
+
       if (res?.success) {
         setGroupInfo(res.data.group);
-        setMembers(res.data.members);
+        setMembers(res.data.members || []);
         setPagination({
           current: res.current,
           pageSize: res.pageSize,
@@ -61,7 +63,12 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
       title: intl.formatMessage({ id: 'userName', defaultMessage: '用户名' }),
       dataIndex: 'userName',
       key: 'userName',
-      render: (text, record) => (text ? `@${text}` : record.firstName || record.id),
+      render: (text, record) => {
+        const userName = text || record.userName;
+        const firstName = record.firstName;
+        const id = record.id;
+        return userName ? `@${userName}` : firstName || id;
+      },
     },
     {
       title: intl.formatMessage({ id: 'first_name_user_telegram', defaultMessage: '名字' }),
@@ -74,6 +81,15 @@ const BotUserForm: React.FC<BotUserFormProps> = (props) => {
       dataIndex: 'lastName',
       key: 'lastName',
       render: (text) => text || '-',
+    },
+    {
+      title: intl.formatMessage({ id: 'balance', defaultMessage: '积分' }),
+      dataIndex: 'usdt_balance',
+      key: 'usdt_balance',
+      render: (text) => {
+        // usdt_balance 已经在 loadMembers 中从 BotUserConfig 合并过来了
+        return text !== undefined && text !== null ? text : '-';
+      },
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: '创建时间' }),
