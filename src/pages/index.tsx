@@ -84,29 +84,30 @@ const BotDetail: React.FC = () => {
       render: (type: any) => <Tag>{type}</Tag>,
     },
     {
-      title: intl.formatMessage({ id: 'members', defaultMessage: '成员数' }),
+      title: intl.formatMessage({ id: 'members_num', defaultMessage: '成员数' }),
       dataIndex: 'botUsers',
       width: 90,
       responsive: ['sm'],
-      render: (botUsers: any, record: any) => (
+      render: (botUsers: any) => <span>{botUsers?.length ?? 0}</span>,
+    },
+    {
+      title: intl.formatMessage({ id: 'options', defaultMessage: '操作' }),
+      valueType: 'option',
+      width: 100,
+      fixed: 'right',
+      render: (_: any, record: any) => [
         <Button
-          type="link"
+          key="members"
+          type="primary"
           size="small"
+          icon={<TeamOutlined />}
           onClick={() => {
             setSelectedGroupId(record._id);
             setBotUserFormOpen(true);
           }}
         >
-          {botUsers?.length ?? 0}
-        </Button>
-      ),
-    },
-    {
-      title: intl.formatMessage({ id: 'pages.searchTable.titleOption', defaultMessage: '操作' }),
-      valueType: 'option',
-      width: 100,
-      fixed: 'right',
-      render: (_: any, record: any) => [
+          {intl.formatMessage({ id: 'members', defaultMessage: '成员' })}
+        </Button>,
         <Button
           key="manage"
           type="primary"
@@ -277,32 +278,38 @@ const BotDetail: React.FC = () => {
                       </Tag>
                     </div>
                     <div className="flex items-center justify-between mt-3">
-                      <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                          setSelectedGroupId(record._id);
-                          setBotUserFormOpen(true);
-                        }}
-                      >
+                      <span className="text-sm text-gray-500">
                         <span className="font-medium">{record.botUsers?.length ?? 0}</span> 成员
-                      </Button>
-                      <Button
-                        type="primary"
-                        size="small"
-                        icon={<SettingOutlined />}
-                        onClick={() => {
-                          if (activeTab === 'groups') {
-                            setSelectedGroup(record);
-                            setGroupFeaturesOpen(true);
-                          } else {
-                            setSelectedChannel(record);
-                            setChannelFeaturesOpen(true);
-                          }
-                        }}
-                      >
-                        {intl.formatMessage({ id: 'manage', defaultMessage: '管理' })}
-                      </Button>
+                      </span>
+                      <div className="flex gap-2">
+                        <Button
+                          type="primary"
+                          size="small"
+                          icon={<TeamOutlined />}
+                          onClick={() => {
+                            setSelectedGroupId(record._id);
+                            setBotUserFormOpen(true);
+                          }}
+                        >
+                          {intl.formatMessage({ id: 'members', defaultMessage: '成员' })}
+                        </Button>
+                        <Button
+                          type="primary"
+                          size="small"
+                          icon={<SettingOutlined />}
+                          onClick={() => {
+                            if (activeTab === 'groups') {
+                              setSelectedGroup(record);
+                              setGroupFeaturesOpen(true);
+                            } else {
+                              setSelectedChannel(record);
+                              setChannelFeaturesOpen(true);
+                            }
+                          }}
+                        >
+                          {intl.formatMessage({ id: 'manage', defaultMessage: '管理' })}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
