@@ -144,15 +144,19 @@ const BotDetail: React.FC = () => {
     <Layout className="min-h-screen bg-gray-50">
       {/* 顶部导航栏 */}
       <Header className="bg-white px-4 sm:px-6 flex items-center gap-3 shadow-sm sticky top-0 z-100">
-        <Button
-          type="text"
-          icon={<ArrowLeftOutlined />}
-          onClick={() => history.back()}
-          className="font-medium"
-        >
-          {intl.formatMessage({ id: 'back', defaultMessage: '返回' })}
-        </Button>
-        <div className="w-px h-5 bg-gray-200" />
+        {currentUser?.isAdmin && (
+          <>
+            <Button
+              type="text"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => history.back()}
+              className="font-medium"
+            >
+              {intl.formatMessage({ id: 'back', defaultMessage: '返回' })}
+            </Button>
+            <div className="w-px h-5 bg-gray-200" />
+          </>
+        )}
         <RobotOutlined className="text-blue-500 text-lg" />
         <span className="text-base sm:text-lg font-semibold text-gray-800 truncate flex-1">
           {loading
