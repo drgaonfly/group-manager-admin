@@ -119,21 +119,18 @@ const SubscriptionTableList: React.FC = () => {
       dataIndex: 'startDate',
       hideInSearch: true,
       valueType: 'dateTime',
-      render: (_, record) => record.startDate || '-',
     },
     {
       title: intl.formatMessage({ id: 'endDate', defaultMessage: 'End Date' }),
       dataIndex: 'endDate',
       hideInSearch: true,
       valueType: 'dateTime',
-      render: (_, record) => record.endDate || '-',
     },
     {
       title: intl.formatMessage({ id: 'paidAt', defaultMessage: 'Paid At' }),
       dataIndex: 'paidAt',
       hideInSearch: true,
       valueType: 'dateTime',
-      render: (_, record) => record.paidAt || '-',
     },
     {
       title: intl.formatMessage({ id: 'createdAt', defaultMessage: 'Created At' }),
