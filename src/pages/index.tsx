@@ -142,7 +142,7 @@ const BotDetail: React.FC = () => {
 
   return (
     <Layout className="min-h-screen bg-gray-50">
-      {/* 顶部导航栏 */}
+      {/* 顶部导航栏1 */}
       <Header className="bg-white px-4 sm:px-6 flex items-center gap-3 shadow-sm sticky top-0 z-100">
         {currentUser?.isAdmin && (
           <>
