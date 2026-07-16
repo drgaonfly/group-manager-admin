@@ -398,6 +398,7 @@ export default {
 
   // Bot detail page related
   members: 'Members',
+  members_num: 'Members',
   back: 'Back',
   groups: 'Groups',
   no_groups: 'No groups for this bot',

@@ -493,7 +493,8 @@ export default {
   speech_reward_max_times_required: '请输入最多奖励次数',
 
   // 机器人详情页面相关
-  members: '成员数',
+  members: '成员',
+  members_num: '成员数',
   back: '返回',
   groups: '群组数',
   no_groups: '该机器人暂无群组',
