@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Modal, Tabs, Tag, Button, Empty } from 'antd';
 import { useIntl } from '@umijs/max';
 import { ProTable } from '@ant-design/pro-components';
@@ -26,6 +26,7 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
 }) => {
   const intl = useIntl();
   const [activeTab, setActiveTab] = useState('groups');
+  const [tgUserId, setTgUserId] = useState<string | null>(null);
 
   // 当前选中的群组/频道，用于打开功能管理弹窗
   const [selectedGroup, setSelectedGroup] = useState<any>(null);
@@ -33,9 +34,36 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
   const [groupFeaturesOpen, setGroupFeaturesOpen] = useState(false);
   const [channelFeaturesOpen, setChannelFeaturesOpen] = useState(false);
 
+  // 从 URL 参数中获取 tgUserId（公共机器人用户）
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('tgUserId');
+    setTgUserId(userId);
+  }, []);
+
+  // 过滤函数：判断用户是否有权限查看该群组/频道
+  const canAccessGroup = (group: any) => {
+    // 如果没有 tgUserId（非公共机器人场景），显示所有群组
+    if (!tgUserId) {
+      return true;
+    }
+
+    // 公共机器人场景：只显示该用户是 creator 或 operator 的群组
+    // group.creator 和 group.operators 可能是对象或 ID 字符串
+    const creatorId = typeof group.creator === 'object' ? group.creator?.id : group.creator;
+    const operatorIds = (group.operators || []).map((op: any) =>
+      typeof op === 'object' ? op?.id : op,
+    );
+
+    // 检查用户是否是创建者或操作员
+    return creatorId === tgUserId || operatorIds.includes(tgUserId);
+  };
+
   /** 群组列表 Tab — ProTable，点击"管理"打开功能管理弹窗 */
   const renderGroupsTab = () => {
-    const groups: any[] = (currentRow?.groups || []).filter((g: any) => g.type !== 'channel');
+    const allGroups: any[] = (currentRow?.groups || []).filter((g: any) => g.type !== 'channel');
+    // 根据权限过滤群组
+    const groups = allGroups.filter(canAccessGroup);
 
     const columns: ProColumns<any>[] = [
       {
@@ -106,7 +134,9 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
 
   /** 频道列表 Tab — ProTable，点击"管理"打开频道功能管理弹窗 */
   const renderChannelsTab = () => {
-    const channels: any[] = (currentRow?.groups || []).filter((g: any) => g.type === 'channel');
+    const allChannels: any[] = (currentRow?.groups || []).filter((g: any) => g.type === 'channel');
+    // 根据权限过滤频道
+    const channels = allChannels.filter(canAccessGroup);
 
     const columns: ProColumns<any>[] = [
       {
@@ -207,7 +237,7 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
     });
 
     return items;
-  }, [currentRow, currentUser, onBotUpdate]);
+  }, [currentRow, currentUser, onBotUpdate, tgUserId]);
 
   return (
     <>

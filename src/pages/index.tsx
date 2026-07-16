@@ -32,11 +32,22 @@ const BotDetail: React.FC = () => {
     if (!id) return;
     setLoading(true);
     try {
-      // 有 username 时传给后端过滤群组（public bot 场景）
+      // 从 URL 获取 tgUserId 或 username 参数
+      const urlParams = new URLSearchParams(window.location.search);
+      const tgUserId = urlParams.get('tgUserId');
       const decodedUsername = username ? decodeURIComponent(username) : '';
+
+      // 构建查询参数：优先使用 tgUserId，其次使用 username
+      const queryParams: any = {};
+      if (tgUserId) {
+        queryParams.tgUserId = tgUserId;
+      } else if (decodedUsername) {
+        queryParams.username = decodedUsername;
+      }
+
       const res: any = await simpleGet(
         `/bots/${id}`,
-        decodedUsername ? { username: decodedUsername } : undefined,
+        Object.keys(queryParams).length > 0 ? queryParams : undefined,
       );
       setBot(res?.data ?? res);
     } catch (err: any) {

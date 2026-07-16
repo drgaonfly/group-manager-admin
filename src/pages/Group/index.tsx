@@ -229,7 +229,16 @@ const GroupTableList: React.FC = () => {
             isOnline = false; // 离线
           }
 
-          return queryList('/groups', { ...params, isOnline }, sort, filter);
+          // 从 URL 参数中获取 tgUserId（公共机器人用户）
+          const urlParams = new URLSearchParams(window.location.search);
+          const tgUserId = urlParams.get('tgUserId');
+
+          return queryList(
+            '/groups',
+            { ...params, isOnline, ...(tgUserId ? { tgUserId } : {}) },
+            sort,
+            filter,
+          );
         }}
         columns={columns}
         rowSelection={
