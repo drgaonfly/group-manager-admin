@@ -48,7 +48,16 @@ const GroupFeatureManager: React.FC<GroupFeatureManagerProps> = ({
       return true;
     }
 
-    // 公共机器人场景：只显示该用户是 creator 或 operator 的群组
+    // 专属机器人 owner 可以查看所有群组
+    if (currentRow?.type === 'private') {
+      const ownerId =
+        typeof currentRow.owner === 'object' ? currentRow.owner?.id : currentRow.owner;
+      if (ownerId === tgUserId) {
+        return true;
+      }
+    }
+
+    // 其他情况：只显示该用户是 creator 或 operator 的群组
     // group.creator 和 group.operators 可能是对象或 ID 字符串
     const creatorId = typeof group.creator === 'object' ? group.creator?.id : group.creator;
     const operatorIds = (group.operators || []).map((op: any) =>
