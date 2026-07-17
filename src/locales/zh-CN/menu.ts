@@ -46,6 +46,7 @@ export default {
   'menu.account.change-password': '修改密码',
   'menu.account.two-factor-auth': '二步认证',
   'menu.account.function-config': '功能配置',
+  'menu.account.system-setting': '系统设置',
 
   'menu.bots': '机器人',
   'menu.bot-users': '机器人用户',

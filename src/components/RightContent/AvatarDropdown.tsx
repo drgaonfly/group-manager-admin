@@ -4,6 +4,8 @@ import {
   UserOutlined,
   CustomerServiceOutlined,
   VerifiedOutlined,
+  LockOutlined,
+  ControlOutlined,
 } from '@ant-design/icons';
 import { FormattedMessage, history, useAccess, useModel } from '@umijs/max';
 import { Spin } from 'antd';
@@ -125,7 +127,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       : []),
     {
       key: 'change-password',
-      icon: <SettingOutlined />,
+      icon: <LockOutlined />,
       label: <FormattedMessage id="menu.account.change-password" defaultMessage="修改密码" />,
     },
     ...(access.canSuperAdmin
@@ -134,6 +136,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
             key: 'function-config',
             icon: <CustomerServiceOutlined />,
             label: <FormattedMessage id="menu.account.function-config" defaultMessage="功能配置" />,
+          },
+          {
+            key: 'system-setting',
+            icon: <ControlOutlined />,
+            label: <FormattedMessage id="menu.account.system-setting" defaultMessage="系统设置" />,
           },
         ]
       : []),

@@ -62,6 +62,13 @@ export default [
     component: './account/change-password',
   },
   {
+    path: '/account/system-setting',
+    hideInMenu: true,
+    name: 'list.system-setting',
+    icon: 'SettingOutlined',
+    component: './account/setting',
+  },
+  {
     path: '/account/function-config',
     // hideInMenu: true,
     name: 'list.function-config',
@@ -146,7 +153,7 @@ export default [
     path: '/bots',
     name: 'list.bots',
     icon: 'TableOutlined',
-    component: './Bot',
+    component: './Authorization',
   },
   {
     path: '/bot-users',
