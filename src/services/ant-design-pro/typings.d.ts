@@ -46,6 +46,8 @@ declare namespace API {
     success?: boolean;
     redPacket?: boolean;
     serviceMessage?: boolean;
+    botId?: string;
+    tgUserId?: string;
   };
 
   // Example type definition
