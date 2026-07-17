@@ -146,7 +146,7 @@ export default [
     path: '/bots',
     name: 'list.bots',
     icon: 'TableOutlined',
-    component: './Bot',
+    component: './Authorization',
   },
   {
     path: '/bot-users',
