@@ -9,6 +9,7 @@ import {
   ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
+import dayjs from 'dayjs';
 import ProxySelect from '@/components/proxysSelects';
 
 interface Props {
@@ -26,12 +27,19 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
       initialValues={{
         ...values,
         user: values?.user?._id,
+        // 确保时间正确转换为 dayjs 对象
+        disabledAt: values?.disabledAt ? dayjs(values.disabledAt) : undefined,
       }}
-      onFinish={async (values) => {
-        await onFinish({ ...values });
+      onFinish={async (formValues) => {
+        const submitData = { ...formValues };
+        // 提交时将 dayjs 对象转为 ISO 字符串
+        if (submitData.disabledAt) {
+          submitData.disabledAt = dayjs(submitData.disabledAt).toISOString();
+        }
+        await onFinish(submitData);
       }}
       submitter={{
-        render: (props, dom) => (
+        render: (_props, dom) => (
           <div style={{ textAlign: 'right' }}>
             {dom.map((button, index) => (
               <span key={index} style={{ marginLeft: 8 }}>
@@ -99,6 +107,10 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
               defaultMessage: '请选择禁用时间',
             })}
             tooltip="机器人禁用时间，过期后将无法使用功能"
+            fieldProps={{
+              showTime: { format: 'HH:mm:ss' },
+              format: 'YYYY-MM-DD HH:mm:ss',
+            }}
           />
         </ProForm.Group>
       )}
