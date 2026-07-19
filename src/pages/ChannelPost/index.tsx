@@ -8,7 +8,6 @@ import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/Update';
 import Update from './components/Update';
 import Show from './components/Show';
-import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 
@@ -55,7 +54,6 @@ const TableList: React.FC = () => {
   const intl = useIntl();
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
@@ -228,15 +226,6 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
         </a>,
-        <a
-          key="history"
-          onClick={() => {
-            setCurrentRow(record);
-            setHistoryModalOpen(true);
-          }}
-        >
-          <FormattedMessage id="send_history" defaultMessage="发送历史" />
-        </a>,
         access.canUpdateChannelPost && (
           <a
             key="edit"
@@ -329,16 +318,6 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
-      />
-
-      <HistoryModal
-        open={historyModalOpen}
-        onClose={() => {
-          setHistoryModalOpen(false);
-          setCurrentRow(undefined);
-        }}
-        channelPostId={currentRow?._id}
-        currentRow={currentRow}
       />
     </PageContainer>
   );
