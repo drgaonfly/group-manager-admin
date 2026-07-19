@@ -68,6 +68,13 @@ const ButtonConfigModal: React.FC<ButtonConfigModalProps> = ({
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
+      // 处理 @username 转换为 https://t.me/username
+      if (values.type === 'url' && values.url) {
+        const url = values.url.trim();
+        if (url.startsWith('@')) {
+          values.url = `https://t.me/${url.substring(1)}`;
+        }
+      }
       onOk(values);
       form.resetFields();
     } catch (_) {}
@@ -113,12 +120,16 @@ const ButtonConfigModal: React.FC<ButtonConfigModalProps> = ({
           <Form.Item
             name="url"
             label="链接地址"
+            tooltip="支持完整链接（https://...）或 Telegram 用户名（@username）"
             rules={[
-              { required: true, message: '请输入链接' },
-              { pattern: /^https?:\/\/.+/, message: '请输入有效链接（https://...）' },
+              { required: true, message: '请输入链接或用户名' },
+              {
+                pattern: /^(https?:\/\/.+|@\w+)$/,
+                message: '请输入有效链接（https://...）或电报的用户名（@username）',
+              },
             ]}
           >
-            <Input placeholder="https://t.me/..." />
+            <Input placeholder="https://t.me/... 或 @username" />
           </Form.Item>
         )}
 
