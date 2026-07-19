@@ -238,7 +238,7 @@ const ReplyRuleForm: React.FC<Props> = ({
         />
       </Form.Item>
 
-      <Form.Item label="内联菜单配置">
+      <Form.Item label="按钮设置">
         <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
       </Form.Item>
     </ModalForm>

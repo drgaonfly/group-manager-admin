@@ -268,7 +268,9 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
         }}
       >
         {allRows.length === 0 ? (
-          <span style={{ color: '#bfbfbf', fontSize: 13 }}>暂无按钮，点击「新建行」开始配置</span>
+          <span style={{ color: '#bfbfbf', fontSize: 13 }}>
+            暂无按钮，点击「新建一行按钮」开始配置
+          </span>
         ) : (
           allRows.map((row) => (
             <div
@@ -387,10 +389,10 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
         )}
       </div>
 
-      {/* 新建行 */}
+      {/* 新建一行按钮 */}
       <Space>
         <Button icon={<PlusOutlined />} onClick={addRow} size="small">
-          新建行
+          新建一行按钮
         </Button>
         {allRows.length > 0 && (
           <span style={{ color: '#8c8c8c', fontSize: 12 }}>

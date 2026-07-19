@@ -339,7 +339,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       <Form.Item
         label={intl.formatMessage({
           id: 'inline_menu_config',
-          defaultMessage: '内联菜单配置',
+          defaultMessage: '按钮设置',
         })}
       >
         <InlineMenuEditor value={menus} onChange={setMenus} showStyle />

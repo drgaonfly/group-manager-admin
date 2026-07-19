@@ -417,7 +417,7 @@ const BasicForm: React.FC<BasicFormProps> = ({ form, initialValues }) => {
 
       <EditableProTable<menuItem>
         rowKey="_id"
-        headerTitle="内联菜单配置"
+        headerTitle="按钮设置"
         columns={menuColumns}
         value={menus}
         onChange={(value) => setMenus([...value])}

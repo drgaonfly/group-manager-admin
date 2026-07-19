@@ -216,7 +216,7 @@ export default {
   customer_service_link: '客服链接',
   enter_trx20_address: '请输入TRX20地址',
   trx20_address: 'TRX20地址',
-  inline_menu_config: '内联菜单配置',
+  inline_menu_config: '按钮设置',
   usdt_amount: 'USDT金额',
   botUser: '机器人用户',
   show_transactions: '显示交易',

@@ -302,7 +302,7 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
         rowKey="_id"
         headerTitle={intl.formatMessage({
           id: 'inline_menu_config',
-          defaultMessage: '内联菜单配置',
+          defaultMessage: '按钮设置',
         })}
         columns={menuColumns}
         value={menus}

@@ -308,7 +308,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ open, onCancel, currentRow })
         rowKey="_id"
         headerTitle={intl.formatMessage({
           id: 'inline_menu_config',
-          defaultMessage: '内联菜单配置',
+          defaultMessage: '按钮设置',
         })}
         columns={menuColumns}
         value={menus}
