@@ -73,6 +73,7 @@ const ChannelPostForm: React.FC<Props> = ({
         weight: editingRecord.weight || 0,
         isOnline: editingRecord.isOnline !== false,
         isClearLastPost: editingRecord.isClearLastPost || false,
+        isPinned: editingRecord.isPinned || false,
       });
     } else {
       setContent('');
@@ -143,7 +144,8 @@ const ChannelPostForm: React.FC<Props> = ({
             content: telegramContent,
             medias,
             menus: formData.menus,
-            channel: fixedChannelId,
+            channelId: fixedChannelId,
+            isPinned: values.isPinned || false,
           },
         });
       } else {
@@ -228,22 +230,29 @@ const ChannelPostForm: React.FC<Props> = ({
       <ProFormGroup>
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
           <Upload
-            onFileUpload={(url: string) => {
-              setMedias((prev) => [...prev, url]);
+            onFileUpload={(url: string, signedUrl?: string) => {
+              // 支持多媒体上传
+              setMedias((prev) => [...prev, signedUrl || url]);
             }}
             accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
             defaultFileList={defaultMediaFileList}
             multiple
             onRemove={(file: UploadFile) => {
-              const fileUrl = file.url || '';
-              const fileName = fileUrl.includes('/api/static/')
-                ? fileUrl.replace('/api/static/', '')
-                : fileUrl;
-              setMedias((prev) => prev.filter((media) => media !== fileName && media !== fileUrl));
+              setMedias((prev) => prev.filter((media) => media !== file.url));
               return true;
             }}
           />
         </Form.Item>
+
+        <ProFormSwitch
+          name="isPinned"
+          label={intl.formatMessage({
+            id: 'is_pinned',
+            defaultMessage: '置顶消息',
+          })}
+          initialValue={false}
+          tooltip="发送后将该消息置顶到频道顶部"
+        />
       </ProFormGroup>
 
       <ProFormGroup>

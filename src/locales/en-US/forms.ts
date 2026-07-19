@@ -265,6 +265,8 @@ export default {
   send_successful: 'Message sent successfully',
   send_failed: 'Failed to send message, please try again!',
   'bot.not.bound': 'Not bound',
+  auto_delete_previous: 'Auto Delete Previous',
+  is_pinned: 'Pin Message',
   use_html: 'Use HTML Format',
   use_html_description:
     'When enabled, HTML tags can be used to format messages (e.g., <b>bold</b>, <i>italic</i>, etc.)',

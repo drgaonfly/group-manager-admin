@@ -360,6 +360,8 @@ export default {
   add_reply_rule: '添加回复规则',
   replyRule: '回复规则',
   speechStatic: '发言统计',
+  auto_delete_previous: '自动删除上一条',
+  is_pinned: '置顶消息',
 
   // UI 组件相关
   view: '查看',

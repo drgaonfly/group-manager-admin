@@ -72,6 +72,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         startAt: editingRecord.startAt,
         endAt: editingRecord.endAt,
         autoDeletePrevious: editingRecord.autoDeletePrevious || false,
+        isPinned: editingRecord.isPinned || false,
       });
     } else {
       setContent('');
@@ -166,6 +167,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             medias,
             menus: data.menus,
             groups: fixedGroupId ? [fixedGroupId] : [],
+            isPinned: values.isPinned || false,
           },
         });
       } else {
@@ -241,6 +243,16 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             }}
           />
         </Form.Item>
+
+        <ProFormSwitch
+          name="isPinned"
+          label={intl.formatMessage({
+            id: 'is_pinned',
+            defaultMessage: '置顶消息',
+          })}
+          initialValue={false}
+          tooltip="发送后将该消息置顶到群组顶部"
+        />
       </ProFormGroup>
 
       <ProFormGroup>
