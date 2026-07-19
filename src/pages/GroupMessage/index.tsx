@@ -6,7 +6,6 @@ import { FormattedMessage, useAccess } from '@umijs/max';
 import { message, Image, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import Show from './components/Show';
-import HistoryModal from './components/HistoryModal';
 import DeleteButton from '@/components/DeleteButton';
 import DeleteLink from '@/components/DeleteLink';
 import Update from './components/Update';
@@ -87,7 +86,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ItemData>();
   const [selectedRowsState, setSelectedRows] = useState<API.ItemData[]>([]);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
 
   const columns: ProColumns<API.ItemData>[] = [
     // 代理
@@ -227,15 +225,6 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="detail" defaultMessage="详情" />
         </a>,
-        <a
-          key="history"
-          onClick={() => {
-            setCurrentRow(record);
-            setHistoryModalOpen(true);
-          }}
-        >
-          <FormattedMessage id="send_history" defaultMessage="发送历史" />
-        </a>,
         access.canUpdateGroupMessage && (
           <a
             key="edit"
@@ -363,16 +352,6 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
-      />
-
-      <HistoryModal
-        open={historyModalOpen}
-        onClose={() => {
-          setHistoryModalOpen(false);
-          setCurrentRow(undefined);
-        }}
-        groupMessageId={currentRow?._id}
-        currentRow={currentRow}
       />
     </PageContainer>
   );
