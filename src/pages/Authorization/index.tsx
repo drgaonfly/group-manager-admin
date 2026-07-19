@@ -243,7 +243,7 @@ const TableList: React.FC = () => {
       valueType: 'password',
       hideInSearch: true,
       copyable: true,
-      render: (_, record: any) => {
+      renderText: (_, record: any) => {
         if (record.type === 'public' && !access.canSuperAdmin) {
           return '***';
         }
