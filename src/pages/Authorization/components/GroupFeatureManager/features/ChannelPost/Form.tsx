@@ -116,8 +116,13 @@ const ChannelPostForm: React.FC<Props> = ({
     if (isEdit) {
       const hide = message.loading('更新中...');
       try {
+        const intervalMinutes = timeUnitToMinutes(
+          values.interval || 1,
+          values.timeUnit as TimeUnit,
+        );
         await updateItem(`/channel-posts/${editingRecord._id}`, {
           ...formData,
+          interval: intervalMinutes,
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
         });

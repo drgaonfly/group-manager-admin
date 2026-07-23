@@ -100,10 +100,15 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       // 编辑模式
       const hide = message.loading('更新中...');
       try {
+        const intervalMinutes = timeUnitToMinutes(
+          values.intervalTime || 0,
+          values.timeUnit as TimeUnit,
+        );
         await updateItem(`/group-messages/${editingRecord._id}`, {
           ...values,
           bot: editingRecord.bot?._id ?? editingRecord.bot,
           content: telegramContent,
+          intervalTime: intervalMinutes,
           medias,
           menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
             name,
