@@ -75,14 +75,12 @@ const BotDetail: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'title', defaultMessage: '群名' }),
       dataIndex: 'title',
-      width: 180,
       ellipsis: true,
       responsive: ['sm'],
     },
     {
       title: intl.formatMessage({ id: 'username', defaultMessage: '群组用户名' }),
       dataIndex: 'username',
-      width: 140,
       responsive: ['sm'],
       render: (username: any) =>
         username ? <Tag color="blue">@{username}</Tag> : <span style={{ color: '#bbb' }}>-</span>,
@@ -90,21 +88,24 @@ const BotDetail: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'type', defaultMessage: '类型' }),
       dataIndex: 'type',
-      width: 100,
       responsive: ['md'],
       render: (type: any) => <Tag>{type}</Tag>,
     },
     {
       title: intl.formatMessage({ id: 'members_num', defaultMessage: '成员数' }),
       dataIndex: 'botUsers',
-      width: 90,
       responsive: ['sm'],
       render: (botUsers: any) => <span>{botUsers?.length ?? 0}</span>,
     },
     {
+      title: intl.formatMessage({ id: 'createdAt' }),
+      dataIndex: 'createdAt',
+      hideInSearch: true,
+      valueType: 'dateTime',
+    },
+    {
       title: intl.formatMessage({ id: 'options', defaultMessage: '操作' }),
       valueType: 'option',
-      width: 100,
       fixed: 'right',
       render: (_: any, record: any) => [
         <Button
