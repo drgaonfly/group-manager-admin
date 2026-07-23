@@ -100,6 +100,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       try {
         await updateItem(`/group-messages/${editingRecord._id}`, {
           ...values,
+          bot: editingRecord.bot?._id ?? editingRecord.bot,
           content: telegramContent,
           medias,
           menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
