@@ -6,7 +6,7 @@ import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import Upload from '@/components/Upload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
-import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { timeUnitToMinutes, minutesToTimeUnit, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 import {
   ModalForm,
@@ -66,9 +66,11 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           style: m.style || 'primary',
         })),
       );
+      const { timeUnit, value: intervalValue } = minutesToTimeUnit(editingRecord.intervalTime);
       form.setFieldsValue({
         sendType: editingRecord.sendType || 'scheduled',
-        intervalTime: editingRecord.intervalTime || 0,
+        intervalTime: intervalValue,
+        timeUnit,
         startAt: editingRecord.startAt,
         endAt: editingRecord.endAt,
         autoDeletePrevious: editingRecord.autoDeletePrevious || false,
