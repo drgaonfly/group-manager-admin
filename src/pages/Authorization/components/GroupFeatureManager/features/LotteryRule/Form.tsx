@@ -18,8 +18,9 @@ import {
 import { PlusOutlined, DeleteOutlined, EditOutlined, PushpinOutlined } from '@ant-design/icons';
 // import { useIntl } from '@umijs/max';
 import moment from 'moment';
+import { UploadFile } from 'antd/lib/upload/interface';
 import RichTextEditor from '@/components/RichTextEditor';
-import Upload from '@/components/Upload';
+import MyUpload from '@/components/MyUpload';
 
 const { Option } = Select;
 
@@ -106,6 +107,7 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [prizeModalVisible, setPrizeModalVisible] = useState(false);
   const [editingPrizeIndex, setEditingPrizeIndex] = useState<number | null>(null);
+  const [mediaFileList, setMediaFileList] = useState<UploadFile[]>([]);
 
   const [prizeForm] = Form.useForm();
 
@@ -224,22 +226,14 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
   };
 
   const handleMediaUpload = (url: string) => {
-    // 简单判断媒体类型（可以根据URL或其他方式改进）
     const mediaType =
       url.includes('.mp4') || url.includes('.avi') || url.includes('.mov') ? 'video' : 'image';
-    form.setFieldsValue({
-      media: url,
-      mediaType,
-    });
-    message.success('上传成功');
+    form.setFieldsValue({ media: url, mediaType });
   };
 
   const handleMediaRemove = () => {
-    form.setFieldsValue({
-      media: undefined,
-      mediaType: undefined,
-    });
-    return true; // 允许删除
+    form.setFieldsValue({ media: undefined, mediaType: undefined });
+    return true;
   };
 
   const steps = [
@@ -312,10 +306,20 @@ const LotteryForm: React.FC<LotteryFormProps> = ({
           </Form.Item>
 
           <Form.Item name="media" label="媒体文件">
-            <Upload
-              onFileUpload={handleMediaUpload}
+            <MyUpload
+              fileList={mediaFileList}
+              maxCount={1}
               accept="image/*,video/*"
-              onRemove={handleMediaRemove}
+              onFileUpload={(url) => {
+                handleMediaUpload(url);
+                setMediaFileList((prev) =>
+                  prev.map((f) => (f.status === 'done' && !f.url ? { ...f, url } : f)),
+                );
+              }}
+              onChange={(list) => {
+                setMediaFileList(list);
+                if (list.length === 0) handleMediaRemove();
+              }}
             />
           </Form.Item>
         </Card>

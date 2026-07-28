@@ -1,9 +1,9 @@
 import { message, Form } from 'antd';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { useState, useEffect } from 'react';
-import { UploadFile } from 'antd/es/upload/interface';
+import { UploadFile } from 'antd/lib/upload/interface';
 import { request } from '@umijs/max';
-import Upload from '@/components/Upload';
+import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import {
@@ -19,12 +19,9 @@ type menuItem = InlineMenuItem;
 interface GroupWelcomeFormProps {
   open: boolean;
   onCancel: (visible: boolean) => void;
-  /** 所属 Bot */
   botId: string;
-  /** 编辑时传入现有记录，新建时为 null */
   currentRow?: any;
   onSuccess?: () => void;
-  /** 从外层直接传入群组 ID，跳过 GroupSelect */
   fixedGroupId?: string;
 }
 
@@ -38,7 +35,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 }) => {
   const intl = useIntl();
   const [form] = Form.useForm();
-  const [medias, setMedias] = useState<string[]>([]);
+  const [mediaFileList, setMediaFileList] = useState<UploadFile[]>([]);
   const [menus, setMenus] = useState<menuItem[]>([]);
   const [content, setContent] = useState('');
   const [caption, setCaption] = useState('');
@@ -46,7 +43,11 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
   const isEdit = !!currentRow?._id;
 
-  // Fetch groups for the bot
+  // medias 直接从 mediaFileList 里派生，只取已上传成功且有 url 的
+  const medias = mediaFileList
+    .filter((f) => f.status === 'done' && f.url)
+    .map((f) => f.url as string);
+
   useEffect(() => {
     if (open && botId && !fixedGroupId) {
       request(`/bots/${botId}`)
@@ -78,7 +79,14 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
         setContent(toQuillHtml(currentRow.contents?.join('\n') || ''));
         setCaption(toQuillHtml(currentRow.caption || ''));
-        setMedias(currentRow.medias || []);
+        setMediaFileList(
+          (currentRow.medias || []).map((url: string, idx: number) => ({
+            uid: `existing-${idx}`,
+            name: `media${idx + 1}`,
+            status: 'done' as const,
+            url,
+          })),
+        );
         setMenus(formattedMenus);
 
         form.setFieldsValue({
@@ -91,24 +99,16 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       } else {
         setContent('');
         setCaption('');
-        setMedias([]);
+        setMediaFileList([]);
         setMenus([]);
         form.setFieldsValue({
           deleteAfterSeconds: 0,
           pinNewMember: false,
-          // 新建时若外层固定了群组，预填
           ...(fixedGroupId ? { group: fixedGroupId } : {}),
         });
       }
     }
   }, [open, currentRow, isEdit, form, fixedGroupId]);
-
-  const defaultMediaFileList: UploadFile[] = medias.map((url, idx) => ({
-    uid: `${idx + 1}`,
-    name: `media${idx + 1}`,
-    status: 'done',
-    url,
-  }));
 
   const handleSubmit = async () => {
     try {
@@ -159,7 +159,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
       form.resetFields();
       setContent('');
       setCaption('');
-      setMedias([]);
+      setMediaFileList([]);
       setMenus([]);
       onCancel(false);
       onSuccess?.();
@@ -218,6 +218,7 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
           disabled={isEdit}
         />
       )}
+
       <Form.Item
         label={intl.formatMessage({ id: 'welcome_message', defaultMessage: '欢迎消息' })}
         style={{ marginBottom: 24 }}
@@ -231,7 +232,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         />
       </Form.Item>
 
-      {/* 媒体说明 */}
       <Form.Item
         label={intl.formatMessage({ id: 'media_caption', defaultMessage: '媒体说明' })}
         style={{ marginBottom: 24 }}
@@ -247,16 +247,17 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
 
       <ProFormGroup>
         <Form.Item label={intl.formatMessage({ id: 'welcome_medias', defaultMessage: '欢迎媒体' })}>
-          <Upload
-            onFileUpload={(url: string, signedUrl?: string) => {
-              setMedias((prev) => [...prev, signedUrl || url]);
-            }}
-            accept=".jpg,.jpeg,.png,.gif,.mp4,.mov"
-            defaultFileList={defaultMediaFileList}
+          <MyUpload
+            fileList={mediaFileList}
             multiple
-            onRemove={(file: UploadFile) => {
-              setMedias((prev) => prev.filter((m) => m !== file.url));
-              return true;
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.mov"
+            onFileUpload={(url: string) => {
+              setMediaFileList((prev) =>
+                prev.map((f) => (f.status === 'done' && !f.url ? { ...f, url } : f)),
+              );
+            }}
+            onChange={(list) => {
+              setMediaFileList(list);
             }}
           />
         </Form.Item>
@@ -281,7 +282,6 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
         />
       </ProFormGroup>
 
-      {/* 菜单按钮 */}
       <Form.Item
         label={intl.formatMessage({
           id: 'welcome_menu_config',

@@ -8,12 +8,13 @@ import { UploadFile } from 'antd/lib/upload/interface';
 
 interface MyUploadProps {
   onFileUpload: (url: string) => void;
-  accept?: string; // 使accept属性可选
+  accept?: string;
   url?: string;
-  onRemove?: (file: UploadFile) => boolean; // Add onRemove to props
+  onRemove?: (file: UploadFile) => boolean;
   multiple?: boolean;
   maxCount?: number;
   fileList?: UploadFile[];
+  onChange?: (fileList: UploadFile[]) => void;
 }
 
 const MyUpload: React.FC<MyUploadProps> = ({
@@ -24,9 +25,9 @@ const MyUpload: React.FC<MyUploadProps> = ({
   multiple,
   maxCount,
   fileList,
+  onChange,
 }) => {
   const intl = useIntl();
-  // 定义默认的accept值
   const defaultAccept = '*';
 
   const customRequest = async (options: any) => {
@@ -41,20 +42,15 @@ const MyUpload: React.FC<MyUploadProps> = ({
         requestType: 'form',
       });
 
-      console.log('response:-----------------------------', response);
-
       if (response.success) {
         if (onSuccess) {
           onSuccess(response);
         }
-        const httpUrl = response.data.file; // 假设返回的signedURL就在data字段中
-        onFileUpload(httpUrl);
+        onFileUpload(response.data.file);
       } else {
         message.error(intl.formatMessage({ id: 'upload_failed', defaultMessage: 'Upload failed' }));
         if (onError) {
-          onError(
-            new Error(intl.formatMessage({ id: 'upload_failed', defaultMessage: 'Upload failed' })),
-          );
+          onError(new Error('Upload failed'));
         }
       }
     } catch (error) {
@@ -62,83 +58,56 @@ const MyUpload: React.FC<MyUploadProps> = ({
         intl.formatMessage({ id: 'upload_exception', defaultMessage: 'Upload exception' }),
       );
       if (onError) {
-        onError(
-          new Error(
-            intl.formatMessage({ id: 'upload_exception', defaultMessage: 'Upload exception' }),
-          ),
-        );
+        onError(new Error('Upload exception'));
       }
     }
   };
 
-  const props: UploadProps = {
-    name: 'file',
-    multiple: false,
-    customRequest,
-    showUploadList: true,
-    // beforeUpload: (file) => {
-    //   const isLessThan2M = file.size / 1024 / 1024 < 6; // 检查文件大小是否小于2MB
-    //   if (!isLessThan2M) {
-    //     message.error('文件大小不能超过6MB!');
-    //   }
-    //   return isLessThan2M; // 如果文件大于2MB，不上传文件
-    // },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        message.success(
-          intl.formatMessage(
-            { id: 'file_upload_success', defaultMessage: '{name} file uploaded successfully' },
-            { name: info.file.name },
-          ),
-        );
-      } else if (info.file.status === 'error') {
-        message.error(
-          intl.formatMessage(
-            { id: 'file_upload_failure', defaultMessage: '{name} file upload failed' },
-            { name: info.file.name },
-          ),
-        );
-      }
-    },
+  const handleChange: UploadProps['onChange'] = (info) => {
+    // 删除操作由 onRemove 直接处理，这里跳过避免把旧列表写回去
+    if (info.file.status === 'removed') return;
+
+    if (info.file.status === 'done') {
+      message.success(
+        intl.formatMessage(
+          { id: 'file_upload_success', defaultMessage: '{name} file uploaded successfully' },
+          { name: info.file.name },
+        ),
+      );
+    } else if (info.file.status === 'error') {
+      message.error(
+        intl.formatMessage(
+          { id: 'file_upload_failure', defaultMessage: '{name} file upload failed' },
+          { name: info.file.name },
+        ),
+      );
+    }
+
+    if (onChange) {
+      onChange(info.fileList);
+    }
+  };
+
+  const handleRemove = (file: UploadFile) => {
+    if (onChange && fileList) {
+      onChange(fileList.filter((f) => f.uid !== file.uid));
+    }
+    return onRemove ? onRemove(file) : true;
   };
 
   return (
     <Upload.Dragger
-      {...props}
-      listType="picture"
-      showUploadList={{ showRemoveIcon: true }}
+      name="file"
       multiple={multiple ?? false}
+      customRequest={customRequest}
+      showUploadList={{ showRemoveIcon: true }}
+      listType="picture"
       accept={accept || defaultAccept}
       maxCount={maxCount}
       fileList={fileList}
-      style={{ width: '100%', maxWidth: 328 }}
-      onRemove={onRemove}
-      onChange={(info) => {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(
-            intl.formatMessage(
-              { id: 'file_upload_success', defaultMessage: '{name} file uploaded successfully' },
-              { name: info.file.name },
-            ),
-          );
-        } else if (info.file.status === 'error') {
-          message.error(
-            intl.formatMessage(
-              { id: 'file_upload_failure', defaultMessage: '{name} file upload failed' },
-              { name: info.file.name },
-            ),
-          );
-        }
-        if (props.onChange) {
-          props.onChange(info);
-        }
-      }}
+      style={{ width: 328 }}
+      onRemove={handleRemove}
+      onChange={handleChange}
     >
       <p className="ant-upload-drag-icon">
         <InboxOutlined />

@@ -1,9 +1,9 @@
 import { message, Form, Space } from 'antd';
 import { FormattedMessage, useIntl, request } from '@umijs/max';
 import { useState, useEffect } from 'react';
-import { UploadFile } from 'antd/es/upload/interface';
+import { UploadFile } from 'antd/lib/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
-import Upload from '@/components/Upload';
+import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
@@ -26,9 +26,7 @@ interface GroupMessageFormProps {
   onCancel: (visible: boolean) => void;
   currentRow?: any;
   onSuccess?: () => void;
-  /** 编辑时传入现有记录 */
   editingRecord?: any;
-  /** 从外层直接传入群组 ID */
   fixedGroupId?: string;
 }
 
@@ -43,9 +41,13 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
   const intl = useIntl();
   const isEdit = !!editingRecord?._id;
   const [content, setContent] = useState('');
-  const [medias, setMedias] = useState<string[]>([]);
+  const [mediaFileList, setMediaFileList] = useState<UploadFile[]>([]);
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
+
+  const medias = mediaFileList
+    .filter((f) => f.status === 'done' && f.url)
+    .map((f) => f.url as string);
 
   useEffect(() => {
     if (!open) return;
@@ -53,7 +55,17 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
 
     if (isEdit) {
       setContent(toQuillHtml(editingRecord.content || ''));
-      setMedias(Array.isArray(editingRecord.medias) ? editingRecord.medias : []);
+      const initialMedias: string[] = Array.isArray(editingRecord.medias)
+        ? editingRecord.medias
+        : [];
+      setMediaFileList(
+        initialMedias.filter(Boolean).map((url, idx) => ({
+          uid: `existing-${idx}`,
+          name: `media${idx + 1}`,
+          status: 'done' as const,
+          url,
+        })),
+      );
       setMenus(
         (editingRecord.menus || []).map((m: any, i: number) => ({
           _id: m._id || `menu-${i}`,
@@ -76,26 +88,15 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       });
     } else {
       setContent('');
-      setMedias([]);
+      setMediaFileList([]);
       setMenus([]);
     }
   }, [open, editingRecord]);
-
-  // Default file list for showing existing medias
-  const defaultMediaFileList: UploadFile[] = medias
-    ? medias.filter(Boolean).map((url, idx) => ({
-        uid: `${idx + 1}`,
-        name: `media${idx + 1}`,
-        status: 'done' as UploadFile['status'],
-        url,
-      }))
-    : [];
 
   const handleFinish = async (values: any) => {
     const telegramContent = convertToTelegramHtml(content);
 
     if (isEdit) {
-      // 编辑模式
       const hide = message.loading('更新中...');
       try {
         await updateItem(`/group-messages/${editingRecord._id}`, {
@@ -118,7 +119,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         message.success('更新成功');
         form.resetFields();
         setContent('');
-        setMedias([]);
+        setMediaFileList([]);
         setMenus([]);
         onCancel(false);
         onSuccess?.();
@@ -130,7 +131,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       }
     }
 
-    // 新建模式
     const hide = message.loading(<FormattedMessage id="adding" defaultMessage="Adding..." />);
     try {
       const data = {
@@ -158,7 +158,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
         endAt: toISOString(values.endAt),
       };
 
-      // 如果是立即发送，调用 sendGroupMessage 接口
       if (values.sendType === 'immediate') {
         await request(`/bots/${currentRow?._id}/send-group-message`, {
           method: 'PUT',
@@ -171,7 +170,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           },
         });
       } else {
-        // 定时发送，创建记录
         await addItem('/group-messages', data);
       }
 
@@ -179,7 +177,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       message.success(<FormattedMessage id="add_successful" defaultMessage="Added successfully" />);
       form.resetFields();
       setContent('');
-      setMedias([]);
+      setMediaFileList([]);
       setMenus([]);
       onCancel(false);
       onSuccess?.();
@@ -212,7 +210,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       }}
       onFinish={handleFinish}
     >
-      {/* 富文本编辑器 - 单独占满一行 */}
       <Form.Item
         label={intl.formatMessage({ id: 'content', defaultMessage: 'Message Content' })}
         required
@@ -229,27 +226,22 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
 
       <ProFormGroup>
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
-          <Upload
-            onFileUpload={(url: string, signedUrl?: string) => {
-              // 支持多媒体上传
-              setMedias((prev) => [...prev, signedUrl || url]);
-            }}
-            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
-            defaultFileList={defaultMediaFileList}
+          <MyUpload
+            fileList={mediaFileList}
             multiple
-            onRemove={(file: UploadFile) => {
-              setMedias((prev) => prev.filter((media) => media !== file.url));
-              return true;
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            onFileUpload={(url) => {
+              setMediaFileList((prev) =>
+                prev.map((f) => (f.status === 'done' && !f.url ? { ...f, url } : f)),
+              );
             }}
+            onChange={(list) => setMediaFileList(list)}
           />
         </Form.Item>
 
         <ProFormSwitch
           name="isPinned"
-          label={intl.formatMessage({
-            id: 'is_pinned',
-            defaultMessage: '置顶消息',
-          })}
+          label={intl.formatMessage({ id: 'is_pinned', defaultMessage: '置顶消息' })}
           initialValue={false}
           tooltip="发送后将该消息置顶到群组顶部"
         />
@@ -279,9 +271,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
             <>
               <ProFormGroup
                 label={intl.formatMessage({ id: 'interval_time', defaultMessage: 'Interval Time' })}
-                style={{
-                  marginBottom: 32,
-                }}
+                style={{ marginBottom: 32 }}
               >
                 <Space>
                   <ProFormSelect
@@ -304,7 +294,6 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
                     ]}
                     noStyle
                   />
-
                   <ProFormDigit
                     name="intervalTime"
                     width="xs"
@@ -349,10 +338,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
       </ProFormDependency>
 
       <Form.Item
-        label={intl.formatMessage({
-          id: 'inline_menu_config',
-          defaultMessage: '按钮设置',
-        })}
+        label={intl.formatMessage({ id: 'inline_menu_config', defaultMessage: '按钮设置' })}
       >
         <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
       </Form.Item>

@@ -8,10 +8,10 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { Form, message } from 'antd';
-import { UploadFile } from 'antd/es/upload/interface';
+import { UploadFile } from 'antd/lib/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
-import Upload from '@/components/Upload';
+import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 
@@ -22,9 +22,7 @@ interface Props {
   onOpenChange: (visible: boolean) => void;
   currentRow: any;
   onSuccess: () => void;
-  /** 编辑时传入现有记录，新建时不传 */
   editingRecord?: any;
-  /** 从外层直接传入群组 ID */
   fixedGroupId?: string;
 }
 
@@ -41,13 +39,24 @@ const ReplyRuleForm: React.FC<Props> = ({
   const [content, setContent] = useState('');
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
-  const [medias, setMedias] = useState<string[]>([]);
+  const [mediaFileList, setMediaFileList] = useState<UploadFile[]>([]);
 
-  // 编辑时回填数据
+  const medias = mediaFileList
+    .filter((f) => f.status === 'done' && f.url)
+    .map((f) => f.url as string);
+
   useEffect(() => {
     if (open && isEdit) {
       setContent(toQuillHtml(editingRecord.content || ''));
-      setMedias(editingRecord.medias || []);
+      const initialMedias: string[] = editingRecord.medias || [];
+      setMediaFileList(
+        initialMedias.filter(Boolean).map((url, idx) => ({
+          uid: `existing-${idx}`,
+          name: url.includes('/') ? url.split('/').pop()! : url,
+          status: 'done' as const,
+          url,
+        })),
+      );
       setMenus(
         (editingRecord.menus || []).map((m: any, i: number) => ({
           _id: m._id || `menu-${i}`,
@@ -71,7 +80,7 @@ const ReplyRuleForm: React.FC<Props> = ({
       });
     } else if (open && !isEdit) {
       setContent('');
-      setMedias([]);
+      setMediaFileList([]);
       setMenus([]);
     }
   }, [open, editingRecord]);
@@ -119,7 +128,7 @@ const ReplyRuleForm: React.FC<Props> = ({
       form.resetFields();
       setContent('');
       setMenus([]);
-      setMedias([]);
+      setMediaFileList([]);
       return true;
     } catch (error: any) {
       hide();
@@ -145,7 +154,7 @@ const ReplyRuleForm: React.FC<Props> = ({
           form.resetFields();
           setContent('');
           setMenus([]);
-          setMedias([]);
+          setMediaFileList([]);
         }
         onOpenChange(visible);
       }}
@@ -217,24 +226,16 @@ const ReplyRuleForm: React.FC<Props> = ({
       </ProFormGroup>
 
       <Form.Item label="媒体文件（图片/视频）">
-        <Upload
-          key={editingRecord?._id || 'new'}
-          onFileUpload={(url: string) => {
-            setMedias((prev) => [...prev, url]);
-          }}
-          accept=".jpg,.jpeg,.png,.gif,.mp4,.mov,.avi,.mkv,.webm"
+        <MyUpload
+          fileList={mediaFileList}
           multiple
-          defaultFileList={medias.filter(Boolean).map((url, idx) => ({
-            uid: `media-${idx}`,
-            name: url.includes('/') ? url.split('/').pop()! : url,
-            status: 'done' as const,
-            url,
-          }))}
-          onRemove={(file: UploadFile) => {
-            const fileUrl = file.url || (file.response as any)?.data?.file;
-            setMedias((prev) => prev.filter((m) => m !== fileUrl && !fileUrl?.includes(m)));
-            return true;
+          accept=".jpg,.jpeg,.png,.gif,.mp4,.mov,.avi,.mkv,.webm"
+          onFileUpload={(url) => {
+            setMediaFileList((prev) =>
+              prev.map((f) => (f.status === 'done' && !f.url ? { ...f, url } : f)),
+            );
           }}
+          onChange={(list) => setMediaFileList(list)}
         />
       </Form.Item>
 
