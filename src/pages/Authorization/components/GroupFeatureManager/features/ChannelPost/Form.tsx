@@ -17,7 +17,7 @@ import { FormattedMessage } from '@umijs/max';
 import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
-import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { timeUnitToMinutes, minutesToTimeUnit, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 
 type menuItem = InlineMenuItem;
@@ -75,9 +75,11 @@ const ChannelPostForm: React.FC<Props> = ({
           style: m.style || 'primary',
         })),
       );
+      const { timeUnit, value: intervalValue } = minutesToTimeUnit(editingRecord.interval);
       form.setFieldsValue({
         sendType: editingRecord.sendType || 'scheduled',
-        interval: editingRecord.interval || 1,
+        interval: intervalValue,
+        timeUnit,
         startAt: editingRecord.startAt,
         endAt: editingRecord.endAt,
         weight: editingRecord.weight || 0,
@@ -115,8 +117,13 @@ const ChannelPostForm: React.FC<Props> = ({
     if (isEdit) {
       const hide = message.loading('更新中...');
       try {
+        const intervalMinutes = timeUnitToMinutes(
+          values.interval || 1,
+          values.timeUnit as TimeUnit,
+        );
         await updateItem(`/channel-posts/${editingRecord._id}`, {
           ...formData,
+          interval: intervalMinutes,
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
         });

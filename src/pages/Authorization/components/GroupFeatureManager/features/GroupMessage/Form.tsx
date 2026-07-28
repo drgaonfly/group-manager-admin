@@ -6,7 +6,7 @@ import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
-import { timeUnitToMinutes, TimeUnit } from '@/utils/intervalUtils';
+import { timeUnitToMinutes, minutesToTimeUnit, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
 import {
   ModalForm,
@@ -78,9 +78,11 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           style: m.style || 'primary',
         })),
       );
+      const { timeUnit, value: intervalValue } = minutesToTimeUnit(editingRecord.intervalTime);
       form.setFieldsValue({
         sendType: editingRecord.sendType || 'scheduled',
-        intervalTime: editingRecord.intervalTime || 0,
+        intervalTime: intervalValue,
+        timeUnit,
         startAt: editingRecord.startAt,
         endAt: editingRecord.endAt,
         autoDeletePrevious: editingRecord.autoDeletePrevious || false,
@@ -99,9 +101,15 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
     if (isEdit) {
       const hide = message.loading('更新中...');
       try {
+        const intervalMinutes = timeUnitToMinutes(
+          values.intervalTime || 0,
+          values.timeUnit as TimeUnit,
+        );
         await updateItem(`/group-messages/${editingRecord._id}`, {
           ...values,
+          bot: editingRecord.bot?._id ?? editingRecord.bot,
           content: telegramContent,
+          intervalTime: intervalMinutes,
           medias,
           menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
             name,
