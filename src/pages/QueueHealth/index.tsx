@@ -20,7 +20,7 @@ const QueueHealth: React.FC = () => {
 
   const fetchHealth = async () => {
     try {
-      const result = await request<HealthData>('/health', { method: 'GET' });
+      const result = await request<HealthData>('/queue-health', { method: 'GET' });
       setData(result);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch {
