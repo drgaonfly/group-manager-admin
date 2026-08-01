@@ -1,6 +1,7 @@
 export default {
   'menu.welcome': '欢迎',
   'menu.dashboard': '工作台',
+  'menu.list.queue-health': '队列状态',
 
   'menu.list.auth': '认证列表',
   'menu.list.auth.list.roles': '角色列表',
@@ -61,6 +62,7 @@ export default {
   'menu.exchanges': '兑换记录',
   'menu.group-messages': '群组消息',
   'menu.channel-posts': '频道推广',
+  'menu.queue-health': '队列状态',
 
   'menu.工作台管理': '工作台管理',
   'menu.认证管理': '认证管理',

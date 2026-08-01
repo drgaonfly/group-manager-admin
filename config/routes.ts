@@ -50,6 +50,12 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/queue-health',
+    name: 'list.queue-health',
+    icon: 'DashboardOutlined',
+    component: './QueueHealth',
+  },
+  {
     path: '*',
     layout: false,
     component: './404',
