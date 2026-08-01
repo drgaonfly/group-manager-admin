@@ -11,10 +11,10 @@ import {
   ProFormDateTimePicker,
 } from '@ant-design/pro-components';
 import { Form, Input, message, Space } from 'antd';
-import { UploadFile } from 'antd/es/upload/interface';
+import { UploadFile } from 'antd/lib/upload/interface';
 import { addItem, updateItem } from '@/services/ant-design-pro/api';
 import { FormattedMessage } from '@umijs/max';
-import Upload from '@/components/Upload';
+import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import { timeUnitToMinutes, minutesToTimeUnit, TimeUnit } from '@/utils/intervalUtils';
@@ -27,9 +27,7 @@ interface Props {
   onClose: () => void;
   currentRow: any;
   onSuccess: () => void;
-  /** 编辑时传入现有记录 */
   editingRecord?: any;
-  /** 固定的频道 ID（来自频道列表层，传入后不渲染频道选择） */
   fixedChannelId?: string;
 }
 
@@ -46,13 +44,25 @@ const ChannelPostForm: React.FC<Props> = ({
   const [content, setContent] = useState('');
   const [form] = Form.useForm();
   const [menus, setMenus] = useState<menuItem[]>([]);
-  const [medias, setMedias] = useState<string[]>([]);
+  const [mediaFileList, setMediaFileList] = useState<UploadFile[]>([]);
+
+  const medias = mediaFileList
+    .filter((f) => f.status === 'done' && f.url)
+    .map((f) => f.url as string);
 
   useEffect(() => {
     if (!open) return;
     if (isEdit) {
       setContent(toQuillHtml(editingRecord.content || ''));
-      setMedias(editingRecord.medias || []);
+      const initialMedias: string[] = editingRecord.medias || [];
+      setMediaFileList(
+        initialMedias.filter(Boolean).map((url, idx) => ({
+          uid: `existing-${idx}`,
+          name: `media${idx + 1}`,
+          status: 'done' as const,
+          url: url.startsWith('http') ? url : `/api/static/${url}`,
+        })),
+      );
       setMenus(
         (editingRecord.menus || []).map((m: any, i: number) => ({
           _id: m._id || `menu-${i}`,
@@ -79,19 +89,10 @@ const ChannelPostForm: React.FC<Props> = ({
       });
     } else {
       setContent('');
-      setMedias([]);
+      setMediaFileList([]);
       setMenus([]);
     }
   }, [open, editingRecord]);
-
-  const defaultMediaFileList: UploadFile[] = medias
-    ? medias.filter(Boolean).map((media, idx) => ({
-        uid: String(idx + 1),
-        name: `media${idx + 1}`,
-        status: 'done' as UploadFile['status'],
-        url: media.startsWith('http') ? media : `/api/static/${media}`,
-      }))
-    : [];
 
   const handleSubmit = async (values: any) => {
     const telegramContent = convertToTelegramHtml(content);
@@ -100,7 +101,7 @@ const ChannelPostForm: React.FC<Props> = ({
       ...values,
       content: telegramContent,
       bot: currentRow?._id,
-      channel: fixedChannelId, // 主字段：单个频道
+      channel: fixedChannelId,
       menus: menus.map(({ name, type, url, callback, copy_text, row, style }) => ({
         name,
         type: type || 'url',
@@ -142,7 +143,6 @@ const ChannelPostForm: React.FC<Props> = ({
       const sendType = values.sendType || 'scheduled';
       const interval = timeUnitToMinutes(values.interval || 1, values.timeUnit as TimeUnit);
 
-      // 如果是立即发送，调用 sendChannelPost 接口
       if (sendType === 'immediate') {
         await request(`/bots/${currentRow?._id}/send-channel-post`, {
           method: 'PUT',
@@ -156,7 +156,6 @@ const ChannelPostForm: React.FC<Props> = ({
           },
         });
       } else {
-        // 定时发送，创建记录
         await addItem('/channel-posts', {
           ...formData,
           interval,
@@ -184,7 +183,7 @@ const ChannelPostForm: React.FC<Props> = ({
     form.resetFields();
     setContent('');
     setMenus([]);
-    setMedias([]);
+    setMediaFileList([]);
   };
 
   return (
@@ -219,7 +218,6 @@ const ChannelPostForm: React.FC<Props> = ({
         timeUnit: 'hours',
       }}
     >
-      {/* 富文本编辑器 */}
       <Form.Item
         label={intl.formatMessage({ id: 'content', defaultMessage: '推广内容' })}
         required
@@ -236,27 +234,22 @@ const ChannelPostForm: React.FC<Props> = ({
 
       <ProFormGroup>
         <Form.Item label={intl.formatMessage({ id: 'media', defaultMessage: '媒体文件' })}>
-          <Upload
-            onFileUpload={(url: string, signedUrl?: string) => {
-              // 支持多媒体上传
-              setMedias((prev) => [...prev, signedUrl || url]);
-            }}
-            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
-            defaultFileList={defaultMediaFileList}
+          <MyUpload
+            fileList={mediaFileList}
             multiple
-            onRemove={(file: UploadFile) => {
-              setMedias((prev) => prev.filter((media) => media !== file.url));
-              return true;
+            accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.webm"
+            onFileUpload={(url) => {
+              setMediaFileList((prev) =>
+                prev.map((f) => (f.status === 'done' && !f.url ? { ...f, url } : f)),
+              );
             }}
+            onChange={(list) => setMediaFileList(list)}
           />
         </Form.Item>
 
         <ProFormSwitch
           name="isPinned"
-          label={intl.formatMessage({
-            id: 'is_pinned',
-            defaultMessage: '置顶消息',
-          })}
+          label={intl.formatMessage({ id: 'is_pinned', defaultMessage: '置顶消息' })}
           initialValue={false}
           tooltip="发送后将该消息置顶到频道顶部"
         />
@@ -343,13 +336,11 @@ const ChannelPostForm: React.FC<Props> = ({
                   min={0}
                   tooltip="权重越小越靠前发送"
                 />
-
                 <ProFormSwitch
                   name="isOnline"
                   label={intl.formatMessage({ id: 'status', defaultMessage: '启用状态' })}
                   tooltip="是否启用自动发送"
                 />
-
                 <ProFormSwitch
                   name="isClearLastPost"
                   label={intl.formatMessage({
@@ -365,10 +356,7 @@ const ChannelPostForm: React.FC<Props> = ({
       </ProFormDependency>
 
       <Form.Item
-        label={intl.formatMessage({
-          id: 'inline_menu_config',
-          defaultMessage: '按钮设置',
-        })}
+        label={intl.formatMessage({ id: 'inline_menu_config', defaultMessage: '按钮设置' })}
       >
         <InlineMenuEditor value={menus} onChange={setMenus} showStyle />
       </Form.Item>
