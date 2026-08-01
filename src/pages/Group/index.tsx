@@ -144,6 +144,7 @@ const GroupTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       hideInSearch: true,
+      valueType: 'dateTime',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Actions" />,
