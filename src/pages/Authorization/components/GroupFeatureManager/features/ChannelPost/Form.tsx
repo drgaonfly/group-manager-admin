@@ -19,6 +19,7 @@ import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
 import { timeUnitToMinutes, minutesToTimeUnit, TimeUnit } from '@/utils/intervalUtils';
 import { toISOString } from '@/utils/dateUtils';
+import extractPathFromUrl from '@/utils/extractPathFromUrl';
 
 type menuItem = InlineMenuItem;
 
@@ -48,7 +49,8 @@ const ChannelPostForm: React.FC<Props> = ({
 
   const medias = mediaFileList
     .filter((f) => f.status === 'done' && f.url)
-    .map((f) => f.url as string);
+    .map((f) => extractPathFromUrl(f.url as string))
+    .filter(Boolean);
 
   useEffect(() => {
     if (!open) return;

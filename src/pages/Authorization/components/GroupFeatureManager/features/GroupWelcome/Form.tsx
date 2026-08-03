@@ -6,6 +6,7 @@ import { request } from '@umijs/max';
 import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
+import extractPathFromUrl from '@/utils/extractPathFromUrl';
 import {
   ModalForm,
   ProFormGroup,
@@ -46,7 +47,8 @@ const GroupWelcomeForm: React.FC<GroupWelcomeFormProps> = ({
   // medias 直接从 mediaFileList 里派生，只取已上传成功且有 url 的
   const medias = mediaFileList
     .filter((f) => f.status === 'done' && f.url)
-    .map((f) => f.url as string);
+    .map((f) => extractPathFromUrl(f.url as string))
+    .filter(Boolean);
 
   useEffect(() => {
     if (open && botId && !fixedGroupId) {

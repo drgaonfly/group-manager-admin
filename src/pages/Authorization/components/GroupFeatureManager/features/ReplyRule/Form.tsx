@@ -14,6 +14,7 @@ import { FormattedMessage } from '@umijs/max';
 import MyUpload from '@/components/MyUpload';
 import RichTextEditor, { convertToTelegramHtml, toQuillHtml } from '@/components/RichTextEditor';
 import InlineMenuEditor, { InlineMenuItem } from '@/components/InlineMenuEditor';
+import extractPathFromUrl from '@/utils/extractPathFromUrl';
 
 type menuItem = InlineMenuItem;
 
@@ -43,7 +44,8 @@ const ReplyRuleForm: React.FC<Props> = ({
 
   const medias = mediaFileList
     .filter((f) => f.status === 'done' && f.url)
-    .map((f) => f.url as string);
+    .map((f) => extractPathFromUrl(f.url as string))
+    .filter(Boolean);
 
   useEffect(() => {
     if (open && isEdit) {
