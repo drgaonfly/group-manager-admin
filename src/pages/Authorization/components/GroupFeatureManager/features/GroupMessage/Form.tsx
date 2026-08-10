@@ -124,6 +124,7 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
           })),
           startAt: toISOString(values.startAt),
           endAt: toISOString(values.endAt),
+          botId: editingRecord.bot?._id ?? editingRecord.bot, // 添加 botId 查询参数
         });
         hide();
         message.success('更新成功');
