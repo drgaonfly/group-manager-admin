@@ -95,7 +95,7 @@ const BotDetail: React.FC = () => {
       title: intl.formatMessage({ id: 'members_num', defaultMessage: '成员数' }),
       dataIndex: 'botUsers',
       responsive: ['sm'],
-      render: (botUsers: any) => <span>{botUsers?.length ?? 0}</span>,
+      render: (_, record: any) => <span>{record.memberCount ?? 0}</span>,
     },
     {
       title: intl.formatMessage({ id: 'createdAt' }),
@@ -295,7 +295,7 @@ const BotDetail: React.FC = () => {
                     </div>
                     <div className="flex items-center justify-between mt-3">
                       <span className="text-sm text-gray-500">
-                        <span className="font-medium">{record.botUsers?.length ?? 0}</span> 成员
+                        <span className="font-medium">{record.memberCount ?? 0}</span> 成员
                       </span>
                       <div className="flex gap-2">
                         <Button
