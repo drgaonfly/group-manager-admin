@@ -169,14 +169,17 @@ function useFeatureList<T extends { _id: string }>(
   const handleStatusChange = useCallback(
     async (record: T, value: boolean) => {
       try {
-        await updateItem(`${apiPath}/${record._id}`, { [statusField]: value });
+        // 构建URL，如果有botId则添加查询参数
+        const url = botId ? `${apiPath}/${record._id}?botId=${botId}` : `${apiPath}/${record._id}`;
+
+        await updateItem(url, { [statusField]: value });
         message.success('状态更新成功');
         await fetchData();
       } catch (e: any) {
         message.error(e?.response?.data?.message ?? '更新失败');
       }
     },
-    [apiPath, statusField, fetchData],
+    [apiPath, statusField, fetchData, botId],
   );
 
   return {
