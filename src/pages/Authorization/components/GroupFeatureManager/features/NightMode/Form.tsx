@@ -3,16 +3,32 @@ import { Modal, Form, Switch, TimePicker, Row, Col, message, Alert } from 'antd'
 import { request } from '@umijs/max';
 import dayjs from 'dayjs';
 
-/** 分钟数（0–1439）→ dayjs 对象，直接用 hour/minute 设置，不依赖 utc 插件 */
-const minutesToDayjs = (minutes: number) =>
-  dayjs()
-    .hour(Math.floor(minutes / 60))
-    .minute(minutes % 60)
-    .second(0)
-    .millisecond(0);
+/**
+ * UTC 分钟数 → 本地 dayjs（用于 TimePicker 展示）
+ * 先构造 UTC 时刻，dayjs() 会自动转成本地时间
+ */
+const utcMinutesToLocalDayjs = (utcMinutes: number): dayjs.Dayjs => {
+  const now = new Date();
+  const d = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      Math.floor(utcMinutes / 60),
+      utcMinutes % 60,
+      0,
+    ),
+  );
+  return dayjs(d);
+};
 
-/** dayjs 对象 → 分钟数 */
-const dayjsToMinutes = (d: dayjs.Dayjs) => d.hour() * 60 + d.minute();
+/**
+ * 本地 dayjs（TimePicker 选出来的）→ UTC 分钟数
+ */
+const localDayjsToUtcMinutes = (d: dayjs.Dayjs): number => {
+  const utc = d.toDate();
+  return utc.getUTCHours() * 60 + utc.getUTCMinutes();
+};
 
 interface Props {
   visible: boolean;
@@ -31,14 +47,14 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
     if (record?._id) {
       form.setFieldsValue({
         isActive: record.isActive,
-        startAt: minutesToDayjs(record.startAt),
-        endAt: minutesToDayjs(record.endAt),
+        startAt: utcMinutesToLocalDayjs(record.startAt),
+        endAt: utcMinutesToLocalDayjs(record.endAt),
       });
     } else {
       form.setFieldsValue({
         isActive: true,
-        startAt: minutesToDayjs(22 * 60), // 22:00
-        endAt: minutesToDayjs(8 * 60), // 08:00
+        startAt: utcMinutesToLocalDayjs(22 * 60),
+        endAt: utcMinutesToLocalDayjs(8 * 60),
       });
     }
   }, [visible, record]);
@@ -50,8 +66,8 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
 
       const payload = {
         isActive: values.isActive,
-        startAt: dayjsToMinutes(values.startAt as dayjs.Dayjs),
-        endAt: dayjsToMinutes(values.endAt as dayjs.Dayjs),
+        startAt: localDayjsToUtcMinutes(values.startAt as dayjs.Dayjs),
+        endAt: localDayjsToUtcMinutes(values.endAt as dayjs.Dayjs),
         bot: bot._id,
         group: group._id,
       };
@@ -73,6 +89,15 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
     }
   };
 
+  // 计算本地时区偏移，提示用户
+  const offsetMinutes = -new Date().getTimezoneOffset();
+  const offsetSign = offsetMinutes >= 0 ? '+' : '-';
+  const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60)
+    .toString()
+    .padStart(2, '0');
+  const offsetMins = (Math.abs(offsetMinutes) % 60).toString().padStart(2, '0');
+  const tzLabel = `UTC${offsetSign}${offsetHours}:${offsetMins}`;
+
   return (
     <Modal
       title={record?._id ? '编辑夜间模式' : '新建夜间模式'}
@@ -84,8 +109,8 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
       destroyOnClose
     >
       <Alert
-        message="时间基于 UTC。跨午夜区间自动支持（如 22:00 ~ 08:00）。Bot 需拥有管理员权限才能修改群组权限。"
-        type="warning"
+        message={`按本地时间（${tzLabel}）输入，自动转换为 UTC 存储。Bot 需拥有管理员权限。`}
+        type="info"
         showIcon
         style={{ marginBottom: 16 }}
       />
@@ -99,7 +124,7 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
           <Col span={12}>
             <Form.Item
               name="startAt"
-              label="开始时间（UTC）"
+              label={`开始时间（${tzLabel}）`}
               rules={[{ required: true, message: '请选择开始时间' }]}
             >
               <TimePicker
@@ -113,7 +138,7 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
           <Col span={12}>
             <Form.Item
               name="endAt"
-              label="结束时间（UTC）"
+              label={`结束时间（${tzLabel}）`}
               rules={[{ required: true, message: '请选择结束时间' }]}
             >
               <TimePicker

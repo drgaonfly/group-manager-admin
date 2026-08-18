@@ -4,13 +4,20 @@ import { EditOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import NightModeForm from './Form';
 
-/** 分钟数（0–1439）→ "HH:mm" 展示字符串 */
-const minutesToLabel = (m: number) => {
-  const h = Math.floor(m / 60)
-    .toString()
-    .padStart(2, '0');
-  const min = (m % 60).toString().padStart(2, '0');
-  return `${h}:${min}`;
+/** UTC 分钟数 → 本地时间 "HH:mm" 展示 */
+const minutesToLabel = (utcMinutes: number) => {
+  const now = new Date();
+  const d = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      Math.floor(utcMinutes / 60),
+      utcMinutes % 60,
+      0,
+    ),
+  );
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 };
 
 interface Props {
