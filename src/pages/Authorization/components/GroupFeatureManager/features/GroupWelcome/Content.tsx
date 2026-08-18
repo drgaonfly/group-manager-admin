@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Tag, Descriptions } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Button, message, Tag, Descriptions, Alert } from 'antd';
+import { EditOutlined, SmileOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import GroupWelcomeForm from './Form';
 
@@ -41,6 +41,15 @@ const GroupWelcomeGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
+      <Alert
+        message="群欢迎"
+        description="新成员加入群组时，Bot 将自动发送欢迎消息。支持富文本、媒体文件和阅后即焚。"
+        type="info"
+        showIcon
+        icon={<SmileOutlined />}
+        closable
+        style={{ marginBottom: 16 }}
+      />
       <div style={{ marginBottom: 16, textAlign: 'right' }}>
         <Button
           type="primary"

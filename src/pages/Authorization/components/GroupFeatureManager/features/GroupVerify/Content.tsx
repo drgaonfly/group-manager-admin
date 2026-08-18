@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Tag, Descriptions } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Button, message, Tag, Descriptions, Alert } from 'antd';
+import { EditOutlined, SafetyOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import GroupVerifyForm from './Form';
 
@@ -41,6 +41,15 @@ const GroupVerifyGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
+      <Alert
+        message="群组验证"
+        description="新成员加入群组时，Bot 将发送验证问题，回答正确后才能正常发言。可设置多个选项，支持多个正确答案。"
+        type="info"
+        showIcon
+        icon={<SafetyOutlined />}
+        closable
+        style={{ marginBottom: 16 }}
+      />
       <div style={{ marginBottom: 16, textAlign: 'right' }}>
         <Button
           type="primary"

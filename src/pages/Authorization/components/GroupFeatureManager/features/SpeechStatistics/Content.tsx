@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Tag, Descriptions } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Button, message, Tag, Descriptions, Alert } from 'antd';
+import { EditOutlined, BarChartOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import SpeechStatisticsForm from './Form';
 
@@ -47,6 +47,15 @@ const SpeechStatisticsGroupContent: React.FC<Props> = ({ open, bot, group }) => 
 
   return (
     <>
+      <Alert
+        message="发言统计"
+        description="统计群组内成员的发言情况，支持按日/周/月周期发放排行榜积分奖励，以及即时发言积分奖励。"
+        type="info"
+        showIcon
+        icon={<BarChartOutlined />}
+        closable
+        style={{ marginBottom: 16 }}
+      />
       <div style={{ marginBottom: 16, textAlign: 'right' }}>
         <Button
           type="primary"
