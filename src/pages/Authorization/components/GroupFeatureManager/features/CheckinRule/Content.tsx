@@ -10,8 +10,9 @@ import {
   Popconfirm,
   Modal,
   Descriptions,
+  Alert,
 } from 'antd';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, CalendarOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import useFeatureList from '../../../hooks/useFeatureList';
 import CheckinRuleForm from './Form';
@@ -165,6 +166,15 @@ const CheckinRuleGroupContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
+      <Alert
+        message="群签到"
+        description="支持每日签到和初次签到两种规则，用户发送触发关键词即可获得积分奖励。可配置连续签到倍率激励。"
+        type="info"
+        showIcon
+        icon={<CalendarOutlined />}
+        closable
+        style={{ marginBottom: 16 }}
+      />
       <Spin spinning={loading}>
         {renderRuleCard('daily')}
         {renderRuleCard('first')}
