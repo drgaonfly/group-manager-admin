@@ -3,9 +3,13 @@ import { Modal, Form, Switch, TimePicker, Row, Col, message, Alert } from 'antd'
 import { request } from '@umijs/max';
 import dayjs from 'dayjs';
 
-/** 分钟数（0–1439）→ dayjs 对象（当天 UTC） */
+/** 分钟数（0–1439）→ dayjs 对象，直接用 hour/minute 设置，不依赖 utc 插件 */
 const minutesToDayjs = (minutes: number) =>
-  dayjs().utcOffset(0).startOf('day').add(minutes, 'minute');
+  dayjs()
+    .hour(Math.floor(minutes / 60))
+    .minute(minutes % 60)
+    .second(0)
+    .millisecond(0);
 
 /** dayjs 对象 → 分钟数 */
 const dayjsToMinutes = (d: dayjs.Dayjs) => d.hour() * 60 + d.minute();
