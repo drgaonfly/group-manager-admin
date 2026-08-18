@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Tag, Descriptions } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Button, message, Tag, Descriptions, Alert } from 'antd';
+import { EditOutlined, MoonOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
 import NightModeForm from './Form';
 
@@ -53,6 +53,15 @@ const NightModeContent: React.FC<Props> = ({ open, bot, group }) => {
 
   return (
     <>
+      <Alert
+        message="夜间模式"
+        description="启用后，Bot 将在设定时间段内对群组全体禁言，时段结束后自动解禁。管理员和群主不受影响，仅普通成员被限制发言。Bot 需拥有管理员权限。"
+        type="info"
+        showIcon
+        icon={<MoonOutlined />}
+        closable
+        style={{ marginBottom: 16 }}
+      />
       <div style={{ marginBottom: 16, textAlign: 'right' }}>
         <Button
           type="primary"
