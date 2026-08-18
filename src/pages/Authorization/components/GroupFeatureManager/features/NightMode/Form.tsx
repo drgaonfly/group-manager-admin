@@ -1,34 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { utcMinutesToLocalDayjs, localDayjsToUtcMinutes } from '@/utils/dateUtils';
 import { Modal, Form, Switch, TimePicker, Row, Col, message, Alert } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { request } from '@umijs/max';
 import dayjs from 'dayjs';
-
-/**
- * UTC 分钟数 → 本地 dayjs（用于 TimePicker 展示）
- * 先构造 UTC 时刻，dayjs() 会自动转成本地时间
- */
-const utcMinutesToLocalDayjs = (utcMinutes: number): dayjs.Dayjs => {
-  const now = new Date();
-  const d = new Date(
-    Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      Math.floor(utcMinutes / 60),
-      utcMinutes % 60,
-      0,
-    ),
-  );
-  return dayjs(d);
-};
-
-/**
- * 本地 dayjs（TimePicker 选出来的）→ UTC 分钟数
- */
-const localDayjsToUtcMinutes = (d: dayjs.Dayjs): number => {
-  const utc = d.toDate();
-  return utc.getUTCHours() * 60 + utc.getUTCMinutes();
-};
 
 interface Props {
   visible: boolean;
@@ -89,14 +63,13 @@ const NightModeForm: React.FC<Props> = ({ visible, record, bot, group, onClose }
     }
   };
 
-  // 计算本地时区偏移，提示用户
   const offsetMinutes = -new Date().getTimezoneOffset();
-  const offsetSign = offsetMinutes >= 0 ? '+' : '-';
-  const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60)
+  const sign = offsetMinutes >= 0 ? '+' : '-';
+  const hh = Math.floor(Math.abs(offsetMinutes) / 60)
     .toString()
     .padStart(2, '0');
-  const offsetMins = (Math.abs(offsetMinutes) % 60).toString().padStart(2, '0');
-  const tzLabel = `UTC${offsetSign}${offsetHours}:${offsetMins}`;
+  const mm = (Math.abs(offsetMinutes) % 60).toString().padStart(2, '0');
+  const tzLabel = `UTC${sign}${hh}:${mm}`;
 
   return (
     <Modal

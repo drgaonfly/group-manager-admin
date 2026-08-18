@@ -2,23 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, message, Tag, Descriptions, Alert } from 'antd';
 import { EditOutlined, MoonOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
+import { utcMinutesToLocalLabel } from '@/utils/dateUtils';
 import NightModeForm from './Form';
-
-/** UTC 分钟数 → 本地时间 "HH:mm" 展示 */
-const minutesToLabel = (utcMinutes: number) => {
-  const now = new Date();
-  const d = new Date(
-    Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      Math.floor(utcMinutes / 60),
-      utcMinutes % 60,
-      0,
-    ),
-  );
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-};
 
 interface Props {
   open: boolean;
@@ -80,11 +65,11 @@ const NightModeContent: React.FC<Props> = ({ open, bot, group }) => {
               {config.isActive ? '启用' : '禁用'}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="开始时间（UTC）">
-            {typeof config.startAt === 'number' ? minutesToLabel(config.startAt) : '-'}
+          <Descriptions.Item label="开始时间">
+            {typeof config.startAt === 'number' ? utcMinutesToLocalLabel(config.startAt) : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="结束时间（UTC）">
-            {typeof config.endAt === 'number' ? minutesToLabel(config.endAt) : '-'}
+          <Descriptions.Item label="结束时间">
+            {typeof config.endAt === 'number' ? utcMinutesToLocalLabel(config.endAt) : '-'}
           </Descriptions.Item>
         </Descriptions>
       ) : (
