@@ -180,6 +180,10 @@ const BasicForm: React.FC<Props> = ({ newRecord, onFinish, values }) => {
             label={intl.formatMessage({ id: 'serviceMessage', defaultMessage: '服务消息' })}
             name="serviceMessage"
           />
+          <ProFormSwitch
+            label={intl.formatMessage({ id: 'nightMode', defaultMessage: '夜间模式' })}
+            name="nightMode"
+          />
         </ProForm.Group>
       </div>
 

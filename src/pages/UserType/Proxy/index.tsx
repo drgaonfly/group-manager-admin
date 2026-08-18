@@ -211,6 +211,10 @@ const TableList: React.FC = () => {
             name: intl.formatMessage({ id: 'serviceMessage', defaultMessage: '服务消息' }),
             enabled: record.serviceMessage,
           },
+          {
+            name: intl.formatMessage({ id: 'nightMode', defaultMessage: '夜间模式' }),
+            enabled: record.nightMode,
+          },
         ];
 
         return (

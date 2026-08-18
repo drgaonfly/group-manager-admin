@@ -12,6 +12,7 @@ import {
   TrophyOutlined,
   AuditOutlined,
   DeleteOutlined,
+  MoonOutlined,
 } from '@ant-design/icons';
 
 import GroupMessage from './features/GroupMessage/Content';
@@ -24,6 +25,7 @@ import CheckinRule from './features/CheckinRule/Content';
 import LotteryRule from './features/LotteryRule/Content';
 import AuctionRule from './features/AuctionRule/Content';
 import ServiceMessage from './features/ServiceMessage/Content';
+import NightMode from './features/NightMode/Content';
 
 interface GroupFeaturesModalProps {
   open: boolean;
@@ -171,6 +173,18 @@ const GroupFeaturesModal: React.FC<GroupFeaturesModalProps> = ({
           </span>
         ),
         children: <AuctionRule open={open} bot={bot} group={group} />,
+      });
+    }
+
+    if (currentUser?.nightMode) {
+      items.push({
+        key: 'nightMode',
+        label: (
+          <span>
+            <MoonOutlined /> {intl.formatMessage({ id: 'night_mode', defaultMessage: '夜间模式' })}
+          </span>
+        ),
+        children: <NightMode open={open} bot={bot} group={group} />,
       });
     }
 

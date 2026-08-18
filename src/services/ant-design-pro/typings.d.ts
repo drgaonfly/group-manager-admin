@@ -46,6 +46,7 @@ declare namespace API {
     success?: boolean;
     redPacket?: boolean;
     serviceMessage?: boolean;
+    nightMode?: boolean;
     botId?: string;
     tgUserId?: string;
   };

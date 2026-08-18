@@ -33,6 +33,7 @@ const ServiceLink: React.FC = () => {
     auctionRule: boolean;
     adRemoval: boolean;
     serviceMessage: boolean;
+    nightMode: boolean;
     recharge: boolean;
     success: boolean;
     redPacket: boolean;
@@ -104,6 +105,7 @@ const ServiceLink: React.FC = () => {
               auctionRule: currentUser?.auctionRule || false,
               adRemoval: currentUser?.adRemoval || false,
               serviceMessage: currentUser?.serviceMessage || false,
+              nightMode: currentUser?.nightMode || false,
               success: currentUser?.success || false,
               redPacket: currentUser?.redPacket || false,
               availableBotCount: currentUser?.availableBotCount || 0,
@@ -237,6 +239,18 @@ const ServiceLink: React.FC = () => {
                 id: 'serviceMessage.tooltip',
                 defaultMessage:
                   '开启后，可以配置自动删除指定类型的服务消息（如新成员加入、群组信息修改等）',
+              })}
+            />
+            <ProFormSwitch
+              name="nightMode"
+              label={intl.formatMessage({
+                id: 'nightMode',
+                defaultMessage: '夜间模式',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'nightMode.tooltip',
+                defaultMessage:
+                  '开启后，可以为群组配置夜间模式，在设定时间段内自动全体禁言，时段结束后自动解禁',
               })}
             />
             <ProFormSwitch
@@ -443,6 +457,22 @@ const ServiceLink: React.FC = () => {
                   id: 'serviceMessage.tooltip',
                   defaultMessage:
                     '开启后，可以配置自动删除指定类型的服务消息（如新成员加入、群组信息修改等）',
+                })}
+              </Text>
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={intl.formatMessage({
+                id: 'nightMode',
+                defaultMessage: '夜间模式',
+              })}
+            >
+              {renderStatusTag(currentUser?.nightMode || false)}
+              <Text type="secondary" style={{ marginLeft: 16 }}>
+                {intl.formatMessage({
+                  id: 'nightMode.tooltip',
+                  defaultMessage:
+                    '开启后，可以为群组配置夜间模式，在设定时间段内自动全体禁言，时段结束后自动解禁',
                 })}
               </Text>
             </Descriptions.Item>
