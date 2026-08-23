@@ -29,7 +29,7 @@ const messageTypeGroups = [
   {
     title: '👥 成员变动',
     items: [
-      { key: 'isJoinGroupDeleted', label: '新成员加入' },
+      // { key: 'isJoinGroupDeleted', label: '新成员加入' }, // 暂时停用
       { key: 'isLeftGroupDeleted', label: '成员离开' },
     ],
   },
