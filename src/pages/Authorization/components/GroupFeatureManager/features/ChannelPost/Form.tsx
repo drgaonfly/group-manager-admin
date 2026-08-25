@@ -307,7 +307,7 @@ const ChannelPostForm: React.FC<Props> = ({
                     name="interval"
                     width="xs"
                     min={1}
-                    fieldProps={{ style: { width: '100%' } }}
+                    fieldProps={{ style: { width: '100%' }, precision: 0 }}
                     noStyle
                   />
                 </Space>
