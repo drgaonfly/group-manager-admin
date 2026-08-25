@@ -307,8 +307,8 @@ const GroupMessageForm: React.FC<GroupMessageFormProps> = ({
                   <ProFormDigit
                     name="intervalTime"
                     width="xs"
-                    min={0}
-                    fieldProps={{ style: { width: '100%' } }}
+                    min={1}
+                    fieldProps={{ style: { width: '100%' }, precision: 0 }}
                     noStyle
                   />
                 </Space>
