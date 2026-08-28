@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Space, Button, Popconfirm } from 'antd';
+import { Switch, Space, Button, Popconfirm, Tag, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import useFeatureList from '../../../hooks/useFeatureList';
 import FeatureListContainer from '../../components/FeatureListContainer';
@@ -61,6 +61,21 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       render: (_: any, record: any) => formatTimeWindow(record),
     },
     {
+      title: '健康状态',
+      dataIndex: 'status',
+      width: 100,
+      render: (_: any, record: any) => {
+        if (record.status === 'abnormal') {
+          return (
+            <Tooltip title={record.statusReason || '发送异常'}>
+              <Tag color="error">异常</Tag>
+            </Tooltip>
+          );
+        }
+        return <Tag color="success">正常</Tag>;
+      },
+    },
+    {
       title: '状态',
       dataIndex: 'isOnline',
       width: 90,
@@ -92,8 +107,16 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
     },
   ];
 
-  // 移动端卡片渲染函数
   const renderMobileCard = (record: any) => {
+    const statusTag =
+      record.status === 'abnormal' ? (
+        <Tooltip title={record.statusReason || '发送异常'}>
+          <Tag color="error">异常</Tag>
+        </Tooltip>
+      ) : (
+        <Tag color="success">正常</Tag>
+      );
+
     return (
       <>
         <div className="flex justify-between items-start mb-2">
@@ -102,8 +125,9 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
               className="text-sm text-gray-800 mb-1"
               dangerouslySetInnerHTML={{ __html: record.content || '-' }}
             />
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-gray-500 flex items-center gap-1">
               {record.sendType === 'immediate' ? '立即发送' : '定时循环发送'}
+              <span className="ml-1">{statusTag}</span>
             </div>
           </div>
           <Switch
