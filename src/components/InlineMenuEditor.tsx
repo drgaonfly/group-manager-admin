@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import { Button, Modal, Form, Input, Select, Tooltip, Space } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons';
+import { Button, Modal, Form, Input, Select, Space } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import SortableRow from './SortableRow';
 
 export type MenuItemType = 'url' | 'callback' | 'copy_text';
 export type MenuItemStyle = 'primary' | 'success' | 'danger';
@@ -15,13 +25,6 @@ export interface InlineMenuItem {
   row: number;
   style?: MenuItemStyle;
 }
-
-// ─── 样式映射 ──────────────────────────────────────────────
-const styleColorMap: Record<MenuItemStyle, { bg: string; border: string; text: string }> = {
-  primary: { bg: '#e6f4ff', border: '#91caff', text: '#0958d9' },
-  success: { bg: '#f6ffed', border: '#b7eb8f', text: '#389e0d' },
-  danger: { bg: '#fff2f0', border: '#ffccc7', text: '#cf1322' },
-};
 
 // ─── 按钮配置弹窗 ──────────────────────────────────────────
 interface ButtonConfigModalProps {
@@ -189,12 +192,32 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
   const triggerChange = (next: InlineMenuItem[]) => onChange?.(next);
 
   // 按 row 分组，升序排列
-  // 空行也要显示（即使没有按钮）
   const existingRows = Array.from(new Set(value.map((m) => m.row))).sort((a, b) => a - b);
   const [emptyRows, setEmptyRows] = useState<number[]>([]);
 
-  // 合并已有行和空行
+  // 同步 rowOrder：新增/删除行时更新
   const allRows = Array.from(new Set([...existingRows, ...emptyRows])).sort((a, b) => a - b);
+
+  // 维护一个稳定的行顺序，仅在行集合变化时同步
+  const [orderedRows, setOrderedRows] = useState<number[]>([]);
+
+  React.useEffect(() => {
+    setOrderedRows((prev) => {
+      const prevSet = new Set(prev);
+      const newSet = new Set(allRows);
+      // 删除已不存在的行
+      const filtered = prev.filter((r) => newSet.has(r));
+      // 追加新增的行（保持末尾）
+      const added = allRows.filter((r) => !prevSet.has(r));
+      return [...filtered, ...added];
+    });
+  }, [allRows.join(',')]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+  );
 
   const buttonsInRow = (row: number) => value.filter((m) => m.row === row);
 
@@ -227,6 +250,36 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
     setEmptyRows((prev) => prev.filter((r) => r !== row));
   };
 
+  // 拖拽结束：重新排列行顺序，并将 row 字段重写为顺序编号
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setOrderedRows((prev) => {
+      const oldIndex = prev.indexOf(active.id as number);
+      const newIndex = prev.indexOf(over.id as number);
+      const reordered = arrayMove(prev, oldIndex, newIndex);
+
+      // 重写 value 里每个按钮的 row，使其等于新的顺序下标+1
+      const rowMap = new Map<number, number>();
+      reordered.forEach((originalRow, idx) => {
+        rowMap.set(originalRow, idx + 1);
+      });
+
+      const newValue = value.map((m) => ({
+        ...m,
+        row: rowMap.get(m.row) ?? m.row,
+      }));
+      triggerChange(newValue);
+
+      // 同步 emptyRows
+      setEmptyRows((prev2) => prev2.map((r) => rowMap.get(r) ?? r));
+
+      // 返回新顺序（row 编号已重写为 1,2,3...）
+      return reordered.map((_, idx) => idx + 1);
+    });
+  };
+
   // 弹窗确认
   const handleModalOk = (
     vals: Pick<InlineMenuItem, 'name' | 'type' | 'url' | 'callback' | 'copy_text' | 'style'>,
@@ -252,10 +305,8 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
     }
 
     if (editingItem._id) {
-      // 编辑已有按钮：用 cleaned 完整替换，不继承旧字段
       triggerChange(value.map((m) => (m._id === editingItem._id ? { ...m, ...cleaned } : m)));
     } else {
-      // 新建按钮
       triggerChange([
         ...value,
         { _id: Date.now().toString(), row: editingItem.row ?? 1, ...cleaned } as InlineMenuItem,
@@ -278,125 +329,33 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
           minHeight: 56,
         }}
       >
-        {allRows.length === 0 ? (
+        {orderedRows.length === 0 ? (
           <span style={{ color: '#bfbfbf', fontSize: 13 }}>
             暂无按钮，点击「新建一行按钮」开始配置
           </span>
         ) : (
-          allRows.map((row) => (
-            <div
-              key={row}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: 6,
-                marginBottom: 8,
-                paddingBottom: 8,
-                borderBottom: '1px dashed #e8e8e8',
-              }}
-            >
-              {/* 行标签 */}
-              <span
-                style={{
-                  fontSize: 11,
-                  color: '#8c8c8c',
-                  background: '#f0f0f0',
-                  borderRadius: 3,
-                  padding: '1px 5px',
-                  whiteSpace: 'nowrap',
-                  userSelect: 'none',
-                }}
-              >
-                行 {row}
-              </span>
-
-              {/* 该行按钮 */}
-              {buttonsInRow(row).map((item) => {
-                const useStyle = showStyle && (item.type || 'url') === 'url';
-                const colors = useStyle
-                  ? styleColorMap[item.style || 'primary']
-                  : { bg: '#f5f5f5', border: '#d9d9d9', text: '#595959' };
-                const typeIconMap: Record<MenuItemType, string> = {
-                  url: '🔗',
-                  callback: '💬',
-                  copy_text: '📋',
-                };
-                const typeIcon = typeIconMap[item.type || 'url'];
-                const tooltipContent =
-                  item.type === 'url'
-                    ? item.url
-                    : item.type === 'callback'
-                    ? `callback: ${item.callback}`
-                    : item.type === 'copy_text'
-                    ? `复制: ${item.copy_text}`
-                    : item.url;
-                return (
-                  <div
-                    key={item._id}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 4,
-                      padding: '3px 8px',
-                      border: `1px solid ${colors.border}`,
-                      borderRadius: 4,
-                      background: colors.bg,
-                      color: colors.text,
-                      fontSize: 13,
-                    }}
-                  >
-                    <span style={{ fontSize: 11, opacity: 0.8 }}>{typeIcon}</span>
-                    <Tooltip title={tooltipContent} placement="top">
-                      <span
-                        style={{
-                          maxWidth: 100,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => editButton(item)}
-                      >
-                        {item.name || '(未命名)'}
-                      </span>
-                    </Tooltip>
-                    <EditOutlined
-                      style={{ fontSize: 11, opacity: 0.5, cursor: 'pointer' }}
-                      onClick={() => editButton(item)}
-                    />
-                    <CloseOutlined
-                      style={{ fontSize: 10, opacity: 0.5, cursor: 'pointer', color: '#ff4d4f' }}
-                      onClick={() => deleteButton(item._id)}
-                    />
-                  </div>
-                );
-              })}
-
-              {/* 该行追加按钮 */}
-              <Button
-                type="dashed"
-                size="small"
-                icon={<PlusOutlined />}
-                onClick={() => addButtonInRow(row)}
-                style={{ height: 26, fontSize: 12, padding: '0 8px' }}
-              >
-                添加按钮
-              </Button>
-
-              {/* 删除整行 */}
-              <Tooltip title="删除此行">
-                <Button
-                  type="text"
-                  size="small"
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => deleteRow(row)}
-                  style={{ marginLeft: 'auto', height: 26, opacity: 0.6 }}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={orderedRows} strategy={verticalListSortingStrategy}>
+              {orderedRows.map((row, idx) => (
+                <SortableRow
+                  key={row}
+                  row={row}
+                  rowIndex={idx}
+                  totalRows={orderedRows.length}
+                  buttons={buttonsInRow(row)}
+                  showStyle={showStyle}
+                  onAddButton={addButtonInRow}
+                  onEditButton={editButton}
+                  onDeleteButton={deleteButton}
+                  onDeleteRow={deleteRow}
                 />
-              </Tooltip>
-            </div>
-          ))
+              ))}
+            </SortableContext>
+          </DndContext>
         )}
       </div>
 
@@ -405,9 +364,9 @@ const InlineMenuEditor: React.FC<InlineMenuEditorProps> = ({
         <Button icon={<PlusOutlined />} onClick={addRow} size="small">
           新建一行按钮
         </Button>
-        {allRows.length > 0 && (
+        {orderedRows.length > 0 && (
           <span style={{ color: '#8c8c8c', fontSize: 12 }}>
-            共 {value.length} 个按钮，{allRows.length} 行
+            共 {value.length} 个按钮，{orderedRows.length} 行
           </span>
         )}
       </Space>
