@@ -26,14 +26,13 @@ interface ServiceMessageFormProps {
 
 // 服务消息类型配置
 const messageTypeGroups = [
-  // 暂时停用成员变动删除（待性能优化后恢复）
-  // {
-  //   title: '👥 成员变动',
-  //   items: [
-  //     { key: 'isJoinGroupDeleted', label: '新成员加入' },
-  //     { key: 'isLeftGroupDeleted', label: '成员离开' },
-  //   ],
-  // },
+  {
+    title: '👥 成员变动',
+    items: [
+      { key: 'isJoinGroupDeleted', label: '新成员加入' },
+      { key: 'isLeftGroupDeleted', label: '成员离开' },
+    ],
+  },
   {
     title: '📝 群组信息',
     items: [
