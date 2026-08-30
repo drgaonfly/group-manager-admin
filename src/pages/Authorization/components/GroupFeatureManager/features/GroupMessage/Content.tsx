@@ -76,6 +76,11 @@ const GroupMessageGroupContent: React.FC<Props> = ({ open, bot, group }) => {
       },
     },
     {
+      title: '异常理由',
+      dataIndex: 'statusReason',
+      width: 150,
+    },
+    {
       title: '状态',
       dataIndex: 'isOnline',
       width: 90,
