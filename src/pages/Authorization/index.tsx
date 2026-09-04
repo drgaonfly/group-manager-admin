@@ -1,4 +1,4 @@
-import { useIntl, useModel, history } from '@umijs/max';
+import { useIntl, useModel } from '@umijs/max';
 import { addItem, queryList, removeItem, updateItem } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
@@ -332,15 +332,15 @@ const TableList: React.FC = () => {
         >
           <FormattedMessage id="platforms.detail" defaultMessage="platforms.detail" />
         </ActionButton>,
-        <ActionButton
-          key="botDetail"
-          type="detail"
-          onClick={() => {
-            history.push(`/bots/${record._id}`);
-          }}
-        >
-          <FormattedMessage id="single_pannel" defaultMessage="single_pannel" />
-        </ActionButton>,
+        // <ActionButton
+        //   key="botDetail"
+        //   type="detail"
+        //   onClick={() => {
+        //     history.push(`/bots/${record._id}`);
+        //   }}
+        // >
+        //   <FormattedMessage id="single_pannel" defaultMessage="single_pannel" />
+        // </ActionButton>,
         (access.canSuperAdmin || (access.canUpdateBot && record.type !== 'public')) && (
           <ActionButton
             key="edit"
