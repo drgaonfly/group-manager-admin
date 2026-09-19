@@ -217,15 +217,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
         return;
       }
-      // 非管理员用户只能停留在 /bots/:id 页面
-      const currentUser = initialState?.currentUser;
-      if (currentUser && !currentUser.isAdmin) {
-        const isBotsPage = /^\/bots\/[^/]+(\/[^/]+)?(\?.*)?$/.test(location.pathname);
-        const is404Page = location.pathname === '/404';
-        if (!isBotsPage && !is404Page) {
-          history.replace('/404');
-        }
-      }
     },
     links: isDev
       ? [
