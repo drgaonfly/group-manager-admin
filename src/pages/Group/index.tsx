@@ -141,6 +141,12 @@ const GroupTableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: intl.formatMessage({ id: 'operators', defaultMessage: 'Operators' }),
+      dataIndex: 'operators',
+      hideInSearch: true,
+      renderText: (_, record) => record.operators?.map((o: any) => o.userName).join(', ') || '-',
+    },
+    {
       title: intl.formatMessage({ id: 'createdAt' }),
       dataIndex: 'createdAt',
       hideInSearch: true,
