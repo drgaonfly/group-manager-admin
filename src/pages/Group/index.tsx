@@ -119,7 +119,6 @@ const GroupTableList: React.FC = () => {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: 'Is Online' }),
       dataIndex: 'isOnline',
       hideInSearch: true,
-      hideInTable: true,
       render: (_, record: any) => (
         <Switch
           checkedChildren={intl.formatMessage({ id: 'online' })}
