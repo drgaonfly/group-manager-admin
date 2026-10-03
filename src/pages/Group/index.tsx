@@ -104,16 +104,6 @@ const GroupTableList: React.FC = () => {
       copyable: true,
       renderText: (bot) => bot?.botName,
     },
-    {
-      title: intl.formatMessage({ id: 'operators', defaultMessage: '操作员' }),
-      dataIndex: 'operators',
-      hideInSearch: true,
-      hideInTable: true,
-      render: (text) =>
-        Array.isArray(text)
-          ? text.map((op: any) => op.userName || op.firstName || op.lastName).join(', ')
-          : '',
-    },
     // isOnline
     {
       title: intl.formatMessage({ id: 'isOnline', defaultMessage: 'Is Online' }),
@@ -134,13 +124,13 @@ const GroupTableList: React.FC = () => {
       ),
     },
     {
-      title: intl.formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+      title: intl.formatMessage({ id: 'group_owner', defaultMessage: '群主' }),
       dataIndex: ['creator', 'userName'],
       copyable: true,
       hideInSearch: true,
     },
     {
-      title: intl.formatMessage({ id: 'operators', defaultMessage: 'Operators' }),
+      title: intl.formatMessage({ id: 'administrators', defaultMessage: '群管' }),
       dataIndex: 'operators',
       hideInSearch: true,
       renderText: (_, record) => record.operators?.map((o: any) => o.userName).join(', ') || '-',
