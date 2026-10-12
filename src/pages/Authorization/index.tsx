@@ -288,6 +288,12 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
     },
     {
+      title: intl.formatMessage({ id: 'disabledAt', defaultMessage: '到期时间' }),
+      dataIndex: 'disabledAt',
+      hideInSearch: true,
+      valueType: 'dateTime',
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
       dataIndex: 'option',
       valueType: 'option',
